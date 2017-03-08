@@ -2,10 +2,13 @@ angular.module('hello', ['ngRoute'])
     .config(function ($routeProvider, $httpProvider) {
 
         $routeProvider.when('/', {
-            templateUrl: 'home.html',
-            controller: 'home'
+            templateUrl: 'login.html',
+            controller: 'navigation'
         }).when('/login', {
             templateUrl: 'login.html',
+            controller: 'navigation'
+        }).when('/register', {
+            templateUrl: 'register.html',
             controller: 'navigation'
         }).otherwise('/');
 
@@ -42,7 +45,23 @@ angular.module('hello', ['ngRoute'])
 
             }
 
+            var registration = function (credentials, callback) {
+
+                var params = {};
+                params.name = credentials.username;
+                params.password = credentials.password;
+
+                $http.post('user-management/register', params).success(function () {
+                    $rootScope.registered = true;
+                    callback && callback();
+                }).error(function () {
+                    $rootScope.registered = false;
+                    callback && callback();
+                });
+            }
+
             authenticate();
+
             $scope.credentials = {};
             $scope.login = function () {
                 authenticate($scope.credentials, function () {
@@ -51,6 +70,18 @@ angular.module('hello', ['ngRoute'])
                         $scope.error = false;
                     } else {
                         $location.path("/login");
+                        $scope.error = true;
+                    }
+                });
+            };
+
+            $scope.register = function () {
+                registration($scope.credentials, function () {
+                    if ($rootScope.registered) {
+                        $location.path("/");
+                        $scope.error = false;
+                    } else {
+                        $location.path("/register");
                         $scope.error = true;
                     }
                 });

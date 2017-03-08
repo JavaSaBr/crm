@@ -1,14 +1,9 @@
 package com.ss.crm.db.entity.impl;
 
 import com.ss.crm.db.entity.HasId;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import java.util.Objects;
+import javax.persistence.*;
 
 /**
  * The base implementation of a database entity.
@@ -19,7 +14,7 @@ import java.util.Objects;
 public abstract class BaseEntity implements HasId {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, precision = 15)
     protected Long id;
 
@@ -30,10 +25,10 @@ public abstract class BaseEntity implements HasId {
         this.id = id;
     }
 
-    @NotNull
+    @Nullable
     @Override
     public Long getId() {
-        return Objects.requireNonNull(id, "The ID is null.");
+        return id;
     }
 
     @Override

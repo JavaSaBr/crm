@@ -1,6 +1,6 @@
 package com.ss.crm.db.repository;
 
-import com.ss.crm.db.entity.UserEntity;
+import com.ss.crm.db.entity.impl.UserEntity;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
