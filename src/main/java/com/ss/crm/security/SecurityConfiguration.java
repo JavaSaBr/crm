@@ -19,21 +19,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .httpBasic()
+        http.httpBasic()
                 .and()
                 .authorizeRequests()
                 .antMatchers("/index.html", "/home.html", "/login.html", "/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-                .csrf()
-                .csrfTokenRepository(csrfTokenRepository())
+                .csrf().csrfTokenRepository(csrfTokenRepository())
                 .and().logout();
     }
 
     private CsrfTokenRepository csrfTokenRepository() {
-        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        final HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
         repository.setHeaderName("X-XSRF-TOKEN");
         return repository;
     }
