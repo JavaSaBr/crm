@@ -1,7 +1,8 @@
-package com.ss.crm.controller.user;
+package com.ss.crm.endpoint.service.impl.user;
+
 
 import static org.springframework.http.ResponseEntity.badRequest;
-import com.ss.crm.controller.BaseController;
+import com.ss.crm.endpoint.service.BaseRestService;
 import com.ss.crm.service.UserService;
 import com.ss.crm.util.PasswordUtil;
 import org.jetbrains.annotations.NotNull;
@@ -21,13 +22,13 @@ import rlib.util.StringUtils;
  */
 @Controller
 @RequestMapping("/user-management")
-public class UserManagementController extends BaseController {
+public class UserManagementRestService extends BaseRestService {
 
     @NotNull
     private final UserService userService;
 
     @Autowired
-    public UserManagementController(@NotNull final UserService userService) {
+    public UserManagementRestService(@NotNull final UserService userService) {
         this.userService = userService;
     }
 

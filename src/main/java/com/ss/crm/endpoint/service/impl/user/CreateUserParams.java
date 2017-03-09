@@ -1,4 +1,4 @@
-package com.ss.crm.controller.user;
+package com.ss.crm.endpoint.service.impl.user;
 
 import org.jetbrains.annotations.Nullable;
 

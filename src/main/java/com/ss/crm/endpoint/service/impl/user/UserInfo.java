@@ -1,4 +1,4 @@
-package com.ss.crm.controller.user;
+package com.ss.crm.endpoint.service.impl.user;
 
 import static java.util.Objects.requireNonNull;
 import org.jetbrains.annotations.NotNull;
