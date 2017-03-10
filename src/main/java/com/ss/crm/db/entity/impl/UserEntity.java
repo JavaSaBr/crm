@@ -2,10 +2,8 @@ package com.ss.crm.db.entity.impl;
 
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author JavaSaBr
@@ -15,6 +13,12 @@ import javax.persistence.Table;
         @Index(columnList = "name", name = "user_name_index")
 })
 public class UserEntity extends BaseEntity {
+
+    /**
+     * The user roles.
+     */
+    @ManyToMany
+    private List<RoleEntity> roles;
 
     /**
      * The user name.
@@ -77,6 +81,21 @@ public class UserEntity extends BaseEntity {
      */
     public void setPasswordSalt(@NotNull final byte[] passwordSalt) {
         this.passwordSalt = passwordSalt;
+    }
+
+    /**
+     * @return the user roles.
+     */
+    @NotNull
+    public List<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    /**
+     * @param roles the user roles.
+     */
+    public void setRoles(@NotNull final List<RoleEntity> roles) {
+        this.roles = roles;
     }
 
     @Override

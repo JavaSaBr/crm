@@ -40,4 +40,17 @@ public abstract class BaseEntity implements HasId {
     public String toString() {
         return "BaseEntity{" + "id=" + id + '}';
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final BaseEntity that = (BaseEntity) o;
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }
