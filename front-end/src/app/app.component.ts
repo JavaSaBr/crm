@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, NgModule} from '@angular/core';
+import { MaterialModule } from '@angular/material';
 
 @Component({
   selector: 'app-root',
@@ -8,3 +9,8 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'app works!';
 }
+
+@NgModule({
+  imports: [MaterialModule],
+})
+export class PizzaPartyAppModule { }
