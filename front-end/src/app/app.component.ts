@@ -1,5 +1,5 @@
-import {Component, NgModule} from '@angular/core';
-import { MaterialModule } from '@angular/material';
+import {Component, NgModule} from "@angular/core";
+import {MaterialModule} from "@angular/material";
 
 @Component({
   selector: 'app-root',
@@ -13,4 +13,5 @@ export class AppComponent {
 @NgModule({
   imports: [MaterialModule],
 })
-export class PizzaPartyAppModule { }
+export class PizzaPartyAppModule {
+}
