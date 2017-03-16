@@ -28,7 +28,7 @@ public class PasswordUtil {
         }
     });
 
-    private static final int ITERATIONS = 10000;
+    private static final int ITERATIONS = 385;
     private static final int KEY_LENGTH = 256;
 
     /**

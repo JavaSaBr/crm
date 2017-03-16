@@ -1,6 +1,8 @@
 package com.ss.crm.security;
 
+import com.ss.crm.filter.AuthenticationTokenProcessingFilter;
 import com.ss.crm.filter.CsrfHeaderFilter;
+import com.ss.crm.service.AccessTokenService;
 import com.ss.crm.service.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -22,6 +26,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
  * @author JavaSaBr
  */
 @Configuration
+@EnableWebSecurity
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -31,11 +36,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @NotNull
     private final AuthenticationProvider jdbcAuthenticationProvider;
 
+    @NotNull
+    private final AccessTokenService accessTokenService;
+
     @Autowired
     public SecurityConfiguration(@NotNull final UserService userService,
-                                 @NotNull final AuthenticationProvider jdbcAuthenticationProvider) {
+                                 @NotNull final AuthenticationProvider jdbcAuthenticationProvider,
+                                 @NotNull final AccessTokenService accessTokenService) {
         this.userService = userService;
         this.jdbcAuthenticationProvider = jdbcAuthenticationProvider;
+        this.accessTokenService = accessTokenService;
+    }
+
+    @Override
+    public void configure(final WebSecurity web) throws Exception {
+        super.configure(web);
+        web.ignoring()
+                .antMatchers("/index.html", "/dashboard", "/login", "/register", "/")
+                .antMatchers("/inline.bundle.js", "/polyfills.bundle.js", "/styles.bundle.js")
+                .antMatchers("/main.bundle.js", "/vendor.bundle.js")
+                .antMatchers(HttpMethod.POST, "/user-management/register/**")
+                .antMatchers(HttpMethod.POST, "/user-management/authenticate/**");
     }
 
     @Override
@@ -43,15 +64,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/index.html", "/dashboard", "/login", "/register", "/").permitAll()
-                .antMatchers("/inline.bundle.js", "/polyfills.bundle.js", "/styles.bundle.js").permitAll()
-                .antMatchers("/main.bundle.js", "/vendor.bundle.js").permitAll()
-                .antMatchers(HttpMethod.POST, "/user-management/register/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .logout()
+                .logoutUrl("/logout")
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+                .and()
+                .logout()
+                .and()
+                .addFilterBefore(new AuthenticationTokenProcessingFilter(accessTokenService), CsrfFilter.class)
                 .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-                .csrf().csrfTokenRepository(csrfTokenRepository())
-                .and().logout();
+                .csrf().csrfTokenRepository(csrfTokenRepository());
     }
 
     @Autowired

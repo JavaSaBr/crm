@@ -68,7 +68,6 @@ public class UserServiceImpl extends AbstractCrmService implements UserService {
         final String password = new String(userEntity.getPassword());
         final List<RoleEntity> authorities = new ArrayList<>(userEntity.getRoles());
 
-        return new CrmUser(userEntity.getName(), password, authorities,
-                userEntity.getPassword(), userEntity.getPasswordSalt());
+        return new CrmUser(userEntity.getName(), password, authorities, userEntity);
     }
 }

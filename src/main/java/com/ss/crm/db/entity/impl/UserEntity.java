@@ -17,7 +17,7 @@ public class UserEntity extends BaseEntity {
     /**
      * The user roles.
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<RoleEntity> roles;
 
     /**

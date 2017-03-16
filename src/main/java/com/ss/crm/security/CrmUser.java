@@ -1,5 +1,6 @@
 package com.ss.crm.security;
 
+import com.ss.crm.db.entity.impl.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -7,37 +8,31 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 /**
+ * The CRM user.
+ *
  * @author JavaSaBr
  */
 public class CrmUser extends User {
 
     /**
-     * The password bytes.
+     * The user entity from DB.
      */
     @NotNull
-    private final byte[] passwordBytes;
-
-    /**
-     * The password salt.
-     */
-    @NotNull
-    private final byte[] passwordSalt;
+    private final UserEntity user;
 
     public CrmUser(@NotNull final String username, @NotNull final String password,
                    @NotNull final Collection<? extends GrantedAuthority> authorities,
-                   @NotNull final byte[] passwordBytes, @NotNull final byte[] passwordSalt) {
+                   @NotNull final UserEntity user) {
         super(username, password, authorities);
-        this.passwordBytes = passwordBytes;
-        this.passwordSalt = passwordSalt;
+        this.user = user;
     }
 
     public CrmUser(@NotNull final String username, @NotNull final String password, final boolean enabled,
                    final boolean accountNonExpired, final boolean credentialsNonExpired, final boolean accountNonLocked,
                    @NotNull final Collection<? extends GrantedAuthority> authorities,
-                   @NotNull final byte[] passwordBytes, @NotNull final byte[] passwordSalt) {
+                   @NotNull final UserEntity user) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
-        this.passwordBytes = passwordBytes;
-        this.passwordSalt = passwordSalt;
+        this.user = user;
     }
 
     /**
@@ -45,7 +40,7 @@ public class CrmUser extends User {
      */
     @NotNull
     public byte[] getPasswordBytes() {
-        return passwordBytes;
+        return user.getPassword();
     }
 
     /**
@@ -53,6 +48,14 @@ public class CrmUser extends User {
      */
     @NotNull
     public byte[] getPasswordSalt() {
-        return passwordSalt;
+        return user.getPasswordSalt();
+    }
+
+    /**
+     * @return the user entity.
+     */
+    @NotNull
+    public UserEntity getUser() {
+        return user;
     }
 }
