@@ -11,21 +11,18 @@ import {SecurityService} from "../security.service";
 export class LoginComponent implements OnInit {
 
   /**
-   * The security service.
-   */
-  security: SecurityService;
-
-  /**
    * The current user credentials.
    */
-  credentials: UserCredentials;
+  credentials: UserCredentials = new UserCredentials('', '');
 
-  submitted: boolean;
+  /**
+   * The flag of submiting auth form.
+   *
+   * @type {boolean}
+   */
+  submitted: boolean = false;
 
-  constructor(security: SecurityService) {
-    this.security = security;
-    this.credentials = new UserCredentials('', '');
-    this.submitted = false;
+  constructor(private readonly security: SecurityService) {
   }
 
   ngOnInit() {
@@ -35,7 +32,9 @@ export class LoginComponent implements OnInit {
    * Try to auth using the current credentials.
    */
   tryAuth() {
-    this.security.auth(this.credentials)
-      .subscribe(value => console.info("result = " + value));
+    let result = this.security.auth(this.credentials, result => {
+      this.submitted = true;
+      console.warn("The auth result = " + result)
+    });
   }
 }

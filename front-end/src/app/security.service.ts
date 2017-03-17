@@ -1,45 +1,75 @@
 import {Injectable} from "@angular/core";
-import {Http, Headers, RequestOptions} from "@angular/http";
+import {Http, RequestOptions} from "@angular/http";
 import {UserCredentials} from "./login/user-credentials";
-import {Observable} from "rxjs";
 import {Utils} from "./util/Utils";
 
 @Injectable()
 export class SecurityService {
 
-  private authUrl = 'user';
-  private logoutUrl = 'logout';
+  /**
+   * The url of auth endpoint.
+   *
+   * @type {string}
+   */
+  private static readonly AUTH_URL: string = '/user-management/authenticate';
 
-  constructor(private http: Http) {
+  /**
+   * The name of access token header.
+   *
+   * @type {string}
+   */
+  private static readonly ACCESS_TOKEN_HEADER = "X-Access-Token";
+
+  /**
+   * The current access token.
+   */
+  private accessToken: string;
+
+  constructor(private readonly http: Http) {
   }
 
   /**
    * The function to auth an user in the system.
    *
    * @param credentials the user credentials.
-   * @returns {Observable<boolean>} the observable result.
+   * @param handler to handle result of authentication.
+   * @returns {boolean} true if it was successful.
    */
-  auth(credentials: UserCredentials): Observable<boolean> {
-
-    let headers = new Headers({
-      'Authorization': "Basic "
-      + btoa(credentials.username + ":" + credentials.password)
+  public auth(credentials: UserCredentials, handler?: (value: boolean) => void): void {
+    this.http.post(SecurityService.AUTH_URL, credentials)
+      .catch(Utils.handleError).first().subscribe(res => {
+      if (res.status == 200) {
+        let body = res.json();
+        this.accessToken = body.token;
+        handler.apply(true);
+      } else {
+        handler.apply(false);
+      }
     });
+  }
 
-    let options = new RequestOptions({
-      headers: headers,
-      withCredentials: true
-    });
-
-    return this.http.get(this.authUrl, options)
-      .map(res => res.status == 200).catch(Utils.handleError).first();
+  /**
+   * Add access token to header of the request options.
+   *
+   * @param requestOptions the request options.
+   */
+  public addAccessToken(requestOptions: RequestOptions): void {
+    requestOptions.headers.append(SecurityService.ACCESS_TOKEN_HEADER, this.getAccessToken());
   }
 
   /**
    * The function to logout from the system.
    */
-  logout() {
-    return this.http.get(this.logoutUrl)
-      .map(res => res.status == 200).catch(Utils.handleError).first();
+  public logout() {
+    this.accessToken = null;
+  }
+
+  /**
+   * Get the current access token.
+   *
+   * @returns {string} the current access token.
+   */
+  public getAccessToken(): string {
+    return this.accessToken;
   }
 }

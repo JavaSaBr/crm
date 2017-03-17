@@ -58,7 +58,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var LoginComponent = (function () {
     function LoginComponent(security) {
         this.security = security;
+        /**
+         * The current user credentials.
+         */
         this.credentials = new __WEBPACK_IMPORTED_MODULE_1__user_credentials__["a" /* UserCredentials */]('', '');
+        /**
+         * The flag of submiting auth form.
+         *
+         * @type {boolean}
+         */
         this.submitted = false;
     }
     LoginComponent.prototype.ngOnInit = function () {
@@ -67,8 +75,11 @@ var LoginComponent = (function () {
      * Try to auth using the current credentials.
      */
     LoginComponent.prototype.tryAuth = function () {
-        this.security.auth(this.credentials)
-            .subscribe(function (value) { return console.info("result = " + value); });
+        var _this = this;
+        var result = this.security.auth(this.credentials, function (result) {
+            _this.submitted = true;
+            console.warn("The auth result = " + result);
+        });
     };
     LoginComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
@@ -143,37 +154,51 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var SecurityService = (function () {
     function SecurityService(http) {
         this.http = http;
-        this.authUrl = 'user';
-        this.logoutUrl = 'logout';
     }
     /**
      * The function to auth an user in the system.
      *
      * @param credentials the user credentials.
-     * @returns {Observable<boolean>} the observable result.
+     * @param handler to handle result of authentication.
+     * @returns {boolean} true if it was successful.
      */
-    SecurityService.prototype.auth = function (credentials) {
-        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]({
-            'Authorization': "Basic "
-                + btoa(credentials.username + ":" + credentials.password)
+    SecurityService.prototype.auth = function (credentials, handler) {
+        var _this = this;
+        this.http.post(SecurityService.AUTH_URL, credentials)
+            .catch(__WEBPACK_IMPORTED_MODULE_2__util_Utils__["a" /* Utils */].handleError).first().subscribe(function (res) {
+            if (res.status == 200) {
+                var body = res.json();
+                _this.accessToken = body.token;
+                handler.apply(true);
+            }
+            else {
+                handler.apply(false);
+            }
         });
-        var options = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* RequestOptions */]({
-            headers: headers,
-            withCredentials: true
-        });
-        return this.http.get(this.authUrl, options)
-            .map(function (res) { return res.status == 200; }).catch(__WEBPACK_IMPORTED_MODULE_2__util_Utils__["a" /* Utils */].handleError).first();
     };
     /**
      * The function to logout from the system.
      */
     SecurityService.prototype.logout = function () {
-        return this.http.get(this.logoutUrl)
-            .map(function (res) { return res.status == 200; }).catch(__WEBPACK_IMPORTED_MODULE_2__util_Utils__["a" /* Utils */].handleError).first();
+        this.accessToken = null;
     };
+    /**
+     * Get the current access token.
+     *
+     * @returns {string} the current access token.
+     */
+    SecurityService.prototype.getAccessToken = function () {
+        return this.accessToken;
+    };
+    /**
+     * The url of auth endpoint.
+     *
+     * @type {string}
+     */
+    SecurityService.AUTH_URL = '/user-management/authenticate';
     SecurityService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* Http */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
     ], SecurityService);
     return SecurityService;
     var _a;
@@ -418,7 +443,7 @@ var Utils = (function () {
     Utils.handleError = function (error) {
         // In a real world app, you might use a remote logging infrastructure
         var errMsg;
-        if (error instanceof __WEBPACK_IMPORTED_MODULE_0__angular_http__["e" /* Response */]) {
+        if (error instanceof __WEBPACK_IMPORTED_MODULE_0__angular_http__["c" /* Response */]) {
             errMsg = error.text();
         }
         else {

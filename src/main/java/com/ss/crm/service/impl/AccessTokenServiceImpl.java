@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * The implementation of the {@link AccessTokenService}.
@@ -53,15 +55,17 @@ public class AccessTokenServiceImpl extends AbstractCrmService implements Access
     public AccessTokenEntity createNewToken(@NotNull final UserEntity user) {
 
         final Key key = MacProvider.generateKey();
+        final ZonedDateTime expiry = now().plusHours(ACCESS_TOKEN_HOURS);
 
-        String compactJws = Jwts.builder()
+        final String compactJws = Jwts.builder()
                 .setSubject(user.getName())
+                .setNotBefore(Date.from(expiry.toInstant()))
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
 
         final AccessTokenEntity tokenEntity = new AccessTokenEntity();
         tokenEntity.setUserId(requireNonNull(user.getId()));
-        tokenEntity.setExpiry(now().plusHours(ACCESS_TOKEN_HOURS));
+        tokenEntity.setExpiry(expiry);
         tokenEntity.setToken(compactJws);
 
         return accessTokenRepository.save(tokenEntity);
