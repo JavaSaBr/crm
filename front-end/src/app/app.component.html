@@ -1,9 +1,8 @@
-<h1>{{title}}</h1>
-<nav>
-  <a routerLink="/" routerLinkActive="active">Home</a>
-  <a routerLink="/login" routerLinkActive="active">Login</a>
-  <a routerLink="/register" routerLinkActive="active">Register</a>
-  <a routerLink="/" routerLinkActive="active" (click)="logout()" >Logout</a>
+<nav class="navigator app-bar">
+  <a class="m-toolbar-button" routerLink="/dashboard" routerLinkActive="m-toolbar-button-active">Home</a>
+  <a class="m-toolbar-button" routerLink="/login" routerLinkActive="m-toolbar-button-active">Login</a>
+  <a class="m-toolbar-button" routerLink="/register" routerLinkActive="m-toolbar-button-active">Register</a>
+  <a class="m-toolbar-button" routerLink="/" (click)="logout()" >Logout</a>
 </nav>
 <router-outlet></router-outlet>
 
