@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {UserCredentials} from "./user-credentials";
-import {SecurityService} from "../security.service";
+import {SecurityService} from "../../../security.service";
 
 @Component({
   moduleId: module.id,
@@ -13,16 +13,18 @@ export class LoginComponent implements OnInit {
   /**
    * The current user credentials.
    */
-  credentials: UserCredentials = new UserCredentials('', '');
+  credentials: UserCredentials;
 
   /**
    * The flag of submiting auth form.
    *
    * @type {boolean}
    */
-  submitted: boolean = false;
+  submitted: boolean;
 
   constructor(private readonly security: SecurityService) {
+    this.credentials = new UserCredentials('', '');
+    this.submitted = false;
   }
 
   ngOnInit() {

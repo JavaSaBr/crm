@@ -1,8 +1,8 @@
-<nav class="navigator app-bar">
-  <a class="m-toolbar-button" routerLink="/dashboard" routerLinkActive="m-toolbar-button-active">Home</a>
-  <a class="m-toolbar-button" routerLink="/login" routerLinkActive="m-toolbar-button-active">Login</a>
-  <a class="m-toolbar-button" routerLink="/register" routerLinkActive="m-toolbar-button-active">Register</a>
-  <a class="m-toolbar-button" routerLink="/" (click)="logout()" >Logout</a>
-</nav>
+<md-toolbar class="app-bar" color="primary">
+  <button md-button class="m-toolbar-button" routerLink="/dashboard" routerLinkActive="m-toolbar-button-active">Home</button>
+  <button md-button class="m-toolbar-button" routerLink="/login" routerLinkActive="m-toolbar-button-active">Login</button>
+  <button md-button class="m-toolbar-button" routerLink="/register" routerLinkActive="m-toolbar-button-active">Register</button>
+  <button md-button class="m-toolbar-button" routerLink="/" (click)="logout()" >Logout</button>
+</md-toolbar>
 <router-outlet></router-outlet>
 

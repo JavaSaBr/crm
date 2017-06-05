@@ -1,14 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
+
+/**
 .root {
   background-color: #303030;
 }
 
-.app-bar {
-  margin: 0;
-  background: #212121;
-  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
-  height: 36px;
-}
 
 .m-toolbar-button {
   float: left;
@@ -44,3 +41,4 @@
   text-decoration: none;
   outline: none;
 }
+*/

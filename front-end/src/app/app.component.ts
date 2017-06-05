@@ -1,15 +1,20 @@
-import {Component, NgModule} from "@angular/core";
-import {AlertModule} from "ngx-bootstrap";
+import {Component, OnInit} from "@angular/core";
+import {MdDialog, MdDialogRef, MdSnackBar} from '@angular/material';
+import {SecurityService} from "./security.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-@NgModule({
-  imports: [AlertModule.forRoot()]
-})
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  constructor(private readonly security: SecurityService) {
+  }
+
+  ngOnInit(): void {
+  }
+
   logout() {
   }
 }

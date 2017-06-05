@@ -1,7 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Http, RequestOptions} from "@angular/http";
-import {UserCredentials} from "./login/user-credentials";
+import {UserCredentials} from "./component/dialog/login/user-credentials";
 import {Utils} from "./util/Utils";
+import {User} from "./user/user";
+import {UserRole} from "./user/user-role";
 
 @Injectable()
 export class SecurityService {
@@ -21,9 +23,9 @@ export class SecurityService {
   private static readonly ACCESS_TOKEN_HEADER = "X-Access-Token";
 
   /**
-   * The current access token.
+   * The current user.
    */
-  private accessToken: string;
+  private _user: User;
 
   constructor(private readonly http: Http) {
   }
@@ -36,11 +38,12 @@ export class SecurityService {
    * @returns {boolean} true if it was successful.
    */
   public auth(credentials: UserCredentials, handler?: (value: boolean) => void): void {
+    let username = credentials.username;
     this.http.post(SecurityService.AUTH_URL, credentials)
       .catch(Utils.handleError).first().subscribe(res => {
       if (res.status == 200) {
         let body = res.json();
-        this.accessToken = body.token;
+        this._user = new User(username, body.token);
         handler.apply(true);
       } else {
         handler.apply(false);
@@ -54,14 +57,16 @@ export class SecurityService {
    * @param requestOptions the request options.
    */
   public addAccessToken(requestOptions: RequestOptions): void {
-    requestOptions.headers.append(SecurityService.ACCESS_TOKEN_HEADER, this.getAccessToken());
+    let accessToken = this.accessToken;
+    if (accessToken == null) return;
+    requestOptions.headers.append(SecurityService.ACCESS_TOKEN_HEADER, accessToken);
   }
 
   /**
    * The function to logout from the system.
    */
   public logout() {
-    this.accessToken = null;
+    this._user = null;
   }
 
   /**
@@ -69,7 +74,18 @@ export class SecurityService {
    *
    * @returns {string} the current access token.
    */
-  public getAccessToken(): string {
-    return this.accessToken;
+  get accessToken(): string {
+    if (this._user == null) return null;
+    return this._user.accessToken;
+  }
+
+  /**
+   * Get the roles of the current user.
+   *
+   * @returns {UserRole[]}
+   */
+  get userRoles(): UserRole[] {
+    if (this._user == null) return null;
+    return this._user.roles;
   }
 }
