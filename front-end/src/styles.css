@@ -1,44 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
-/**
-.root {
-  background-color: #303030;
-}
-
-
-.m-toolbar-button {
-  float: left;
-  text-align: center;
-  background: transparent;
-  padding: 8px 0 0 0;
+html, body {
   height: 100%;
-  width: 100px;
-  color: white;
+  min-height: 100%
 }
 
-.m-toolbar-button:hover {
-  color: white;
-  text-decoration: none;
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: stretch;
 }
 
-.m-toolbar-button:active {
-  background: rgba(255, 255, 255, 0.2);
-  text-decoration: none;
-  color: white;
-  outline: none;
+app-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 100%;
 }
 
-.m-toolbar-button:focus {
-  text-decoration: none;
-  outline: none;
-  color: white;
+app-login {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
 }
-
-.m-toolbar-button-active {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  text-decoration: none;
-  outline: none;
-}
-*/

@@ -1,5 +1,4 @@
 import {Component, OnInit} from "@angular/core";
-import {MdDialog, MdDialogRef, MdSnackBar} from '@angular/material';
 import {SecurityService} from "./security.service";
 
 @Component({
@@ -16,5 +15,9 @@ export class AppComponent implements OnInit {
   }
 
   logout() {
+  }
+
+  isAuthed(): boolean {
+    return this.security.isAuthed();
   }
 }

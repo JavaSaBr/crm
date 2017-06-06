@@ -1,41 +1,23 @@
-<div class="container">
-  <div [hidden]="submitted">
-    <h1>Login page</h1>
-    <form (ngSubmit)="tryAuth()" #loginForm="ngForm">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username"
-               required
-               [(ngModel)]="credentials.username" name="name"
-               #name="ngModel">
-        <div [hidden]="name.valid || name.pristine"
-             class="alert alert-danger">
-          Name is required
-        </div>
-      </div>
+<div class="login-form-container">
+  <div class="login-form">
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password"
-               required
-               [(ngModel)]="credentials.password" name="password"
+    <div>
+      <h1>Login page</h1>
+      <h4>Message</h4>
+    </div>
+
+    <form class="login-data-form" #loginForm="ngForm">
+      <md-input-container class="login-data-row">
+        <input mdInput placeholder="Username" id="username" [(ngModel)]="credentials.username" name="name"
+               #name="ngModel">
+      </md-input-container>
+      <md-input-container class="login-data-row">
+        <input mdInput placeholder="Password" type="password" id="password" required [(ngModel)]="credentials.password"
+               name="password"
                #password="ngModel">
-        <div [hidden]="password.valid || password.pristine"
-             class="alert alert-danger">
-          Password is required
-        </div>
-      </div>
-      <button type="submit" class="btn btn-success" [disabled]="!loginForm.form.valid">Submit</button>
+      </md-input-container>
+      <button class="login-data-row" type="submit" md-button>Submit</button>
     </form>
   </div>
 
-  <div [hidden]="!submitted">
-    <h2>You submitted the following:</h2>
-    <div class="row">
-      <div class="col-xs-3">Name</div>
-      <div class="col-xs-9  pull-left">{{ credentials.username }}</div>
-    </div>
-    <br>
-    <button class="btn btn-primary" (click)="submitted=false">Edit</button>
-  </div>
 </div>

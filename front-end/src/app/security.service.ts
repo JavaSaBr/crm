@@ -65,8 +65,17 @@ export class SecurityService {
   /**
    * The function to logout from the system.
    */
-  public logout() {
+  logout() {
     this._user = null;
+  }
+
+  /**
+   * Return true if the user was authed.
+   *
+   * @returns {boolean}
+   */
+  isAuthed(): boolean {
+    return this.accessToken != null;
   }
 
   /**

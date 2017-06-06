@@ -1,2 +1,9 @@
 .app-bar {
 }
+
+.root-content {
+  flex: 1 1 100%;
+  overflow: auto;
+  display: flex;
+  padding: 10px;
+}
