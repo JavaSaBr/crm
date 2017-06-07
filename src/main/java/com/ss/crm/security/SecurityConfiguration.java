@@ -54,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers("/index.html", "/dashboard", "/login", "/register/**", "/")
                 .antMatchers("/inline.bundle.js", "/polyfills.bundle.js", "/styles.bundle.js")
-                .antMatchers("/main.bundle.js", "/vendor.bundle.js")
+                .antMatchers("/main.bundle.js", "/vendor.bundle.js", "/favicon.ico")
                 .antMatchers(HttpMethod.POST, "/user-management/register/**")
                 .antMatchers(HttpMethod.POST, "/user-management/authenticate/**");
     }

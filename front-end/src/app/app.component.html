@@ -2,13 +2,13 @@
   <button md-button class="m-toolbar-button" routerLink="/dashboard" routerLinkActive="m-toolbar-button-active">Home
   </button>
   <span class="app-toolbar-filler"></span>
-  <button md-button class="m-toolbar-button" [class.hidden]="!isAuthed" routerLink="/login"
+  <button md-button class="m-toolbar-button" *ngIf="!authed" routerLink="/login"
           routerLinkActive="m-toolbar-button-active">Login
   </button>
-  <button md-button class="m-toolbar-button" [class.hidden]="!isAuthed" routerLink="/register"
+  <button md-button class="m-toolbar-button" *ngIf="!authed" routerLink="/register"
           routerLinkActive="m-toolbar-button-active">Register
   </button>
-  <button md-button class="m-toolbar-button" [class.hidden]="isAuthed" routerLink="/" (click)="logout()">Logout</button>
+  <button md-button class="m-toolbar-button" *ngIf="authed" routerLink="/" (click)="logout()">Logout</button>
 </md-toolbar>
 <div class="root-content">
   <router-outlet></router-outlet>

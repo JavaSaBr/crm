@@ -5,6 +5,9 @@ import {Utils} from "./util/Utils";
 import {User} from "./user/user";
 import {UserRole} from "./user/user-role";
 import {RegisterUserCredentials} from "./user/register-user-credentials";
+import {Observable} from "rxjs/Observable";
+import {Subject} from "rxjs/Subject";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class SecurityService {
@@ -35,7 +38,13 @@ export class SecurityService {
    */
   private user: User;
 
+  /**
+   * The property to listen the auth flag.
+   */
+  private readonly _authProperty: BehaviorSubject<boolean>;
+
   constructor(private readonly http: Http) {
+    this._authProperty = new BehaviorSubject(false);
   }
 
   /**
@@ -51,6 +60,7 @@ export class SecurityService {
       .then(response => {
         let body = response.json();
         this.user = new User(username, body.token);
+        this._authProperty.next(true);
         handler(null, true);
       })
       .catch(error => Utils.handleErrorMessage(error, (ex: string) => handler(ex, false)));
@@ -86,15 +96,16 @@ export class SecurityService {
    */
   logout() {
     this.user = null;
+    this._authProperty.next(false);
   }
 
   /**
-   * Return true if the user was authed.
+   * Get the auth property.
    *
-   * @returns {boolean}
+   * @returns {Observable<boolean>}
    */
-  isAuthed(): boolean {
-    return this.accessToken != null;
+  get authProperty() {
+    return this._authProperty;
   }
 
   /**
