@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Http, RequestOptions} from "@angular/http";
-import {UserCredentials} from "./component/dialog/login/user-credentials";
+import {UserCredentials} from "./user/user-credentials";
 import {Utils} from "./util/Utils";
 import {User} from "./user/user";
 import {UserRole} from "./user/user-role";
@@ -25,7 +25,7 @@ export class SecurityService {
   /**
    * The current user.
    */
-  private _user: User;
+  private user: User;
 
   constructor(private readonly http: Http) {
   }
@@ -35,20 +35,36 @@ export class SecurityService {
    *
    * @param credentials the user credentials.
    * @param handler to handle result of authentication.
-   * @returns {boolean} true if it was successful.
    */
-  public auth(credentials: UserCredentials, handler?: (value: boolean) => void): void {
+  public auth(credentials: UserCredentials, handler?: (message: string, result: boolean) => void): void {
     let username = credentials.username;
     this.http.post(SecurityService.AUTH_URL, credentials)
-      .catch(Utils.handleError).first().subscribe(res => {
-      if (res.status == 200) {
-        let body = res.json();
-        this._user = new User(username, body.token);
-        handler.apply(true);
-      } else {
-        handler.apply(false);
-      }
-    });
+      .toPromise()
+      .then(response => {
+        let body = response.json();
+        this.user = new User(username, body.token);
+        handler(null, true);
+      })
+      .catch(error => Utils.handleErrorMessage(error, (ex: string) => handler(ex, false)));
+  }
+
+  /**
+   * The function to auth an user in the system.
+   *
+   * @param credentials the user credentials.
+   */
+  public auth2(credentials: UserCredentials): Promise<any> {
+
+    let username = credentials.username;
+    let promise = this.http.post(SecurityService.AUTH_URL, credentials)
+      .toPromise();
+
+    promise.then(response => {
+      let body = response.json();
+      this.user = new User(username, body.token);
+    })
+
+    return promise;
   }
 
   /**
@@ -66,7 +82,7 @@ export class SecurityService {
    * The function to logout from the system.
    */
   logout() {
-    this._user = null;
+    this.user = null;
   }
 
   /**
@@ -84,8 +100,8 @@ export class SecurityService {
    * @returns {string} the current access token.
    */
   get accessToken(): string {
-    if (this._user == null) return null;
-    return this._user.accessToken;
+    if (this.user == null) return null;
+    return this.user.accessToken;
   }
 
   /**
@@ -94,7 +110,7 @@ export class SecurityService {
    * @returns {UserRole[]}
    */
   get userRoles(): UserRole[] {
-    if (this._user == null) return null;
-    return this._user.roles;
+    if (this.user == null) return null;
+    return this.user.roles;
   }
 }

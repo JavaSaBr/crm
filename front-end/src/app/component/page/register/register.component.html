@@ -1,0 +1,36 @@
+<div class="register-form-container">
+  <div class="register-form">
+
+    <div class="register-text-container">
+      <h2 class="register-page-title">Registration</h2>
+      <h3 class="register-page-error" [hidden]="error.length == 0">
+        {{error}}
+      </h3>
+    </div>
+
+    <form class="register-data-form mat-elevation-z2" (ngSubmit)="tryRegister()" #registerForm="ngForm">
+      <md-input-container class="register-data-row">
+        <input mdInput placeholder="Username" id="username" required minlength="3" maxlength="25"
+               [(ngModel)]="credentials.username" name="name"
+               #name="ngModel">
+      </md-input-container>
+      <md-input-container class="register-data-row">
+        <input mdInput placeholder="Password" type="password" id="password"
+               required forbiddenName="confirmPassword"
+               [(ngModel)]="credentials.password"
+               name="password"
+               #password="ngModel">
+      </md-input-container>
+      <md-input-container class="register-data-row">
+        <input mdInput placeholder="Confirm password" type="password" id="confirm-password"
+               required forbiddenName="password"
+               [(ngModel)]="credentials.confirmPassword"
+               name="confirm-password"
+               #confirmPassword="ngModel">
+      </md-input-container>
+      <button class="register-data-row rogin-button" type="submit" md-raised-button color="primary"
+              [disabled]="!registerForm.form.valid">Register
+      </button>
+    </form>
+  </div>
+</div>

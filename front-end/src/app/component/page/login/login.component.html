@@ -1,0 +1,27 @@
+<div class="login-form-container">
+  <div class="login-form">
+
+    <div class="login-text-container">
+      <h2 class="login-page-title">Authentication</h2>
+      <h3 class="login-page-error" [hidden]="error.length == 0">
+        {{error}}
+      </h3>
+    </div>
+
+    <form class="login-data-form mat-elevation-z2" (ngSubmit)="tryAuth()" #loginForm="ngForm">
+      <md-input-container class="login-data-row">
+        <input mdInput placeholder="Username" id="username" required minlength="3" maxlength="25"
+               [(ngModel)]="credentials.username" name="name"
+               #name="ngModel">
+      </md-input-container>
+      <md-input-container class="login-data-row">
+        <input mdInput placeholder="Password" type="password" id="password" required [(ngModel)]="credentials.password"
+               name="password"
+               #password="ngModel">
+      </md-input-container>
+      <button class="login-data-row login-button" type="submit" md-raised-button color="primary"
+              [disabled]="!loginForm.form.valid">Login
+      </button>
+    </form>
+  </div>
+</div>

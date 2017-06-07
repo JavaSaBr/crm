@@ -1,0 +1,43 @@
+
+.login-form-container {
+  width: 400px;
+  margin: 0 auto;
+  margin-top: -64px;
+}
+
+.login-form {
+}
+
+.login-data-form {
+  border-collapse: collapse;
+  border-radius: 2px;
+  border-spacing: 0px;
+  padding: 10px;
+  background-color: white;
+}
+
+.login-data-row {
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.login-button {
+  width: 100%;
+}
+
+.login-page-title {
+  color: #636363;
+  text-align: center;
+}
+
+.login-page-error {
+  color: #ff002b;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.login-text-container {
+  margin-bottom: 50px;
+  margin-top: 10px;
+}

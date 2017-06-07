@@ -1,0 +1,43 @@
+
+.register-form-container {
+  width: 400px;
+  margin: 0 auto;
+  margin-top: -64px;
+}
+
+.register-form {
+}
+
+.register-data-form {
+  border-collapse: collapse;
+  border-radius: 2px;
+  border-spacing: 0px;
+  padding: 10px;
+  background-color: white;
+}
+
+.register-data-row {
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.register-button {
+  width: 100%;
+}
+
+.register-page-title {
+  color: #636363;
+  text-align: center;
+}
+
+.register-page-error {
+  color: #ff002b;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.register-text-container {
+  margin-bottom: 50px;
+  margin-top: 10px;
+}

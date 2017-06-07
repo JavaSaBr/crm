@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -87,12 +88,19 @@ public class UserManagementRestService extends BaseRestService {
             value = "/authenticate",
             method = RequestMethod.POST,
             produces = MediaType.TEXT_PLAIN_VALUE,
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
-    )
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> authenticate(@RequestBody @NotNull final UserCredentialsParams params) {
 
-        final Authentication authenticationToken = new UsernamePasswordAuthenticationToken(params.getUsername(), params.getPassword());
-        final Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        final Authentication authenticationToken = new UsernamePasswordAuthenticationToken(params.getUsername(),
+                params.getPassword());
+
+        final Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(authenticationToken);
+        } catch (final BadCredentialsException e) {
+            return badRequest().body(e.getLocalizedMessage());
+        }
+
         final SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
 
