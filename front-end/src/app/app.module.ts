@@ -34,7 +34,7 @@ import "hammerjs";
     MdToolbarModule,
     ValidatorModule
   ],
-  providers: [SecurityService],
+  providers: [SecurityService, LoginComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

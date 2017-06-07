@@ -1,16 +1,20 @@
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {EqualValidatorDirective} from "./equal-validator";
+import {EqualsValidatorDirective} from "./equal-validator";
+import {EqualsBiDirectionValidatorDirective} from "./equal-bidirection-validator";
 
 @NgModule({
   imports: [
     CommonModule
   ],
   declarations: [
-    EqualValidatorDirective
+    EqualsValidatorDirective,
+    EqualsBiDirectionValidatorDirective
   ],
   exports: [
-    EqualValidatorDirective, CommonModule
+    EqualsValidatorDirective,
+    EqualsBiDirectionValidatorDirective,
+    CommonModule
   ]
 })
 export class ValidatorModule {

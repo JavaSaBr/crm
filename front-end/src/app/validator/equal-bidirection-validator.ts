@@ -2,26 +2,30 @@ import {Directive, Input} from "@angular/core";
 import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
 
 @Directive({
-  selector: '[equals]',
+  selector: '[equalsBiDirection]',
   providers: [{
     provide: NG_VALIDATORS,
-    useExisting: EqualsValidatorDirective,
+    useExisting: EqualsBiDirectionValidatorDirective,
     multi: true
   }]
 })
-export class EqualsValidatorDirective implements Validator {
+export class EqualsBiDirectionValidatorDirective implements Validator {
 
   @Input()
-  private equals: string;
+  private equalsBiDirection: string;
 
   validate(control: AbstractControl): { [key: string]: any } {
 
     let value = control.value;
     let parent = control.parent;
-    let targetControl = parent.get(this.equals);
+    let targetControl = parent.get(this.equalsBiDirection);
 
     if (targetControl == null) return null;
     let result = value === targetControl.value;
+
+    if (result !== targetControl.valid) {
+      targetControl.reset(targetControl.value);
+    }
 
     return result ? null : {this: {value}};
   }

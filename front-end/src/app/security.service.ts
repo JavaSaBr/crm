@@ -4,6 +4,7 @@ import {UserCredentials} from "./user/user-credentials";
 import {Utils} from "./util/Utils";
 import {User} from "./user/user";
 import {UserRole} from "./user/user-role";
+import {RegisterUserCredentials} from "./user/register-user-credentials";
 
 @Injectable()
 export class SecurityService {
@@ -14,6 +15,13 @@ export class SecurityService {
    * @type {string}
    */
   private static readonly AUTH_URL: string = '/user-management/authenticate';
+
+  /**
+   * The url of register endpoint.
+   *
+   * @type {string}
+   */
+  private static readonly REGISTER_URL: string = '/user-management/register';
 
   /**
    * The name of access token header.
@@ -49,22 +57,17 @@ export class SecurityService {
   }
 
   /**
-   * The function to auth an user in the system.
+   * The function to register an user in the system.
    *
    * @param credentials the user credentials.
+   * @param handler to handle result of registration.
    */
-  public auth2(credentials: UserCredentials): Promise<any> {
-
+  public register(credentials: RegisterUserCredentials, handler?: (message: string, result: boolean) => void): void {
     let username = credentials.username;
-    let promise = this.http.post(SecurityService.AUTH_URL, credentials)
-      .toPromise();
-
-    promise.then(response => {
-      let body = response.json();
-      this.user = new User(username, body.token);
-    })
-
-    return promise;
+    this.http.post(SecurityService.REGISTER_URL, credentials)
+      .toPromise()
+      .then(response => handler(null, true))
+      .catch(error => Utils.handleErrorMessage(error, (ex: string) => handler(ex, false)));
   }
 
   /**

@@ -36,6 +36,11 @@ import rlib.util.StringUtils;
 @RequestMapping("/user-management")
 public class UserManagementRestService extends BaseRestService {
 
+    public static final int MIN_USERNAME_LENGTH = 3;
+    public static final int MAX_USERNAME_LENGTH = 25;
+    public static final int MIN_PASSWORD_LENGTH = 6;
+    public static final int MAX_PASSWORD_LENGTH = 25;
+
     @NotNull
     private final UserService userService;
 
@@ -60,13 +65,21 @@ public class UserManagementRestService extends BaseRestService {
     )
     public ResponseEntity<?> register(@RequestBody @NotNull final CreateUserParams params) {
 
-        final String name = params.getName();
+        final String name = params.getUsername();
         final String password = params.getPassword();
 
         if (StringUtils.isEmpty(name)) {
             return badRequest().body("The name should be not null.");
+        } else if (name.length() < MIN_USERNAME_LENGTH) {
+            return badRequest().body("The name should be longer than " + MIN_USERNAME_LENGTH + " characters.");
+        } else if (name.length() > MAX_USERNAME_LENGTH) {
+            return badRequest().body("The name should be shorter than " + MAX_USERNAME_LENGTH + " characters.");
         } else if (StringUtils.isEmpty(password)) {
             return badRequest().body("The password should be not null.");
+        } else if (password.length() < MIN_PASSWORD_LENGTH) {
+            return badRequest().body("The name should be longer than " + MIN_USERNAME_LENGTH + " characters.");
+        } else if (password.length() > MAX_PASSWORD_LENGTH) {
+            return badRequest().body("The name should be shorter than " + MAX_USERNAME_LENGTH + " characters.");
         }
 
         final char[] chars = password.toCharArray();

@@ -2,7 +2,10 @@ import {Component, ViewChild} from "@angular/core";
 import {PageComponent} from "../../page.component";
 import {RegisterUserCredentials} from "../../../user/register-user-credentials";
 import {NgForm} from "@angular/forms";
-import {EqualValidatorDirective} from "../../../validator/equal-validator";
+import {EqualsValidatorDirective} from "../../../validator/equal-validator";
+import {SecurityService} from "../../../security.service";
+import {Router} from "@angular/router";
+import {LoginComponent} from "../login/login.component";
 
 @Component({
   moduleId: module.id,
@@ -22,84 +25,27 @@ export class RegisterComponent extends PageComponent {
    */
   error: string;
 
-  /**
-   * The register form.
-   */
-  form: NgForm;
-
-  /**
-   * The current register form.
-   */
-  @ViewChild('registerForm')
-  currentForm: NgForm;
-
-  constructor() {
+  constructor(private readonly security: SecurityService,
+              private readonly router: Router) {
     super();
     this.credentials = new RegisterUserCredentials('', '', '');
     this.error = '';
   }
 
   /**
-   * Try to auth using the current credentials.
+   * Try to register using the current credentials.
    */
   tryRegister() {
+    this.security.register(this.credentials, (message, result) => {
+      if (result) {
+        this.error = '';
+        this.credentials.username = '';
+        this.credentials.password = '';
+        this.router.navigateByUrl("/login");
 
-  }
-
-  ngAfterViewChecked() {
-    this.formChanged();
-  }
-
-  formChanged() {
-
-    if (this.currentForm === this.form) {
-      return;
-    }
-
-    this.form = this.currentForm;
-
-    if (this.form) {
-      this.form.valueChanges
-        .subscribe(data => this.onValueChanged(data));
-    }
-  }
-
-  onValueChanged(data?: any) {
-
-    if (!this.form) {
-      return;
-    }
-
-    const form = this.form.form;
-
-    for (const field in this.formErrors) {
-      // clear previous error message (if any)
-      this.formErrors[field] = '';
-      const control = form.get(field);
-
-      if (control && control.dirty && !control.valid) {
-        const messages = this.validationMessages[field];
-        for (const key in control.errors) {
-          this.formErrors[field] += messages[key] + ' ';
-        }
+      } else {
+        this.error = message;
       }
-    }
+    })
   }
-
-  formErrors = {
-    'name': '',
-    'power': ''
-  };
-
-  validationMessages = {
-    'name': {
-      'required': 'Name is required.',
-      'minlength': 'Name must be at least 4 characters long.',
-      'maxlength': 'Name cannot be more than 24 characters long.',
-      'forbiddenName': 'Someone named "Bob" cannot be a hero.'
-    },
-    'power': {
-      'required': 'Power is required.'
-    }
-  };
 }

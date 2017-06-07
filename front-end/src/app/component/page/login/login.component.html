@@ -10,12 +10,15 @@
 
     <form class="login-data-form mat-elevation-z2" (ngSubmit)="tryAuth()" #loginForm="ngForm">
       <md-input-container class="login-data-row">
-        <input mdInput placeholder="Username" id="username" required minlength="3" maxlength="25"
+        <input mdInput placeholder="Username" id="username" required minlength="{{minUsernameLength}}"
+               maxlength="{{maxUsernameLength}}"
                [(ngModel)]="credentials.username" name="name"
                #name="ngModel">
       </md-input-container>
       <md-input-container class="login-data-row">
-        <input mdInput placeholder="Password" type="password" id="password" required [(ngModel)]="credentials.password"
+        <input mdInput placeholder="Password" type="password" id="password" required minlength="{{minPasswordLength}}"
+               maxlength="{{maxPasswordLength}}"
+               [(ngModel)]="credentials.password"
                name="password"
                #password="ngModel">
       </md-input-container>

@@ -13,7 +13,7 @@ public class CreateUserParams {
      * The user name.
      */
     @Nullable
-    private String name;
+    private String username;
 
     /**
      * The user password.
@@ -25,15 +25,15 @@ public class CreateUserParams {
      * @return the user name.
      */
     @Nullable
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * @param name the user name.
+     * @param username the user name.
      */
-    public void setName(@Nullable final String name) {
-        this.name = name;
+    public void setUsername(@Nullable final String username) {
+        this.username = username;
     }
 
     /**
@@ -53,6 +53,6 @@ public class CreateUserParams {
 
     @Override
     public String toString() {
-        return "CreateUserParams{" + "name='" + name + '\'' + ", password='" + password + '\'' + '}';
+        return "CreateUserParams{" + "username='" + username + '\'' + ", password='" + password + '\'' + '}';
     }
 }
