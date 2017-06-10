@@ -1,13 +1,11 @@
 package com.ss.crm.db.entity.impl;
 
 import static java.time.ZonedDateTime.now;
+import com.ss.crm.db.convert.ZonedDateTimeConverter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 /**
@@ -36,6 +34,7 @@ public class AccessTokenEntity extends BaseEntity {
     /**
      * The expiry date.
      */
+    @Convert(converter = ZonedDateTimeConverter.class)
     @Column(name = "expiry", updatable = false, nullable = false)
     private ZonedDateTime expiry;
 
