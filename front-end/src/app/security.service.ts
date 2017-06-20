@@ -53,7 +53,7 @@ export class SecurityService {
    * @param credentials the user credentials.
    * @param handler to handle result of authentication.
    */
-  public auth(credentials: UserCredentials, handler?: (message: string, result: boolean) => void): void {
+  public auth(credentials: UserCredentials, handler: (message: string, result: boolean) => void): void {
     let username = credentials.username;
     this.http.post(SecurityService.AUTH_URL, credentials)
       .toPromise()
@@ -72,8 +72,7 @@ export class SecurityService {
    * @param credentials the user credentials.
    * @param handler to handle result of registration.
    */
-  public register(credentials: RegisterUserCredentials, handler?: (message: string, result: boolean) => void): void {
-    let username = credentials.username;
+  public register(credentials: RegisterUserCredentials, handler: (message: string, result: boolean) => void): void {
     this.http.post(SecurityService.REGISTER_URL, credentials)
       .toPromise()
       .then(response => handler(null, true))

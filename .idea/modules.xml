@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/crm.iml" filepath="$PROJECT_DIR$/crm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/front-end/front-end.iml" filepath="$PROJECT_DIR$/front-end/front-end.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/crm.iml" filepath="$PROJECT_DIR$/.idea/crm.iml" />
     </modules>
   </component>
 </project>

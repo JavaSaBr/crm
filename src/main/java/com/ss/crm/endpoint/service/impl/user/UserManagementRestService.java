@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import rlib.util.StringUtils;
+import com.ss.rlib.util.StringUtils;
 
 /**
  * The REST controller to work with users.
