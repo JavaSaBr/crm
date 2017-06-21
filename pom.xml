@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2.RELEASE</version>
+        <version>1.5.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -55,6 +55,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.4-1206-jdbc42</version>
@@ -67,12 +75,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>13.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>1.5.2.RELEASE</version>
+            <version>15.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
@@ -87,7 +90,7 @@
         <dependency>
             <groupId>com.github.JavaSaBr</groupId>
             <artifactId>RLib</artifactId>
-            <version>6.0.0</version>
+            <version>6.1.0</version>
         </dependency>
     </dependencies>
 
