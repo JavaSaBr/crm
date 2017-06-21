@@ -5,6 +5,7 @@ import static java.lang.ThreadLocal.withInitial;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Objects.requireNonNull;
 import com.ss.crm.service.MailService;
+import com.ss.rlib.util.Utils;
 import com.ss.rlib.util.dictionary.ConcurrentObjectDictionary;
 import com.ss.rlib.util.dictionary.DictionaryFactory;
 import com.ss.rlib.util.dictionary.DictionaryUtils;
@@ -14,11 +15,12 @@ import com.ss.rlib.util.ref.ReferenceFactory;
 import com.ss.rlib.util.ref.ReferenceType;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,10 +37,11 @@ public class MailServiceImpl extends AbstractCrmService implements MailService {
      * The thread local context.
      */
     @NotNull
-    private static final ThreadLocal<ObjectDictionary<String, Object>> TL_CONTEXT = withInitial(DictionaryFactory::newObjectDictionary);
+    private static final ThreadLocal<ObjectDictionary<String, Object>> TL_CONTEXT =
+            withInitial(DictionaryFactory::newObjectDictionary);
 
     /**
-     * THe table of all templates.
+     * The table of all templates.
      */
     @NotNull
     private final ConcurrentObjectDictionary<String, String> templates;
@@ -53,10 +56,10 @@ public class MailServiceImpl extends AbstractCrmService implements MailService {
      * The mail sender.
      */
     @NotNull
-    private final MailSender mailSender;
+    private final JavaMailSender mailSender;
 
     @Autowired
-    public MailServiceImpl(@NotNull final MailSender mailSender) {
+    public MailServiceImpl(@NotNull final JavaMailSender mailSender) {
         this.mailSender = mailSender;
         this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
         this.templates = DictionaryFactory.newConcurrentAtomicObjectDictionary();
@@ -68,6 +71,7 @@ public class MailServiceImpl extends AbstractCrmService implements MailService {
         return TL_CONTEXT.get();
     }
 
+    @NotNull
     @Override
     public String template(@NotNull final String id) {
 
@@ -77,17 +81,17 @@ public class MailServiceImpl extends AbstractCrmService implements MailService {
         final long stamp = templates.writeLock();
         try {
 
-            return templates.get(id, (key) -> {
+            return requireNonNull(templates.get(id, (key) -> {
 
-                final ClassLoader classLoader = MailServiceImpl.class.getClassLoader();
-                final URL resource = classLoader.getResource("/templates/ru/mail/" + key);
+                final URI resource = Utils.get(() -> new ClassPathResource(
+                        "/templates/ru/mail/" + key + ".template").getURI());
 
-                if(resource == null) {
+                if (resource == null) {
                     throw new RuntimeException("not found a template for the ID " + key);
                 }
 
-                return get(resource, url -> new String(readAllBytes(Paths.get(url.toURI()))));
-            });
+                return get(resource, url -> new String(readAllBytes(Paths.get(resource))));
+            }));
 
         } finally {
             templates.writeUnlock(stamp);
@@ -128,8 +132,8 @@ public class MailServiceImpl extends AbstractCrmService implements MailService {
             return;
         }
 
-        final String text = (String) requireNonNull(ref.getObject());
-        if (!text.contains(name)) return;
+        final String text = (String) ref.getObject();
+        if (text == null || !text.contains(name)) return;
 
         ref.setObject(text.replace(name, String.valueOf(value)));
     }

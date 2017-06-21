@@ -21,11 +21,30 @@ public interface MailService {
 
     String SUBJECT = "Subject";
 
+    /**
+     * Get a thread local context to put some settings of a letter.
+     *
+     * @return the thread local context.
+     */
     @NotNull
     ObjectDictionary<String, Object> threadLocalContext();
 
+    /**
+     * Send a letter to email.
+     *
+     * @param email the target email.
+     * @param template the template.
+     * @param context the context.
+     */
     void sendMail(@NotNull String email, @NotNull String template,
                   @NotNull ObjectDictionary<String, Object> context);
 
+    /**
+     * Get a template by ID.
+     *
+     * @param id the template id.
+     * @return the template or null.
+     */
+    @NotNull
     String template(@NotNull String id);
 }
