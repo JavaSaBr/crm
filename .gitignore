@@ -1,3 +1,4 @@
 /target/
 /.idea/
-Будет удалено .gitignore
+/.gradle/
+/build/
