@@ -20,6 +20,14 @@ export abstract class PageComponent extends BaseComponent {
     return AppComponent.MAX_USERNAME_LENGTH;
   }
 
+  get minFirstNameLength() {
+    return AppComponent.MIN_FIRST_NAME_LENGTH;
+  }
+
+  get maxFirstNameLength() {
+    return AppComponent.MAX_FIRST_NAME_LENGTH;
+  }
+
   get minPasswordLength() {
     return AppComponent.MIN_PASSWORD_LENGTH;
   }

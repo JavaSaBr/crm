@@ -1,5 +1,5 @@
-import {Component} from "@angular/core";
-import {SecurityService} from "./security.service";
+import {Component} from '@angular/core';
+import {SecurityService} from './security.service';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +8,12 @@ import {SecurityService} from "./security.service";
 })
 export class AppComponent {
 
-  static readonly MIN_USERNAME_LENGTH: number = 3;
-  static readonly MAX_USERNAME_LENGTH: number = 25;
-  static readonly MIN_PASSWORD_LENGTH: number = 6;
-  static readonly MAX_PASSWORD_LENGTH: number = 25;
+  static readonly MIN_USERNAME_LENGTH = 3;
+  static readonly MAX_USERNAME_LENGTH = 25;
+  static readonly MIN_FIRST_NAME_LENGTH = 1;
+  static readonly MAX_FIRST_NAME_LENGTH = 25;
+  static readonly MIN_PASSWORD_LENGTH = 6;
+  static readonly MAX_PASSWORD_LENGTH = 25;
 
   /**
    * The flag that the user is authed.
@@ -21,7 +23,7 @@ export class AppComponent {
   constructor(private readonly security: SecurityService) {
     this._authed = false;
     this.security.authProperty
-      .subscribe(result => this._authed = result)
+      .subscribe(result => this._authed = result);
   }
 
   logout() {

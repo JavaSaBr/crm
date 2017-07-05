@@ -1,5 +1,5 @@
 /**
- * The user credentials.
+ * The user info.
  *
  * @author JavaSaBr
  */

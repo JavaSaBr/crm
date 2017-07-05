@@ -10,26 +10,23 @@
 
     <form class="register-data-form mat-elevation-z2" (ngSubmit)="tryRegister()" #registerForm="ngForm">
       <md-input-container class="register-data-row">
-        <input mdInput placeholder="Email" id="email" required minlength="{{minUsernameLength}}"
-               maxlength="{{maxUsernameLength}}"
-               [(ngModel)]="credentials.username" name="name"
+        <input mdInput placeholder="Email" id="email" required type="email"
+               [(ngModel)]="info.email" name="email"
+               #email="ngModel">
+      </md-input-container>
+      <md-input-container class="register-data-row">
+        <input mdInput placeholder="Name" id="name"
+               required minlength="{{minFirstNameLength}}"
+               maxlength="{{maxFirstNameLength}}"
+               [(ngModel)]="info.name"
+               name="name"
                #name="ngModel">
       </md-input-container>
       <md-input-container class="register-data-row">
-        <input mdInput placeholder="Password" type="password" id="password"
-               required minlength="{{minPasswordLength}}"
-               maxlength="{{maxPasswordLength}}" equals="confirm-password"
-               [(ngModel)]="credentials.password"
-               name="password"
-               #password="ngModel">
-      </md-input-container>
-      <md-input-container class="register-data-row">
-        <input mdInput placeholder="Confirm password" type="password" id="confirm-password"
-               required minlength="{{minPasswordLength}}"
-               maxlength="{{maxPasswordLength}}" equalsBiDirection="password"
-               [(ngModel)]="credentials.confirmPassword"
-               name="confirm-password"
-               #confirmPassword="ngModel">
+        <input mdInput placeholder="Phone number" id="phone-number"
+               [(ngModel)]="info.phoneNumber"
+               name="phone-number"
+               #prohneNumber="ngModel">
       </md-input-container>
       <button class="register-data-row register-button" type="submit" md-raised-button color="primary"
               [disabled]="!registerForm.form.valid">Register

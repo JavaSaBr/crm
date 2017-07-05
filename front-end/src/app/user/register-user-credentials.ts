@@ -1,6 +1,6 @@
-import {UserCredentials} from "./user-credentials";
+import {UserCredentials} from './user-credentials';
 /**
- * The user credentials to register a new user.
+ * The user info to register a new user.
  *
  * @author JavaSaBr
  */
