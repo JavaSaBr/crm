@@ -1,6 +1,6 @@
 package com.ss.crm.security;
 
-import com.ss.crm.db.entity.impl.UserEntity;
+import com.ss.crm.db.entity.impl.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -21,16 +21,14 @@ public class CrmUser extends User {
     private final UserEntity user;
 
     public CrmUser(@NotNull final String username, @NotNull final String password,
-                   @NotNull final Collection<? extends GrantedAuthority> authorities,
-                   @NotNull final UserEntity user) {
+                   @NotNull final Collection<? extends GrantedAuthority> authorities, @NotNull final UserEntity user) {
         super(username, password, authorities);
         this.user = user;
     }
 
     public CrmUser(@NotNull final String username, @NotNull final String password, final boolean enabled,
                    final boolean accountNonExpired, final boolean credentialsNonExpired, final boolean accountNonLocked,
-                   @NotNull final Collection<? extends GrantedAuthority> authorities,
-                   @NotNull final UserEntity user) {
+                   @NotNull final Collection<? extends GrantedAuthority> authorities, @NotNull final UserEntity user) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.user = user;
     }

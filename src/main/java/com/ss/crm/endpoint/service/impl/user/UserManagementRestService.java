@@ -5,12 +5,11 @@ import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.ok;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.ss.crm.db.entity.impl.AccessTokenEntity;
+import com.ss.crm.db.entity.impl.token.AccessTokenEntity;
 import com.ss.crm.endpoint.service.BaseRestService;
 import com.ss.crm.security.CrmUser;
 import com.ss.crm.service.AccessTokenService;
 import com.ss.crm.service.UserService;
-import com.ss.crm.util.PasswordUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import com.ss.rlib.util.StringUtils;
 
 /**
  * The REST controller to work with users.
@@ -33,16 +31,17 @@ import com.ss.rlib.util.StringUtils;
  * @author JavaSaBr
  */
 @Service
-@RequestMapping("/user-management")
 public class UserManagementRestService extends BaseRestService {
 
+    public static final int MIN_FIRST_NAME_LENGTH = 1;
+    public static final int MAX_FIRST_NAME_LENGTH = 25;
     public static final int MIN_USERNAME_LENGTH = 3;
     public static final int MAX_USERNAME_LENGTH = 25;
     public static final int MIN_PASSWORD_LENGTH = 6;
     public static final int MAX_PASSWORD_LENGTH = 25;
 
     @NotNull
-    private final UserService userService;
+    protected final UserService userService;
 
     @NotNull
     private final AuthenticationManager authenticationManager;
@@ -57,44 +56,6 @@ public class UserManagementRestService extends BaseRestService {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.accessTokenService = accessTokenService;
-    }
-
-    @RequestMapping(value = "/register",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
-    )
-    public ResponseEntity<?> register(@RequestBody @NotNull final CreateUserParams params) {
-
-        final String name = params.getUsername();
-        final String password = params.getPassword();
-
-        if (StringUtils.isEmpty(name)) {
-            return badRequest().body("The name should be not null.");
-        } else if (name.length() < MIN_USERNAME_LENGTH) {
-            return badRequest().body("The name should be longer than " + MIN_USERNAME_LENGTH + " characters.");
-        } else if (name.length() > MAX_USERNAME_LENGTH) {
-            return badRequest().body("The name should be shorter than " + MAX_USERNAME_LENGTH + " characters.");
-        } else if (StringUtils.isEmpty(password)) {
-            return badRequest().body("The password should be not null.");
-        } else if (password.length() < MIN_PASSWORD_LENGTH) {
-            return badRequest().body("The name should be longer than " + MIN_USERNAME_LENGTH + " characters.");
-        } else if (password.length() > MAX_PASSWORD_LENGTH) {
-            return badRequest().body("The name should be shorter than " + MAX_USERNAME_LENGTH + " characters.");
-        }
-
-        final char[] chars = password.toCharArray();
-
-        final byte[] salt = PasswordUtil.getNextSalt();
-        final byte[] hash = PasswordUtil.hash(chars, salt);
-
-        try {
-            userService.create(name, hash, salt);
-        } catch (final RuntimeException e) {
-            LOGGER.warn(e.getMessage(), e);
-            return badRequest().body(e);
-        }
-
-        return ok().build();
     }
 
     @RequestMapping(
@@ -120,7 +81,7 @@ public class UserManagementRestService extends BaseRestService {
         final Object principal = authentication.getPrincipal();
 
         if (!(principal instanceof CrmUser)) {
-            return badRequest().build();
+            return badRequest().body("Can't create a crm user.");
         }
 
         final CrmUser crmUser = (CrmUser) principal;

@@ -1,31 +1,32 @@
 package com.ss.crm.db.repository;
 
-import com.ss.crm.db.entity.impl.token.AccessTokenEntity;
+import com.ss.crm.db.entity.impl.token.BlankTokenEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
- * The access token repository.
+ * The blank token repository.
  *
  * @author JavaSaBr
  */
-public interface AccessTokenRepository extends PagingAndSortingRepository<AccessTokenEntity, Long> {
+public interface BlankTokenRepository extends PagingAndSortingRepository<BlankTokenEntity, Long> {
 
     /**
-     * Find an last access token by an user id.
+     * Find a blank token by a user id.
      *
      * @param userId the user id.
-     * @return the access token entity or null.
+     * @return the blank token entity or null.
      */
     @Nullable
-    AccessTokenEntity findOneByUserIdOrderByExpiryDesc(long userId);
+    BlankTokenEntity findOneByUserId(long userId);
 
     /**
-     * Find an access token by token value.
+     * Find a blank token by token value.
      *
      * @param token the token value.
-     * @return the access token or null.
+     * @return the blank token entity or null.
      */
     @Nullable
-    AccessTokenEntity findOneByToken(String token);
+    BlankTokenEntity findOneByToken(@NotNull String token);
 }

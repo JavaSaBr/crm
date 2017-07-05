@@ -1,133 +1,140 @@
 package com.ss.crm.endpoint.service.impl.user;
 
-
 import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.ok;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.ss.crm.db.entity.impl.AccessTokenEntity;
-import com.ss.crm.endpoint.service.BaseRestService;
-import com.ss.crm.security.CrmUser;
-import com.ss.crm.service.AccessTokenService;
-import com.ss.crm.service.UserService;
+import com.ss.CrmApplication;
+import com.ss.crm.Routes;
+import com.ss.crm.db.entity.impl.token.CustomerRegisterBlankTokenEntity;
+import com.ss.crm.db.entity.impl.user.CustomerEntity;
+import com.ss.crm.service.*;
 import com.ss.crm.util.PasswordUtil;
+import com.ss.rlib.util.StringUtils;
+import com.ss.rlib.util.array.Array;
+import com.ss.rlib.util.array.ArrayFactory;
+import com.ss.rlib.util.dictionary.ObjectDictionary;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.core.source32.ISAACRandom;
+import org.apache.commons.text.RandomStringGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import com.ss.rlib.util.StringUtils;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * The REST controller to work with users.
+ * The REST controller to work with customers.
  *
  * @author JavaSaBr
  */
 @Service
-@RequestMapping("/user-management")
-public class UserManagementRestService extends BaseRestService {
-
-    public static final int MIN_USERNAME_LENGTH = 3;
-    public static final int MAX_USERNAME_LENGTH = 25;
-    public static final int MIN_PASSWORD_LENGTH = 6;
-    public static final int MAX_PASSWORD_LENGTH = 25;
+@RequestMapping("/customer-management")
+public class CustomerManagementRestService extends UserManagementRestService {
 
     @NotNull
-    private final UserService userService;
+    private static final ThreadLocal<RandomStringGenerator> PASSWORD_GENERATOR = ThreadLocal.withInitial(() -> {
+
+        final ThreadLocalRandom random = ThreadLocalRandom.current();
+        final int[] seed = new int[random.nextInt(10, 50)];
+
+        for (int i = 0; i < seed.length; i++) {
+            seed[i] = random.nextBoolean() ? (int) System.currentTimeMillis() :
+                    random.nextBoolean() ? (int) System.nanoTime() : random.nextInt();
+        }
+
+        final UniformRandomProvider provider = new ISAACRandom(seed);
+        return new RandomStringGenerator.Builder()
+                .withinRange('a', 'z')
+                .usingRandom(provider::nextInt)
+                .build();
+    });
 
     @NotNull
-    private final AuthenticationManager authenticationManager;
+    private static final Array<String> CUSTOMER_ROLES = ArrayFactory.asArray(RoleService.ROLE_CUSTOMER);
 
     @NotNull
-    private final AccessTokenService accessTokenService;
+    private final MailService mailService;
+
+    @NotNull
+    private final CrmApplication application;
+
+    @NotNull
+    private final BlankTokenService blankTokenService;
 
     @Autowired
-    public UserManagementRestService(@NotNull final UserService userService,
-                                     @NotNull final AuthenticationManager authenticationManager,
-                                     @NotNull final AccessTokenService accessTokenService) {
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.accessTokenService = accessTokenService;
+    public CustomerManagementRestService(@NotNull final UserService userService,
+                                         @NotNull final AuthenticationManager authenticationManager,
+                                         @NotNull final AccessTokenService accessTokenService,
+                                         @NotNull final MailService mailService,
+                                         @NotNull final CrmApplication application,
+                                         @NotNull final BlankTokenService blankTokenService) {
+        super(userService, authenticationManager, accessTokenService);
+        this.mailService = mailService;
+        this.application = application;
+        this.blankTokenService = blankTokenService;
     }
 
     @RequestMapping(value = "/register",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    public ResponseEntity<?> register(@RequestBody @NotNull final CreateUserParams params) {
+    public ResponseEntity<?> register(@RequestBody @NotNull final RegisterCustomerInfo info) {
 
-        final String name = params.getUsername();
-        final String password = params.getPassword();
+        final String name = info.getName();
+        final String email = info.getEmail();
+        final String phoneNumber = info.getPhoneNumber();
 
         if (StringUtils.isEmpty(name)) {
-            return badRequest().body("The name should be not null.");
-        } else if (name.length() < MIN_USERNAME_LENGTH) {
-            return badRequest().body("The name should be longer than " + MIN_USERNAME_LENGTH + " characters.");
-        } else if (name.length() > MAX_USERNAME_LENGTH) {
-            return badRequest().body("The name should be shorter than " + MAX_USERNAME_LENGTH + " characters.");
-        } else if (StringUtils.isEmpty(password)) {
-            return badRequest().body("The password should be not null.");
-        } else if (password.length() < MIN_PASSWORD_LENGTH) {
-            return badRequest().body("The name should be longer than " + MIN_USERNAME_LENGTH + " characters.");
-        } else if (password.length() > MAX_PASSWORD_LENGTH) {
-            return badRequest().body("The name should be shorter than " + MAX_USERNAME_LENGTH + " characters.");
+            return badRequest().body("The first name should be not null.");
+        } else if (name.length() < MIN_FIRST_NAME_LENGTH) {
+            return badRequest().body("The first name should be longer than " + MIN_USERNAME_LENGTH + " characters.");
+        } else if (name.length() > MAX_FIRST_NAME_LENGTH) {
+            return badRequest().body("The first name should be shorter than " + MAX_USERNAME_LENGTH + " characters.");
+        } else if (StringUtils.isEmpty(email)) {
+            return badRequest().body("The email should be not null.");
+        } else if (!StringUtils.checkEmail(email)) {
+            return badRequest().body("The email isn't correct.");
+        } else if (StringUtils.isEmpty(phoneNumber)) {
+            return badRequest().body("The phone number should be not null.");
         }
 
-        final char[] chars = password.toCharArray();
+        final RandomStringGenerator generator = PASSWORD_GENERATOR.get();
+        final String password = generator.generate(10);
 
+        final char[] chars = password.toCharArray();
         final byte[] salt = PasswordUtil.getNextSalt();
         final byte[] hash = PasswordUtil.hash(chars, salt);
 
+        final CustomerEntity customer;
         try {
-            userService.create(name, hash, salt);
+            customer = userService.create(CustomerEntity.class, name, CUSTOMER_ROLES, hash, salt);
         } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             return badRequest().body(e);
         }
 
+        final CustomerRegisterBlankTokenEntity newToken =
+                blankTokenService.createNewToken(CustomerRegisterBlankTokenEntity.class, customer);
+
+        final String template = mailService.template("customer-register");
+        final String link = application.getHost() + "/" + Routes.BLANK_CUSTOMER_REGISTRY + "/" + newToken.getToken();
+
+        final ObjectDictionary<String, Object> objects = mailService.threadLocalContext();
+        objects.put("${first-name}", name);
+        objects.put("${app-name}", application.getName());
+        objects.put("${login}", email);
+        objects.put("${password}", password);
+        objects.put("${link}", link);
+        objects.put("${support-email}", application.getSupportEmail());
+        objects.put("${support-phone-number}", application.getSupportPhoneNumber());
+
+        mailService.sendMail(email, template, objects);
+
         return ok().build();
-    }
-
-    @RequestMapping(
-            value = "/authenticate",
-            method = RequestMethod.POST,
-            produces = MediaType.TEXT_PLAIN_VALUE,
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> authenticate(@RequestBody @NotNull final UserCredentialsParams params) {
-
-        final Authentication authenticationToken = new UsernamePasswordAuthenticationToken(params.getUsername(),
-                params.getPassword());
-
-        final Authentication authentication;
-        try {
-            authentication = authenticationManager.authenticate(authenticationToken);
-        } catch (final BadCredentialsException e) {
-            return badRequest().body(e.getLocalizedMessage());
-        }
-
-        final SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
-
-        final Object principal = authentication.getPrincipal();
-
-        if (!(principal instanceof CrmUser)) {
-            return badRequest().build();
-        }
-
-        final CrmUser crmUser = (CrmUser) principal;
-        final AccessTokenEntity newToken = accessTokenService.createNewToken(crmUser.getUser());
-        final ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
-        objectNode.put("token", newToken.getToken());
-
-        return ok(objectNode.toString());
     }
 }

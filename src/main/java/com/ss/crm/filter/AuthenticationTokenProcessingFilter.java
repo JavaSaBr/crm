@@ -1,7 +1,7 @@
 package com.ss.crm.filter;
 
 import com.ss.crm.db.entity.impl.RoleEntity;
-import com.ss.crm.db.entity.impl.UserEntity;
+import com.ss.crm.db.entity.impl.user.UserEntity;
 import com.ss.crm.service.AccessTokenService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -1,5 +1,7 @@
-package com.ss.crm.db.entity.impl;
+package com.ss.crm.db.entity.impl.user;
 
+import com.ss.crm.db.entity.impl.BaseEntity;
+import com.ss.crm.db.entity.impl.RoleEntity;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -12,6 +14,7 @@ import java.util.List;
 @Table(name = "USER_ENTITY", indexes = {
         @Index(columnList = "name", name = "user_name_index")
 })
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class UserEntity extends BaseEntity {
 
     /**

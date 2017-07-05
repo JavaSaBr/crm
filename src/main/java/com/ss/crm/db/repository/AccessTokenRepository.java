@@ -1,6 +1,7 @@
 package com.ss.crm.db.repository;
 
-import com.ss.crm.db.entity.impl.AccessTokenEntity;
+import com.ss.crm.db.entity.impl.token.AccessTokenEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -12,7 +13,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface AccessTokenRepository extends PagingAndSortingRepository<AccessTokenEntity, Long> {
 
     /**
-     * Find an last access token by an user id.
+     * Find a last access token by a user id.
      *
      * @param userId the user id.
      * @return the access token entity or null.
@@ -27,5 +28,5 @@ public interface AccessTokenRepository extends PagingAndSortingRepository<Access
      * @return the access token or null.
      */
     @Nullable
-    AccessTokenEntity findOneByToken(String token);
+    AccessTokenEntity findOneByToken(@NotNull String token);
 }

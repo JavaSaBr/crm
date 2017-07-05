@@ -1,7 +1,10 @@
 package com.ss.crm;
 
 /**
- * Created by javasabr on 05.07.17.
+ * @author JavaSaBr
  */
 public interface Routes {
+
+    String BLANK = "blank";
+    String BLANK_CUSTOMER_REGISTRY = BLANK + "/customer-registry";
 }

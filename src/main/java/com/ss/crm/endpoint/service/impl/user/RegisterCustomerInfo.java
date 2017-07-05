@@ -3,56 +3,90 @@ package com.ss.crm.endpoint.service.impl.user;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The request params of creating an user.
+ * The request params of creating a customer.
  *
  * @author JavaSaBr
  */
-public class CreateUserParams {
+public class RegisterCustomerInfo {
 
     /**
-     * The user name.
+     * The customer's email.
      */
     @Nullable
-    private String username;
+    private String email;
 
     /**
-     * The user password.
+     * The customer's name
      */
     @Nullable
-    private String password;
+    private String name;
 
     /**
-     * @return the user name.
+     * The customer's phone number.
      */
     @Nullable
-    public String getUsername() {
-        return username;
+    private String phoneNumber;
+
+    /**
+     * Gets email.
+     *
+     * @return the email
+     */
+    @Nullable
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * @param username the user name.
+     * Sets email.
+     *
+     * @param email the email
      */
-    public void setUsername(@Nullable final String username) {
-        this.username = username;
+    public void setEmail(@Nullable final String email) {
+        this.email = email;
     }
 
     /**
-     * @return the user password.
+     * Gets name.
+     *
+     * @return the name
      */
     @Nullable
-    public String getPassword() {
-        return password;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param password the user password.
+     * Sets name.
+     *
+     * @param name the name
      */
-    public void setPassword(@Nullable final String password) {
-        this.password = password;
+    public void setName(@Nullable final String name) {
+        this.name = name;
+    }
+
+    /**
+     * Gets phone number.
+     *
+     * @return the phone number
+     */
+    @Nullable
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    /**
+     * Sets phone number.
+     *
+     * @param phoneNumber the phone number
+     */
+    public void setPhoneNumber(@Nullable final String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
     public String toString() {
-        return "CreateUserParams{" + "username='" + username + '\'' + ", password='" + password + '\'' + '}';
+        return "RegisterCustomerInfo{" + "email='" + email + '\'' + ", name='" + name + '\'' + ", phoneNumber='" +
+                phoneNumber + '\'' + '}';
     }
 }

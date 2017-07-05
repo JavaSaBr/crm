@@ -1,7 +1,10 @@
 package com.ss.crm.db.entity.impl.token;
 
+import javax.persistence.Entity;
+
 /**
- * Created by javasabr on 05.07.17.
+ * @author JavaSABr
  */
-public class CustomerRegisterBlankTokenEntity {
+@Entity
+public class CustomerRegisterBlankTokenEntity extends BlankTokenEntity {
 }

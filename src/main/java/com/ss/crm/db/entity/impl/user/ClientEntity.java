@@ -1,7 +1,10 @@
 package com.ss.crm.db.entity.impl.user;
 
+import javax.persistence.Entity;
+
 /**
- * Created by javasabr on 30.06.17.
+ * @author JavaSaBr
  */
-public class ClientEntity {
+@Entity
+public class ClientEntity extends UserEntity {
 }

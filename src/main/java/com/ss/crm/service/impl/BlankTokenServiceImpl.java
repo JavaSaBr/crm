@@ -1,12 +1,13 @@
 package com.ss.crm.service.impl;
 
+import static com.ss.rlib.util.ObjectUtils.notNull;
 import static java.time.ZonedDateTime.now;
-import static java.util.Objects.requireNonNull;
-import com.ss.crm.db.entity.impl.token.AccessTokenEntity;
+import com.ss.crm.db.entity.impl.token.BlankTokenEntity;
 import com.ss.crm.db.entity.impl.user.UserEntity;
-import com.ss.crm.db.repository.AccessTokenRepository;
+import com.ss.crm.db.repository.BlankTokenRepository;
 import com.ss.crm.db.repository.UserRepository;
-import com.ss.crm.service.AccessTokenService;
+import com.ss.crm.service.BlankTokenService;
+import com.ss.rlib.util.ClassUtils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
@@ -19,74 +20,58 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Key;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Optional;
+import java.util.function.BiConsumer;
 
 /**
- * The implementation of the {@link AccessTokenService}.
+ * The implementation of the {@link BlankTokenService}.
  *
  * @author JavaSaBr
  */
 @Transactional
-@Component("accessTokenService")
-public class AccessTokenServiceImpl extends AbstractCrmService implements AccessTokenService {
+@Component("blankTokenService")
+public class BlankTokenServiceImpl extends AbstractCrmService implements BlankTokenService {
 
-    private static final int ACCESS_TOKEN_HOURS = 4;
+    private static final int TOKEN_HOURS = 24 * 3;
 
     @NotNull
-    private final AccessTokenRepository accessTokenRepository;
+    private final BlankTokenRepository blankTokenRepository;
 
     @NotNull
     private final UserRepository userRepository;
 
     @Autowired
-    public AccessTokenServiceImpl(@NotNull final AccessTokenRepository accessTokenRepository,
-                                  @NotNull final UserRepository userRepository) {
-        this.accessTokenRepository = accessTokenRepository;
+    public BlankTokenServiceImpl(@NotNull final BlankTokenRepository blankTokenRepository,
+                                 @NotNull final UserRepository userRepository) {
+        this.blankTokenRepository = blankTokenRepository;
         this.userRepository = userRepository;
-    }
-
-    @Nullable
-    @Override
-    public AccessTokenEntity getLastToken(@NotNull final UserEntity user) {
-        return accessTokenRepository.findOneByUserIdOrderByExpiryDesc(requireNonNull(user.getId()));
     }
 
     @NotNull
     @Override
-    public AccessTokenEntity createNewToken(@NotNull final UserEntity user) {
+    public <T extends BlankTokenEntity, U extends UserEntity> T createNewToken(@NotNull final Class<T> type,
+                                                                               @NotNull final U user,
+                                                                               @Nullable final BiConsumer<T, U> handler) {
 
         final Key key = MacProvider.generateKey();
-        final ZonedDateTime expiry = now().plusHours(ACCESS_TOKEN_HOURS);
+        final ZonedDateTime expiry = now().plusHours(TOKEN_HOURS);
 
         final String compactJws = Jwts.builder()
-                .setSubject(user.getName())
+                .setSubject(type.getName() + "_" + user.getName())
                 .setNotBefore(Date.from(expiry.toInstant()))
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
 
-        final AccessTokenEntity tokenEntity = new AccessTokenEntity();
-        tokenEntity.setUserId(requireNonNull(user.getId()));
+        final T tokenEntity = ClassUtils.newInstance(type);
+        tokenEntity.setUserId(notNull(user.getId()));
         tokenEntity.setExpiry(expiry);
         tokenEntity.setToken(compactJws);
 
-        return accessTokenRepository.save(tokenEntity);
-    }
-
-    @Nullable
-    @Override
-    @Transactional
-    public UserEntity findUserByToken(@NotNull final String token) {
-
-        final AccessTokenEntity accessTokenEntity = accessTokenRepository.findOneByToken(token);
-
-        if (accessTokenEntity == null) {
-            return null;
-        } else if (accessTokenEntity.isExpired()) {
-            accessTokenRepository.delete(accessTokenEntity);
-            return null;
+        if(handler != null) {
+            handler.accept(tokenEntity, user);
         }
 
-        final Optional<UserEntity> entity = userRepository.findById(accessTokenEntity.getUserId());
-        return entity.orElse(null);
+        blankTokenRepository.save(tokenEntity);
+
+        return tokenEntity;
     }
 }

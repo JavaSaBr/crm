@@ -2,8 +2,8 @@ package com.ss.crm.service.impl;
 
 import static java.time.ZonedDateTime.now;
 import static java.util.Objects.requireNonNull;
-import com.ss.crm.db.entity.impl.AccessTokenEntity;
-import com.ss.crm.db.entity.impl.UserEntity;
+import com.ss.crm.db.entity.impl.token.AccessTokenEntity;
+import com.ss.crm.db.entity.impl.user.UserEntity;
 import com.ss.crm.db.repository.AccessTokenRepository;
 import com.ss.crm.db.repository.UserRepository;
 import com.ss.crm.service.AccessTokenService;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Key;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * The implementation of the {@link AccessTokenService}.
@@ -85,6 +86,7 @@ public class AccessTokenServiceImpl extends AbstractCrmService implements Access
             return null;
         }
 
-        return userRepository.findOne(accessTokenEntity.getUserId());
+        final Optional<UserEntity> entity = userRepository.findById(accessTokenEntity.getUserId());
+        return entity.orElse(null);
     }
 }

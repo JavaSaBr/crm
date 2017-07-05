@@ -22,11 +22,54 @@ public class CrmApplication {
     private String name;
 
     /**
+     * The host of this application.
+     */
+    @Value("${application.host}")
+    private String host;
+
+    /**
+     * The support's email.
+     */
+    @Value("${application.support.email}")
+    private String supportEmail;
+
+    /**
+     * The support's phone number.
+     */
+    @Value("${application.support.phoneNumber}")
+    private String supportPhoneNumber;
+
+
+    /**
      * @return the name of this application.
      */
     @NotNull
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return the host of this application.
+     */
+    @NotNull
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * @return the support's email.
+     */
+    @NotNull
+    public String getSupportEmail() {
+        return supportEmail;
+    }
+
+    /**
+     * @return the support's phone number.
+     */
+    @NotNull
+    public String getSupportPhoneNumber() {
+        return supportPhoneNumber;
     }
 
     @RequestMapping(value = "/dashboard")

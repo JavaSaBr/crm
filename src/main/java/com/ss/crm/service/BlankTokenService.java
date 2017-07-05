@@ -1,43 +1,41 @@
 package com.ss.crm.service;
 
-import com.ss.crm.db.entity.impl.token.AccessTokenEntity;
+import com.ss.crm.db.entity.impl.token.BlankTokenEntity;
 import com.ss.crm.db.entity.impl.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.function.BiConsumer;
 
 /**
- * The service to work with access token entities.
+ * The service to work with blank token entities.
  *
  * @author JavaSaBr
  */
-public interface AccessTokenService extends CrmService {
+public interface BlankTokenService extends CrmService {
 
     /**
-     * Get a last access token for the user.
+     * Create a new blank token for the user.
      *
+     * @param type the type of a token.
      * @param user the user.
-     * @return the last access token or null.
-     */
-    @Nullable
-    AccessTokenEntity getLastToken(@NotNull UserEntity user);
-
-    /**
-     * Create a new access token for the user.
-     *
-     * @param user the user.
-     * @return the new access token.
+     * @return the new blank token.
      */
     @NotNull
-    AccessTokenEntity createNewToken(@NotNull UserEntity user);
+    default <T extends BlankTokenEntity, U extends UserEntity> T createNewToken(@NotNull Class<T> type,
+                                                                                @NotNull U user) {
+        return createNewToken(type, user, null);
+    }
 
     /**
-     * Find an user entity by token value.
+     * Create a new blank token for the user.
      *
-     * @param token the token value.
-     * @return the user entity or null.
+     * @param type the type of a token.
+     * @param user the user.
+     * @param handler the handler.
+     * @return the new blank token.
      */
-    @Nullable
-    @Transactional
-    UserEntity findUserByToken(@NotNull String token);
+    @NotNull
+    <T extends BlankTokenEntity, U extends UserEntity> T createNewToken(@NotNull Class<T> type, @NotNull U user,
+                                                                        @Nullable BiConsumer<T, U> handler);
 }

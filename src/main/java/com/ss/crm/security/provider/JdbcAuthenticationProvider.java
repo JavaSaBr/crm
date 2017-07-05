@@ -40,7 +40,7 @@ public class JdbcAuthenticationProvider implements AuthenticationProvider {
         final byte[] passwordSalt = crmUser.getPasswordSalt();
 
         if (!PasswordUtil.isExpectedPassword(credentials.toCharArray(), passwordSalt, passwordBytes)) {
-            throw new BadCredentialsException("Invalid credentials");
+            throw new BadCredentialsException("Invalid info");
         }
 
         final UsernamePasswordAuthenticationToken result =

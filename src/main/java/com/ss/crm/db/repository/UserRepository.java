@@ -1,6 +1,6 @@
 package com.ss.crm.db.repository;
 
-import com.ss.crm.db.entity.impl.UserEntity;
+import com.ss.crm.db.entity.impl.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.repository.PagingAndSortingRepository;

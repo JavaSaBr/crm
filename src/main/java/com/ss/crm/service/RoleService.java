@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public interface RoleService extends CrmService {
 
     String ROLE_USER = "USER";
+    String ROLE_CUSTOMER = "CUSTOMER";
 
     /**
      * Get or create a role by a name.

@@ -1,11 +1,14 @@
 package com.ss.crm.service.impl;
 
+import static java.util.stream.Collectors.toList;
 import com.ss.crm.db.entity.impl.RoleEntity;
-import com.ss.crm.db.entity.impl.UserEntity;
+import com.ss.crm.db.entity.impl.user.UserEntity;
 import com.ss.crm.db.repository.UserRepository;
 import com.ss.crm.security.CrmUser;
 import com.ss.crm.service.RoleService;
 import com.ss.crm.service.UserService;
+import com.ss.rlib.util.ClassUtils;
+import com.ss.rlib.util.array.Array;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,13 +41,14 @@ public class UserServiceImpl extends AbstractCrmService implements UserService {
 
     @NotNull
     @Override
-    public UserEntity create(@NotNull final String userName, @NotNull final byte[] hash, @NotNull final byte[] salt)
-            throws RuntimeException {
+    public <T extends UserEntity> T create(@NotNull final Class<T> type, @NotNull final String userName,
+                                                    @NotNull final Array<String> roleNames, @NotNull final byte[] hash,
+                                                    @NotNull final byte[] salt) throws RuntimeException {
 
-        final List<RoleEntity> roles = new ArrayList<>(1);
-        roles.add(roleService.getOrCreateRole(RoleService.ROLE_USER));
+        final List<RoleEntity> roles = roleNames.stream()
+                .map(roleService::getOrCreateRole).collect(toList());
 
-        final UserEntity entity = new UserEntity();
+        final T entity = ClassUtils.newInstance(type);
         entity.setName(userName);
         entity.setPassword(hash);
         entity.setPasswordSalt(salt);
@@ -62,7 +66,7 @@ public class UserServiceImpl extends AbstractCrmService implements UserService {
         final UserEntity userEntity = userRepository.findByName(userName);
 
         if (userEntity == null) {
-            throw new UsernameNotFoundException("Bad credentials!");
+            throw new UsernameNotFoundException("Bad info!");
         }
 
         final String password = new String(userEntity.getPassword());

@@ -1,6 +1,7 @@
-package com.ss.crm.db.entity.impl;
+package com.ss.crm.db.entity.impl.token;
 
 import static java.time.ZonedDateTime.now;
+import com.ss.crm.db.entity.impl.BaseEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
