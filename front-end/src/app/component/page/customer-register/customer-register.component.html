@@ -10,7 +10,7 @@
 
     <form class="register-data-form mat-elevation-z2" (ngSubmit)="tryRegister()" #registerForm="ngForm">
       <md-input-container class="register-data-row">
-        <input mdInput placeholder="Username" id="username" required minlength="{{minUsernameLength}}"
+        <input mdInput placeholder="Email" id="email" required minlength="{{minUsernameLength}}"
                maxlength="{{maxUsernameLength}}"
                [(ngModel)]="credentials.username" name="name"
                #name="ngModel">
