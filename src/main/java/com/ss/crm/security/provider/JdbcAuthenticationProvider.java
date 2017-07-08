@@ -1,8 +1,10 @@
 package com.ss.crm.security.provider;
 
+import com.ss.CrmApplication;
 import com.ss.crm.security.CrmUser;
 import com.ss.crm.service.UserService;
 import com.ss.crm.util.PasswordUtil;
+import com.ss.rlib.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,10 +23,14 @@ import org.springframework.stereotype.Service;
 public class JdbcAuthenticationProvider implements AuthenticationProvider {
 
     @NotNull
+    private final CrmApplication crmApplication;
+
+    @NotNull
     private final UserService userService;
 
     @Autowired
-    public JdbcAuthenticationProvider(@NotNull final UserService userService) {
+    public JdbcAuthenticationProvider(@NotNull final CrmApplication crmApplication, @NotNull final UserService userService) {
+        this.crmApplication = crmApplication;
         this.userService = userService;
     }
 
@@ -35,12 +41,23 @@ public class JdbcAuthenticationProvider implements AuthenticationProvider {
         final String name = token.getName();
         final String credentials = (String) authentication.getCredentials();
 
-        final CrmUser crmUser = userService.loadUserByUsername(name);
-        final byte[] passwordBytes = crmUser.getPasswordBytes();
-        final byte[] passwordSalt = crmUser.getPasswordSalt();
+        final String adminName = crmApplication.getUserAdminName();
+        final String adminPassword = crmApplication.getUserAdminPassword();
 
-        if (!PasswordUtil.isExpectedPassword(credentials.toCharArray(), passwordSalt, passwordBytes)) {
-            throw new BadCredentialsException("Invalid info");
+        CrmUser crmUser;
+
+        if (StringUtils.equals(adminName, name) && StringUtils.equals(adminPassword, credentials)) {
+            crmUser = userService.loadAdminUser();
+        } else {
+
+            crmUser = userService.loadUserByUsername(name);
+
+            final byte[] passwordBytes = crmUser.getPasswordBytes();
+            final byte[] passwordSalt = crmUser.getPasswordSalt();
+
+            if (!PasswordUtil.isExpectedPassword(credentials.toCharArray(), passwordSalt, passwordBytes)) {
+                throw new BadCredentialsException("Invalid info");
+            }
         }
 
         final UsernamePasswordAuthenticationToken result =

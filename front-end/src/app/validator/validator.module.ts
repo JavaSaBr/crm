@@ -1,7 +1,7 @@
-import {NgModule} from "@angular/core";
-import {CommonModule} from "@angular/common";
-import {EqualsValidatorDirective} from "./equal-validator";
-import {EqualsBiDirectionValidatorDirective} from "./equal-bidirection-validator";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {EqualsValidatorDirective} from './equal-validator';
+import {EqualsBiDirectionValidatorDirective} from './equal-bidirection-validator';
 
 @NgModule({
   imports: [

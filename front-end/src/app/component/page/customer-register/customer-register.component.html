@@ -2,7 +2,7 @@
   <div class="register-form">
 
     <div class="register-text-container">
-      <h2 class="register-page-title">Registration</h2>
+      <h2 class="register-page-title">Register a new customer</h2>
       <h3 class="register-page-error" [hidden]="error.length == 0">
         {{error}}
       </h3>
@@ -10,12 +10,13 @@
 
     <form class="register-data-form mat-elevation-z2" (ngSubmit)="tryRegister()" #registerForm="ngForm">
       <md-input-container class="register-data-row">
-        <input mdInput placeholder="Email" id="email" required type="email"
-               [(ngModel)]="info.email" name="email"
+        <input mdInput placeholder="Email (for example: youremail@mail.com)" id="email" type="text"
+               [(ngModel)]="info.email" name="email" required
+               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                #email="ngModel">
       </md-input-container>
       <md-input-container class="register-data-row">
-        <input mdInput placeholder="Name" id="name"
+        <input mdInput placeholder="First name" id="name"
                required minlength="{{minFirstNameLength}}"
                maxlength="{{maxFirstNameLength}}"
                [(ngModel)]="info.name"
@@ -23,8 +24,8 @@
                #name="ngModel">
       </md-input-container>
       <md-input-container class="register-data-row">
-        <input mdInput placeholder="Phone number" id="phone-number"
-               [(ngModel)]="info.phoneNumber"
+        <input mdInput placeholder="Phone number (format: XXXX-XXX-XXXX)" id="phone-number"
+               [(ngModel)]="info.phoneNumber" type="tel" pattern="^\d{4}-\d{3}-\d{4}$"
                name="phone-number"
                #prohneNumber="ngModel">
       </md-input-container>

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {SecurityService} from './security.service';
+import {SecurityService} from './service/security.service';
 
 @Component({
   selector: 'app-root',

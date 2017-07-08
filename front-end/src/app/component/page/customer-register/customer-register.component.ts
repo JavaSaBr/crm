@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {PageComponent} from '../../page.component';
-import {SecurityService} from '../../../security.service';
+import {SecurityService} from '../../../service/security.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -73,46 +73,22 @@ export class CustomerRegistrationInfo {
   /**
    * The customer's email.
    */
-  private _email: string;
+  email: string;
 
   /**
    * The customer's name.
    */
-  private _name: string;
+  name: string;
 
   /**
    * The customer's phone number.
    */
-  private _phoneNumber: string;
+  phoneNumber: string;
 
   constructor(email: string, name: string, phoneNumber: string) {
-    this._name = name;
-    this._email = email;
-    this._phoneNumber = phoneNumber;
-  }
-
-  get email(): string {
-    return this._email;
-  }
-
-  set email(value: string) {
-    this._email = value;
-  }
-
-  get name(): string {
-    return this._name;
-  }
-
-  set name(value: string) {
-    this._name = value;
-  }
-
-  get phoneNumber(): string {
-    return this._phoneNumber;
-  }
-
-  set phoneNumber(value: string) {
-    this._phoneNumber = value;
+    this.name = name;
+    this.email = email;
+    this.phoneNumber = phoneNumber;
   }
 }
 

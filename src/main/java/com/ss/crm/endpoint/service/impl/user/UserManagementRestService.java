@@ -5,6 +5,7 @@ import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.ok;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.ss.crm.Routes;
 import com.ss.crm.db.entity.impl.token.AccessTokenEntity;
 import com.ss.crm.endpoint.service.BaseRestService;
 import com.ss.crm.security.CrmUser;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author JavaSaBr
  */
 @Service
+@RequestMapping("/" + Routes.API_USER_MANAGEMENT)
 public class UserManagementRestService extends BaseRestService {
 
     public static final int MIN_FIRST_NAME_LENGTH = 1;
@@ -39,6 +41,8 @@ public class UserManagementRestService extends BaseRestService {
     public static final int MAX_USERNAME_LENGTH = 25;
     public static final int MIN_PASSWORD_LENGTH = 6;
     public static final int MAX_PASSWORD_LENGTH = 25;
+
+    public static final String AUTHENTICATE = "/" + Routes.API_USER_MANAGEMENT + "authenticate";
 
     @NotNull
     protected final UserService userService;

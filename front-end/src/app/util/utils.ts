@@ -1,6 +1,6 @@
-import {Response} from "@angular/http";
-import {Observable} from "rxjs";
-import {ErrorObservable} from "rxjs/observable/ErrorObservable";
+import {Response} from '@angular/http';
+import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
+import {Observable} from 'rxjs/Observable';
 
 export class Utils {
 

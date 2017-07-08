@@ -1,9 +1,9 @@
 package com.ss.crm.service.impl;
 
+import static com.ss.rlib.util.ObjectUtils.notNull;
 import static com.ss.rlib.util.Utils.get;
 import static java.lang.ThreadLocal.withInitial;
 import static java.nio.file.Files.readAllBytes;
-import static java.util.Objects.requireNonNull;
 import com.ss.crm.service.MailService;
 import com.ss.rlib.util.Utils;
 import com.ss.rlib.util.dictionary.ConcurrentObjectDictionary;
@@ -81,7 +81,7 @@ public class MailServiceImpl extends AbstractCrmService implements MailService {
         final long stamp = templates.writeLock();
         try {
 
-            return requireNonNull(templates.get(id, (key) -> {
+            return notNull(templates.get(id, (key) -> {
 
                 final URI resource = Utils.get(() -> new ClassPathResource(
                         "/templates/ru/mail/" + key + ".template").getURI());
@@ -113,10 +113,14 @@ public class MailServiceImpl extends AbstractCrmService implements MailService {
 
             context.forEach(reference, this::setVarToTemplate);
 
+            final Object subject = context.get(SUBJECT);
             final SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
-            message.setSubject(String.valueOf(context.get(SUBJECT)));
-            message.setText((String) reference.getObject());
+            message.setText((String) notNull(reference.getObject()));
+
+            if (subject != null) {
+                message.setSubject(String.valueOf(subject));
+            }
 
             mailSender.send(message);
 

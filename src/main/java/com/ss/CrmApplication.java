@@ -16,6 +16,19 @@ public class CrmApplication {
     }
 
     /**
+     * The name of an admin user of this application.
+     */
+    @Value("${application.user.admin.name}")
+    private String userAdminName;
+
+    /**
+     * The password of an admin user of this application.
+     */
+    @Value("${application.user.admin.password}")
+    private String userAdminPassword;
+
+
+    /**
      * The name of this application.
      */
     @Value("${application.name}")
@@ -72,6 +85,22 @@ public class CrmApplication {
         return supportPhoneNumber;
     }
 
+    /**
+     * @return the name of an admin user of this application..
+     */
+    @NotNull
+    public String getUserAdminName() {
+        return userAdminName;
+    }
+
+    /**
+     * @return the password of an admin user of this application..
+     */
+    @NotNull
+    public String getUserAdminPassword() {
+        return userAdminPassword;
+    }
+
     @RequestMapping(value = "/dashboard")
     public String dashboard() {
         return "index";
@@ -79,6 +108,16 @@ public class CrmApplication {
 
     @RequestMapping(value = "/login")
     public String login() {
+        return "index";
+    }
+
+    @RequestMapping(value = "/register")
+    public String register() {
+        return "index";
+    }
+
+    @RequestMapping(value = "/blank/**")
+    public String blank() {
         return "index";
     }
 }

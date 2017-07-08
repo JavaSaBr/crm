@@ -12,6 +12,7 @@ public interface RoleService extends CrmService {
 
     String ROLE_USER = "USER";
     String ROLE_CUSTOMER = "CUSTOMER";
+    String ROLE_ADMIN = "ADMIN";
 
     /**
      * Get or create a role by a name.

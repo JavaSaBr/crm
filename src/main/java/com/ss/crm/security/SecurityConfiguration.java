@@ -1,5 +1,7 @@
 package com.ss.crm.security;
 
+import com.ss.crm.endpoint.service.impl.user.CustomerManagementRestService;
+import com.ss.crm.endpoint.service.impl.user.UserManagementRestService;
 import com.ss.crm.filter.AuthenticationTokenProcessingFilter;
 import com.ss.crm.filter.CsrfHeaderFilter;
 import com.ss.crm.service.AccessTokenService;
@@ -16,9 +18,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 /**
  * The security configuration.
@@ -52,10 +53,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(final WebSecurity web) throws Exception {
         super.configure(web);
         web.ignoring()
-                .antMatchers("/index.html", "/dashboard", "/login", "/register/**", "/")
+                .antMatchers("/index.html", "/")
                 .antMatchers("/inline.bundle.js", "/polyfills.bundle.js", "/styles.bundle.js")
                 .antMatchers("/main.bundle.js", "/vendor.bundle.js", "/favicon.ico")
-                .antMatchers(HttpMethod.POST, "/user-management/register/**")
+                .antMatchers(HttpMethod.POST, CustomerManagementRestService.REGISTER + "/**")
+                .antMatchers(HttpMethod.POST, UserManagementRestService.AUTHENTICATE + "/**")
                 .antMatchers(HttpMethod.POST, "/user-management/authenticate/**");
     }
 
@@ -64,24 +66,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/index.html", "/dashboard", "/login", "/register/**", "/").permitAll()
+                .antMatchers("/index.html", "/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new AuthenticationTokenProcessingFilter(accessTokenService), CsrfFilter.class)
                 .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-                .csrf().csrfTokenRepository(csrfTokenRepository());
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
     @Autowired
     public void configureGlobal(@NotNull final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
         auth.authenticationProvider(jdbcAuthenticationProvider);
-    }
-
-    @NotNull
-    private CsrfTokenRepository csrfTokenRepository() {
-        final HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName("X-XSRF-TOKEN");
-        return repository;
     }
 }

@@ -1,5 +1,5 @@
-import {BaseComponent} from "./base.component";
-import {AppComponent} from "../app.component";
+import {BaseComponent} from './base.component';
+import {AppComponent} from '../app.component';
 
 /**
  * The page component.

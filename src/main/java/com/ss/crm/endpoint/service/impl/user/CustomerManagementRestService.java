@@ -33,8 +33,10 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author JavaSaBr
  */
 @Service
-@RequestMapping("/customer-management")
+@RequestMapping("/" + Routes.API_CUSTOMER_MANAGEMENT)
 public class CustomerManagementRestService extends UserManagementRestService {
+
+    public static final String REGISTER = "/" + Routes.API_CUSTOMER_MANAGEMENT + "register";
 
     @NotNull
     private static final ThreadLocal<RandomStringGenerator> PASSWORD_GENERATOR = ThreadLocal.withInitial(() -> {
@@ -112,7 +114,12 @@ public class CustomerManagementRestService extends UserManagementRestService {
 
         final CustomerEntity customer;
         try {
-            customer = userService.create(CustomerEntity.class, name, CUSTOMER_ROLES, hash, salt);
+
+            customer = userService.create(CustomerEntity.class, name, CUSTOMER_ROLES, hash, salt, entity -> {
+                entity.setPhoneNumber(phoneNumber);
+                entity.setEmail(email);
+            });
+
         } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             return badRequest().body(e);
@@ -122,16 +129,17 @@ public class CustomerManagementRestService extends UserManagementRestService {
                 blankTokenService.createNewToken(CustomerRegisterBlankTokenEntity.class, customer);
 
         final String template = mailService.template("customer-register");
-        final String link = application.getHost() + "/" + Routes.BLANK_CUSTOMER_REGISTRY + "/" + newToken.getToken();
+        final String link = application.getHost() + "/" + Routes.BLANK_CUSTOMER_REGISTER + "/" + newToken.getToken();
 
         final ObjectDictionary<String, Object> objects = mailService.threadLocalContext();
-        objects.put("${first-name}", name);
-        objects.put("${app-name}", application.getName());
-        objects.put("${login}", email);
-        objects.put("${password}", password);
-        objects.put("${link}", link);
-        objects.put("${support-email}", application.getSupportEmail());
-        objects.put("${support-phone-number}", application.getSupportPhoneNumber());
+        objects.put(MailService.SUBJECT, name);
+        objects.put(MailService.VAR_FIRST_NAME, name);
+        objects.put(MailService.VAR_APP_NAME, application.getName());
+        objects.put(MailService.VAR_LOGIN, email);
+        objects.put(MailService.VAR_PASSWORD, password);
+        objects.put(MailService.VAR_LINK, link);
+        objects.put(MailService.VAR_SUPPORT_EMAIL, application.getSupportEmail());
+        objects.put(MailService.VAR_SUPPORT_PHONE_NUMBER, application.getSupportPhoneNumber());
 
         mailService.sendMail(email, template, objects);
 

@@ -3,6 +3,7 @@ package com.ss.crm.db.entity.impl.user;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 /**
@@ -11,24 +12,25 @@ import javax.persistence.Entity;
  * @author JavaSaBr
  */
 @Entity
+@DiscriminatorValue(value = "2")
 public class CustomerEntity extends UserEntity {
 
     /**
      * The customer's email.
      */
-    @Column(name = "email", length = 50, nullable = false, unique = true)
+    @Column(name = "email", length = 50, unique = true)
     private String email;
 
     /**
      * The customer's phone number.
      */
-    @Column(name = "phone_number", length = 50, nullable = false, unique = true)
+    @Column(name = "phone_number", length = 50, unique = true)
     private String phoneNumber;
 
     /**
      * The flag of reading the customer.
      */
-    @Column(name = "ready", nullable = false)
+    @Column(name = "ready")
     private boolean ready;
 
     /**

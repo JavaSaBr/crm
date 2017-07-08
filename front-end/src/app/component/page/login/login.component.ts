@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
-import {UserCredentials} from "../../../user/user-credentials";
-import {SecurityService} from "../../../security.service";
+import {UserCredentials} from "../../../model/user/user-credentials";
+import {SecurityService} from "../../../service/security.service";
 import {PageComponent} from "../../page.component";
 import {Router} from "@angular/router";
 

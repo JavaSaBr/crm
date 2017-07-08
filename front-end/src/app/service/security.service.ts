@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {Http, RequestOptions} from '@angular/http';
-import {UserCredentials} from './user/user-credentials';
-import {Utils} from './util/Utils';
-import {User} from './user/user';
-import {UserRole} from './user/user-role';
-import {RegisterUserCredentials} from './user/register-user-credentials';
+import {UserCredentials} from '../model/user/user-credentials';
+import {Utils} from '../util/utils';
+import {User} from '../model/user/user';
+import {UserRole} from '../model/user/user-role';
+import {RegisterUserCredentials} from '../model/user/register-user-credentials';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {CustomerRegistrationInfo} from './component/page/customer-register/customer-register.component';
+import {CustomerRegistrationInfo} from '../component/page/customer-register/customer-register.component';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class SecurityService {
@@ -31,7 +32,7 @@ export class SecurityService {
    *
    * @type {string}
    */
-  private static readonly CUSTOMER_REGISTER_URL = '/custom-management/register';
+  private static readonly CUSTOMER_REGISTER_URL = '/customer-management/register';
 
   /**
    * The name of access token header.

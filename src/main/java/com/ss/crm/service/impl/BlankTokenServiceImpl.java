@@ -5,7 +5,6 @@ import static java.time.ZonedDateTime.now;
 import com.ss.crm.db.entity.impl.token.BlankTokenEntity;
 import com.ss.crm.db.entity.impl.user.UserEntity;
 import com.ss.crm.db.repository.BlankTokenRepository;
-import com.ss.crm.db.repository.UserRepository;
 import com.ss.crm.service.BlankTokenService;
 import com.ss.rlib.util.ClassUtils;
 import io.jsonwebtoken.Jwts;
@@ -36,14 +35,9 @@ public class BlankTokenServiceImpl extends AbstractCrmService implements BlankTo
     @NotNull
     private final BlankTokenRepository blankTokenRepository;
 
-    @NotNull
-    private final UserRepository userRepository;
-
     @Autowired
-    public BlankTokenServiceImpl(@NotNull final BlankTokenRepository blankTokenRepository,
-                                 @NotNull final UserRepository userRepository) {
+    public BlankTokenServiceImpl(@NotNull final BlankTokenRepository blankTokenRepository) {
         this.blankTokenRepository = blankTokenRepository;
-        this.userRepository = userRepository;
     }
 
     @NotNull
@@ -56,7 +50,6 @@ public class BlankTokenServiceImpl extends AbstractCrmService implements BlankTo
         final ZonedDateTime expiry = now().plusHours(TOKEN_HOURS);
 
         final String compactJws = Jwts.builder()
-                .setSubject(type.getName() + "_" + user.getName())
                 .setNotBefore(Date.from(expiry.toInstant()))
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();

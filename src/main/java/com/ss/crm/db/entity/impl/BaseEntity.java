@@ -18,6 +18,10 @@ public abstract class BaseEntity implements HasId {
     @Column(name = "id", unique = true, precision = 15)
     protected Long id;
 
+    @Version
+    @Column(name = "version")
+    protected int version;
+
     public BaseEntity() {
     }
 

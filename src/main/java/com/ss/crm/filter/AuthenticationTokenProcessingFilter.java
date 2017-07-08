@@ -47,6 +47,9 @@ public class AuthenticationTokenProcessingFilter extends GenericFilterBean {
 
             final SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authentication);
+
+        } else {
+
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
