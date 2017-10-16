@@ -1,6 +1,6 @@
-import {UserRole} from './user-role';
-
 /**
+ * The user model.
+ *
  * @author JavaSaBr
  */
 export class User {
@@ -18,23 +18,25 @@ export class User {
   /**
    * The user roles.
    */
-  private _roles: UserRole[];
+  private _roles: string[];
 
   /**
    * Create an user with the name and the access token.
    *
    * @param name the name.
    * @param accessToken the access token.
+   * @param roles the roles.
    */
-  constructor(name: string, accessToken: string) {
+  constructor(name: string, accessToken: string, roles: string[]) {
     this._name = name;
     this._accessToken = accessToken;
+    this._roles = roles;
   }
 
   /**
    * Get an access token of this user or null.
    *
-   * @returns {string}
+   * @returns {string} the access token.
    */
   get accessToken(): string {
     return this._accessToken;
@@ -43,7 +45,7 @@ export class User {
   /**
    * Get a name of this user.
    *
-   * @returns {string}
+   * @returns {string} the user name.
    */
   get name(): string {
     return this._name;
@@ -52,9 +54,9 @@ export class User {
   /**
    * Get an available roles of this user.
    *
-   * @returns {UserRole[]}
+   * @returns {string[]} the array of available roles.
    */
-  get roles(): UserRole[] {
+  get roles(): string[] {
     return this._roles;
   }
 }

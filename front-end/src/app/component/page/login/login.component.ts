@@ -1,8 +1,8 @@
-import {Component} from "@angular/core";
-import {UserCredentials} from "../../../model/user/user-credentials";
-import {SecurityService} from "../../../service/security.service";
-import {PageComponent} from "../../page.component";
-import {Router} from "@angular/router";
+import {Component} from '@angular/core';
+import {UserCredentials} from '../../../model/user/user-credentials';
+import {SecurityService} from '../../../service/security.service';
+import {PageComponent} from '../../page.component';
+import {Router} from '@angular/router';
 
 @Component({
   moduleId: module.id,
@@ -38,7 +38,7 @@ export class LoginComponent extends PageComponent {
         this.error = '';
         this.credentials.username = '';
         this.credentials.password = '';
-        this.router.navigateByUrl("/");
+        this.router.navigateByUrl('/');
       } else {
         this.error = message;
       }

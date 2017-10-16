@@ -3,7 +3,6 @@ import {Http, RequestOptions} from '@angular/http';
 import {UserCredentials} from '../model/user/user-credentials';
 import {Utils} from '../util/utils';
 import {User} from '../model/user/user';
-import {UserRole} from '../model/user/user-role';
 import {RegisterUserCredentials} from '../model/user/register-user-credentials';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
@@ -13,19 +12,23 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class SecurityService {
 
+  public static readonly ROLE_ADMIN = 'ADMIN';
+  public static readonly ROLE_USER = 'USER';
+  public static readonly ROLE_CUSTOMER = 'CUSTOMER';
+
   /**
    * The url of auth endpoint.
    *
    * @type {string}
    */
-  private static readonly AUTH_URL = '/user-management/authenticate';
+  private static readonly AUTH_URL = '/_user-management/authenticate';
 
   /**
    * The url of register endpoint.
    *
    * @type {string}
    */
-  private static readonly REGISTER_URL = '/user-management/register';
+  private static readonly REGISTER_URL = '/_user-management/register';
 
   /**
    * The url of customer register endpoint.
@@ -44,7 +47,7 @@ export class SecurityService {
   /**
    * The current user.
    */
-  private user: User;
+  private _user: User;
 
   /**
    * The property to listen the auth flag.
@@ -56,9 +59,9 @@ export class SecurityService {
   }
 
   /**
-   * The function to auth an user in the system.
+   * The function to auth an _user in the system.
    *
-   * @param credentials the user info.
+   * @param credentials the _user info.
    * @param handler to handle result of authentication.
    */
   public auth(credentials: UserCredentials, handler: (message: string, result: boolean) => void): void {
@@ -67,7 +70,7 @@ export class SecurityService {
       .toPromise()
       .then(response => {
         const body = response.json();
-        this.user = new User(username, body.token);
+        this._user = new User(username, body.token, body.roles);
         this._authProperty.next(true);
         handler(null, true);
       })
@@ -75,9 +78,9 @@ export class SecurityService {
   }
 
   /**
-   * The function to register an user in the system.
+   * The function to register an _user in the system.
    *
-   * @param credentials the user info.
+   * @param credentials the _user info.
    * @param handler to handle result of registration.
    */
   public register(credentials: RegisterUserCredentials, handler: (message: string, result: boolean) => void): void {
@@ -109,28 +112,35 @@ export class SecurityService {
 
     const accessToken = this.accessToken;
 
-    if (accessToken == null) {
-      return;
+    if (accessToken != null) {
+      requestOptions.headers.append(SecurityService.ACCESS_TOKEN_HEADER, accessToken);
     }
-
-    requestOptions.headers.append(SecurityService.ACCESS_TOKEN_HEADER, accessToken);
   }
 
   /**
    * The function to logout from the system.
    */
   logout() {
-    this.user = null;
+    this._user = null;
     this._authProperty.next(false);
   }
 
   /**
    * Get the auth property.
    *
-   * @returns {Observable<boolean>}
+   * @returns {Observable<boolean>} the auth property.
    */
   get authProperty() {
     return this._authProperty;
+  }
+
+  /**
+   * Get the current user.
+   *
+   * @returns {User} the current user.
+   */
+  get user(): User {
+    return this._user;
   }
 
   /**
@@ -140,24 +150,37 @@ export class SecurityService {
    */
   get accessToken(): string {
 
-    if (this.user == null) {
+    const currentUser = this._user;
+
+    if (currentUser == null) {
       return null;
     }
 
-    return this.user.accessToken;
+    return currentUser.accessToken;
   }
 
   /**
-   * Get the roles of the current user.
+   * Check the role in the current user.
    *
-   * @returns {UserRole[]}
+   * @param {string} toCheck the role to check.
+   * @returns {boolean} true if the current user has the role.
    */
-  get userRoles(): UserRole[] {
+  hasRole(toCheck: string): boolean {
 
-    if (this.user == null) {
+    const currentUser = this._user;
+
+    if (currentUser == null) {
       return null;
     }
 
-    return this.user.roles;
+    const roles = currentUser.roles;
+
+    for (const role of roles) {
+      if (role === toCheck) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -8,7 +8,7 @@
       </h3>
     </div>
 
-    <form class="login-data-form mat-elevation-z2" (ngSubmit)="tryAuth()" #loginForm="ngForm">
+    <form class="login-data-form mat-elevation-z2" (ngSubmit)="tryAuth()" #userForm="ngForm">
       <md-input-container class="login-data-row">
         <input mdInput placeholder="Username" id="username" required minlength="{{minUsernameLength}}"
                maxlength="{{maxUsernameLength}}"
@@ -22,8 +22,8 @@
                name="password"
                #password="ngModel">
       </md-input-container>
-      <button class="login-data-row login-button" type="submit" md-raised-button color="primary"
-              [disabled]="!loginForm.form.valid">Login
+      <button class="login-data-row login-button" md-raised-button color="primary"
+              [disabled]="!userForm.form.valid">Login
       </button>
     </form>
   </div>
