@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.0.0.M2'
+		springBootVersion = '2.0.0.M3'
 	}
 	repositories {
 		mavenCentral()
@@ -27,7 +27,6 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-mail')
@@ -48,7 +47,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-rng-core
     compile group: 'org.apache.commons', name: 'commons-rng-core', version: '1.0'
 
-    compile 'com.github.JavaSaBr:RLib:6.1.1'
+    compile 'com.github.JavaSaBr:RLib:6.3.0'
 
     runtime('mysql:mysql-connector-java')
 	runtime('org.postgresql:postgresql')

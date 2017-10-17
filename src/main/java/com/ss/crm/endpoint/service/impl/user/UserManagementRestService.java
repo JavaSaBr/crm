@@ -3,6 +3,7 @@ package com.ss.crm.endpoint.service.impl.user;
 
 import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.ok;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ss.crm.Routes;
@@ -19,12 +20,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.Collection;
 
 /**
  * The REST controller to work with users.
@@ -90,8 +94,15 @@ public class UserManagementRestService extends BaseRestService {
 
         final CrmUser crmUser = (CrmUser) principal;
         final AccessTokenEntity newToken = accessTokenService.createNewToken(crmUser.getUser());
+
+        final ArrayNode roles = JsonNodeFactory.instance.arrayNode();
+
+        final Collection<GrantedAuthority> authorities = crmUser.getAuthorities();
+        authorities.forEach(authority -> roles.add(authority.getAuthority()));
+
         final ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         objectNode.put("token", newToken.getToken());
+        objectNode.put("roles", roles);
 
         return ok(objectNode.toString());
     }

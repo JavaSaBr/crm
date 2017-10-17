@@ -9,27 +9,27 @@
     </div>
 
     <form class="register-data-form mat-elevation-z2" (ngSubmit)="tryRegister()" #registerForm="ngForm">
-      <md-input-container class="register-data-row">
-        <input mdInput placeholder="Email (for example: youremail@mail.com)" id="email" type="text"
+      <mat-input-container class="register-data-row">
+        <input matInput placeholder="Email (for example: youremail@mail.com)" id="email" type="text"
                [(ngModel)]="info.email" name="email" required
                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                #email="ngModel">
-      </md-input-container>
-      <md-input-container class="register-data-row">
-        <input mdInput placeholder="First name" id="name"
+      </mat-input-container>
+      <mat-input-container class="register-data-row">
+        <input matInput placeholder="First name" id="name"
                required minlength="{{minFirstNameLength}}"
                maxlength="{{maxFirstNameLength}}"
                [(ngModel)]="info.name"
                name="name"
                #name="ngModel">
-      </md-input-container>
-      <md-input-container class="register-data-row">
-        <input mdInput placeholder="Phone number (format: XXXX-XXX-XXXX)" id="phone-number"
+      </mat-input-container>
+      <mat-input-container class="register-data-row">
+        <input matInput placeholder="Phone number (format: XXXX-XXX-XXXX)" id="phone-number"
                [(ngModel)]="info.phoneNumber" type="tel" pattern="^\d{4}-\d{3}-\d{4}$"
                name="phone-number"
                #prohneNumber="ngModel">
-      </md-input-container>
-      <button class="register-data-row register-button" type="submit" md-raised-button color="primary"
+      </mat-input-container>
+      <button class="register-data-row register-button" type="submit" mat-raised-button color="primary"
               [disabled]="!registerForm.form.valid">Register
       </button>
     </form>

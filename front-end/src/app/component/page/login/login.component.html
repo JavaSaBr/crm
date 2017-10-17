@@ -9,20 +9,20 @@
     </div>
 
     <form class="login-data-form mat-elevation-z2" (ngSubmit)="tryAuth()" #userForm="ngForm">
-      <md-input-container class="login-data-row">
-        <input mdInput placeholder="Username" id="username" required minlength="{{minUsernameLength}}"
+      <mat-input-container class="login-data-row">
+        <input matInput placeholder="Username" id="username" required minlength="{{minUsernameLength}}"
                maxlength="{{maxUsernameLength}}"
                [(ngModel)]="credentials.username" name="name"
                #name="ngModel">
-      </md-input-container>
-      <md-input-container class="login-data-row">
-        <input mdInput placeholder="Password" type="password" id="password" required minlength="{{minPasswordLength}}"
+      </mat-input-container>
+      <mat-input-container class="login-data-row">
+        <input matInput placeholder="Password" type="password" id="password" required minlength="{{minPasswordLength}}"
                maxlength="{{maxPasswordLength}}"
                [(ngModel)]="credentials.password"
                name="password"
                #password="ngModel">
-      </md-input-container>
-      <button class="login-data-row login-button" md-raised-button color="primary"
+      </mat-input-container>
+      <button class="login-data-row login-button" mat-raised-button color="primary"
               [disabled]="!userForm.form.valid">Login
       </button>
     </form>

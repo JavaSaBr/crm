@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@SpringBootApplication
 @Controller
+@SpringBootApplication
 public class CrmApplication {
 
     public static void main(@NotNull final String[] args) {
@@ -26,7 +26,6 @@ public class CrmApplication {
      */
     @Value("${application.user.admin.password}")
     private String userAdminPassword;
-
 
     /**
      * The name of this application.

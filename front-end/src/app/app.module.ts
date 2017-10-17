@@ -11,7 +11,7 @@ import {CustomerRegisterComponent} from './component/page/customer-register/cust
 import {DashboardComponent} from './component/page/dashboard/dashboard.component';
 import {SecurityService} from './service/security.service';
 import {ValidatorModule} from './validator/validator.module';
-import {MdButtonModule, MdInputModule, MdToolbarModule} from '@angular/material';
+import {MatButtonModule, MatInputModule, MatToolbarModule} from '@angular/material';
 
 import 'hammerjs';
 import {BlankComponent} from './component/blank/blank.component';
@@ -35,9 +35,9 @@ import {BlankTokenService} from './service/blank-token.service';
     AppRoutingModule,
     AlertModule.forRoot(),
     BrowserAnimationsModule,
-    MdButtonModule,
-    MdInputModule,
-    MdToolbarModule,
+    MatButtonModule,
+    MatInputModule,
+    MatToolbarModule,
     ValidatorModule
   ],
   providers: [SecurityService, BlankService, BlankTokenService, LoginComponent],
