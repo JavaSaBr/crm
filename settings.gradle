@@ -1,0 +1,9 @@
+rootProject.name = 'JCRM'
+
+include 'jcrm-base'
+include 'jcrm-jdbc'
+include 'jcrm-base-spring'
+include 'jcrm-base-web'
+include 'jcrm-user-api'
+include 'jcrm-user-jdbc'
+include 'jcrm-registration-web'

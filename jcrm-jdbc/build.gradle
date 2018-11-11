@@ -1,0 +1,13 @@
+
+plugins {
+    id 'java'
+}
+
+dependencies {
+    compile project(":jcrm-base")
+    compile project(":jcrm-base-spring")
+    compile "org.flywaydb:flyway-core:$flywayVersion"
+    compile "com.zaxxer:HikariCP:$hikariCPVersion"
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+}

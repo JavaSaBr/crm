@@ -1,12 +1,59 @@
 
+plugins {
+    id "net.ltgt.apt" version "0.19"
+}
+
 allprojects {
+
     repositories {
         jcenter()
+        mavenCentral()
+        maven { url  "https://dl.bintray.com/javasabr/maven" }
+    }
+
+    ext {
+        annotationVersion = "16.0.3"
+        rlibVersion = "8.1.0"
+        lombokVersion = '1.18.4'
+        lombokGradlePluginVersion = '0.19'
+        springbootVersion = '2.1.0.RELEASE'
+        junitJupiterVersion = "5.2.0"
+        hikariCPVersion = "2.7.8"
+        flywayVersion = "5.2.1"
     }
 }
 
 subprojects {
     version = '1.0'
+
+    tasks.withType(JavaCompile) {
+
+        apply plugin: "net.ltgt.apt"
+
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+
+        doLast {
+
+            compileTestJava {
+                sourceCompatibility = 1.11
+                targetCompatibility = 1.11
+                options.compilerArgs += '-parameters'
+            }
+
+            test {
+                useJUnitPlatform()
+
+                testLogging {
+                    events "passed", "skipped", "failed"
+                }
+
+                reports {
+                    html.enabled = true
+                }
+            }
+        }
+    }
 }
 
 wrapper {

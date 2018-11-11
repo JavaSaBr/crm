@@ -4,8 +4,10 @@ plugins {
 }
 
 dependencies {
-    compile "com.spaceshift:rlib.common:$rlibVersion"
-    compile "org.jetbrains:annotations:$annotationVersion"
+    compile project(":jcrm-base")
+    compile project(":jcrm-user-api")
+    compile project(":jcrm-base-spring")
+    compile project(":jcrm-jdbc")
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }

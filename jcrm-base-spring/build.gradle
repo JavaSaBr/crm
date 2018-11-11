@@ -1,0 +1,9 @@
+
+plugins {
+    id 'java'
+}
+
+dependencies {
+    compile project(":jcrm-base")
+    compile ("org.springframework.boot:spring-boot-starter:$springbootVersion")
+}

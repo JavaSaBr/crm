@@ -1,14 +1,18 @@
 
 plugins {
-    id 'groovy'
     id 'java'
     id 'application'
 }
 
-ext.vertxVersion = '3.5.4'
-
 dependencies {
-    compile "io.vertx:vertx-core:$vertxVersion"
-    compile "io.vertx:vertx-config:$vertxVersion"
+    compile project(":jcrm-base")
 
+    compile ("org.springframework.boot:spring-boot-starter-web:$springbootVersion") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+
+    compile "org.springframework.boot:spring-boot-starter-undertow:$springbootVersion"
+
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }
