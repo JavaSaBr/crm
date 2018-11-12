@@ -9,9 +9,13 @@ import java.util.concurrent.CompletableFuture;
 
 public interface UserRoleDao {
 
-    @Nullable UserRole fingByName(@NotNull String name);
+    @NotNull UserRole create(@NotNull String name);
 
-    @NotNull CompletableFuture<@Nullable UserRole> fingByNameAsync(@NotNull String name);
+    @NotNull CompletableFuture<@NotNull UserRole> createAsync(@NotNull String name);
+
+    @Nullable UserRole findByName(@NotNull String name);
+
+    @NotNull CompletableFuture<@Nullable UserRole> findByNameAsync(@NotNull String name);
 
     @Nullable UserRole findById(long id);
 

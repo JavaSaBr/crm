@@ -1,6 +1,7 @@
 package com.ss.jcrm.user.api;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -10,9 +11,11 @@ public interface User {
 
     @NotNull String getName();
 
-    @NotNull byte[] getPassword();
+    @NotNull String getPassword();
+
+    @NotNull byte[] getSalt();
 
     @NotNull Set<UserRole> getRoles();
 
-    @NotNull Organization getOrganization();
+    @Nullable Organization getOrganization();
 }

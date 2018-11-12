@@ -1,11 +1,13 @@
-package com.ss.jcrm.user.impl.jdbc;
+package com.ss.jcrm.user.jdbc.config;
 
 import com.ss.jcrm.jdbc.ConnectionPoolFactory;
 import com.ss.jcrm.jdbc.config.JdbcConfig;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserRoleDao;
-import com.ss.jcrm.user.impl.jdbc.dao.JdbcOrganizationDao;
+import com.ss.jcrm.user.jdbc.dao.JdbcOrganizationDao;
+import com.ss.jcrm.user.jdbc.dao.JdbcUserDao;
+import com.ss.jcrm.user.jdbc.dao.JdbcUserRoleDao;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class JdbcUserConfig {
 
     @Autowired
     private Executor fastDbTaskExecutor;
+
+    @Autowired
+    private Executor slowDbTaskExecutor;
 
     @Value("jdbc.user.db.url")
     private String url;
@@ -53,16 +58,22 @@ public class JdbcUserConfig {
 
     @Bean
     @NotNull UserDao userDao() {
-        return null;
+        return new JdbcUserDao(
+            userDataSource(),
+            fastDbTaskExecutor,
+            slowDbTaskExecutor,
+            organizationDao(),
+            userRoleDao()
+        );
     }
 
     @Bean
     @NotNull UserRoleDao userRoleDao() {
-        return null;
+        return new JdbcUserRoleDao(userDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
     }
 
     @Bean
     @NotNull OrganizationDao organizationDao() {
-        return new JdbcOrganizationDao(userDataSource(), fastDbTaskExecutor);
+        return new JdbcOrganizationDao(userDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
     }
 }

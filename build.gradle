@@ -20,6 +20,7 @@ allprojects {
         junitJupiterVersion = "5.2.0"
         hikariCPVersion = "2.7.8"
         flywayVersion = "5.2.1"
+        jsointerVersion = "0.9.23"
     }
 }
 

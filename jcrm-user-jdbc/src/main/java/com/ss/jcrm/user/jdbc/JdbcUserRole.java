@@ -1,6 +1,6 @@
-package com.ss.jcrm.user.impl.jdbc;
+package com.ss.jcrm.user.jdbc;
 
-import com.ss.jcrm.user.api.Organization;
+import com.ss.jcrm.user.api.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class JdbcOrganization implements Organization {
+public class JdbcUserRole implements UserRole {
 
     private final String name;
     private final long id;

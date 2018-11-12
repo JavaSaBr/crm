@@ -1,11 +1,12 @@
-package com.ss.jcrm.user.impl.jdbc.dao;
+package com.ss.jcrm.user.jdbc.dao;
 
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
 import com.ss.jcrm.jdbc.exception.JdbcException;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
-import com.ss.jcrm.user.impl.jdbc.JdbcOrganization;
+import com.ss.jcrm.user.jdbc.JdbcOrganization;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,19 +20,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Log4j2
-public class JdbcOrganizationDao implements OrganizationDao {
+public class JdbcOrganizationDao extends AbstractJdbcDao implements OrganizationDao {
 
     private static final String Q_SELECT_ALL = "select \"id\", \"name\" FROM \"organization\"";
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\" FROM \"organization\" where \"name\" = ?";
     private static final String Q_SELECT_BY_ID = "select \"name\" FROM \"organization\" where \"id\" = ?";
     private static final String Q_INSERT = "INSERT INTO \"organization\" (\"id\", \"name\") VALUES (DEFAULT, ?)";
 
-    private final DataSource dataSource;
-    private final Executor fastDbTaskExecutor;
-
-    public JdbcOrganizationDao(@NotNull DataSource dataSource, @NotNull Executor fastDbTaskExecutor) {
-        this.dataSource = dataSource;
-        this.fastDbTaskExecutor = fastDbTaskExecutor;
+    public JdbcOrganizationDao(
+        @NotNull DataSource dataSource,
+        @NotNull Executor fastDbTaskExecutor,
+        @NotNull Executor slowDbTaskExecutor
+    ) {
+        super(dataSource, fastDbTaskExecutor, slowDbTaskExecutor);
     }
 
     @Override
@@ -43,20 +44,12 @@ public class JdbcOrganizationDao implements OrganizationDao {
 
             statement.setString(1, name);
 
-            var rs = statement.executeQuery();
-            try {
-
+            try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return new JdbcOrganization(
-                        name,
-                        rs.getLong(1)
-                    );
+                    return new JdbcOrganization(name, rs.getLong(1));
                 } else {
                     throw new IllegalStateException("Can't receive generated id.");
                 }
-
-            } finally {
-                rs.close();
             }
 
         } catch (SQLException e) {
@@ -78,18 +71,13 @@ public class JdbcOrganizationDao implements OrganizationDao {
 
             statement.setString(1, name);
 
-            var rs = statement.executeQuery();
-            try {
-
+            try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return new JdbcOrganization(
                         rs.getString(2),
                         rs.getLong(1)
                     );
                 }
-
-            } finally {
-                rs.close();
             }
 
         } catch (SQLException e) {
@@ -113,15 +101,10 @@ public class JdbcOrganizationDao implements OrganizationDao {
 
             statement.setLong(1, id);
 
-            var rs = statement.executeQuery();
-            try {
-
+            try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return new JdbcOrganization(rs.getString(2), id);
                 }
-
-            } finally {
-                rs.close();
             }
 
         } catch (SQLException e) {
@@ -155,18 +138,13 @@ public class JdbcOrganizationDao implements OrganizationDao {
              var statement = connection.prepareStatement(Q_SELECT_ALL)
         ) {
 
-            var rs = statement.executeQuery();
-            try {
-
+            try (var rs = statement.executeQuery()) {
                 while (rs.next()) {
                     result.add(new JdbcOrganization(
                         rs.getString(2),
-                        rs.getLong(1)
-                    ));
+                        rs.getLong(1))
+                    );
                 }
-
-            } finally {
-                rs.close();
             }
 
         } catch (SQLException e) {
@@ -178,6 +156,6 @@ public class JdbcOrganizationDao implements OrganizationDao {
 
     @Override
     public @NotNull CompletableFuture<@NotNull List<Organization>> getAllAsync() {
-        return supplyAsync(this::getAll, fastDbTaskExecutor);
+        return supplyAsync(this::getAll, slowDbTaskExecutor);
     }
 }
