@@ -17,10 +17,15 @@ allprojects {
         lombokVersion = '1.18.4'
         lombokGradlePluginVersion = '0.19'
         springbootVersion = '2.1.0.RELEASE'
+        springVersion = '5.1.2.RELEASE'
         junitJupiterVersion = "5.2.0"
         hikariCPVersion = "2.7.8"
         flywayVersion = "5.2.1"
         jsointerVersion = "0.9.23"
+        testcontainersVersion = "1.10.1"
+        groovyVersion = "2.5.3"
+        spockVersion = "1.2-groovy-2.5"
+        postgresqlVersion = "42.1.1"
     }
 }
 
@@ -33,27 +38,6 @@ subprojects {
 
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-
-        doLast {
-
-            compileTestJava {
-                sourceCompatibility = 1.11
-                targetCompatibility = 1.11
-                options.compilerArgs += '-parameters'
-            }
-
-            test {
-                useJUnitPlatform()
-
-                testLogging {
-                    events "passed", "skipped", "failed"
-                }
-
-                reports {
-                    html.enabled = true
-                }
-            }
-        }
     }
 }
 

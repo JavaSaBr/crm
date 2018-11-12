@@ -43,8 +43,9 @@ public class JdbcOrganizationDao extends AbstractJdbcDao implements Organization
         ) {
 
             statement.setString(1, name);
+            statement.execute();
 
-            try (var rs = statement.executeQuery()) {
+            try (var rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
                     return new JdbcOrganization(name, rs.getLong(1));
                 } else {

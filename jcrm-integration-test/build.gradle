@@ -1,0 +1,23 @@
+
+plugins {
+    id 'java'
+}
+
+dependencies {
+    compile project(":jcrm-base")
+    compile "org.springframework:spring-test:$springVersion"
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile "org.spockframework:spock-core:$spockVersion"
+    compile "org.spockframework:spock-spring:$spockVersion"
+    compile "org.testcontainers:testcontainers:$testcontainersVersion"
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/groovy'
+        }
+    }
+}

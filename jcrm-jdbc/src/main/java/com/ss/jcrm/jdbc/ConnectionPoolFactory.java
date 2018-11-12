@@ -19,4 +19,20 @@ public class ConnectionPoolFactory {
 
         return new HikariDataSource(config);
     }
+
+    public @NotNull DataSource newDataSource(
+        @NotNull String url,
+        @NotNull String schema,
+        @NotNull String user,
+        @NotNull String password
+    ) {
+
+        var config = new HikariConfig();
+        config.setJdbcUrl(url);
+        config.setUsername(user);
+        config.setPassword(password);
+        config.setSchema(schema);
+
+        return new HikariDataSource(config);
+    }
 }

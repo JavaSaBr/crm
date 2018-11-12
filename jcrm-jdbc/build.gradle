@@ -9,6 +9,7 @@ dependencies {
     compile "org.flywaydb:flyway-core:$flywayVersion"
     compile "com.zaxxer:HikariCP:$hikariCPVersion"
     compile "com.jsoniter:jsoniter:$jsointerVersion"
+    compile "org.postgresql:postgresql:$postgresqlVersion"
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }

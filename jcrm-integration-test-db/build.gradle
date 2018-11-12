@@ -4,19 +4,18 @@ plugins {
 }
 
 dependencies {
-    compile project(":jcrm-base")
-    compile project(":jcrm-user-api")
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    compile project(":jcrm-integration-test")
     compile project(":jcrm-base-spring")
     compile project(":jcrm-jdbc")
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
-    testCompile project(":jcrm-integration-test-db")
+    compile "org.testcontainers:postgresql:$testcontainersVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }
 
 sourceSets {
-    test {
+    main {
         java {
-            srcDirs 'src/test/groovy'
+            srcDirs 'src/main/groovy'
         }
     }
 }

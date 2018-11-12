@@ -30,19 +30,24 @@ public class JdbcUserConfig {
     @Autowired
     private Executor slowDbTaskExecutor;
 
-    @Value("jdbc.user.db.url")
+    @Value("${jdbc.user.db.url}")
     private String url;
 
-    @Value("jdbc.user.db.username")
+    @Value("${jdbc.user.db.schema}")
+    private String schema;
+
+    @Value("${jdbc.user.db.username}")
     private String username;
 
-    @Value("jdbc.user.db.password")
+    @Value("${jdbc.user.db.password}")
     private String password;
 
     @Bean @Lazy
     @NotNull Flyway userFlyway() {
 
         var flyway = Flyway.configure()
+            .locations("classpath:db/migration")
+            .baselineOnMigrate(true)
             .dataSource(url, username, password)
             .load();
 
@@ -53,7 +58,7 @@ public class JdbcUserConfig {
 
     @Bean
     @NotNull DataSource userDataSource() {
-        return ConnectionPoolFactory.newDataSource(url, username, password);
+        return ConnectionPoolFactory.newDataSource(url, schema, username, password);
     }
 
     @Bean
