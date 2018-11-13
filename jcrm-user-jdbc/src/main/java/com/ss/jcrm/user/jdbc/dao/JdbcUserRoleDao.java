@@ -41,8 +41,9 @@ public class JdbcUserRoleDao extends AbstractJdbcDao implements UserRoleDao {
         ) {
 
             statement.setString(1, name);
+            statement.execute();
 
-            try (var rs = statement.executeQuery()) {
+            try (var rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
                     return new JdbcUserRole(name, rs.getLong(1));
                 } else {
@@ -101,7 +102,7 @@ public class JdbcUserRoleDao extends AbstractJdbcDao implements UserRoleDao {
 
             try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return new JdbcUserRole(rs.getString(2), id);
+                    return new JdbcUserRole(rs.getString(1), id);
                 }
             }
 

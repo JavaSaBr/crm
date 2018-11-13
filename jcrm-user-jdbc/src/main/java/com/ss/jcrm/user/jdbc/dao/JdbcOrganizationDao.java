@@ -104,7 +104,7 @@ public class JdbcOrganizationDao extends AbstractJdbcDao implements Organization
 
             try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return new JdbcOrganization(rs.getString(2), id);
+                    return new JdbcOrganization(rs.getString(1), id);
                 }
             }
 

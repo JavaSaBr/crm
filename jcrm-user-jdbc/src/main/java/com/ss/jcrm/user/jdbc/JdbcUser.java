@@ -31,6 +31,15 @@ public class JdbcUser implements User {
         this.roles = null;
     }
 
+    public JdbcUser(@NotNull User user, @NotNull Set<UserRole> roles) {
+        this.name = user.getName();
+        this.id = user.getId();
+        this.password = user.getPassword();
+        this.salt = user.getSalt();
+        this.organization = user.getOrganization();
+        this.roles = roles;
+    }
+
     public JdbcUser(
         @NotNull String name,
         @NotNull String password,

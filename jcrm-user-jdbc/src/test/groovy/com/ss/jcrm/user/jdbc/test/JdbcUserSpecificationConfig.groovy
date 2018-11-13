@@ -1,6 +1,5 @@
 package com.ss.jcrm.user.jdbc.test
 
-import com.ss.jcrm.integration.test.db.DbSpecification
 import com.ss.jcrm.integration.test.db.DbSpecificationConfig
 import com.ss.jcrm.jdbc.ConnectionPoolFactory
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig
@@ -11,9 +10,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.PropertySource
-import org.springframework.test.context.ContextConfiguration
 import org.testcontainers.containers.PostgreSQLContainer
 
 import javax.sql.DataSource
@@ -23,12 +20,8 @@ import javax.sql.DataSource
     JdbcUserConfig,
     DbSpecificationConfig
 ])
-@ContextConfiguration(classes = [
-    JdbcUserConfig,
-    DbSpecificationConfig
-])
 @PropertySource("classpath:com/ss/jcrm/user/jdbc/test/jcrm-user-jdbc-test.properties")
-class JdbcUserSpecificationConfig extends DbSpecification {
+class JdbcUserSpecificationConfig {
 
     @Autowired
     private PostgreSQLContainer postgreSQLContainer

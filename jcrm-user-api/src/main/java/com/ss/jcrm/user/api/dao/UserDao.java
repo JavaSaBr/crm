@@ -2,6 +2,7 @@ package com.ss.jcrm.user.api.dao;
 
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
+import com.ss.jcrm.user.api.UserRole;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,4 +35,12 @@ public interface UserDao {
     @NotNull User requireById(long id);
 
     @NotNull CompletableFuture<@NotNull User> requireByIdAsync(long id);
+
+    @NotNull User addRole(@NotNull User user, @NotNull UserRole role);
+
+    @NotNull CompletableFuture<@NotNull User> addRoleAsync(@NotNull User user, @NotNull UserRole role);
+
+    @NotNull User removeRole(@NotNull User user, @NotNull UserRole role);
+
+    @NotNull CompletableFuture<@NotNull User> removeRoleAsync(@NotNull User user, @NotNull UserRole role);
 }

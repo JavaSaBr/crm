@@ -7,4 +7,8 @@ public class JdbcException extends RuntimeException {
     public JdbcException(@NotNull Throwable cause) {
         super(cause);
     }
+
+    public JdbcException(@NotNull String message) {
+        super(message);
+    }
 }
