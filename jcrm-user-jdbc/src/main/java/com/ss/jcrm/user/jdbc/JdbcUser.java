@@ -5,6 +5,7 @@ import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.UserRole;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Getter
 @EqualsAndHashCode(of = "id")
+@ToString(of = {"id", "name", "organization"})
 public class JdbcUser implements User {
 
     private final String name;

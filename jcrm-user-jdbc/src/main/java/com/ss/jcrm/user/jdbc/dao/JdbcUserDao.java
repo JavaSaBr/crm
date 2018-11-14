@@ -17,6 +17,7 @@ import com.ss.jcrm.user.jdbc.JdbcUser;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.postgresql.util.PGobject;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -75,8 +76,9 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
             statement.setString(2, password);
             statement.setBytes(3, salt);
             statement.setLong(4, organization == null ? 0L : organization.getId());
+            statement.execute();
 
-            try (var rs = statement.executeQuery()) {
+            try (var rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
                     return new JdbcUser(
                         name,
@@ -194,7 +196,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
             return user;
         }
 
-        var newRoles = new HashSet<>(roles);
+        var newRoles = new HashSet<UserRole>(roles);
         newRoles.add(role);
 
         return updateRoles(user, newRoles);
@@ -237,7 +239,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
              var statement = connection.prepareStatement(Q_UPDATE_ROLES)
         ) {
 
-            statement.setString(1, rolesToJson(newRoles));
+            statement.setObject(1, rolesToJson(newRoles));
             statement.setLong(2, user.getId());
 
             if (statement.executeUpdate() == 1) {
@@ -276,14 +278,18 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
             .collect(toSet());
     }
 
-    private @Nullable String rolesToJson(@NotNull Set<UserRole> roles) {
+    private @Nullable PGobject rolesToJson(@NotNull Set<UserRole> roles) throws SQLException {
 
         if (roles.isEmpty()) {
             return null;
         }
 
-        return JsonStream.serialize(roles.stream()
+        var result = new PGobject();
+        result.setType("json");
+        result.setValue(JsonStream.serialize(roles.stream()
             .mapToLong(UserRole::getId)
-            .toArray());
+            .toArray()));
+
+        return result;
     }
 }

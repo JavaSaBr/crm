@@ -1,14 +1,12 @@
 package com.ss.jcrm.user.jdbc.test
 
-import com.ss.jcrm.user.api.User
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserRoleDao
-import com.ss.rlib.common.util.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 
 import javax.sql.DataSource
-import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ThreadLocalRandom
 
 class JdbcUserDaoTest extends JdbcUserSpecification {
 
@@ -28,104 +26,51 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         clearTable(userDataSource, TABLE_USER, TABLE_ORGANIZATION, TABLE_USER_ROLE)
     }
 
-    def "should create a new user"(String name, String password, byte[] slat, String resultName) {
-
-        expect:
-            validate(userDao.create(name), resultName)
-
-        where:
-            name                   | resultName
-            "test1"                | "test1"
-            "test5"                | "test5"
-            "Test16"               | "Test16"
-    }
-
-    def "should create a new role using async"(String name, String resultName) {
-
-        expect:
-            validate(userRoleDao.createAsync(name).join(), resultName)
-
-        where:
-            name                   | resultName
-            "test1"                | "test1"
-            "test5"                | "test5"
-            "Test16"               | "Test16"
-    }
-
-    def "should create and load a new role"() {
+    def "should create and load a new user"() {
 
         given:
-            def roleName = "TestRole1"
-            def created = userRoleDao.create(roleName)
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
         when:
-            def roleByName = userRoleDao.findByName(roleName)
-            def roleById = userRoleDao.findById(created.getId())
+            def user = userDao.create("User1", "pswd", salt, org)
         then:
-            roleByName != null
-            roleByName.getName() == roleName
-            roleByName.getId() != 0L
-            roleById != null
-            roleById.getId() != 0L
+            user != null
+            user.getName() == "User1"
+            Arrays.equals(user.getSalt(), salt)
+            user.getId() != 0L
+            user.getOrganization() == org
     }
 
-    def "should create and load a new role using async"() {
+    def "should add two new roles to a user"() {
 
         given:
-            def roleName = "TestOrgName1"
-            def created = userRoleDao.createAsync(roleName).join()
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+            def user = userDao.create("User1", "pswd", salt, org)
+            def firstRole = userRoleDao.create("Role1")
+            def secondRole = userRoleDao.create("Role2")
         when:
-            def roleByName = userRoleDao.findByNameAsync(roleName).join()
-            def roleById = userRoleDao.findByIdAsync(created.getId()).join()
+            user = userDao.addRole(user, firstRole)
+            user = userDao.addRole(user, secondRole)
         then:
-            roleByName != null
-            roleByName.getName() == roleName
-            roleByName.getId() != 0L
-            roleById != null
-            roleById.getId() != 0L
+            user != null
+            user.getName() == "User1"
+            Arrays.equals(user.getSalt(), salt)
+            user.getId() != 0L
+            user.getOrganization() == org
+            user.getRoles() != null
+            user.getRoles().size() == 2
+            user.getRoles().contains(firstRole)
+            user.getRoles().contains(secondRole)
     }
 
-    def 'should load all new roles'() {
+    def makeSlat(int length) {
 
-        given:
+        def salt = new byte[length]
 
-            def roleNames = ["role1", "role2", "role3", "role4"]
+        ThreadLocalRandom.current()
+            .nextBytes(salt)
 
-            roleNames.forEach {
-                userRoleDao.create(it)
-            }
-
-        when:
-            def loaded = userRoleDao.getAll()
-        then:
-            loaded != null
-            loaded.size() == roleNames.size()
-    }
-
-    def "should load all new roles using async"() {
-
-        given:
-
-            def roleNames = ["role1", "role2", "role3", "role4"]
-            def results = new ArrayList<CompletableFuture<?>>()
-
-            roleNames.forEach {
-                results.add(userRoleDao.createAsync(it))
-            }
-
-            results.forEach {
-                it.join()
-            }
-
-        when:
-            def loaded = userRoleDao.getAllAsync().join()
-        then:
-            loaded != null
-            loaded.size() == roleNames.size()
-    }
-
-    private static boolean validate(User user, String resultName) {
-        return user != null &&
-            user.getId() != 0 &&
-            StringUtils.equals(user.getName(), resultName)
+        return salt
     }
 }
