@@ -3,7 +3,6 @@ package com.ss.jcrm.user.jdbc.dao;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toSet;
-
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
@@ -29,7 +28,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Log4j2
@@ -196,25 +194,10 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
             return user;
         }
 
-        var newRoles = new HashSet<UserRole>(roles);
+        var newRoles = new HashSet<>(roles);
         newRoles.add(role);
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_UPDATE_ROLES)
-        ) {
-
-            statement.setString(1, rolesToJson(newRoles));
-            statement.setLong(2, user.getId());
-
-            if (statement.executeUpdate() == 1) {
-                return new JdbcUser(user, newRoles);
-            } else {
-                return user;
-            }
-
-        } catch (SQLException e) {
-            throw new JdbcException(e);
-        }
+        return updateRoles(user, newRoles);
     }
 
     @Override
@@ -241,10 +224,15 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
         var newRoles = Collections.<UserRole>emptySet();
 
         if (roles.size() > 1) {
-            newRoles = new HashSet<UserRole>(roles);
+            newRoles = new HashSet<>(roles);
             newRoles.remove(role);
         }
 
+        return updateRoles(user, newRoles);
+    }
+
+
+    private @NotNull User updateRoles(@NotNull User user, @NotNull Set<UserRole> newRoles) {
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(Q_UPDATE_ROLES)
         ) {
