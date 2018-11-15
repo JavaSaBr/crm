@@ -1,5 +1,7 @@
 package com.ss.jcrm.user.jdbc.test
 
+import com.ss.jcrm.jdbc.exception.DuplicateJdbcException
+import com.ss.jcrm.jdbc.exception.NotRelevantVersionJdbcException
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserRoleDao
@@ -50,11 +52,12 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def firstRole = userRoleDao.create("Role1")
             def secondRole = userRoleDao.create("Role2")
         when:
-            user = userDao.addRole(user, firstRole)
-            user = userDao.addRole(user, secondRole)
+            userDao.addRole(user, firstRole)
+            userDao.addRole(user, secondRole)
         then:
             user != null
             user.getName() == "User1"
+            user.getVersion() == 2
             Arrays.equals(user.getSalt(), salt)
             user.getId() != 0L
             user.getOrganization() == org
@@ -62,6 +65,81 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             user.getRoles().size() == 2
             user.getRoles().contains(firstRole)
             user.getRoles().contains(secondRole)
+    }
+
+    def "should throw NotRelevantVersionException during changing a user"() {
+
+        given:
+
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+
+            def user = userDao.create("User1", "pswd", salt, org)
+            user.setVersion(5)
+
+            def role = userRoleDao.create("Role1")
+
+        when:
+            userDao.addRole(user, role)
+        then:
+            thrown NotRelevantVersionJdbcException
+    }
+
+    def "should throw DuplicateJdbcException during creating a new user"() {
+
+        given:
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+            userDao.create("User1", "pswd", salt, org)
+        when:
+            userDao.create("User1", "pswd", salt, org)
+        then:
+            thrown DuplicateJdbcException
+    }
+
+    def "should remove all roles from a user"() {
+
+        given:
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+            def firstRole = userRoleDao.create("Role1")
+            def secondRole = userRoleDao.create("Role2")
+            def user = userDao.create("User1", "pswd", salt, org)
+            userDao.addRole(user, firstRole)
+            userDao.addRole(user, secondRole)
+        when:
+            userDao.removeRole(user, firstRole)
+        then:
+            user != null
+            user.getVersion() == 3
+            user.getRoles() != null
+            user.getRoles().size() == 1
+            !user.getRoles().contains(firstRole)
+            user.getRoles().contains(secondRole)
+        when:
+            userDao.removeRole(user, secondRole)
+        then:
+            user != null
+            user.getVersion() == 4
+            user.getOrganization() == org
+            user.getRoles() != null
+            user.getRoles().size() == 0
+    }
+
+    def "should load a user by name"() {
+
+        given:
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+            userDao.create("User1", "pswd", salt, org)
+        when:
+            def user = userDao.findByName("User1")
+        then:
+            user != null
+            user.getName() == "User1"
+            Arrays.equals(user.getSalt(), salt)
+            user.getId() != 0L
+            user.getOrganization() == org
     }
 
     def makeSlat(int length) {

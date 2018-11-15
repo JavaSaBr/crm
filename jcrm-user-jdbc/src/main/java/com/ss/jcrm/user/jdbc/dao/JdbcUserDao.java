@@ -6,7 +6,9 @@ import static java.util.stream.Collectors.toSet;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
-import com.ss.jcrm.jdbc.exception.JdbcException;
+import com.ss.jcrm.jdbc.exception.CannotGetGeneratedKeysJdbcException;
+import com.ss.jcrm.jdbc.exception.NotRelevantVersionJdbcException;
+import com.ss.jcrm.jdbc.util.JdbcUtils;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.UserRole;
@@ -35,15 +37,16 @@ import java.util.stream.IntStream;
 public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
 
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"password\", \"slat\", " +
-        "\"organization\", \"roles\" FROM \"user\" where \"name\" = ?";
+        "\"organization\", \"roles\", \"version\" FROM \"user\" where \"name\" = ?";
 
-    private static final String Q_SELECT_BY_ID = "select \"name\", \"password\", \"slat\", \"organization\", \"roles\"" +
-        " FROM \"user\" where \"id\" = ?";
+    private static final String Q_SELECT_BY_ID = "select \"name\", \"password\", \"slat\", \"organization\", " +
+        "\"roles\", \"version\" FROM \"user\" where \"id\" = ?";
 
     private static final String Q_INSERT = "INSERT INTO \"user\" (\"id\", \"name\", \"password\", " +
         "\"salt\", \"organization\") VALUES (DEFAULT, ?,?,?,?)";
 
-    private static final String Q_UPDATE_ROLES = "UPDATE \"user\" SET \"roles\" = ? WHERE \"id\" = ?";
+    private static final String Q_UPDATE_ROLES = "UPDATE \"user\" SET \"roles\" = ?, \"version\" = ? " +
+        " WHERE \"id\" = ? and \"version\" = ?";
 
     private final OrganizationDao organizationDao;
     private final UserRoleDao userRoleDao;
@@ -86,15 +89,16 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
                         salt,
                         organization,
                         Collections.emptySet(),
-                        rs.getLong(1)
+                        rs.getLong(1),
+                        0
                     );
                 } else {
-                    throw new IllegalStateException("Can't receive generated id.");
+                    throw new CannotGetGeneratedKeysJdbcException("Can't receive generated id for the new user entity.");
                 }
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw JdbcUtils.convert(e);
         }
     }
 
@@ -125,13 +129,14 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
                         rs.getBytes(4),
                         organizationDao.findById(rs.getLong(5)),
                         parseRoles(rs.getString(6)),
-                        rs.getLong(1)
+                        rs.getLong(1),
+                        rs.getInt(7)
                     );
                 }
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw JdbcUtils.convert(e);
         }
 
         return null;
@@ -159,13 +164,14 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
                         rs.getBytes(4),
                         organizationDao.findById(rs.getLong(5)),
                         parseRoles(rs.getString(6)),
-                        id
+                        id,
+                        rs.getInt(7)
                     );
                 }
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw JdbcUtils.convert(e);
         }
 
         return null;
@@ -239,17 +245,24 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
              var statement = connection.prepareStatement(Q_UPDATE_ROLES)
         ) {
 
-            statement.setObject(1, rolesToJson(newRoles));
-            statement.setLong(2, user.getId());
+            int version = user.getVersion();
 
-            if (statement.executeUpdate() == 1) {
-                return new JdbcUser(user, newRoles);
-            } else {
-                return user;
+            statement.setObject(1, rolesToJson(newRoles));
+            statement.setInt(2, version + 1);
+            statement.setLong(3, user.getId());
+            statement.setInt(4, version);
+
+            if (statement.executeUpdate() != 1) {
+                throw new NotRelevantVersionJdbcException("The user's version " + version + " is outdated.");
             }
 
+            user.setVersion(version + 1);
+            user.setRoles(newRoles);
+
+            return user;
+
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw JdbcUtils.convert(e);
         }
     }
 

@@ -15,7 +15,13 @@ public interface User {
 
     @NotNull byte[] getSalt();
 
+    @Nullable Organization getOrganization();
+
     @NotNull Set<UserRole> getRoles();
 
-    @Nullable Organization getOrganization();
+    @NotNull void setRoles(@NotNull Set<UserRole> roles);
+
+    int getVersion();
+
+    void setVersion(int version);
 }
