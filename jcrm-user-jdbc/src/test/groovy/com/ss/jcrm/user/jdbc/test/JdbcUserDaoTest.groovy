@@ -1,7 +1,7 @@
 package com.ss.jcrm.user.jdbc.test
 
-import com.ss.jcrm.jdbc.exception.DuplicateJdbcException
-import com.ss.jcrm.jdbc.exception.NotRelevantVersionJdbcException
+import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
+import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserRoleDao
@@ -43,6 +43,38 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             user.getOrganization() == org
     }
 
+    def "should create and load a new user using async"() {
+
+        given:
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+        when:
+            def user = userDao.createAsync("User1", "pswd", salt, org).join()
+        then:
+            user != null
+            user.getName() == "User1"
+            Arrays.equals(user.getSalt(), salt)
+            user.getId() != 0L
+            user.getOrganization() == org
+    }
+
+    def "should load a changed user with correct version"() {
+
+        given:
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+            def user = userDao.create("User1", "pswd", salt, org)
+            def role = userRoleDao.create("TestRole")
+            userDao.addRole(user, role)
+        when:
+            def user2 = userDao.findById(user.getId())
+        then:
+            user2 != null
+            user2.getName() == user.getName()
+            user2.getId() == user.getId()
+            user2.getVersion() == user.getVersion()
+    }
+
     def "should add two new roles to a user"() {
 
         given:
@@ -67,7 +99,34 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             user.getRoles().contains(secondRole)
     }
 
-    def "should throw NotRelevantVersionException during changing a user"() {
+    def "should add two new roles to a user using async"() {
+
+        given:
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+            def user = userDao.create("User1", "pswd", salt, org)
+            def firstRole = userRoleDao.create("Role1")
+            def secondRole = userRoleDao.create("Role2")
+        when:
+
+            userDao.addRoleAsync(user, firstRole)
+                .thenAccept { userDao.addRole(user, secondRole) }
+                .join()
+
+        then:
+            user != null
+            user.getName() == "User1"
+            user.getVersion() == 2
+            Arrays.equals(user.getSalt(), salt)
+            user.getId() != 0L
+            user.getOrganization() == org
+            user.getRoles() != null
+            user.getRoles().size() == 2
+            user.getRoles().contains(firstRole)
+            user.getRoles().contains(secondRole)
+    }
+
+    def "should throw NotActualObjectDaoException during changing a user"() {
 
         given:
 
@@ -82,10 +141,10 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         when:
             userDao.addRole(user, role)
         then:
-            thrown NotRelevantVersionJdbcException
+            thrown NotActualObjectDaoException
     }
 
-    def "should throw DuplicateJdbcException during creating a new user"() {
+    def "should throw DuplicateObjectDaoException during creating a new user"() {
 
         given:
             def org = organizationDao.create("TestOrg1")
@@ -94,7 +153,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         when:
             userDao.create("User1", "pswd", salt, org)
         then:
-            thrown DuplicateJdbcException
+            thrown DuplicateObjectDaoException
     }
 
     def "should remove all roles from a user"() {

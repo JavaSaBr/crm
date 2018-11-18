@@ -1,21 +1,6 @@
-
-plugins {
-    id 'java'
-}
-
 dependencies {
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
     compile project(":jcrm-integration-test")
     compile project(":jcrm-base-spring")
     compile project(":jcrm-jdbc")
     compile "org.testcontainers:postgresql:$testcontainersVersion"
-    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs 'src/main/groovy'
-        }
-    }
 }

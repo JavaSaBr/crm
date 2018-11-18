@@ -1,13 +1,14 @@
 package com.ss.jcrm.user.jdbc.dao;
 
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
+import com.ss.jcrm.dao.exception.GenerateIdDaoException;
+import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
 import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
-import com.ss.jcrm.jdbc.exception.CannotGetGeneratedKeysJdbcException;
-import com.ss.jcrm.jdbc.exception.NotRelevantVersionJdbcException;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
@@ -34,12 +35,12 @@ import java.util.concurrent.Executor;
 import java.util.stream.IntStream;
 
 @Log4j2
-public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
+public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
 
-    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"password\", \"slat\", " +
+    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"password\", \"salt\", " +
         "\"organization\", \"roles\", \"version\" FROM \"user\" where \"name\" = ?";
 
-    private static final String Q_SELECT_BY_ID = "select \"name\", \"password\", \"slat\", \"organization\", " +
+    private static final String Q_SELECT_BY_ID = "select \"name\", \"password\", \"salt\", \"organization\", " +
         "\"roles\", \"version\" FROM \"user\" where \"id\" = ?";
 
     private static final String Q_INSERT = "INSERT INTO \"user\" (\"id\", \"name\", \"password\", " +
@@ -93,7 +94,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
                         0
                     );
                 } else {
-                    throw new CannotGetGeneratedKeysJdbcException("Can't receive generated id for the new user entity.");
+                    throw new GenerateIdDaoException("Can't receive generated id for the new user entity.");
                 }
             }
 
@@ -159,13 +160,13 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
             try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return new JdbcUser(
+                        rs.getString(1),
                         rs.getString(2),
-                        rs.getString(3),
-                        rs.getBytes(4),
-                        organizationDao.findById(rs.getLong(5)),
-                        parseRoles(rs.getString(6)),
+                        rs.getBytes(3),
+                        organizationDao.findById(rs.getLong(4)),
+                        parseRoles(rs.getString(5)),
                         id,
-                        rs.getInt(7)
+                        rs.getInt(6)
                     );
                 }
             }
@@ -193,31 +194,34 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
     }
 
     @Override
-    public @NotNull User addRole(@NotNull User user, @NotNull UserRole role) {
+    public void addRole(@NotNull User user, @NotNull UserRole role) {
 
         var roles = user.getRoles();
 
         if (roles.contains(role)) {
             log.warn("the user {} already has the role {}.", user.getName(), role.getName());
-            return user;
+            return;
         }
 
         var newRoles = new HashSet<UserRole>(roles);
         newRoles.add(role);
 
-        return updateRoles(user, newRoles);
+        updateRoles(user, unmodifiableSet(newRoles));
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull User> addRoleAsync(
+    public @NotNull CompletableFuture<Void> addRoleAsync(
         @NotNull User user,
         @NotNull UserRole role
     ) {
-        return supplyAsync(() -> addRole(user, role), fastDbTaskExecutor);
+        return supplyAsync(() -> {
+            addRole(user, role);
+            return null;
+        }, fastDbTaskExecutor);
     }
 
     @Override
-    public @NotNull User removeRole(
+    public void removeRole(
         @NotNull User user,
         @NotNull UserRole role
     ) {
@@ -226,7 +230,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
 
         if (!roles.contains(role)) {
             log.warn("the user {} doesn't have the role {}.", user.getName(), role.getName());
-            return user;
+            return;
         }
 
         var newRoles = Collections.<UserRole>emptySet();
@@ -236,11 +240,11 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
             newRoles.remove(role);
         }
 
-        return updateRoles(user, newRoles);
+        updateRoles(user, unmodifiableSet(newRoles));
     }
 
 
-    private @NotNull User updateRoles(@NotNull User user, @NotNull Set<UserRole> newRoles) {
+    private void updateRoles(@NotNull User user, @NotNull Set<UserRole> newRoles) {
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(Q_UPDATE_ROLES)
         ) {
@@ -253,13 +257,11 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
             statement.setInt(4, version);
 
             if (statement.executeUpdate() != 1) {
-                throw new NotRelevantVersionJdbcException("The user's version " + version + " is outdated.");
+                throw new NotActualObjectDaoException("The user's version " + version + " is outdated.");
             }
 
             user.setVersion(version + 1);
             user.setRoles(newRoles);
-
-            return user;
 
         } catch (SQLException e) {
             throw JdbcUtils.convert(e);
@@ -267,10 +269,13 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull User> removeRoleAsync(
+    public @NotNull CompletableFuture<Void> removeRoleAsync(
         @NotNull User user, @NotNull UserRole role
     ) {
-        return supplyAsync(() -> removeRole(user, role), fastDbTaskExecutor);
+        return supplyAsync(() -> {
+            removeRole(user, role);
+            return null;
+        }, fastDbTaskExecutor);
     }
 
     private @NotNull Set<UserRole> parseRoles(@Nullable String json) {
@@ -288,7 +293,7 @@ public class JdbcUserDao extends AbstractJdbcDao implements UserDao {
         return IntStream.of(deserialize)
             .mapToObj(userRoleDao::findById)
             .filter(Objects::nonNull)
-            .collect(toSet());
+            .collect(toUnmodifiableSet());
     }
 
     private @Nullable PGobject rolesToJson(@NotNull Set<UserRole> roles) throws SQLException {

@@ -2,8 +2,8 @@ package com.ss.jcrm.user.jdbc.dao;
 
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
-import com.ss.jcrm.jdbc.exception.JdbcException;
+import com.ss.jcrm.dao.exception.DaoException;
+import com.ss.jcrm.jdbc.dao.AbstractNamedObjectJdbcDao;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.jdbc.JdbcOrganization;
@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Log4j2
-public class JdbcOrganizationDao extends AbstractJdbcDao implements OrganizationDao {
+public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization> implements OrganizationDao {
 
     private static final String Q_SELECT_ALL = "select \"id\", \"name\" FROM \"organization\"";
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\" FROM \"organization\" where \"name\" = ?";
@@ -54,7 +54,7 @@ public class JdbcOrganizationDao extends AbstractJdbcDao implements Organization
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw new DaoException(e);
         }
     }
 
@@ -82,7 +82,7 @@ public class JdbcOrganizationDao extends AbstractJdbcDao implements Organization
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw new DaoException(e);
         }
 
         return null;
@@ -109,7 +109,7 @@ public class JdbcOrganizationDao extends AbstractJdbcDao implements Organization
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw new DaoException(e);
         }
 
         return null;
@@ -149,7 +149,7 @@ public class JdbcOrganizationDao extends AbstractJdbcDao implements Organization
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw new DaoException(e);
         }
 
         return result;

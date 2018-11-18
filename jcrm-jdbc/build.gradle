@@ -1,15 +1,10 @@
 
-plugins {
-    id 'java'
-}
-
 dependencies {
     compile project(":jcrm-base")
     compile project(":jcrm-base-spring")
+    compile project(":jcrm-dao")
     compile "org.flywaydb:flyway-core:$flywayVersion"
     compile "com.zaxxer:HikariCP:$hikariCPVersion"
     compile "com.jsoniter:jsoniter:$jsointerVersion"
     compile "org.postgresql:postgresql:$postgresqlVersion"
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
-    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }

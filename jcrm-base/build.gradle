@@ -1,11 +1,3 @@
-
-plugins {
-    id 'java'
-}
-
 dependencies {
     compile "com.spaceshift:rlib.common:$rlibVersion"
-    compile "org.jetbrains:annotations:$annotationVersion"
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
-    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }

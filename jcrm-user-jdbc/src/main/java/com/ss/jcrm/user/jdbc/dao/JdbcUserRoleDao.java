@@ -2,8 +2,8 @@ package com.ss.jcrm.user.jdbc.dao;
 
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
-import com.ss.jcrm.jdbc.exception.JdbcException;
+import com.ss.jcrm.dao.exception.DaoException;
+import com.ss.jcrm.jdbc.dao.AbstractNamedObjectJdbcDao;
 import com.ss.jcrm.user.api.UserRole;
 import com.ss.jcrm.user.api.dao.UserRoleDao;
 import com.ss.jcrm.user.jdbc.JdbcUserRole;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class JdbcUserRoleDao extends AbstractJdbcDao implements UserRoleDao {
+public class JdbcUserRoleDao extends AbstractNamedObjectJdbcDao<UserRole> implements UserRoleDao {
 
     private static final String Q_SELECT_ALL = "select \"id\", \"name\" FROM \"user_role\"";
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\" FROM \"user_role\" where \"name\" = ?";
@@ -52,7 +52,7 @@ public class JdbcUserRoleDao extends AbstractJdbcDao implements UserRoleDao {
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw new DaoException(e);
         }
     }
 
@@ -80,7 +80,7 @@ public class JdbcUserRoleDao extends AbstractJdbcDao implements UserRoleDao {
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw new DaoException(e);
         }
 
         return null;
@@ -107,7 +107,7 @@ public class JdbcUserRoleDao extends AbstractJdbcDao implements UserRoleDao {
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw new DaoException(e);
         }
 
         return null;
@@ -147,7 +147,7 @@ public class JdbcUserRoleDao extends AbstractJdbcDao implements UserRoleDao {
             }
 
         } catch (SQLException e) {
-            throw new JdbcException(e);
+            throw new DaoException(e);
         }
 
         return result;

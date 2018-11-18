@@ -1,9 +1,25 @@
 
-plugins {
-    id "net.ltgt.apt" version "0.19"
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.19"
+    }
 }
 
+rootProject.version = "0.0.1"
+group = "com.spaceshift"
+
 allprojects {
+
+    apply plugin: "java"
+    apply plugin: "net.ltgt.apt"
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
     repositories {
         jcenter()
@@ -27,17 +43,24 @@ allprojects {
         spockVersion = "1.2-groovy-2.5"
         postgresqlVersion = "42.1.1"
     }
-}
 
-subprojects {
-    version = '1.0'
+    dependencies {
+        compileOnly "org.jetbrains:annotations:$annotationVersion"
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    }
 
-    tasks.withType(JavaCompile) {
-
-        apply plugin: "net.ltgt.apt"
-
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+    sourceSets {
+        main {
+            java {
+                srcDirs 'src/main/groovy'
+            }
+        }
+        test {
+            java {
+                srcDirs 'src/test/groovy'
+            }
+        }
     }
 }
 
