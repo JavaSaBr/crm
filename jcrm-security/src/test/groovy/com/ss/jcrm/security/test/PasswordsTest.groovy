@@ -40,10 +40,10 @@ class PasswordsTest extends DefaultSpecification {
     def "should create a char array based password's hash"() {
 
         given:
-            def password = Passwords.nextPassword(30)
+            def password = Passwords.nextCharPassword(30)
             def salt = Passwords.nextSalt
         when:
-            def hash = Passwords.hash(password.toCharArray(), salt)
+            def hash = Passwords.hash(password, salt)
         then:
             hash != null
             hash.length > 0

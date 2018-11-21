@@ -11,7 +11,7 @@ public interface User {
 
     @NotNull String getName();
 
-    @NotNull String getPassword();
+    @NotNull byte[] getPassword();
 
     @NotNull byte[] getSalt();
 
@@ -19,7 +19,7 @@ public interface User {
 
     @NotNull Set<UserRole> getRoles();
 
-    @NotNull void setRoles(@NotNull Set<UserRole> roles);
+    void setRoles(@NotNull Set<UserRole> roles);
 
     int getVersion();
 

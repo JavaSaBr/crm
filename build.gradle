@@ -16,6 +16,7 @@ group = "com.spaceshift"
 allprojects {
 
     apply plugin: "java"
+    apply plugin: "groovy"
     apply plugin: "net.ltgt.apt"
 
     sourceCompatibility = JavaVersion.VERSION_11
@@ -42,6 +43,7 @@ allprojects {
         groovyVersion = "2.5.3"
         spockVersion = "1.2-groovy-2.5"
         postgresqlVersion = "42.1.1"
+        javassistVersion = "3.24.0-GA"
     }
 
     dependencies {
@@ -61,6 +63,19 @@ allprojects {
                 srcDirs 'src/test/groovy'
             }
         }
+    }
+
+    configurations {
+        testArtifacts.extendsFrom testRuntime
+    }
+
+    task testJar(type: Jar) {
+        classifier "test"
+        from sourceSets.test.output
+    }
+
+    artifacts {
+        testArtifacts testJar
     }
 }
 

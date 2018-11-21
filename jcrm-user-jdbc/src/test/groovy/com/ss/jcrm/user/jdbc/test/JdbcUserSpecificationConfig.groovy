@@ -1,9 +1,8 @@
 package com.ss.jcrm.user.jdbc.test
 
 import com.ss.jcrm.integration.test.db.DbSpecificationConfig
-import com.ss.jcrm.jdbc.ConnectionPoolFactory
+import com.ss.jcrm.integration.test.db.DbSpecificationUtils
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig
-import org.flywaydb.core.Flyway
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -31,36 +30,6 @@ class JdbcUserSpecificationConfig {
 
     @Bean
     @NotNull DataSource userDataSource() {
-
-        def address = postgreSQLContainer.getContainerIpAddress()
-        def port = postgreSQLContainer.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
-
-        return ConnectionPoolFactory.newDataSource(
-            "jdbc:postgresql://" + address + ":" + port + "/" + DbSpecificationConfig.DB_NAME,
-            schema,
-            DbSpecificationConfig.USER,
-            DbSpecificationConfig.PWD
-        )
-    }
-
-    @Bean
-    @NotNull Flyway userFlyway() {
-
-        def address = postgreSQLContainer.getContainerIpAddress()
-        def port = postgreSQLContainer.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
-
-        def flyway = Flyway.configure()
-            .locations("classpath:db/migration")
-            .baselineOnMigrate(true)
-            .dataSource(
-                "jdbc:postgresql://" + address + ":" + port + "/" + DbSpecificationConfig.DB_NAME,
-                DbSpecificationConfig.USER,
-                DbSpecificationConfig.PWD
-            )
-            .load()
-
-        flyway.migrate()
-
-        return flyway
+        return DbSpecificationUtils.newDataSource(postgreSQLContainer, schema)
     }
 }

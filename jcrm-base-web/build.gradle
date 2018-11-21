@@ -1,5 +1,7 @@
 dependencies {
     compile project(":jcrm-base")
+    compile "com.jsoniter:jsoniter:$jsointerVersion"
+    compile "org.javassist:javassist:$javassistVersion"
 
     compile ("org.springframework.boot:spring-boot-starter-web:$springbootVersion") {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'

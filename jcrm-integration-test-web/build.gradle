@@ -1,0 +1,5 @@
+dependencies {
+    compile project(":jcrm-integration-test")
+    compile project(":jcrm-base-spring")
+    compile project(":jcrm-base-web")
+}

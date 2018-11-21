@@ -1,14 +1,18 @@
-package com.ss.jcrm.user.jdbc.test
+package com.ss.jcrm.user.jdbc.test.dao
 
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
+import com.ss.jcrm.security.Passwords
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserRoleDao
+import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
 import javax.sql.DataSource
 import java.util.concurrent.ThreadLocalRandom
+
+import static com.ss.jcrm.integration.test.db.DbSpecificationUtils.clearTable
 
 class JdbcUserDaoTest extends JdbcUserSpecification {
 
@@ -25,7 +29,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     DataSource userDataSource
 
     def setup() {
-        clearTable(userDataSource, TABLE_USER, TABLE_ORGANIZATION, TABLE_USER_ROLE)
+        clearTable(userDataSource, JdbcUserSpecification.TABLE_USER, JdbcUserSpecification.TABLE_ORGANIZATION, JdbcUserSpecification.TABLE_USER_ROLE)
     }
 
     def "should create and load a new user"() {
@@ -33,8 +37,9 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             def org = organizationDao.create("TestOrg1")
             def salt = makeSlat(20)
+            def password = Passwords.nextBytePassword(24)
         when:
-            def user = userDao.create("User1", "pswd", salt, org)
+            def user = userDao.create("User1", password, salt, org)
         then:
             user != null
             user.getName() == "User1"
@@ -48,8 +53,9 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             def org = organizationDao.create("TestOrg1")
             def salt = makeSlat(20)
+            def password = Passwords.nextBytePassword(24)
         when:
-            def user = userDao.createAsync("User1", "pswd", salt, org).join()
+            def user = userDao.createAsync("User1", password, salt, org).join()
         then:
             user != null
             user.getName() == "User1"
@@ -63,7 +69,8 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             def org = organizationDao.create("TestOrg1")
             def salt = makeSlat(20)
-            def user = userDao.create("User1", "pswd", salt, org)
+            def password = Passwords.nextBytePassword(24)
+            def user = userDao.create("User1", password, salt, org)
             def role = userRoleDao.create("TestRole")
             userDao.addRole(user, role)
         when:
@@ -80,7 +87,8 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             def org = organizationDao.create("TestOrg1")
             def salt = makeSlat(20)
-            def user = userDao.create("User1", "pswd", salt, org)
+            def password = Passwords.nextBytePassword(24)
+            def user = userDao.create("User1", password, salt, org)
             def firstRole = userRoleDao.create("Role1")
             def secondRole = userRoleDao.create("Role2")
         when:
@@ -104,7 +112,8 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             def org = organizationDao.create("TestOrg1")
             def salt = makeSlat(20)
-            def user = userDao.create("User1", "pswd", salt, org)
+            def password = Passwords.nextBytePassword(24)
+            def user = userDao.create("User1", password, salt, org)
             def firstRole = userRoleDao.create("Role1")
             def secondRole = userRoleDao.create("Role2")
         when:
@@ -133,7 +142,8 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def org = organizationDao.create("TestOrg1")
             def salt = makeSlat(20)
 
-            def user = userDao.create("User1", "pswd", salt, org)
+            def password = Passwords.nextBytePassword(24)
+            def user = userDao.create("User1", password, salt, org)
             user.setVersion(5)
 
             def role = userRoleDao.create("Role1")
@@ -149,9 +159,10 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             def org = organizationDao.create("TestOrg1")
             def salt = makeSlat(20)
-            userDao.create("User1", "pswd", salt, org)
+            def password = Passwords.nextBytePassword(24)
+            userDao.create("User1", password, salt, org)
         when:
-            userDao.create("User1", "pswd", salt, org)
+            userDao.create("User1", password, salt, org)
         then:
             thrown DuplicateObjectDaoException
     }
@@ -163,7 +174,8 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def salt = makeSlat(20)
             def firstRole = userRoleDao.create("Role1")
             def secondRole = userRoleDao.create("Role2")
-            def user = userDao.create("User1", "pswd", salt, org)
+            def password = Passwords.nextBytePassword(24)
+            def user = userDao.create("User1", password, salt, org)
             userDao.addRole(user, firstRole)
             userDao.addRole(user, secondRole)
         when:
@@ -190,7 +202,8 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             def org = organizationDao.create("TestOrg1")
             def salt = makeSlat(20)
-            userDao.create("User1", "pswd", salt, org)
+            def password = Passwords.nextBytePassword(24)
+            userDao.create("User1", password, salt, org)
         when:
             def user = userDao.findByName("User1")
         then:

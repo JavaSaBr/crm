@@ -1,12 +1,16 @@
-package com.ss.jcrm.user.jdbc.test
+package com.ss.jcrm.user.jdbc.test.dao
+
 
 import com.ss.jcrm.user.api.Organization
 import com.ss.jcrm.user.api.dao.OrganizationDao
+import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 import com.ss.rlib.common.util.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 
 import javax.sql.DataSource
 import java.util.concurrent.CompletableFuture
+
+import static com.ss.jcrm.integration.test.db.DbSpecificationUtils.clearTable
 
 class JdbcOrganizationDaoTest extends JdbcUserSpecification {
 
@@ -17,7 +21,7 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
     DataSource userDataSource
 
     def setup() {
-        clearTable(userDataSource, TABLE_ORGANIZATION)
+        clearTable(userDataSource, JdbcUserSpecification.TABLE_ORGANIZATION)
     }
 
     def "should create a new organization"(String name, String resultName) {

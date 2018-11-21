@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
@@ -16,6 +17,8 @@ public class Passwords {
 
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
+
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private static final ThreadLocal<Random> LOCAL_RANDOM = ThreadLocal.withInitial(SecureRandom::new);
     private static final ThreadLocal<SecretKeyFactory> LOCAL_SECRET_KEY_FACTORY =
@@ -83,5 +86,15 @@ public class Passwords {
         }
 
         return builder.toString();
+    }
+
+    public static @NotNull char[] nextCharPassword(int length) {
+        return nextPassword(length).
+            toCharArray();
+    }
+
+    public static @NotNull byte[] nextBytePassword(int length) {
+        return nextPassword(length)
+            .getBytes(UTF_8);
     }
 }

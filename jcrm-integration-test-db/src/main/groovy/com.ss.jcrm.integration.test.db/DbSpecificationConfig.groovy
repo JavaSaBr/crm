@@ -1,5 +1,7 @@
 package com.ss.jcrm.integration.test.db
 
+
+import org.flywaydb.core.Flyway
 import org.jetbrains.annotations.NotNull
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,5 +29,25 @@ class DbSpecificationConfig {
         }
 
         return container
+    }
+
+    @Bean
+    @NotNull Flyway flyway() {
+
+        def container = postgreSQLContainer()
+        def address = container.getContainerIpAddress()
+        def port = container.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
+
+        def flyway = Flyway.configure()
+            .locations("classpath:db/migration")
+            .baselineOnMigrate(true)
+            .dataSource(
+                "jdbc:postgresql://" + address + ":" + port + "/" + DbSpecificationConfig.DB_NAME,
+                DbSpecificationConfig.USER,
+                DbSpecificationConfig.PWD
+            )
+            .load()
+
+        return flyway
     }
 }

@@ -18,7 +18,7 @@ public interface UserDao extends NamedObjectDao<User> {
      */
     @NotNull User create(
         @NotNull String name,
-        @NotNull String password,
+        @NotNull byte[] password,
         @NotNull byte[] salt,
         @Nullable Organization organization
     );
@@ -28,7 +28,7 @@ public interface UserDao extends NamedObjectDao<User> {
      */
     @NotNull CompletableFuture<@NotNull User> createAsync(
         @NotNull String name,
-        @NotNull String password,
+        @NotNull byte[] password,
         @NotNull byte[] salt,
         @Nullable Organization organization
     );

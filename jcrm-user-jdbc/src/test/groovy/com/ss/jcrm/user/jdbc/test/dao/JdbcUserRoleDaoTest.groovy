@@ -1,12 +1,15 @@
-package com.ss.jcrm.user.jdbc.test
+package com.ss.jcrm.user.jdbc.test.dao
 
 import com.ss.jcrm.user.api.UserRole
 import com.ss.jcrm.user.api.dao.UserRoleDao
+import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 import com.ss.rlib.common.util.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 
 import javax.sql.DataSource
 import java.util.concurrent.CompletableFuture
+
+import static com.ss.jcrm.integration.test.db.DbSpecificationUtils.clearTable
 
 class JdbcUserRoleDaoTest extends JdbcUserSpecification {
 
@@ -17,7 +20,7 @@ class JdbcUserRoleDaoTest extends JdbcUserSpecification {
     DataSource userDataSource
 
     def setup() {
-        clearTable(userDataSource, TABLE_USER_ROLE)
+        clearTable(userDataSource, JdbcUserSpecification.TABLE_USER_ROLE)
     }
 
     def "should create a new role"(String name, String resultName) {

@@ -18,7 +18,7 @@ import java.util.Set;
 public class JdbcUser implements User {
 
     private final String name;
-    private final String password;
+    private final byte[] password;
     private final byte[] salt;
     private final Organization organization;
 
@@ -52,7 +52,7 @@ public class JdbcUser implements User {
 
     public JdbcUser(
         @NotNull String name,
-        @NotNull String password,
+        @NotNull byte[] password,
         @NotNull byte[] salt,
         @Nullable Organization organization,
         @NotNull Set<UserRole> roles,

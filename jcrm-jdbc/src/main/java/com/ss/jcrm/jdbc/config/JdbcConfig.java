@@ -1,6 +1,6 @@
 package com.ss.jcrm.jdbc.config;
 
-import static com.ss.jcrm.base.CommonUtils.CORES;
+import static com.ss.jcrm.base.utils.CommonUtils.CORES;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

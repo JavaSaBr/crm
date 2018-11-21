@@ -67,7 +67,7 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
     @Override
     public @NotNull User create(
         @NotNull String name,
-        @NotNull String password,
+        @NotNull byte[] password,
         @NotNull byte[] salt,
         @Nullable Organization organization
     ) {
@@ -77,7 +77,7 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
         ) {
 
             statement.setString(1, name);
-            statement.setString(2, password);
+            statement.setBytes(2, password);
             statement.setBytes(3, salt);
             statement.setLong(4, organization == null ? 0L : organization.getId());
             statement.execute();
@@ -106,7 +106,7 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
     @Override
     public @NotNull CompletableFuture<@NotNull User> createAsync(
         @NotNull String name,
-        @NotNull String password,
+        @NotNull byte[] password,
         @NotNull byte[] salt,
         @Nullable Organization organization
     ) {
@@ -126,7 +126,7 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
                 if (rs.next()) {
                     return new JdbcUser(
                         rs.getString(2),
-                        rs.getString(3),
+                        rs.getBytes(3),
                         rs.getBytes(4),
                         organizationDao.findById(rs.getLong(5)),
                         parseRoles(rs.getString(6)),
@@ -161,7 +161,7 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
                 if (rs.next()) {
                     return new JdbcUser(
                         rs.getString(1),
-                        rs.getString(2),
+                        rs.getBytes(2),
                         rs.getBytes(3),
                         organizationDao.findById(rs.getLong(4)),
                         parseRoles(rs.getString(5)),

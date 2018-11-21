@@ -2,6 +2,7 @@
 dependencies {
     compile project(":jcrm-base")
     compile project(":jcrm-base-spring")
+    compile project(":jcrm-base-web")
     compile project(":jcrm-dao")
     compile "org.flywaydb:flyway-core:$flywayVersion"
     compile "com.zaxxer:HikariCP:$hikariCPVersion"
