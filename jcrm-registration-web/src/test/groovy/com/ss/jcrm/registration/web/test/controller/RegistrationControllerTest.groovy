@@ -21,7 +21,7 @@ class RegistrationControllerTest extends RegistrationSpecification {
 
         when:
 
-            def mvcResult = mvc.perform(post("/status")
+            def mvcResult = mvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(data)
             )

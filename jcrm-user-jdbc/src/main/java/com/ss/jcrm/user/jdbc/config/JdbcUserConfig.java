@@ -8,14 +8,12 @@ import com.ss.jcrm.user.api.dao.UserRoleDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcOrganizationDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcUserDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcUserRoleDao;
-import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Lazy;
 
 import javax.sql.DataSource;
 import java.util.concurrent.Executor;
@@ -41,20 +39,6 @@ public class JdbcUserConfig {
 
     @Value("${jdbc.user.db.password}")
     private String password;
-
-    @Bean @Lazy
-    @NotNull Flyway userFlyway() {
-
-        var flyway = Flyway.configure()
-            .locations("classpath:db/migration")
-            .baselineOnMigrate(true)
-            .dataSource(url, username, password)
-            .load();
-
-        flyway.migrate();
-
-        return flyway;
-    }
 
     @Bean
     @NotNull DataSource userDataSource() {
