@@ -22,7 +22,8 @@ public class JsoniterHttpMessageConverter extends AbstractJsonHttpMessageConvert
     }
 
     @Override
-    protected @Nullable Object readInternal(Type resolvedType, Reader reader) throws Exception {
+    protected @Nullable Object readInternal(@NotNull Type resolvedType, @NotNull Reader reader) throws Exception {
+        //TODO need to replace using reader
         return JsonIterator.parse(CommonUtils.toString(reader))
             .read(resolvedType);
     }

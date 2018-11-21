@@ -16,13 +16,6 @@ class JdbcUserRoleDaoTest extends JdbcUserSpecification {
     @Autowired
     UserRoleDao userRoleDao
 
-    @Autowired
-    DataSource userDataSource
-
-    def setup() {
-        clearTable(userDataSource, JdbcUserSpecification.TABLE_USER_ROLE)
-    }
-
     def "should create a new role"(String name, String resultName) {
 
         expect:

@@ -48,6 +48,8 @@ class DbSpecificationConfig {
             )
             .load()
 
+        flyway.migrate()
+
         return flyway
     }
 }

@@ -19,5 +19,5 @@ import org.springframework.context.annotation.PropertySource
 class RegistrationConfigTest {
 
     @Autowired
-    List<? extends Flyway> flyways
+    Flyway flyways
 }

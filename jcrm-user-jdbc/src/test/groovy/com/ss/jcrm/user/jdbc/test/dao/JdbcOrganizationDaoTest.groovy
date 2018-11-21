@@ -17,13 +17,6 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
     @Autowired
     OrganizationDao organizationDao
 
-    @Autowired
-    DataSource userDataSource
-
-    def setup() {
-        clearTable(userDataSource, JdbcUserSpecification.TABLE_ORGANIZATION)
-    }
-
     def "should create a new organization"(String name, String resultName) {
 
         expect:

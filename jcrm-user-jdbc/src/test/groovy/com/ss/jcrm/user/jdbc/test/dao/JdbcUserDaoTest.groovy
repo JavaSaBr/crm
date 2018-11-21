@@ -25,13 +25,6 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     @Autowired
     OrganizationDao organizationDao
 
-    @Autowired
-    DataSource userDataSource
-
-    def setup() {
-        clearTable(userDataSource, JdbcUserSpecification.TABLE_USER, JdbcUserSpecification.TABLE_ORGANIZATION, JdbcUserSpecification.TABLE_USER_ROLE)
-    }
-
     def "should create and load a new user"() {
 
         given:
