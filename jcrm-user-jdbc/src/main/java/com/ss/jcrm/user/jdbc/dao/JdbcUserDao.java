@@ -8,6 +8,7 @@ import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import com.ss.jcrm.dao.exception.GenerateIdDaoException;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
+import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
 import com.ss.jcrm.user.api.Organization;
@@ -185,7 +186,14 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
 
     @Override
     public @NotNull User requireById(long id) {
-        return notNull(findById(id));
+
+        var user = findById(id);
+
+        if (user == null) {
+            throw new ObjectNotFoundDaoException("Can't find a user with the id " + id);
+        }
+
+        return user;
     }
 
     @Override
