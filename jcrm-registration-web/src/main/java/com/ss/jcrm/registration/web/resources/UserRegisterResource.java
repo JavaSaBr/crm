@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 @Getter
 @Setter
@@ -16,5 +15,4 @@ public class UserRegisterResource implements RestResource {
     private String name;
     private String password;
     private long[] roles;
-    private long organization;
 }

@@ -1,0 +1,8 @@
+dependencies {
+    compile project(":jcrm-security")
+    compile project(":jcrm-base-web")
+    compile project(":jcrm-user-api")
+    compile "io.jsonwebtoken:jjwt-api:$jsonwebtokenVersion"
+    runtime "io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion"
+    testCompileOnly project(":jcrm-integration-test")
+}

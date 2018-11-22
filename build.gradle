@@ -44,6 +44,7 @@ allprojects {
         spockVersion = "1.2-groovy-2.5"
         postgresqlVersion = "42.1.1"
         javassistVersion = "3.24.0-GA"
+        jsonwebtokenVersion = "0.10.5"
     }
 
     dependencies {

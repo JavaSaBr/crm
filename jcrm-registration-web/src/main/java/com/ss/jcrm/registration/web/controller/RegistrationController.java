@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +39,10 @@ public class RegistrationController {
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    @NotNull CompletableFuture<?> register(@NotNull @RequestBody UserRegisterResource resource) {
+    @NotNull CompletableFuture<?> register(
+        @RequestHeader("token") @NotNull String token,
+        @NotNull @RequestBody UserRegisterResource resource
+    ) {
 
         String name = resource.getName();
         String password = resource.getPassword();
@@ -47,7 +51,6 @@ public class RegistrationController {
 
         }
 
-        long organization = resource.getOrganization();
         long[] roles = resource.getRoles();
 
         return CompletableFuture.completedFuture(ResponseEntity.ok());
