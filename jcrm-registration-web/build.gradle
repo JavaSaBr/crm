@@ -1,8 +1,8 @@
 dependencies {
     compile project(":jcrm-base-web")
     compile project(":jcrm-user-jdbc")
+    compile project(":jcrm-security-web")
     testCompile project(path: ":jcrm-user-jdbc", configuration: "testArtifacts")
     testCompile project(":jcrm-integration-test-db")
     testCompile project(":jcrm-integration-test-web")
-    testCompile project(":jcrm-security")
 }
