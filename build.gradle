@@ -30,7 +30,7 @@ allprojects {
 
     ext {
         annotationVersion = "16.0.3"
-        rlibVersion = "8.1.0"
+        rlibVersion = "9.0.3"
         lombokVersion = '1.18.4'
         lombokGradlePluginVersion = '0.19'
         springbootVersion = '2.1.0.RELEASE'

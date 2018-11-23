@@ -1,51 +1,67 @@
 package com.ss.jcrm.registration.web.controller;
 
-import com.ss.jcrm.registration.web.resources.AuthenticationResource;
-import com.ss.jcrm.registration.web.resources.UserRegisterResource;
+import com.ss.jcrm.registration.web.resources.AuthenticationRequest;
+import com.ss.jcrm.registration.web.resources.AuthenticationResponse;
+import com.ss.jcrm.security.Passwords;
 import com.ss.jcrm.security.web.token.TokenService;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserRoleDao;
+import com.ss.jcrm.web.controller.AsyncRestController;
+import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.rlib.common.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @RestController
-public class AuthenticationController {
+public class AuthenticationController extends AsyncRestController {
 
     private final TokenService tokenService;
+    private final UserDao userDao;
 
     @Autowired
     public AuthenticationController(
-        @NotNull TokenService tokenService
+        @NotNull Executor controllerExecutor,
+        @NotNull TokenService tokenService,
+        @NotNull UserDao userDao
     ) {
+        super(controllerExecutor);
         this.tokenService = tokenService;
+        this.userDao = userDao;
     }
 
     @PostMapping(
-        path = "/auth",
+        path = "/authenticate",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    @NotNull CompletableFuture<?> auth(@NotNull @RequestBody AuthenticationResource resource) {
+    @NotNull CompletableFuture<@NotNull AuthenticationResponse> authenticate(
+        @NotNull @RequestBody AuthenticationRequest resource
+    ) {
 
-        String name = resource.getName();
-        String password = resource.getPassword();
+        var name = resource.getName();
+        var password = resource.getPassword();
 
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(password)) {
-
+            throw new BadRequestWebException("The name or password is empty.");
         }
 
-        long[] roles = resource.getRoles();
+        return userDao.findByNameAsync(name)
+            .thenApplyAsync(user -> {
 
-        return CompletableFuture.completedFuture(ResponseEntity.ok());
+                if (user == null) {
+                    throw new BadRequestWebException("The name or password isn't correct.");
+                } else if (!Passwords.isCorrect(password, user.getSalt(), user.getPassword())) {
+                    throw new BadRequestWebException("The name or password isn't correct.");
+                }
+
+                return new AuthenticationResponse(tokenService.generateNewToken(user));
+
+            }, controllerExecutor);
     }
 }

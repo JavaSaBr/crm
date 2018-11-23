@@ -13,7 +13,7 @@ import org.springframework.http.MediaType
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class RegistrationControllerTest extends RegistrationSpecification {
+class AuthenticationControllerTest extends RegistrationSpecification {
 
     @Autowired
     OrganizationDao organizationDao
@@ -26,7 +26,6 @@ class RegistrationControllerTest extends RegistrationSpecification {
         given:
 
             def role = userRoleDao.create("TestRole1")
-            def org = organizationDao.create("TestOrg")
             def roles = ArrayFactory.toLongArray(role.getId())
 
             def data = JsonStream.serialize(

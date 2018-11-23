@@ -1,6 +1,5 @@
 package com.ss.jcrm.user.jdbc.dao;
 
-import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -18,6 +17,7 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserRoleDao;
 import com.ss.jcrm.user.jdbc.JdbcUser;
+import com.ss.rlib.common.util.ObjectUtils;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -186,14 +186,8 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
 
     @Override
     public @NotNull User requireById(long id) {
-
-        var user = findById(id);
-
-        if (user == null) {
-            throw new ObjectNotFoundDaoException("Can't find a user with the id " + id);
-        }
-
-        return user;
+        return ObjectUtils.notNull(findById(id), id,
+            value -> new ObjectNotFoundDaoException("Can't find a user with the id " + value));
     }
 
     @Override
