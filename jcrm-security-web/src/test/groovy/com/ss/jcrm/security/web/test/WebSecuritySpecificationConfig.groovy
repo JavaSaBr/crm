@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource
     JdbcUserSpecificationConfig,
     WebSecurityConfig
 ])
-@PropertySource("classpath:com/ss/jcrm/security/web/test/jcrm-web-security-test.properties")
+@PropertySource("classpath:com/ss/jcrm/security/web/test/security-web-test.properties")
 class WebSecuritySpecificationConfig {
 
 }

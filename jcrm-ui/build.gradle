@@ -1,0 +1,23 @@
+
+task buildAngular(type: Exec) {
+    commandLine 'ng', 'build'
+}
+
+task debug(type: Exec) {
+    commandLine 'ng', 'serve'
+}
+
+configure(debug) {
+    group = 'Application'
+    description = 'Debug front-end'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src'
+        }
+    }
+}
+
+tasks.build.dependsOn buildAngular

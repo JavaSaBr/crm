@@ -1,0 +1,21 @@
+import java.nio.file.Paths
+
+plugins {
+    id 'org.springframework.boot' version '2.1.0.RELEASE'
+}
+
+dependencies {
+    compile project(":jcrm-base-web")
+    compile project(":jcrm-ui")
+}
+
+task copyFrontEnd(type: Copy) {
+
+    def project = project(':jcrm-ui')
+    def projectPath = project.projectDir.getPath()
+
+    from Paths.get(projectPath, 'build', 'front-end').toString()
+    into './build/resources/main/com/ss/jcrm/ui/server'
+}
+
+tasks.jar.dependsOn copyFrontEnd

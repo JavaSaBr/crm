@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
 @Import(RegistrationConfig.class)
-@PropertySource("classpath:com/ss/jcrm/registration/web/application.properties")
+//@PropertySource("classpath:com/ss/jcrm/registration/web/application.properties")
 public class RegistrationApplication extends BaseWebApplication {
 
     public static void main(@NotNull String[] args) {

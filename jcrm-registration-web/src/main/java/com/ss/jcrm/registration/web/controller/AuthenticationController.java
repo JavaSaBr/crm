@@ -2,8 +2,8 @@ package com.ss.jcrm.registration.web.controller;
 
 import com.ss.jcrm.registration.web.resources.AuthenticationRequest;
 import com.ss.jcrm.registration.web.resources.AuthenticationResponse;
-import com.ss.jcrm.security.Passwords;
-import com.ss.jcrm.security.web.token.TokenService;
+import com.ss.jcrm.security.service.PasswordService;
+import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.controller.AsyncRestController;
 import com.ss.jcrm.web.exception.BadRequestWebException;
@@ -23,16 +23,19 @@ public class AuthenticationController extends AsyncRestController {
 
     private final TokenService tokenService;
     private final UserDao userDao;
+    private final PasswordService passwordService;
 
     @Autowired
     public AuthenticationController(
         @NotNull Executor controllerExecutor,
         @NotNull TokenService tokenService,
-        @NotNull UserDao userDao
+        @NotNull UserDao userDao,
+        @NotNull PasswordService passwordService
     ) {
         super(controllerExecutor);
         this.tokenService = tokenService;
         this.userDao = userDao;
+        this.passwordService = passwordService;
     }
 
     @PostMapping(
@@ -56,7 +59,7 @@ public class AuthenticationController extends AsyncRestController {
 
                 if (user == null) {
                     throw new BadRequestWebException("The name or password isn't correct.");
-                } else if (!Passwords.isCorrect(password, user.getSalt(), user.getPassword())) {
+                } else if (!passwordService.isCorrect(password, user.getSalt(), user.getPassword())) {
                     throw new BadRequestWebException("The name or password isn't correct.");
                 }
 

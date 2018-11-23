@@ -1,21 +1,19 @@
 package com.ss.jcrm.registration.web.test
 
 import com.ss.jcrm.integration.test.web.WebSpecification
-import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
+import com.ss.jcrm.user.jdbc.test.helper.UserTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 
-import javax.sql.DataSource
-
 @WebAppConfiguration
-@ContextConfiguration(classes = RegistrationConfigTest)
+@ContextConfiguration(classes = RegistrationSpecificationConfig)
 class RegistrationSpecification extends WebSpecification {
 
     @Autowired
-    DataSource userDataSource
+    UserTestHelper userTestHelper
 
     def setup() {
-        JdbcUserSpecification.clearAllTables(userDataSource)
+        userTestHelper.clearAllData()
     }
 }

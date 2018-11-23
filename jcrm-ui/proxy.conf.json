@@ -1,0 +1,29 @@
+{
+  "/library/*": {
+    "target": "http://localhost:10000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/library": ""
+    }
+  },
+  "/video/*": {
+    "target": "http://localhost:10001",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/video": ""
+    }
+  },
+  "/catalog/api/*": {
+    "target": "http://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/catalog": ""
+    }
+  }
+}

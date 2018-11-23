@@ -1,45 +1,36 @@
 package com.ss.jcrm.registration.web.test.controller
 
 import com.jsoniter.output.JsonStream
-import com.ss.jcrm.registration.web.resources.UserRegisterResource
+import com.ss.jcrm.registration.web.resources.AuthenticationRequest
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
-import com.ss.jcrm.security.Passwords
-import com.ss.jcrm.user.api.dao.OrganizationDao
-import com.ss.jcrm.user.api.dao.UserRoleDao
-import com.ss.rlib.common.util.array.ArrayFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static org.hamcrest.Matchers.notNullValue
 
 class AuthenticationControllerTest extends RegistrationSpecification {
 
-    @Autowired
-    OrganizationDao organizationDao
-
-    @Autowired
-    UserRoleDao userRoleDao
-
-    def "should create a new user"() {
+    def "should authenticate a user"() {
 
         given:
 
-            def role = userRoleDao.create("TestRole1")
-            def roles = ArrayFactory.toLongArray(role.getId())
-
-            def data = JsonStream.serialize(
-                new UserRegisterResource("User1", Passwords.nextPassword(24), roles)
-            )
+            def user = userTestHelper.newTestUser("User1")
+            def data = JsonStream.serialize(new AuthenticationRequest(user.name, user.password))
 
         when:
 
-            def mvcResult = mvc.perform(post("/register")
+            def response = mvc.perform(post("/authenticate")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(data)
-            )
+                .content(data))
+                .andReturn()
 
         then:
-            mvcResult.andExpect(status().is2xxSuccessful())
+            mvc.perform(asyncDispatch(response))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$.token', notNullValue()))
+                .andReturn()
     }
 }

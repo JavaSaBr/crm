@@ -45,6 +45,8 @@ allprojects {
         postgresqlVersion = "42.1.1"
         javassistVersion = "3.24.0-GA"
         jsonwebtokenVersion = "0.10.5"
+        hamcrestVersion = "1.3"
+        jsonpathVersion = "2.4.0"
     }
 
     dependencies {

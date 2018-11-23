@@ -1,4 +1,4 @@
 dependencies {
-    compile project(":jcrm-base")
+    compile project(":jcrm-base-spring")
     testCompileOnly project(":jcrm-integration-test")
 }

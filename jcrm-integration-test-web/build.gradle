@@ -2,4 +2,6 @@ dependencies {
     compile project(":jcrm-integration-test")
     compile project(":jcrm-base-spring")
     compile project(":jcrm-base-web")
+    compile "org.hamcrest:hamcrest-library:$hamcrestVersion"
+    compile "com.jayway.jsonpath:json-path:$jsonpathVersion"
 }

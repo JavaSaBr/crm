@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 import java.util.concurrent.Executor;
@@ -28,21 +29,17 @@ public class JdbcUserConfig {
     @Autowired
     private Executor slowDbTaskExecutor;
 
-    @Value("${jdbc.user.db.url}")
-    private String url;
-
-    @Value("${jdbc.user.db.schema}")
-    private String schema;
-
-    @Value("${jdbc.user.db.username}")
-    private String username;
-
-    @Value("${jdbc.user.db.password}")
-    private String password;
+    @Autowired
+    Environment env;
 
     @Bean
     @NotNull DataSource userDataSource() {
-        return ConnectionPoolFactory.newDataSource(url, schema, username, password);
+        return ConnectionPoolFactory.newDataSource(
+            env.getRequiredProperty("jdbc.user.db.url"),
+            env.getRequiredProperty("jdbc.user.db.schema"),
+            env.getRequiredProperty("jdbc.user.db.username"),
+            env.getRequiredProperty("jdbc.user.db.password")
+        );
     }
 
     @Bean
