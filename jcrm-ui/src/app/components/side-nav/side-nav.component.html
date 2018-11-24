@@ -1,0 +1,14 @@
+<mat-sidenav-container>
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened">Start</mat-sidenav>
+    <mat-sidenav-content>
+
+        <p>
+            <button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button>
+        </p>
+        <p>Events:</p>
+        <div class="example-events">
+            <div *ngFor="let e of events">{{e}}</div>
+        </div>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

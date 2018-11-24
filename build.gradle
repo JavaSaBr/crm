@@ -10,6 +10,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.springframework.boot' version '2.1.0.RELEASE'
+}
+
 rootProject.version = "0.0.1"
 group = "com.spaceshift"
 
@@ -80,6 +84,10 @@ allprojects {
     artifacts {
         testArtifacts testJar
     }
+}
+
+configure(subprojects.findAll { it.name.contains("web") || it.name.contains("server") }) {
+    apply plugin: 'org.springframework.boot'
 }
 
 wrapper {

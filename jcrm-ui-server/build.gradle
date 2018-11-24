@@ -1,9 +1,5 @@
 import java.nio.file.Paths
 
-plugins {
-    id 'org.springframework.boot' version '2.1.0.RELEASE'
-}
-
 dependencies {
     compile project(":jcrm-base-web")
     compile project(":jcrm-ui")
@@ -19,3 +15,4 @@ task copyFrontEnd(type: Copy) {
 }
 
 tasks.jar.dependsOn copyFrontEnd
+tasks.bootJar.dependsOn copyFrontEnd
