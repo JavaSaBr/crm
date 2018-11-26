@@ -11,14 +11,16 @@
     <div class="header-divider"></div>
 
     <span>Current Page</span>
+    <span class="space-filler"></span>
 
-    <form>
-        <mat-form-field class="example-full-width">
-            <input matInput type="search" placeholder="Favorite food" value="Sushi">
+    <mat-icon class="search-icon">search</mat-icon>
+    <form class="search-form">
+        <mat-form-field class="search-field">
+            <input matInput type="search" placeholder="Search">
         </mat-form-field>
     </form>
 
     <span class="space-filler"></span>
-    <span>Right Aligned Text</span>
+    <span *ngIf="!userService.isAuthenticated()">LOGIN</span>
 </mat-toolbar>
 <app-side-nav #sideNavComponent></app-side-nav>

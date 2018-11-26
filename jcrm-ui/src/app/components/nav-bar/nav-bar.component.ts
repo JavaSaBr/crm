@@ -1,6 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Injectable, OnInit, ViewChild} from '@angular/core';
 import {SideNavComponent} from '../side-nav/side-nav.component';
 import {MatDrawerToggleResult} from '@angular/material';
+import {UserService} from '../../services/user.service';
 
 @Component({
     selector: 'app-nav-bar',
@@ -15,7 +16,7 @@ export class NavBarComponent implements OnInit {
     additionalHamburgerStyle: string;
     sideNavComponentOpen: boolean;
 
-    constructor() {
+    constructor(public userService: UserService) {
     }
 
     ngOnInit() {
