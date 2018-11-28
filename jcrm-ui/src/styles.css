@@ -1,5 +1,8 @@
 body {
     margin: 0;
-    height: 600px;
-    background-color: red;
+    height: 100%;
+}
+
+html {
+    height: 100%;
 }
