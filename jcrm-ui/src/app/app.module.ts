@@ -7,7 +7,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
 import {
     MatDividerModule,
-    MatFormFieldModule, MatGridListModule,
+    MatFormFieldModule,
+    MatGridListModule,
     MatIconModule,
     MatInputModule,
     MatListModule,
@@ -17,6 +18,8 @@ import {
 import {SideNavComponent} from './components/side-nav/side-nav.component';
 import {HomeComponent} from './pages/home/home.component';
 import {FormsModule} from '@angular/forms';
+import {SideMenuService} from './services/side-menu.service';
+import {UserService} from './services/user.service';
 
 @NgModule({
     declarations: [
@@ -39,7 +42,7 @@ import {FormsModule} from '@angular/forms';
         MatListModule,
         MatGridListModule
     ],
-    providers: [],
+    providers: [SideMenuService, UserService],
     bootstrap: [AppComponent]
 })
 export class AppModule {
