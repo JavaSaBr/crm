@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDrawerToggleResult} from '@angular/material';
 import {UserService} from '../../services/user.service';
 import {SideMenuService} from '../../services/side-menu.service';
 
@@ -8,33 +7,26 @@ import {SideMenuService} from '../../services/side-menu.service';
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']
 })
-export class NavBarComponent implements OnInit {
+export class NavBarComponent {
 
     additionalHamburgerStyle: string;
 
-    constructor(public userService: UserService, private sideMenuService: SideMenuService) {
+    constructor(private userService: UserService, private sideMenuService: SideMenuService) {
+        this.sideMenuService.changingProperty()
+            .subscribe(() => {
+                console.log(this.sideMenuService.isOpen());
+                this.additionalHamburgerStyle = this.sideMenuService.isOpen() ? '' : 'is-active';
+            });
+        this.additionalHamburgerStyle = '';
     }
 
-    ngOnInit() {
-    }
-
-    toggleSideNav() {
-
-        if (this.sideMenuService.isOpeningNow) {
-            return;
+    toggleSideMenu() {
+        if (!this.sideMenuService.isChanging()) {
+            this.sideMenuService.toggleMenu();
         }
-
-        if (this.sideNavComponentOpen) {
-            this.additionalHamburgerStyle = '';
-        } else {
-            this.additionalHamburgerStyle = 'is-active';
-        }
-
-        this.sideNavComponent.toggle()
-            .then(value => this.updateHamburgerState(value));
     }
 
-    private updateHamburgerState(value: MatDrawerToggleResult) {
-        this.sideNavComponentOpen = value === 'open';
+    isAuthenticated() {
+        return this.userService.isAuthenticated();
     }
 }
