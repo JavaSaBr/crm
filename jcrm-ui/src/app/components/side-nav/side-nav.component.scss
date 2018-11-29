@@ -2,28 +2,36 @@
 
 @mixin side-nav-theme($theme) {
 
-    .sidebar {
-        height: 100%;
-        width: 48px;
-        background-color: #111;
-        overflow-x: hidden;
-        padding-top: 16px;
-    }
+  $primary: map-get($theme, primary);
+  $background: map-get($theme, background);
 
-    .sidebar a {
-        padding: 6px 8px 6px 16px;
-        text-decoration: none;
-        font-size: 20px;
-        color: #818181;
-        display: block;
-    }
+  app-side-nav {
+    display: flex;
+    flex: 100%;
+  }
 
-    .sidebar a:hover {
-        color: #f1f1f1;
-    }
+  .sidebar {
+    display: flex;
+    flex: 48px;
+    flex-direction: column;
+    background: mat-color($primary);
+  }
 
-    .main {
-        margin-left: 48px; /* Same as the width of the sidenav */
-        padding: 0px 10px;
-    }
+  .main-view {
+    display: flex;
+    flex: 100%;
+    flex-direction: column;
+  }
+}
+
+.side-env-container {
+  display: flex;
+  flex: 100%;
+  flex-direction: row;
+}
+
+.side-env-content {
+  display: flex;
+  flex: 100%;
+  flex-direction: row;
 }

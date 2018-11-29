@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="mat-elevation-z4">
 
     <div class="hamburger hamburger--spin {{additionalHamburgerStyle}}" (click)="toggleSideNav()">
         <span class="hamburger-box">
@@ -23,4 +23,3 @@
     <span class="space-filler"></span>
     <span *ngIf="!userService.isAuthenticated()">LOGIN</span>
 </mat-toolbar>
-<app-side-nav #sideNavComponent></app-side-nav>

@@ -5,6 +5,13 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
+  app-nav-bar {
+    display: flex;
+    flex-direction: column;
+    flex: 48px;
+    z-index: 2;
+  }
+
   .header-divider {
     width: 2px;
     margin: 8px;
@@ -33,7 +40,6 @@
 }
 
 .mat-toolbar-row, .mat-toolbar-single-row {
-  height: 48px;
   padding: 0 0 0 0;
 }
 
