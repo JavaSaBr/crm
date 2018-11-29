@@ -1,42 +1,35 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {MatDrawerToggleResult, MatSidenav} from '@angular/material';
-
-export interface Tile {
-    color: string;
-    cols: number;
-    rows: number;
-    text: string;
-}
-
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MatSidenav} from '@angular/material';
+import {SideMenuService} from '../../services/side-menu.service';
 
 @Component({
     selector: 'app-side-nav',
     templateUrl: './side-nav.component.html',
     styleUrls: ['./side-nav.component.scss']
 })
-export class SideNavComponent implements OnInit {
-
-    mode = new FormControl('over');
-    opened: boolean;
+export class SideNavComponent {
 
     @ViewChild(MatSidenav)
     matSidenav: MatSidenav;
 
-    tiles: Tile[] = [
-        {text: 'One', cols: 3, rows: 1, color: 'lightblue'},
-        {text: 'Two', cols: 1, rows: 2, color: 'lightgreen'},
-        {text: 'Three', cols: 1, rows: 1, color: 'lightpink'},
-        {text: 'Four', cols: 2, rows: 1, color: '#DDBDF1'},
-    ];
-
-    constructor() {
+    constructor(private sideMenuService: SideMenuService) {
+        this.sideMenuService.requestToggleProperty()
+            .subscribe(() => {
+                this.toggleMenu();
+            });
+        this.matSidenav.openedStart
     }
 
-    ngOnInit() {
-    }
-
-    toggle(): Promise<MatDrawerToggleResult> {
-        return this.matSidenav.toggle();
+    private toggleMenu() {
+        this.sideMenuService.notifyStartChanging();
+        this.matSidenav.toggle()
+            .then(result => {
+                this.sideMenuService.notifyFinishChanging();
+                if (result === 'open') {
+                    this.sideMenuService.notifyOpened();
+                } else {
+                    this.sideMenuService.notifyClosed();
+                }
+            });
     }
 }
