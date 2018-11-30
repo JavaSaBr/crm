@@ -6,6 +6,7 @@ import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
 import {
+    MatButtonModule,
     MatDividerModule,
     MatFormFieldModule,
     MatGridListModule,
@@ -40,7 +41,8 @@ import {UserService} from './services/user.service';
         MatInputModule,
         MatIconModule,
         MatListModule,
-        MatGridListModule
+        MatGridListModule,
+        MatButtonModule
     ],
     providers: [SideMenuService, UserService],
     bootstrap: [AppComponent]

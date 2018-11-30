@@ -7,29 +7,44 @@ import {SideMenuService} from '../../services/side-menu.service';
     templateUrl: './side-nav.component.html',
     styleUrls: ['./side-nav.component.scss']
 })
-export class SideNavComponent {
+export class SideNavComponent implements OnInit {
 
     @ViewChild(MatSidenav)
     matSidenav: MatSidenav;
 
     constructor(private sideMenuService: SideMenuService) {
-        this.sideMenuService.requestToggleProperty()
-            .subscribe(() => {
-                this.toggleMenu();
+        this.sideMenuService.requestMenuProperty()
+            .subscribe(open => {
+                this.toggleMenu(open);
             });
-        this.matSidenav.openedStart
     }
 
-    private toggleMenu() {
+    ngOnInit() {
+        this.matSidenav.openedStart.subscribe(() => {
+            this.sideMenuService.notifyStartOpening();
+        });
+        this.matSidenav.closedStart.subscribe(() => {
+            this.sideMenuService.notifyStartClosing();
+        });
+    }
+
+    private toggleMenu(open: boolean) {
+
+        if (this.matSidenav.opened === open) {
+            return;
+        }
+
         this.sideMenuService.notifyStartChanging();
         this.matSidenav.toggle()
             .then(result => {
-                this.sideMenuService.notifyFinishChanging();
+
                 if (result === 'open') {
                     this.sideMenuService.notifyOpened();
                 } else {
                     this.sideMenuService.notifyClosed();
                 }
+
+                this.sideMenuService.notifyFinishChanging();
             });
     }
 }

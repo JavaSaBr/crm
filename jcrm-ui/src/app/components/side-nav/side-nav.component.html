@@ -1,19 +1,27 @@
 <mat-sidenav-container>
-    <mat-sidenav #sidenav mode="over" [(opened)]="opened">Start</mat-sidenav>
+    <mat-sidenav #sidenav mode="over">
+        <p>Auto-resizing sidenav</p>
+        <p>Lorem, ipsum dolor sit amet consectetur.</p>
+        <button mat-raised-button>
+            Toggle extra text
+        </button>
+    </mat-sidenav>
     <mat-sidenav-content>
 
         <div class="sidebar">
-            <a href="#home"><i class="fa fa-fw fa-home"></i> Home</a>
-            <a href="#services"><i class="fa fa-fw fa-wrench"></i> Services</a>
-            <a href="#clients"><i class="fa fa-fw fa-user"></i> Clients</a>
-            <a href="#contact"><i class="fa fa-fw fa-envelope"></i> Contact</a>
+            <button mat-icon-button>
+                <mat-icon aria-label="Some button">view_module</mat-icon>
+            </button>
+            <button mat-icon-button>
+                <mat-icon aria-label="Some button">shopping_basket</mat-icon>
+            </button>
+            <button mat-icon-button>
+                <mat-icon aria-label="Some button">more_vert</mat-icon>
+            </button>
         </div>
 
-        <div class="main">
-            <h2>Sidebar with Icons</h2>
-            <p>This side navigation is of full height (100%) and always shown.</p>
-            <p>Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-            <p>Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+        <div class="main-view">
+            <router-outlet></router-outlet>
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

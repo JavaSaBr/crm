@@ -24,6 +24,17 @@
   }
 }
 
+mat-sidenav-content {
+  display: flex;
+  flex-direction: row;
+  flex: 100%;
+}
+
+mat-sidenav-container {
+  display: flex;
+  flex: 100%;
+}
+
 .side-env-container {
   display: flex;
   flex: 100%;

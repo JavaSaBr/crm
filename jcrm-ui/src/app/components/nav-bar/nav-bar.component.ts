@@ -7,23 +7,28 @@ import {SideMenuService} from '../../services/side-menu.service';
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit {
 
     additionalHamburgerStyle: string;
 
     constructor(private userService: UserService, private sideMenuService: SideMenuService) {
-        this.sideMenuService.changingProperty()
-            .subscribe(() => {
-                console.log(this.sideMenuService.isOpen());
-                this.additionalHamburgerStyle = this.sideMenuService.isOpen() ? '' : 'is-active';
-            });
         this.additionalHamburgerStyle = '';
     }
 
+    ngOnInit() {
+
+        this.sideMenuService.startOpeningProperty()
+            .subscribe(() => {
+                this.additionalHamburgerStyle = 'is-active';
+            });
+        this.sideMenuService.startClosingProperty()
+            .subscribe(() => {
+                this.additionalHamburgerStyle = '';
+            });
+    }
+
     toggleSideMenu() {
-        if (!this.sideMenuService.isChanging()) {
-            this.sideMenuService.toggleMenu();
-        }
+        this.sideMenuService.toggleMenu();
     }
 
     isAuthenticated() {
