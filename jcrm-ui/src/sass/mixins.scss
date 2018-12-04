@@ -1,9 +1,11 @@
 @import "../app/components/nav-bar/nav-bar.component";
 @import "../app/components/side-nav/side-nav.component";
+@import "../app/pages/no-auth-home/no-auth-home.component";
 @import "../app/app.component";
 
 @mixin custom-components-theme($theme) {
   @include nav-bar-theme($theme);
   @include side-nav-theme($theme);
   @include app-root-theme($theme);
+  @include no-auth-home($theme);
 }

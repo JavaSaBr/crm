@@ -7,14 +7,23 @@ sudo apt install -y nodejs
 ```
 #### Windows
 ```bash
-//TODO
+// TODO
 ```
 #### MacOS
 ```bash
-//TODO
+// TODO
 ```
 
 ### install Angluar CLI (requires root access for Unix)
 ```bash
+# unix
+sudo npm install -g @angular/cli
+# windows 
 npm install -g @angular/cli
+```
+
+### install Angular packets
+```bash
+cd <project root>/jrcm-ui
+npm install
 ```

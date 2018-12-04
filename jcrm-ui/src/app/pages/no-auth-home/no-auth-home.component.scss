@@ -1,0 +1,28 @@
+@import '~@angular/material/theming';
+
+@mixin no-auth-home($theme) {
+
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .top-toolbar {
+  }
+
+  .tool-bar-separator {
+    background-color: mat-color($foreground, divider);
+    height: 1px;
+  }
+}
+
+.top-buttons-container button {
+  margin-right: 8px;
+}
+
+.mat-toolbar-multiple-rows {
+  min-height: 48px;
+  max-height: 48px;
+}
+
+.big-cell {
+  min-height: 400px;
+}

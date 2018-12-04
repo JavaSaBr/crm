@@ -1,2 +1,3 @@
-<app-nav-bar></app-nav-bar>
-<app-side-nav></app-side-nav>
+<app-nav-bar *ngIf="isAuthenticated()"></app-nav-bar>
+<app-side-nav *ngIf="isAuthenticated()"></app-side-nav>
+<app-no-auth-home *ngIf="!isAuthenticated()"></app-no-auth-home>

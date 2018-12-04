@@ -1,0 +1,45 @@
+<div class="mat-elevation-z4">
+    <mat-toolbar>
+        <mat-toolbar-row class="top-toolbar">
+            <span class="space-filler"></span>
+            <div class="top-buttons-container">
+                <button mat-stroked-button color="primary">СВЯЗАТЬСЯ С ОТДЕЛОМ ПРОДАЖ</button>
+                <button mat-raised-button color="primary">НАЧАТЬ ЗДЕСЬ</button>
+            </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <div class="tool-bar-separator space-filler"></div>
+    <mat-toolbar>
+        <mat-toolbar-row>
+            <button mat-button [matMenuTriggerFor]="servicesMenu">Сервисы</button>
+            <button mat-button>Цены</button>
+            <button mat-button>Ресурсы</button>
+            <mat-menu #servicesMenu="matMenu">
+                <button mat-menu-item>Обзор</button>
+                <button mat-menu-item>Общение</button>
+                <button mat-menu-item>Совместная работп</button>
+                <button mat-menu-item>Хранение и поиск</button>
+                <button mat-menu-item>Управление</button>
+            </mat-menu>
+            <span class="space-filler"></span>
+            <button mat-button>Поддержка</button>
+            <button mat-button>Войти</button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</div>
+
+<div class="flex-column">
+    <div class="flex-row">
+        <div class="big-cell flex-50">Не теряйте клиентов</div>
+        <div class="big-cell flex-50"></div>
+    </div>
+    <div class="flex-row">
+        <div>
+            <p>Все инструменты для эффективной работы в одном пакете</p>
+            <div>Общение</div>
+            <div>Совместная работа</div>
+            <div>Хранение и поиск</div>
+            <div>Управление</div>
+        </div>
+    </div>
+</div>

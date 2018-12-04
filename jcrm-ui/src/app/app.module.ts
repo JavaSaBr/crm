@@ -12,7 +12,7 @@ import {
     MatGridListModule,
     MatIconModule,
     MatInputModule,
-    MatListModule,
+    MatListModule, MatMenuModule,
     MatSidenavModule,
     MatToolbarModule
 } from '@angular/material';
@@ -21,6 +21,7 @@ import {HomeComponent} from './pages/home/home.component';
 import {FormsModule} from '@angular/forms';
 import {SideMenuService} from './services/side-menu.service';
 import {UserService} from './services/user.service';
+import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,7 @@ import {UserService} from './services/user.service';
         NavBarComponent,
         SideNavComponent,
         HomeComponent,
+        NoAuthHomeComponent,
     ],
     imports: [
         BrowserModule,
@@ -42,7 +44,8 @@ import {UserService} from './services/user.service';
         MatIconModule,
         MatListModule,
         MatGridListModule,
-        MatButtonModule
+        MatButtonModule,
+        MatMenuModule
     ],
     providers: [SideMenuService, UserService],
     bootstrap: [AppComponent]
