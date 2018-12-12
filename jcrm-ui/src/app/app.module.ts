@@ -12,16 +12,19 @@ import {
     MatGridListModule,
     MatIconModule,
     MatInputModule,
-    MatListModule, MatMenuModule,
+    MatListModule,
+    MatMenuModule,
     MatSidenavModule,
+    MatStepperModule,
     MatToolbarModule
 } from '@angular/material';
 import {SideNavComponent} from './components/side-nav/side-nav.component';
 import {HomeComponent} from './pages/home/home.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SideMenuService} from './services/side-menu.service';
 import {UserService} from './services/user.service';
 import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
+import { RegisterNewOrganizationComponent } from './components/register-new-organization/register-new-organization.component';
 
 @NgModule({
     declarations: [
@@ -30,6 +33,7 @@ import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
         SideNavComponent,
         HomeComponent,
         NoAuthHomeComponent,
+        RegisterNewOrganizationComponent,
     ],
     imports: [
         BrowserModule,
@@ -45,7 +49,9 @@ import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
         MatListModule,
         MatGridListModule,
         MatButtonModule,
-        MatMenuModule
+        MatMenuModule,
+        MatStepperModule,
+        ReactiveFormsModule
     ],
     providers: [SideMenuService, UserService],
     bootstrap: [AppComponent]

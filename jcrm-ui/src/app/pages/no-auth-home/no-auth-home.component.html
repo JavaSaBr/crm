@@ -1,10 +1,11 @@
-<div class="mat-elevation-z4">
+<div class="mat-elevation-z4" *ngIf="!hasSubPage()">
     <mat-toolbar>
         <mat-toolbar-row class="top-toolbar">
             <span class="space-filler"></span>
             <div class="top-buttons-container">
                 <button mat-stroked-button color="primary">СВЯЗАТЬСЯ С ОТДЕЛОМ ПРОДАЖ</button>
-                <button mat-raised-button color="primary">НАЧАТЬ ЗДЕСЬ</button>
+                <button mat-raised-button color="primary" (click)="activateSubPage('registration')">НАЧАТЬ ЗДЕСЬ
+                </button>
             </div>
         </mat-toolbar-row>
     </mat-toolbar>
@@ -28,7 +29,7 @@
     </mat-toolbar>
 </div>
 
-<div class="flex-column">
+<div class="flex-column" *ngIf="!hasSubPage()">
     <div class="flex-row">
         <div class="big-cell flex-50">Не теряйте клиентов</div>
         <div class="big-cell flex-50"></div>
@@ -43,3 +44,5 @@
         </div>
     </div>
 </div>
+
+<app-register-new-organization *ngIf="getCurrentSubPage() === 'registration'"></app-register-new-organization>
