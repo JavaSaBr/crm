@@ -6,6 +6,7 @@ import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
 import {
+    MatAutocompleteModule,
     MatButtonModule,
     MatDividerModule,
     MatFormFieldModule,
@@ -24,7 +25,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SideMenuService} from './services/side-menu.service';
 import {UserService} from './services/user.service';
 import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
-import { RegisterNewOrganizationComponent } from './components/register-new-organization/register-new-organization.component';
+import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
 
 @NgModule({
     declarations: [
@@ -51,7 +52,8 @@ import { RegisterNewOrganizationComponent } from './components/register-new-orga
         MatButtonModule,
         MatMenuModule,
         MatStepperModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatAutocompleteModule,
     ],
     providers: [SideMenuService, UserService],
     bootstrap: [AppComponent]

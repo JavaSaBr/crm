@@ -33,6 +33,7 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
 
 .flex-column {
   display: flex;
+  flex: 100%;
   flex-direction: column;
 }
 
@@ -44,4 +45,12 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
 
 .flex-50 {
   flex: 50%;
+}
+
+.flex-end {
+  justify-content: flex-end;
+}
+
+.flex-center {
+  justify-content: center;
 }

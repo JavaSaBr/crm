@@ -45,4 +45,9 @@
     </div>
 </div>
 
-<app-register-new-organization *ngIf="getCurrentSubPage() === 'registration'"></app-register-new-organization>
+<div class="flex-column">
+    <div class="flex-row flex-center">
+        <app-register-new-organization *ngIf="getCurrentSubPage() === 'registration'"
+                                       class="full-screen-form"></app-register-new-organization>
+    </div>
+</div>
