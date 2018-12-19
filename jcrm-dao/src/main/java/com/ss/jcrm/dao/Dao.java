@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public interface Dao<T> {
+public interface Dao<T extends Entity> {
 
     @Nullable T findById(long id);
 

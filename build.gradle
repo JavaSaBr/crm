@@ -29,12 +29,13 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url  "https://dl.bintray.com/javasabr/maven" }
+        mavenLocal()
+        maven { url "https://dl.bintray.com/javasabr/maven" }
     }
 
     ext {
         annotationVersion = "16.0.3"
-        rlibVersion = "9.0.3"
+        rlibVersion = "9.0.4"
         lombokVersion = '1.18.4'
         lombokGradlePluginVersion = '0.19'
         springbootVersion = '2.1.0.RELEASE'

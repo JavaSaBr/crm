@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public interface NamedObjectDao<T> extends Dao<T> {
+public interface NamedObjectDao<T extends NamedEntity> extends Dao<T> {
 
     @Nullable T findByName(@NotNull String name);
 

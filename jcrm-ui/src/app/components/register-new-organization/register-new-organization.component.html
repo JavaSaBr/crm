@@ -46,10 +46,7 @@
                 <mat-form-field>
                     <input matInput placeholder="Email" formControlName="email" type="email" required>
                 </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Phone number (Format: +99(99)9999-9999)" formControlName="phoneNumber"
-                           type="tel" required>
-                </mat-form-field>
+                <app-phone-number #phoneNumber></app-phone-number>
                 <div class="flex-row">
                     <button mat-button matStepperPrevious>Back</button>
                     <span class="space-filler"></span>

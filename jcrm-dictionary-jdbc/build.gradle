@@ -1,10 +1,9 @@
 
 dependencies {
-    compile project(":jcrm-base")
-    compile project(":jcrm-user-api")
+    compile project(":jcrm-dao")
+    compile project(":jcrm-dictionary-api")
     compile project(":jcrm-base-spring")
     compile project(":jcrm-jdbc")
-    
+
     testCompile project(":jcrm-integration-test-db")
-    testCompile project(":jcrm-security")
 }
