@@ -2,6 +2,7 @@ package com.ss.jcrm.dictionary.jdbc.config;
 
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
+import com.ss.jcrm.dictionary.jdbc.dao.JdbcCountryDao;
 import com.ss.jcrm.jdbc.ConnectionPoolFactory;
 import com.ss.jcrm.jdbc.config.JdbcConfig;
 import org.jetbrains.annotations.NotNull;
@@ -18,14 +19,20 @@ import java.util.concurrent.Executor;
 @Import(JdbcConfig.class)
 public class JdbcDictionaryConfig {
 
-    @Autowired
-    private Executor fastDbTaskExecutor;
+    private final Executor fastDbTaskExecutor;
+    private final Executor slowDbTaskExecutor;
+    private final Environment env;
 
     @Autowired
-    private Executor slowDbTaskExecutor;
-
-    @Autowired
-    Environment env;
+    public JdbcDictionaryConfig(
+        @NotNull Executor fastDbTaskExecutor,
+        @NotNull Executor slowDbTaskExecutor,
+        @NotNull Environment env
+    ) {
+        this.fastDbTaskExecutor = fastDbTaskExecutor;
+        this.slowDbTaskExecutor = slowDbTaskExecutor;
+        this.env = env;
+    }
 
     @Bean
     @NotNull DataSource dictionaryDataSource() {
@@ -39,6 +46,6 @@ public class JdbcDictionaryConfig {
 
     @Bean
     @NotNull DictionaryDao<Country> countryDao() {
-        return new JdbcUserRoleDao(userDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
+        return new JdbcCountryDao(dictionaryDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
     }
 }

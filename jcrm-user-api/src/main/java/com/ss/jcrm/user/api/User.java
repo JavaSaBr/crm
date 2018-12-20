@@ -1,15 +1,12 @@
 package com.ss.jcrm.user.api;
 
+import com.ss.jcrm.dao.NamedEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public interface User {
-
-    long getId();
-
-    @NotNull String getName();
+public interface User extends NamedEntity {
 
     @NotNull byte[] getPassword();
 

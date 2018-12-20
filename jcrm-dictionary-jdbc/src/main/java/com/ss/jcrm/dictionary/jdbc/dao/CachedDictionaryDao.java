@@ -1,8 +1,13 @@
 package com.ss.jcrm.dictionary.jdbc.dao;
 
+import static com.ss.rlib.common.util.dictionary.DictionaryCollectors.toLongDictionary;
+import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+import com.ss.jcrm.dao.Entity;
 import com.ss.jcrm.dao.NamedEntity;
+import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
-import com.ss.rlib.common.util.dictionary.DictionaryCollectors;
+import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public class CachedDictionaryDao<T extends NamedEntity> implements DictionaryDao<T> {
 
@@ -40,63 +46,79 @@ public class CachedDictionaryDao<T extends NamedEntity> implements DictionaryDao
     }
 
     private final DictionaryDao<T> dictionaryDao;
-    private volatile State state;
+
+    @NotNull
+    private volatile State<T> state;
 
     public CachedDictionaryDao(@NotNull DictionaryDao<T> dictionaryDao) {
         this.dictionaryDao = dictionaryDao;
-        this.state = new State();
+        this.state = new State<>();
     }
 
     public void reload() {
 
         dictionaryDao.findAllAsync()
-            .thenAccept(items -> {
+            .thenAccept(entities -> {
 
-                var objects = Collections.unmodifiableList(items);
-                var objectById = objects.stream().collect(DictionaryCollectors.toObjectDictionary())
+                var objects = Collections.unmodifiableList(entities);
+                var objectById = objects.stream()
+                    .collect(toLongDictionary(Entity::getId, Function.identity()));
+                var objectByName = objects.stream()
+                    .collect(toUnmodifiableMap(NamedEntity::getName, Function.identity()));
+
+                state = new State<>(objects, objectById, objectByName);
             });
     }
 
     @Override
     public @NotNull List<T> findAll() {
-        return null;
+        return state.getObjects();
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull List<T>> findAllAsync() {
-        return null;
+        return completedFuture(state.getObjects());
     }
 
-    @Nullable
     @Override
-    public T findById(long id) {
-        return null;
+    public @Nullable T findById(long id) {
+        return state.getObjectById()
+            .get(id);
     }
 
     @Override
     public @NotNull CompletableFuture<T> findByIdAsync(long id) {
-        return null;
+        return completedFuture(findById(id));
     }
 
-    @NotNull
     @Override
-    public T requireById(long id) {
-        return null;
+    public @NotNull T requireById(long id) {
+        return ObjectUtils.notNull(findById(id), id,
+            value -> new ObjectNotFoundDaoException("Can't find an entity with the id " + value));
     }
 
     @Override
     public @NotNull CompletableFuture<T> requireByIdAsync(long id) {
-        return null;
+
+        T entity = findById(id);
+
+        if (entity != null) {
+            return completedFuture(entity);
+        }
+
+        return CompletableFuture.failedFuture(
+            new ObjectNotFoundDaoException("Can't find an entity with the id " + id)
+        );
     }
 
-    @Nullable
     @Override
-    public T findByName(@NotNull String name) {
-        return null;
+    public @Nullable T findByName(@NotNull String name) {
+        return state.getObjectByName()
+            .get(name);
     }
 
     @Override
     public @NotNull CompletableFuture<T> findByNameAsync(@NotNull String name) {
-        return null;
+        return completedFuture(findByName(name));
     }
 }

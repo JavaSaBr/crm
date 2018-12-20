@@ -10,7 +10,6 @@ import com.ss.jcrm.user.jdbc.dao.JdbcUserDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcUserRoleDao;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -23,14 +22,20 @@ import java.util.concurrent.Executor;
 @Import(JdbcConfig.class)
 public class JdbcUserConfig {
 
-    @Autowired
-    private Executor fastDbTaskExecutor;
+    private final Executor fastDbTaskExecutor;
+    private final Executor slowDbTaskExecutor;
+    private final Environment env;
 
     @Autowired
-    private Executor slowDbTaskExecutor;
-
-    @Autowired
-    Environment env;
+    public JdbcUserConfig(
+        @NotNull Executor fastDbTaskExecutor,
+        @NotNull Executor slowDbTaskExecutor,
+        @NotNull Environment env
+    ) {
+        this.fastDbTaskExecutor = fastDbTaskExecutor;
+        this.slowDbTaskExecutor = slowDbTaskExecutor;
+        this.env = env;
+    }
 
     @Bean
     @NotNull DataSource userDataSource() {

@@ -1,11 +1,9 @@
 package com.ss.jcrm.dictionary.jdbc.dao;
 
-import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.dictionary.api.Country;
-import com.ss.jcrm.dictionary.jdbc.AbsctractDictionaryDao;
+import com.ss.jcrm.dictionary.jdbc.AbstractDictionaryDao;
 import com.ss.jcrm.dictionary.jdbc.JdbcCountry;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
-import com.ss.rlib.common.util.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-public class JdbcCountryDao extends AbsctractDictionaryDao<Country> {
+public class JdbcCountryDao extends AbstractDictionaryDao<Country> {
 
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
         " FROM \"country\" where \"name\" = ?";
@@ -86,12 +84,6 @@ public class JdbcCountryDao extends AbsctractDictionaryDao<Country> {
         }
 
         return null;
-    }
-
-    @Override
-    public @NotNull Country requireById(long id) {
-        return ObjectUtils.notNull(findById(id), id,
-            value -> new ObjectNotFoundDaoException("Can't find a country with the id " + value));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.ss.jcrm.dictionary.jdbc;
 
+import com.ss.jcrm.dao.NamedEntity;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
 import com.ss.jcrm.jdbc.dao.AbstractNamedObjectJdbcDao;
 import org.jetbrains.annotations.NotNull;
@@ -9,9 +10,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public abstract class AbsctractDictionaryDao<T> extends AbstractNamedObjectJdbcDao<T> implements DictionaryDao<T> {
+public abstract class AbstractDictionaryDao<T extends NamedEntity> extends AbstractNamedObjectJdbcDao<T> implements
+    DictionaryDao<T> {
 
-    public AbsctractDictionaryDao(
+    public AbstractDictionaryDao(
         @NotNull DataSource dataSource,
         @NotNull Executor fastDbTaskExecutor,
         @NotNull Executor slowDbTaskExecutor

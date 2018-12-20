@@ -1,10 +1,6 @@
 package com.ss.jcrm.user.api;
 
-import org.jetbrains.annotations.NotNull;
+import com.ss.jcrm.dao.NamedEntity;
 
-public interface Organization {
-
-    long getId();
-
-    @NotNull String getName();
+public interface Organization extends NamedEntity {
 }
