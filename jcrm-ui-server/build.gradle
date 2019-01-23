@@ -1,5 +1,10 @@
 import java.nio.file.Paths
 
+ext {
+    //lombok = "true"
+    springboot = "true"
+}
+
 dependencies {
     compile project(":jcrm-base-web")
     compile project(":jcrm-ui")
@@ -14,5 +19,7 @@ task copyFrontEnd(type: Copy) {
     into './build/resources/main/com/ss/jcrm/ui/server'
 }
 
-tasks.jar.dependsOn copyFrontEnd
-tasks.bootJar.dependsOn copyFrontEnd
+afterEvaluate {
+    tasks.jar.dependsOn copyFrontEnd
+    tasks.bootJar.dependsOn copyFrontEnd
+}

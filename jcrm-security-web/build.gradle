@@ -1,3 +1,8 @@
+
+ext {
+    lombok = "true"
+}
+
 dependencies {
     compile project(":jcrm-security")
     compile project(":jcrm-base-web")

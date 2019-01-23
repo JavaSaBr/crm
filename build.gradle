@@ -7,11 +7,8 @@ buildscript {
     }
     dependencies {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.19"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE"
     }
-}
-
-plugins {
-    id 'org.springframework.boot' version '2.1.0.RELEASE'
 }
 
 rootProject.version = "0.0.1"
@@ -21,7 +18,6 @@ allprojects {
 
     apply plugin: "java"
     apply plugin: "groovy"
-    apply plugin: "net.ltgt.apt"
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -56,8 +52,26 @@ allprojects {
 
     dependencies {
         compileOnly "org.jetbrains:annotations:$annotationVersion"
-        compileOnly "org.projectlombok:lombok:$lombokVersion"
-        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    }
+
+    afterEvaluate { Project project ->
+
+        if (project.ext.has("lombok") && project.ext["lombok"] == "true") {
+
+            project.apply (plugin: "net.ltgt.apt")
+            project.dependencies {
+
+                it.compileOnly "org.projectlombok:lombok:$lombokVersion"
+                it.annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+                println "Adding Lombok plugin to $project"
+            }
+        }
+
+        if (project.ext.has("springboot") && project.ext["springboot"] == "true") {
+            project.apply (plugin: "org.springframework.boot")
+            println "Adding Springboot plugin to $project"
+        }
     }
 
     sourceSets {
@@ -87,11 +101,7 @@ allprojects {
     }
 }
 
-configure(subprojects.findAll { it.name.contains("web") || it.name.contains("server") }) {
-    apply plugin: 'org.springframework.boot'
-}
-
 wrapper {
-    gradleVersion = '4.10'
+    gradleVersion = '5.1'
     distributionType = Wrapper.DistributionType.ALL
 }

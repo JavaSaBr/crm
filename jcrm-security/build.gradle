@@ -1,3 +1,8 @@
+
+ext {
+    lombok = "true"
+}
+
 dependencies {
     compile project(":jcrm-base-spring")
     testCompileOnly project(":jcrm-integration-test")

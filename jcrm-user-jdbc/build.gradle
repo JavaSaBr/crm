@@ -1,4 +1,8 @@
 
+ext {
+    lombok = "true"
+}
+
 dependencies {
     compile project(":jcrm-base")
     compile project(":jcrm-user-api")
