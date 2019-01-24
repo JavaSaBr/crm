@@ -99,6 +99,10 @@ allprojects {
     artifacts {
         testArtifacts testJar
     }
+
+    tasks.withType(Test) {
+        maxParallelForks = Runtime.runtime.availableProcessors()
+    }
 }
 
 wrapper {

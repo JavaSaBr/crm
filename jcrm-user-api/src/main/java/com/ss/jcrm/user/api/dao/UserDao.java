@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public interface UserDao extends NamedObjectDao<User> {
 
@@ -24,7 +25,7 @@ public interface UserDao extends NamedObjectDao<User> {
     );
 
     /**
-     * @throws DuplicateObjectDaoException if a user with the same name is already exist.
+     * @throws CompletionException -> DuplicateObjectDaoException if a user with the same name is already exist.
      */
     @NotNull CompletableFuture<@NotNull User> createAsync(
         @NotNull String name,
@@ -39,7 +40,7 @@ public interface UserDao extends NamedObjectDao<User> {
     void addRole(@NotNull User user, @NotNull UserRole role);
 
     /**
-     * @throws NotActualObjectDaoException if the user was changed in another thread/server.
+     * @throws CompletionException -> NotActualObjectDaoException if the user was changed in another thread/server.
      */
     @NotNull CompletableFuture<Void> addRoleAsync(@NotNull User user, @NotNull UserRole role);
 
@@ -49,7 +50,7 @@ public interface UserDao extends NamedObjectDao<User> {
     void removeRole(@NotNull User user, @NotNull UserRole role);
 
     /**
-     * @throws NotActualObjectDaoException if the user was changed in another thread/server.
+     * @throws CompletionException -> NotActualObjectDaoException if the user was changed in another thread/server.
      */
     @NotNull CompletableFuture<Void> removeRoleAsync(@NotNull User user, @NotNull UserRole role);
 }

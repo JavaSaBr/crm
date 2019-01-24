@@ -7,6 +7,7 @@ import com.ss.jcrm.user.api.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public interface TokenService {
 
@@ -14,15 +15,15 @@ public interface TokenService {
 
     /**
      * @throws TokenExpiredException if the token is expired.
-     * @throws ObjectNotFoundDaoException if the token's user cannot be found.
      * @throws InvalidTokenException if the token isn't valid.
+     * @throws ObjectNotFoundDaoException if the token's user cannot be found.
      */
     @NotNull User findUserIfNotExpired(@NotNull String token);
 
     /**
      * @throws TokenExpiredException if the token is expired.
-     * @throws ObjectNotFoundDaoException if the token's user cannot be found.
      * @throws InvalidTokenException if the token isn't valid.
+     * @throws CompletionException -> ObjectNotFoundDaoException if the token's user cannot be found.
      */
     @NotNull CompletableFuture<@NotNull User> findUserIfNotExpiredAsync(@NotNull String token);
 

@@ -55,7 +55,7 @@ class UserTestHelper {
         return org
     }
 
-    def newDaoUser(String name) {
+    def newDaoUser(@NotNull String name) {
         return newDaoUser(
             name,
             passwordService.nextPassword(24),
@@ -63,7 +63,7 @@ class UserTestHelper {
         )
     }
 
-    def newDaoUser(String name, String password, byte[] salt) {
+    def newDaoUser(@NotNull String name, @NotNull String password, @NotNull byte[] salt) {
         return userDao.create(
             name,
             passwordService.hash(password, salt),
@@ -72,7 +72,7 @@ class UserTestHelper {
         )
     }
 
-    def newTestUser(String name) {
+    def newTestUser(@NotNull String name) {
 
         def password = passwordService.nextPassword(24)
         def salt = passwordService.nextSalt

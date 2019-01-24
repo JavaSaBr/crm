@@ -1,9 +1,9 @@
 package com.ss.jcrm.security.web.service.impl;
 
 import static java.time.ZonedDateTime.now;
-import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.exception.InvalidTokenException;
 import com.ss.jcrm.security.web.exception.TokenExpiredException;
+import com.ss.jcrm.security.web.service.UnsafeTokenService;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.rlib.common.util.StringUtils;
@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor
-public class JjwtTokenService implements TokenService {
+public class JjwtTokenService implements UnsafeTokenService {
 
     private final UserDao userDao;
     private final SecretKey secretKey;
@@ -36,7 +36,8 @@ public class JjwtTokenService implements TokenService {
         return generateNewToken(user, now().plusMinutes(expirationTime));
     }
 
-    protected @NotNull String generateNewToken(@NotNull User user, @NotNull ZonedDateTime expiry) {
+    @Override
+    public @NotNull String generateNewToken(@NotNull User user, @NotNull ZonedDateTime expiry) {
         return Jwts.builder()
             .setSubject(String.valueOf(user.getId()))
             .setExpiration(Date.from(expiry.toInstant()))
