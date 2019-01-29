@@ -5,5 +5,5 @@ CREATE TABLE "jcrm-dictionary-db"."country"
   flag_code  varchar(25)           NOT NULL,
   phone_code varchar(10)           NOT NULL
 );
-CREATE INDEX country__name_index
+CREATE UNIQUE INDEX country__name_uniq_index
   ON "jcrm-dictionary-db"."country" ("name");

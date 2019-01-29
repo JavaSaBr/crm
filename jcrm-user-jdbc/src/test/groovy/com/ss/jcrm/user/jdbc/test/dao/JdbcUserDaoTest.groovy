@@ -9,6 +9,7 @@ import com.ss.jcrm.user.api.dao.UserRoleDao
 import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
+import java.util.concurrent.CompletionException
 import java.util.concurrent.ThreadLocalRandom
 
 class JdbcUserDaoTest extends JdbcUserSpecification {
@@ -55,6 +56,33 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             Arrays.equals(user.getSalt(), salt)
             user.getId() != 0L
             user.getOrganization() == org
+    }
+
+    def "should prevent creating a user with the same name"() {
+
+        given:
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+            def password = passwordService.nextBytePassword(24)
+            userDao.create("User1", password, salt, org)
+        when:
+            userDao.create("User1", password, salt, org)
+        then:
+            thrown DuplicateObjectDaoException
+    }
+
+    def "should prevent creating a user with the same name using async"() {
+
+        given:
+            def org = organizationDao.create("TestOrg1")
+            def salt = makeSlat(20)
+            def password = passwordService.nextBytePassword(24)
+            userDao.createAsync("User1", password, salt, org).join()
+        when:
+            userDao.createAsync("User1", password, salt, org).join()
+        then:
+            def ex = thrown(CompletionException)
+            ex.getCause() instanceof DuplicateObjectDaoException
     }
 
     def "should load a changed user with correct version"() {
