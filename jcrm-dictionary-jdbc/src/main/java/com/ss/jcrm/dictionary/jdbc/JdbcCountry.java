@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
 @ToString
+@Getter(onMethod_ = @NotNull)
 @EqualsAndHashCode(of = "id")
 public class JdbcCountry implements Country {
 

@@ -2,6 +2,7 @@ package com.ss.jcrm.dictionary.jdbc.dao;
 
 import static com.ss.rlib.common.util.dictionary.DictionaryCollectors.toLongDictionary;
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.util.concurrent.CompletableFuture.failedFuture;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import com.ss.jcrm.dao.Entity;
 import com.ss.jcrm.dao.NamedEntity;
@@ -106,9 +107,7 @@ public class CachedDictionaryDao<T extends NamedEntity> implements DictionaryDao
             return completedFuture(entity);
         }
 
-        return CompletableFuture.failedFuture(
-            new ObjectNotFoundDaoException("Can't find an entity with the id " + id)
-        );
+        return failedFuture(new ObjectNotFoundDaoException("Can't find an entity with the id " + id));
     }
 
     @Override

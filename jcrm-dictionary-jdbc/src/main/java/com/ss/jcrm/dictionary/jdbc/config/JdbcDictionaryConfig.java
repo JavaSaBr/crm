@@ -1,7 +1,6 @@
 package com.ss.jcrm.dictionary.jdbc.config;
 
-import com.ss.jcrm.dictionary.api.Country;
-import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
+import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.jdbc.dao.JdbcCountryDao;
 import com.ss.jcrm.jdbc.ConnectionPoolFactory;
 import com.ss.jcrm.jdbc.config.JdbcConfig;
@@ -45,7 +44,7 @@ public class JdbcDictionaryConfig {
     }
 
     @Bean
-    @NotNull DictionaryDao<Country> countryDao() {
+    @NotNull CountryDao countryDao() {
         return new JdbcCountryDao(dictionaryDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
     }
 }

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public interface Dao<T extends Entity> {
 
@@ -18,7 +19,7 @@ public interface Dao<T extends Entity> {
     @NotNull T requireById(long id);
 
     /**
-     * @throws ObjectNotFoundDaoException if an object with the id isn't exist.
+     * @throws CompletionException -> ObjectNotFoundDaoException if an object with the id isn't exist.
      */
     @NotNull CompletableFuture<@NotNull T> requireByIdAsync(long id);
 }

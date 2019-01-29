@@ -5,7 +5,6 @@ import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserRoleDao
 import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
-import org.jetbrains.annotations.NotNull
 
 import javax.sql.DataSource
 
@@ -31,11 +30,11 @@ class UserTestHelper {
     private final DataSource userDataSource
 
     UserTestHelper(
-        @NotNull UserDao userDao,
-        @NotNull UserRoleDao userRoleDao,
-        @NotNull OrganizationDao organizationDao,
-        @NotNull PasswordService passwordService,
-        @NotNull DataSource userDataSource
+        UserDao userDao,
+        UserRoleDao userRoleDao,
+        OrganizationDao organizationDao,
+        PasswordService passwordService,
+        DataSource userDataSource
     ) {
         this.userDao = userDao
         this.userRoleDao = userRoleDao
@@ -55,7 +54,7 @@ class UserTestHelper {
         return org
     }
 
-    def newDaoUser(@NotNull String name) {
+    def newDaoUser(String name) {
         return newDaoUser(
             name,
             passwordService.nextPassword(24),
@@ -63,7 +62,7 @@ class UserTestHelper {
         )
     }
 
-    def newDaoUser(@NotNull String name, @NotNull String password, @NotNull byte[] salt) {
+    def newDaoUser(String name, String password, byte[] salt) {
         return userDao.create(
             name,
             passwordService.hash(password, salt),
@@ -72,7 +71,7 @@ class UserTestHelper {
         )
     }
 
-    def newTestUser(@NotNull String name) {
+    def newTestUser(String name) {
 
         def password = passwordService.nextPassword(24)
         def salt = passwordService.nextSalt

@@ -1,20 +1,27 @@
 package com.ss.jcrm.dictionary.jdbc.test
 
+import com.ss.jcrm.dictionary.api.dao.CountryDao
+import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig
+import com.ss.jcrm.dictionary.jdbc.test.help.DictionaryTestHelper
 import com.ss.jcrm.integration.test.db.DbSpecificationConfig
+import com.ss.jcrm.integration.test.db.DbSpecificationUtils
+import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.PropertySource
 import org.springframework.core.env.Environment
 import org.testcontainers.containers.PostgreSQLContainer
 
+import javax.sql.DataSource
+
 @Configuration
 @Import([
-    //JdbcUserConfig,
+    JdbcDictionaryConfig,
     DbSpecificationConfig,
-    //SecurityConfig
 ])
-@PropertySource("classpath:com/ss/jcrm/user/jdbc/test/user-jdbc-test.properties")
+@PropertySource("classpath:com/ss/jcrm/dictionary/jdbc/test/dictionary-jdbc-test.properties")
 class JdbcDictionarySpecificationConfig {
 
     @Autowired
@@ -22,21 +29,12 @@ class JdbcDictionarySpecificationConfig {
 
     @Autowired
     Environment env
-/*
+
     @Autowired
-    PasswordService passwordService
-
-    @Autowired @Lazy
-    UserDao userDao
-
-    @Autowired @Lazy
-    OrganizationDao organizationDao
-
-    @Autowired @Lazy
-    UserRoleDao userRoleDao
+    CountryDao countryDao
 
     @Bean
-    @NotNull DataSource userDataSource() {
+    @NotNull DataSource dictionaryDataSource() {
         return DbSpecificationUtils.newDataSource(
             postgreSQLContainer,
             env.getRequiredProperty("jdbc.user.db.schema")
@@ -44,14 +42,8 @@ class JdbcDictionarySpecificationConfig {
     }
 
     @Bean
-    @NotNull UserTestHelper userTestHelper() {
+    @NotNull DictionaryTestHelper dictionaryTestHelper() {
 
-        return new UserTestHelper(
-            userDao,
-            userRoleDao,
-            organizationDao,
-            passwordService,
-            userDataSource()
-        )
-    }*/
+        return new DictionaryTestHelper(countryDao)
+    }
 }
