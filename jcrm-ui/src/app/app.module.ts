@@ -14,7 +14,7 @@ import {
     MatIconModule,
     MatInputModule,
     MatListModule,
-    MatMenuModule,
+    MatMenuModule, MatSelectModule,
     MatSidenavModule,
     MatStepperModule,
     MatToolbarModule
@@ -26,7 +26,7 @@ import {SideMenuService} from './services/side-menu.service';
 import {UserService} from './services/user.service';
 import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
 import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
-import { PhoneNumberControl } from './controls/phone-number/phone-number.control';
+import {PhoneNumberControl} from './controls/phone-number/phone-number.control';
 
 @NgModule({
     declarations: [
@@ -56,6 +56,7 @@ import { PhoneNumberControl } from './controls/phone-number/phone-number.control
         MatStepperModule,
         ReactiveFormsModule,
         MatAutocompleteModule,
+        MatSelectModule
     ],
     providers: [SideMenuService, UserService],
     bootstrap: [AppComponent]
