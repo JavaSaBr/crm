@@ -58,7 +58,6 @@ class JdbcUserSpecificationConfig {
 
     @Bean
     @NotNull UserTestHelper userTestHelper() {
-
         return new UserTestHelper(
             userDao,
             userRoleDao,

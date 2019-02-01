@@ -6,4 +6,7 @@ ext {
 dependencies {
     compile project(":jcrm-base-web")
     compile project(":jcrm-dictionary-jdbc")
+    testCompile project(path: ":jcrm-dictionary-jdbc", configuration: "testArtifacts")
+    testCompile project(":jcrm-integration-test-db")
+    testCompile project(":jcrm-integration-test-web")
 }

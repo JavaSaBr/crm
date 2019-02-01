@@ -1,6 +1,7 @@
 package com.ss.jcrm.jdbc.config;
 
 import static com.ss.jcrm.base.utils.CommonUtils.CORES;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,10 +12,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @Configuration
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class JdbcConfig {
 
-    @Autowired
-    Environment env;
+    private final Environment env;
 
     @Bean
     @NotNull Executor fastDbTaskExecutor() {

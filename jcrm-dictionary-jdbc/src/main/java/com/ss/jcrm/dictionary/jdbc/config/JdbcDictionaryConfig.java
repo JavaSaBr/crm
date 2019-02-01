@@ -4,6 +4,7 @@ import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.jdbc.dao.JdbcCountryDao;
 import com.ss.jcrm.jdbc.ConnectionPoolFactory;
 import com.ss.jcrm.jdbc.config.JdbcConfig;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,22 +17,12 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @Import(JdbcConfig.class)
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class JdbcDictionaryConfig {
 
     private final Executor fastDbTaskExecutor;
     private final Executor slowDbTaskExecutor;
     private final Environment env;
-
-    @Autowired
-    public JdbcDictionaryConfig(
-        @NotNull Executor fastDbTaskExecutor,
-        @NotNull Executor slowDbTaskExecutor,
-        @NotNull Environment env
-    ) {
-        this.fastDbTaskExecutor = fastDbTaskExecutor;
-        this.slowDbTaskExecutor = slowDbTaskExecutor;
-        this.env = env;
-    }
 
     @Bean
     @NotNull DataSource dictionaryDataSource() {
@@ -48,3 +39,4 @@ public class JdbcDictionaryConfig {
         return new JdbcCountryDao(dictionaryDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
     }
 }
+

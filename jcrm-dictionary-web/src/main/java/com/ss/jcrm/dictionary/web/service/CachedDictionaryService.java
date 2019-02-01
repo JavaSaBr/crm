@@ -4,10 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @param <C> the type of collection of all resources.
  * @param <R> the type of entities resource.
+ * @param <C> the type of collection of all resources.
  */
-public interface CachedDictionaryService<C, R> {
+public interface CachedDictionaryService<R, C> {
 
     @NotNull C getAll();
 

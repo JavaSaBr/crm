@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Configuration
 public class BaseWebConfig extends WebMvcConfigurationSupport {
@@ -33,6 +34,17 @@ public class BaseWebConfig extends WebMvcConfigurationSupport {
 
         return Executors.newFixedThreadPool(
             env.getProperty("controller.executor.threads", Integer.class, cores),
+            new GroupThreadFactory("ControllerThread")
+        );
+    }
+
+    @Bean
+    @NotNull ScheduledExecutorService reloadScheduler() {
+
+        var cores = Runtime.getRuntime().availableProcessors() * 2;
+
+        return Executors.newScheduledThreadPool(
+            env.getProperty("reloading.executor.threads", Integer.class, cores),
             new GroupThreadFactory("ControllerThread")
         );
     }
