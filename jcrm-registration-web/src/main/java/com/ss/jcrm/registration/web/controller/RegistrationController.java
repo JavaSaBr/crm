@@ -35,7 +35,7 @@ public class RegistrationController {
     }
 
     @PostMapping(
-        path = "/register",
+        path = "/registration/register",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )

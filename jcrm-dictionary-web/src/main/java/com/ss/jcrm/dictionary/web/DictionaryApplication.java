@@ -7,10 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-@Import({
-    DictionaryWebConfig.class
-})
 @Configuration
+@Import(DictionaryWebConfig.class)
 public class DictionaryApplication extends BaseWebApplication {
 
     public static void main(@NotNull String[] args) {

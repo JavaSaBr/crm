@@ -1,16 +1,19 @@
 package com.ss.jcrm.registration.web.test.controller
 
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.reactive.server.WebTestClient
 
 class StatusControllerTest extends RegistrationSpecification {
 
     def "should return status ok"() {
+
         when:
-            def response = mvc.perform(get("/status"))
+
+            WebTestClient.ResponseSpec response = client.get()
+                .uri("/registration/status")
+                .exchange()
+
         then:
-            response.andExpect(status().isOk())
+            response.expectStatus().isOk()
     }
 }

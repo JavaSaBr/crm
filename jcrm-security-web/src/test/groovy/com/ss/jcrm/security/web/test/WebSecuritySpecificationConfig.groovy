@@ -1,5 +1,6 @@
 package com.ss.jcrm.security.web.test
 
+import com.ss.jcrm.integration.test.DefaultSpecification
 import com.ss.jcrm.security.web.WebSecurityConfig
 import com.ss.jcrm.security.web.service.TokenService
 import com.ss.jcrm.security.web.service.UnsafeTokenService
@@ -14,7 +15,8 @@ import org.springframework.context.annotation.PropertySource
 @Configuration
 @Import([
     JdbcUserSpecificationConfig,
-    WebSecurityConfig
+    WebSecurityConfig,
+    DefaultSpecification
 ])
 @PropertySource("classpath:com/ss/jcrm/security/web/test/security-web-test.properties")
 class WebSecuritySpecificationConfig {

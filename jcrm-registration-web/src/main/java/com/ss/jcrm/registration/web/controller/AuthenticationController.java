@@ -39,7 +39,7 @@ public class AuthenticationController extends AsyncRestController {
     }
 
     @PostMapping(
-        path = "/authenticate",
+        path = "/registration/authenticate",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )

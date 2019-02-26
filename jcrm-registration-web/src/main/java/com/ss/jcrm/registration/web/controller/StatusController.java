@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatusController {
 
     @GetMapping(
-        path = "/status",
+        path = "/registration/status",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
     @NotNull ResponseEntity<?> status() {
