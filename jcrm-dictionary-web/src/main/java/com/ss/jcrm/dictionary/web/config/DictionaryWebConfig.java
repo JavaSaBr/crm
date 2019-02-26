@@ -6,24 +6,24 @@ import com.ss.jcrm.dictionary.web.resource.AllCountriesResource;
 import com.ss.jcrm.dictionary.web.resource.CountryResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import com.ss.jcrm.dictionary.web.service.impl.DefaultCachedDictionaryService;
+import com.ss.jcrm.web.config.BaseWebConfig;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@EnableAutoConfiguration
-@Import({JdbcDictionaryConfig.class})
-@AllArgsConstructor(onConstructor_ = @Autowired)
+@Import({
+    JdbcDictionaryConfig.class,
+    BaseWebConfig.class
+})
 @ComponentScan("com.ss.jcrm.dictionary.web")
-public class DictionaryConfig {
+@AllArgsConstructor(onConstructor_ = @Autowired)
+@PropertySource("classpath:com.ss.jcrm.dictionary.web/dictionary-web.properties")
+public class DictionaryWebConfig {
 
     private final CountryDao countryDao;
     private final ScheduledExecutorService reloadScheduler;

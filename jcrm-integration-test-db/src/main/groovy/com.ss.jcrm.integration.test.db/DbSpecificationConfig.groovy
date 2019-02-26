@@ -1,12 +1,14 @@
 package com.ss.jcrm.integration.test.db
 
-
+import com.ss.jcrm.integration.test.DefaultSpecificationConfig
 import org.flywaydb.core.Flyway
 import org.jetbrains.annotations.NotNull
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.testcontainers.containers.PostgreSQLContainer
 
+@Import(DefaultSpecificationConfig)
 @Configuration
 class DbSpecificationConfig {
 

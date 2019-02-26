@@ -1,17 +1,19 @@
 package com.ss.jcrm.dictionary.web.test.controller
 
 import com.ss.jcrm.dictionary.web.test.DictionarySpecification
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.reactive.server.WebTestClient
 
 class StatusControllerTest extends DictionarySpecification {
 
     def "should return status ok"() {
 
         when:
-            def response = mvc.perform(get("/status"))
+
+            WebTestClient.ResponseSpec response = client.get()
+                .uri("/dictionary/status")
+                .exchange()
+
         then:
-            response.andExpect(status().isOk())
+            response.expectStatus().isOk()
     }
 }

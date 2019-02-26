@@ -34,8 +34,8 @@ allprojects {
         rlibVersion = "9.0.4"
         lombokVersion = '1.18.4'
         lombokGradlePluginVersion = '0.19'
-        springbootVersion = '2.1.0.RELEASE'
-        springVersion = '5.1.2.RELEASE'
+        springbootVersion = '2.1.3.RELEASE'
+        springVersion = '5.1.5.RELEASE'
         junitJupiterVersion = "5.2.0"
         hikariCPVersion = "2.7.8"
         flywayVersion = "5.2.1"

@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController()
+@RestController
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class CountryController {
 
     private final CachedDictionaryService<CountryResource, AllCountriesResource> countryDictionaryService;
 
-    @GetMapping("/countries")
+    @GetMapping("/dictionary/countries")
     @NotNull ResponseEntity<AllCountriesResource> getAll() {
         return ok(countryDictionaryService.getAll());
     }
 
-    @GetMapping("/country/{id}")
+    @GetMapping("/dictionary/country/{id}")
     @NotNull ResponseEntity<CountryResource> get(@PathVariable("id") long id) {
 
         var resource = countryDictionaryService.getById(id);
@@ -36,7 +36,7 @@ public class CountryController {
         }
     }
 
-    @GetMapping("/name/{name}")
+    @GetMapping("/dictionary/name/{name}")
     @NotNull ResponseEntity<CountryResource> getByName(@NotNull @PathVariable("name") String name) {
 
         var resource = countryDictionaryService.getByName(name.toLowerCase());

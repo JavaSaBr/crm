@@ -7,11 +7,10 @@ import com.ss.jcrm.dictionary.web.service.CachedDictionaryService
 import com.ss.jcrm.dictionary.web.test.DictionarySpecification
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.test.web.reactive.server.WebTestClient
 
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 class CountryControllerTest extends DictionarySpecification {
 
@@ -29,13 +28,23 @@ class CountryControllerTest extends DictionarySpecification {
             (countryDictionaryService as Reloadable).reload()
 
         when:
-            def response = mvc.perform(get("/countries"))
+
+            WebTestClient.ResponseSpec response = client.get()
+                .uri("/dictionary/countries")
+                .exchange()
+
         then:
 
-            response.andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath('$.countries', hasSize(3)))
-                .andExpect(jsonPath('$.countries[*].name', containsInAnyOrder(country1.name, country2.name, country3.name)))
-                .andReturn()
+            response.expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectBody()
+                    .jsonPath('$.countries')
+                        .value(hasSize(3))
+                    .jsonPath('$.countries[*].name')
+                        .value(containsInAnyOrder(
+                            country1.name,
+                            country2.name,
+                            country3.name)
+                        )
     }
 }

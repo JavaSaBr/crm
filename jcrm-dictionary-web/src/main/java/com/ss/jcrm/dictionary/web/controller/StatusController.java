@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class StatusController {
 
-    @GetMapping("/status")
+    @GetMapping("/dictionary/status")
     @NotNull ResponseEntity<?> status() {
         return ok().build();
     }
