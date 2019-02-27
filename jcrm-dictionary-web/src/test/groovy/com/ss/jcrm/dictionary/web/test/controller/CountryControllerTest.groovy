@@ -7,7 +7,6 @@ import com.ss.jcrm.dictionary.web.service.CachedDictionaryService
 import com.ss.jcrm.dictionary.web.test.DictionarySpecification
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.test.web.reactive.server.WebTestClient
 
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
@@ -29,8 +28,8 @@ class CountryControllerTest extends DictionarySpecification {
 
         when:
 
-            WebTestClient.ResponseSpec response = client.get()
-                .uri("/dictionary/countries")
+            def response = client.get()
+                .url("/dictionary/countries")
                 .exchange()
 
         then:

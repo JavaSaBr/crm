@@ -1,0 +1,3 @@
+moduleName = web-specification
+moduleVersion = 1.0
+extensionClasses = com.ss.jcrm.integration.test.web.WebSpecificationExtensions

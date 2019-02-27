@@ -1,18 +1,10 @@
 package com.ss.jcrm.registration.web.test.controller
 
-import com.jsoniter.output.JsonStream
-import com.ss.jcrm.registration.web.resources.AuthenticationRequest
-import com.ss.jcrm.registration.web.test.RegistrationSpecification
-import org.springframework.http.MediaType
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static org.hamcrest.Matchers.notNullValue
+import com.ss.jcrm.registration.web.test.RegistrationSpecification
 
 class AuthenticationControllerTest extends RegistrationSpecification {
-
+/*
     def "should authenticate a user"() {
 
         given:
@@ -32,5 +24,5 @@ class AuthenticationControllerTest extends RegistrationSpecification {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$.token', notNullValue()))
                 .andReturn()
-    }
+    }*/
 }
