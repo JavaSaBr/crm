@@ -42,7 +42,7 @@ public class CountryController {
         var resource = countryDictionaryService.getByName(name.toLowerCase());
 
         if (resource != null) {
-            return ok(resource);
+            return ResponseEntity.ok(resource);
         } else {
             return notFound().build();
         }

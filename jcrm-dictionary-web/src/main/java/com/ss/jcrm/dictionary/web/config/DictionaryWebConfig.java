@@ -6,6 +6,7 @@ import com.ss.jcrm.dictionary.web.resource.AllCountriesResource;
 import com.ss.jcrm.dictionary.web.resource.CountryResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import com.ss.jcrm.dictionary.web.service.impl.DefaultCachedDictionaryService;
+import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @Import({
     JdbcDictionaryConfig.class,
+    WebSecurityConfig.class,
     BaseWebConfig.class
 })
 @ComponentScan("com.ss.jcrm.dictionary.web")

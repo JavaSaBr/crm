@@ -68,7 +68,7 @@ allprojects {
             }
         }
 
-        if (project.ext.has("springboot") && project.ext["springboot"] == "true") {
+        if (project.ext.has("web") && project.ext["web"] == "true") {
             project.apply (plugin: "org.springframework.boot")
             println "Adding Springboot plugin to $project"
         }

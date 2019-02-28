@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 
 import {CountryRepository} from './country.repository';
 
-describe('CountryRepository', () => {
+describe('CachedRepository', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('should be created', () => {

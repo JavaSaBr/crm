@@ -4,7 +4,7 @@
 
 export const environment = {
     production: false,
-    dictionaryUrl: 'localhost:8090/dictionary'
+    dictionaryUrl: 'http://localhost:8090/dictionary'
 };
 
 /*

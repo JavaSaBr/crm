@@ -1,12 +1,20 @@
 
 ext {
     lombok = "true"
+    web = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base-web")
     compile project(":jcrm-dictionary-jdbc")
+    compile project(":jcrm-security-web")
     testCompile project(path: ":jcrm-dictionary-jdbc", configuration: "testArtifacts")
     testCompile project(":jcrm-integration-test-db")
     testCompile project(":jcrm-integration-test-web")
+}
+
+afterEvaluate {
+    tasks.bootRun {
+        main = 'com.ss.jcrm.dictionary.web.DictionaryApplication'
+        jvmArgs = ["-Dserver.port=8090"]
+    }
 }

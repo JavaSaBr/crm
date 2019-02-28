@@ -7,4 +7,12 @@ class WebSpecificationExtensions {
     static WebTestClient.RequestHeadersSpec url(WebTestClient.RequestHeadersUriSpec self, String uri) {
         return self.uri(uri)
     }
+
+    static WebTestClient.RequestHeadersSpec headerValue(
+        WebTestClient.RequestHeadersSpec self,
+        String headerName,
+        String headerValue
+    ) {
+        return self.header(headerName, headerValue)
+    }
 }

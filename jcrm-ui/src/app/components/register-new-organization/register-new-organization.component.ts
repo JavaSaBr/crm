@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import {CountryRepository} from '../../repositories/country/country.repository';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -16,7 +17,7 @@ export class RegisterNewOrganizationComponent implements OnInit {
     options: string[] = ['Belarus', 'Russia', 'US'];
     filteredOptions: Observable<string[]>;
 
-    constructor(private formBuilder: FormBuilder) {
+    constructor(private formBuilder: FormBuilder, private countryRepository: CountryRepository) {
         this.orgFormGroup = this.formBuilder.group({
             orgName: ['', Validators.required],
             country: ['', Validators.required]
@@ -33,6 +34,10 @@ export class RegisterNewOrganizationComponent implements OnInit {
                 Validators.required,
                 Validators.pattern('[0-9]{5}[-][0-9]{7}[-][0-9]{1}')
             ]]
+        });
+
+        countryRepository.findAll().then(value => {
+            console.log(value);
         });
     }
 
