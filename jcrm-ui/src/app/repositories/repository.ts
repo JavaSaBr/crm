@@ -1,5 +1,5 @@
 
 export interface Repository<T> {
 
-    findAll(): T[];
+    findAll(): Promise<T[]>;
 }
