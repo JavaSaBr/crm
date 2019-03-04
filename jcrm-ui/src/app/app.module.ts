@@ -29,6 +29,7 @@ import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
 import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
 import {PhoneNumberControl} from './controls/phone-number/phone-number.control';
 import {HttpClientModule} from '@angular/common/http';
+import {NoAuthHomeService} from './services/no-auth-home.service';
 
 @NgModule({
     declarations: [
@@ -61,7 +62,7 @@ import {HttpClientModule} from '@angular/common/http';
         MatSelectModule,
         HttpClientModule
     ],
-    providers: [SideMenuService, UserService],
+    providers: [SideMenuService, UserService, NoAuthHomeService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

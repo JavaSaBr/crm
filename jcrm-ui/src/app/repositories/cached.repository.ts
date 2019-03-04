@@ -8,6 +8,7 @@ import {Repository} from './repository';
 export class CachedRepository<T> implements Repository<T> {
 
     protected cache: T[] = null;
+    protected executing: Promise<T[]> = null;
 
     protected constructor(protected httpClient: HttpClient) {
     }
@@ -16,6 +17,8 @@ export class CachedRepository<T> implements Repository<T> {
 
         if (this.cache != null) {
             return Promise.resolve(this.cache);
+        } else if (this.executing != null) {
+            return this.executing;
         }
 
         return new Promise<T[]>((resolve, reject) => {
@@ -23,9 +26,11 @@ export class CachedRepository<T> implements Repository<T> {
             this.httpClient.get<T[]>(this.buildFetchUrl())
                 .subscribe(value => {
                         this.cache = this.extractValue(value);
+                        this.executing = null;
                         resolve(this.cache);
                     },
                     error => {
+                        this.executing = null;
                         reject(error);
                     });
         });

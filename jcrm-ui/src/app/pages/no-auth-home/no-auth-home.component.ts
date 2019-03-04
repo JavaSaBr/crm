@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {NoAuthHomeService} from '../../services/no-auth-home.service';
 
 @Component({
     selector: 'app-no-auth-home',
@@ -7,23 +8,21 @@ import {Component, OnInit} from '@angular/core';
 })
 export class NoAuthHomeComponent implements OnInit {
 
-    private currentSubPage: string = null;
-
-    constructor() {
+    constructor(private noAuthHomeService: NoAuthHomeService) {
     }
 
     ngOnInit() {
     }
 
     hasSubPage() {
-        return this.currentSubPage != null;
+        return this.noAuthHomeService.hasSubPage();
     }
 
-    activateSubPage(page: string) {
-        this.currentSubPage = page;
+    public activateSubPage(page: string) {
+        this.noAuthHomeService.activateSubPage(page);
     }
 
     getCurrentSubPage() {
-        return this.currentSubPage;
+        return this.noAuthHomeService.getCurrentSubPage();
     }
 }

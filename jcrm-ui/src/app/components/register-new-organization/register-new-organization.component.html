@@ -6,20 +6,22 @@
                 <h1>Приступим!</h1>
                 <p>Вся ваша команда включится в работу с первого дня с самой легкой в использовании CRM на рынке.
                     Интерфейс интуитивно понятен и не требует обучения или периода внедрения и адаптации. В течение 14
-                    дней сервисом можно пользоваться бесплатно. <b>Скачивать программное обеспечение не требуется.</b></p>
+                    дней сервисом можно пользоваться бесплатно. <b>Скачивать программное обеспечение не требуется.</b>
+                </p>
                 <mat-form-field>
                     <input matInput placeholder="Organization name" formControlName="orgName" required>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Country" formControlName="country" [matAutocomplete]="auto" required>
+                    <input matInput placeholder="Country" formControlName="country" [matAutocomplete]="auto"
+                           required>
                     <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                            {{option}}
+                        <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
+                            {{country.name}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
                 <div class="flex-row flex-end">
-                    <button mat-button>Cancel</button>
+                    <button mat-button (click)="resetAndClose()">Cancel</button>
                     <button mat-button matStepperNext>Next</button>
                 </div>
             </form>
