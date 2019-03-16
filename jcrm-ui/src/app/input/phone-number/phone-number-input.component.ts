@@ -1,4 +1,4 @@
-import {Component, ElementRef, Injector, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit} from '@angular/core';
 import {CountryRepository} from '../../repositories/country/country.repository';
 import {Country} from '../../entity/country';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -13,7 +13,12 @@ import {CountryAutocompleter} from '../../utils/country-autocompleter';
     selector: 'phone-number-input',
     templateUrl: './phone-number-input.component.html',
     styleUrls: ['./phone-number-input.component.scss'],
-    providers: [{provide: MatFormFieldControl, useExisting: PhoneNumberInput}],
+    providers: [
+        {
+            provide: MatFormFieldControl,
+            useExisting: PhoneNumberInput
+        }
+    ],
     host: {
         '[class.phone-number-input-floating]': 'shouldLabelFloat',
         '[id]': 'id',
@@ -45,7 +50,6 @@ export class PhoneNumberInput implements OnInit, MatFormFieldControl<PhoneNumber
         formBuilder: FormBuilder,
         private focusMonitor: FocusMonitor,
         private elementRef: ElementRef<HTMLElement>,
-        private injector: Injector,
         private countryRepository: CountryRepository
     ) {
 
@@ -64,7 +68,7 @@ export class PhoneNumberInput implements OnInit, MatFormFieldControl<PhoneNumber
 
     private subControlChanged() {
         console.log('hello');
-        this.stateChanges.next(null);
+        this.stateChanges.next();
     }
 
     ngOnInit() {
