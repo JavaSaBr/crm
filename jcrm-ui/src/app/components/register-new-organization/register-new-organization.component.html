@@ -13,9 +13,10 @@
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Country" formControlName="country" [matAutocomplete]="auto"
-                           required>
-                    <mat-autocomplete #auto="matAutocomplete">
+                           phoneNumber required>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCountry">
                         <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
+                            <span class="flag-icon flag-icon-{{country.flagCode.toLowerCase()}} flag-icon-squared"></span>
                             {{country.name}}
                         </mat-option>
                     </mat-autocomplete>
@@ -37,10 +38,10 @@
                     администратором. Позже эту роль можно передать
                     другому пользователю.</p>
                 <mat-form-field>
-                    <input matInput placeholder="First name" formControlName="firstName" required>
+                    <input matInput placeholder="First name" formControlName="firstName">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Second name" formControlName="secondName" required>
+                    <input matInput placeholder="Second name" formControlName="secondName">
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Third name" formControlName="thirdName">
@@ -48,7 +49,9 @@
                 <mat-form-field>
                     <input matInput placeholder="Email" formControlName="email" type="email" required>
                 </mat-form-field>
-                <app-phone-number #phoneNumber></app-phone-number>
+                <mat-form-field>
+                    <phone-number-input placeholder="Phone number" required></phone-number-input>
+                </mat-form-field>
                 <div class="flex-row">
                     <button mat-button matStepperPrevious>Back</button>
                     <span class="space-filler"></span>

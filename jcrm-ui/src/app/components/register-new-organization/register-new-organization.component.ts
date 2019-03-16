@@ -5,6 +5,7 @@ import {CountryRepository} from '../../repositories/country/country.repository';
 import {NoAuthHomeService} from '../../services/no-auth-home.service';
 import {CountryAutocompleter} from '../../utils/country-autocompleter';
 import {Country} from '../../entity/country';
+import {PhoneNumberValidator} from '../../input/phone-number/phone-number-validator';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -28,26 +29,28 @@ export class RegisterNewOrganizationComponent implements OnInit {
             country: ['', Validators.required]
         });
         this.ownerFormGroup = this.formBuilder.group({
-            firstName: ['', Validators.required],
-            secondName: ['', Validators.required],
+            firstName: [''],
+            secondName: [''],
             thirdName: [''],
             email: ['', [
                 Validators.required,
                 Validators.email
             ]],
-            phoneNumber: ['', [
+            phoneNumber: [null, [
                 Validators.required,
-                Validators.pattern('[0-9]{5}[-][0-9]{7}[-][0-9]{1}')
+                new PhoneNumberValidator()
             ]]
         });
     }
 
     ngOnInit() {
-        this.filteredCountries = new CountryAutocompleter(
-                this.countryRepository,
-                this.orgFormGroup.controls['country']
-            )
+        this.countryRepository.findAll();
+        this.filteredCountries = new CountryAutocompleter(this.countryRepository, this.orgFormGroup.controls['country'])
             .getFilteredCountries();
+    }
+
+    displayCountry(country?: Country): string | undefined {
+        return country ? country.name : undefined;
     }
 
     resetAndClose() {

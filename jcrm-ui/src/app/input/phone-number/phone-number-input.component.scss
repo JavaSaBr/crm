@@ -1,0 +1,22 @@
+
+.phone-number-input-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.phone-number-input-country-code {
+  max-width: 60px;
+}
+
+.phone-number-input-code-wrapper {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.phone-number-input-spacer {
+  min-width: 3px;
+}
+
+:host.phone-number-input-floating .phone-number-input-code-wrapper {
+  opacity: 1;
+}

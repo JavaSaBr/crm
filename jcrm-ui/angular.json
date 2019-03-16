@@ -29,7 +29,8 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/sass/styles.scss"
+              "src/sass/styles.scss",
+              "node_modules/flag-icon-css/css/flag-icon.min.css"
             ],
             "scripts": []
           },

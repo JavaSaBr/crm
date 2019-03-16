@@ -1,0 +1,15 @@
+<div [formGroup]="parts" class="phone-number-input-container">
+    <span class="phone-number-input-code-wrapper">(</span>
+    <input matInput formControlName="country" [matAutocomplete]="auto"
+           class="phone-number-input-country-code"
+           required>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCountry" panelWidth="200px">
+        <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
+            <span class="flag-icon flag-icon-{{country.flagCode.toLowerCase()}} flag-icon-squared"></span>
+            {{country.name}}({{country.phoneCode}})
+        </mat-option>
+    </mat-autocomplete>
+    <span class="phone-number-input-code-wrapper">)</span>
+    <span class="phone-number-input-spacer"></span>
+    <input matInput formControlName="phoneNumber" required>
+</div>

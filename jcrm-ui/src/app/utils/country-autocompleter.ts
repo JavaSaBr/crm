@@ -12,6 +12,8 @@ export class CountryAutocompleter {
         private control: AbstractControl
     ) {
         control.valueChanges.subscribe(countryName => this.filterByName(countryName));
+        countryRepository.findAll()
+            .then(value => this.filteredCountries.next(value));
     }
 
     private filterByName(countryName: string) {
