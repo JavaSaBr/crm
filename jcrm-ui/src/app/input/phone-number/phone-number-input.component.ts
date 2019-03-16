@@ -1,7 +1,7 @@
-import {Component, ElementRef, forwardRef, Injector, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, Injector, Input, OnDestroy, OnInit} from '@angular/core';
 import {CountryRepository} from '../../repositories/country/country.repository';
 import {Country} from '../../entity/country';
-import {FormBuilder, FormGroup, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {PhoneNumber} from './phone-number';
 import {MatFormFieldControl} from '@angular/material';
 import {Observable, Subject} from 'rxjs';
@@ -13,17 +13,7 @@ import {CountryAutocompleter} from '../../utils/country-autocompleter';
     selector: 'phone-number-input',
     templateUrl: './phone-number-input.component.html',
     styleUrls: ['./phone-number-input.component.scss'],
-    providers: [
-        {
-            provide: MatFormFieldControl,
-            useExisting: PhoneNumberInput
-        },
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => PhoneNumberInput),
-            multi: true
-        },
-    ],
+    providers: [{provide: MatFormFieldControl, useExisting: PhoneNumberInput}],
     host: {
         '[class.phone-number-input-floating]': 'shouldLabelFloat',
         '[id]': 'id',
