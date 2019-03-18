@@ -1,7 +1,7 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, forwardRef, Input, OnDestroy, OnInit, Optional, Self} from '@angular/core';
 import {CountryRepository} from '../../repositories/country/country.repository';
 import {Country} from '../../entity/country';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, NgControl} from '@angular/forms';
 import {PhoneNumber} from './phone-number';
 import {MatFormFieldControl} from '@angular/material';
 import {Observable, Subject} from 'rxjs';
@@ -17,6 +17,11 @@ import {CountryAutocompleter} from '../../utils/country-autocompleter';
         {
             provide: MatFormFieldControl,
             useExisting: PhoneNumberInput
+        },
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => PhoneNumberInput),
+            multi: true
         }
     ],
     host: {
@@ -25,7 +30,7 @@ import {CountryAutocompleter} from '../../utils/country-autocompleter';
         '[attr.aria-describedby]': 'describedBy',
     }
 })
-export class PhoneNumberInput implements OnInit, MatFormFieldControl<PhoneNumber>, OnDestroy {
+export class PhoneNumberInput implements OnInit, MatFormFieldControl<PhoneNumber>, OnDestroy, ControlValueAccessor {
 
     static nextId = 0;
 
@@ -33,14 +38,19 @@ export class PhoneNumberInput implements OnInit, MatFormFieldControl<PhoneNumber
     controlType = 'phone-number-input';
     describedBy = '';
 
+    errorState = false;
+
     parts: FormGroup;
 
-    ngControl = null;
     focused = false;
-    errorState = false;
-    stateChanges = new Subject<void>();
+    autofilled = false;
+
+    readonly stateChanges = new Subject<void>();
 
     filteredCountries: Observable<Country[]>;
+
+    onChange = (value: any) => {};
+    onTouched = () => {};
 
     private _placeholder: string;
     private _required = false;
@@ -48,6 +58,7 @@ export class PhoneNumberInput implements OnInit, MatFormFieldControl<PhoneNumber
 
     constructor(
         formBuilder: FormBuilder,
+        @Optional() @Self() public ngControl: NgControl,
         private focusMonitor: FocusMonitor,
         private elementRef: ElementRef<HTMLElement>,
         private countryRepository: CountryRepository
@@ -63,12 +74,15 @@ export class PhoneNumberInput implements OnInit, MatFormFieldControl<PhoneNumber
             .subscribe(origin => {
                 this.focused = !!origin;
                 this.stateChanges.next();
+                if (!this.focused) {
+                    this.onTouched();
+                }
             });
     }
 
     private subControlChanged() {
-        console.log('hello');
         this.stateChanges.next();
+        this.onChange(this.value);
     }
 
     ngOnInit() {
@@ -147,6 +161,18 @@ export class PhoneNumberInput implements OnInit, MatFormFieldControl<PhoneNumber
     ngOnDestroy() {
         this.stateChanges.complete();
         this.focusMonitor.stopMonitoring(this.elementRef.nativeElement);
+    }
+
+    registerOnChange(fn: (value: any) => void): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: () => void): void {
+        this.onTouched = fn;
+    }
+
+    writeValue(value: any): void {
+        this.onChange(this.value);
     }
 
     displayCountry(country?: Country): string | undefined {

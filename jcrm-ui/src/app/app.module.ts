@@ -62,7 +62,7 @@ import {PhoneNumberValidator} from './input/phone-number/phone-number-validator'
         ReactiveFormsModule,
         MatAutocompleteModule,
         MatSelectModule,
-        HttpClientModule
+        HttpClientModule,
     ],
     providers: [SideMenuService, UserService, NoAuthHomeService],
     bootstrap: [AppComponent]
