@@ -27,10 +27,11 @@ import {SideMenuService} from './services/side-menu.service';
 import {UserService} from './services/user.service';
 import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
 import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
-import {PhoneNumberInput} from './input/phone-number/phone-number-input.component';
+import {PhoneNumberInput} from './input/phone-number/phone-number-input';
 import {HttpClientModule} from '@angular/common/http';
 import {NoAuthHomeService} from './services/no-auth-home.service';
 import {PhoneNumberValidator} from './input/phone-number/phone-number-validator';
+import {CountryInput} from './input/country/country-input';
 
 @NgModule({
     declarations: [
@@ -41,6 +42,7 @@ import {PhoneNumberValidator} from './input/phone-number/phone-number-validator'
         NoAuthHomeComponent,
         RegisterNewOrganizationComponent,
         PhoneNumberInput,
+        CountryInput,
         PhoneNumberValidator
     ],
     imports: [

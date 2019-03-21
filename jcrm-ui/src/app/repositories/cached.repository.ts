@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Repository} from './repository';
+import {Entity} from '../entity/entity';
 
 @Injectable({
     providedIn: 'root'
 })
-export class CachedRepository<T> implements Repository<T> {
+export class CachedRepository<T extends Entity> implements Repository<T> {
 
     protected cache: T[] = null;
     protected executing: Promise<T[]> = null;
@@ -34,6 +35,11 @@ export class CachedRepository<T> implements Repository<T> {
                         reject(error);
                     });
         });
+    }
+
+    public findById(id: number): Promise<T | null> {
+        return this.findAll()
+            .then(values => values.find(value => value.id == id));
     }
 
     protected buildFetchUrl(): string {

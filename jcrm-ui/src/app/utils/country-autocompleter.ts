@@ -11,7 +11,7 @@ export class CountryAutocompleter {
         private countryRepository: CountryRepository,
         private control: AbstractControl
     ) {
-        control.valueChanges.subscribe(countryName => this.filterByName(countryName));
+        control.valueChanges.subscribe(countryName => this.filterByName(countryName.toString().toLowerCase()));
         countryRepository.findAll()
             .then(value => this.filteredCountries.next(value));
     }
@@ -19,7 +19,7 @@ export class CountryAutocompleter {
     private filterByName(countryName: string) {
         this.countryRepository.findAll()
             .then(countries => {
-                this.filteredCountries.next(countries.filter(country => country.name.includes(countryName)));
+                this.filteredCountries.next(countries.filter(country => country.nameInLowerCase.includes(countryName)));
             });
     }
 

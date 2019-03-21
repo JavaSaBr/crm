@@ -1,6 +1,7 @@
 import {Directive} from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
 import {PhoneNumber} from './phone-number';
+import {Utils} from '../../utils/utils';
 
 @Directive({
     selector: 'phoneNumber',
@@ -20,15 +21,11 @@ export class PhoneNumberValidator implements Validator {
 
             if (phoneNumber.country == null) {
                 return {'no country code': {value: phoneNumber}};
-            } else if (!this.validatePhoneNumber(phoneNumber.phoneNumber)) {
+            } else if (!Utils.isNumber(phoneNumber.phoneNumber)) {
                 return {'phone number is not valid': {value: phoneNumber}};
             }
         }
 
         return null;
-    }
-
-    validatePhoneNumber(phoneNumber: string): boolean {
-        return ((phoneNumber != null) && !isNaN(Number(phoneNumber)));
     }
 }

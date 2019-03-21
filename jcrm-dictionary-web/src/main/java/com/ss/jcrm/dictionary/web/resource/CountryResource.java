@@ -14,11 +14,13 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public class CountryResource implements RestResource {
 
+    private long id;
+
     private String name;
     private String flagCode;
     private String phoneCode;
 
     public CountryResource(@NotNull Country country) {
-        this(country.getName(), country.getFlagCode(), country.getPhoneCode());
+        this(country.getId(), country.getName(), country.getFlagCode(), country.getPhoneCode());
     }
 }

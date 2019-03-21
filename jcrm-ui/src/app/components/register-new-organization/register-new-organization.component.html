@@ -12,14 +12,7 @@
                     <input matInput placeholder="Organization name" formControlName="orgName" required>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Country" formControlName="country" [matAutocomplete]="auto"
-                           phoneNumber required>
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCountry">
-                        <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
-                            <span class="flag-icon flag-icon-{{country.flagCode.toLowerCase()}} flag-icon-squared"></span>
-                            {{country.name}}
-                        </mat-option>
-                    </mat-autocomplete>
+                    <country-input formControlName="country" placeholder="Country" required></country-input>
                 </mat-form-field>
                 <div class="flex-row flex-end">
                     <button mat-button (click)="resetAndClose()">Cancel</button>
@@ -50,7 +43,7 @@
                     <input matInput placeholder="Email" formControlName="email" type="email" required>
                 </mat-form-field>
                 <mat-form-field>
-                    <phone-number-input placeholder="Phone number" required></phone-number-input>
+                    <phone-number-input formControlName="phoneNumber" placeholder="Phone number" required></phone-number-input>
                 </mat-form-field>
                 <div class="flex-row">
                     <button mat-button matStepperPrevious>Back</button>

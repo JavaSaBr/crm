@@ -18,6 +18,20 @@ export class CountryRepository extends CachedRepository<Country> {
     }
 
     protected extractValue(value): Country[] {
-        return value.countries;
+
+        const countries = value.countries as Country[];
+        countries.forEach(country => country.nameInLowerCase = country.name.toLowerCase());
+
+        return countries;
+    }
+
+    public findByPhoneCode(phoneCode: string): Promise<Country | null> {
+        return this.findAll()
+            .then(countries => countries.find(country => country.phoneCode == phoneCode));
+    }
+
+    public findByLowerCaseName(name: string): Promise<Country | null> {
+        return this.findAll()
+            .then(countries => countries.find(country => country.nameInLowerCase == name));
     }
 }
