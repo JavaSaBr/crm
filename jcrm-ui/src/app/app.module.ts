@@ -14,7 +14,7 @@ import {
     MatIconModule,
     MatInputModule,
     MatListModule,
-    MatMenuModule,
+    MatMenuModule, MatRadioModule,
     MatSelectModule,
     MatSidenavModule,
     MatStepperModule,
@@ -65,6 +65,7 @@ import {CountryInput} from './input/country/country-input';
         MatAutocompleteModule,
         MatSelectModule,
         HttpClientModule,
+        MatRadioModule
     ],
     providers: [SideMenuService, UserService, NoAuthHomeService],
     bootstrap: [AppComponent]

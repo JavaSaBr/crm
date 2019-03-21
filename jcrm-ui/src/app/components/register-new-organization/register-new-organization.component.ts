@@ -11,8 +11,11 @@ import {PhoneNumberValidator} from '../../input/phone-number/phone-number-valida
 })
 export class RegisterNewOrganizationComponent implements OnInit {
 
-    readonly orgFormGroup: FormGroup;
-    readonly ownerFormGroup: FormGroup;
+    public readonly orgFormGroup: FormGroup;
+    public readonly ownerFormGroup: FormGroup;
+    public readonly subscribeFormGroup: FormGroup;
+
+    public selectedEmail: string;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -36,6 +39,12 @@ export class RegisterNewOrganizationComponent implements OnInit {
                 new PhoneNumberValidator()
             ]]
         });
+        this.subscribeFormGroup = this.formBuilder.group({
+            subscribe: ['false'],
+        });
+
+        this.ownerFormGroup.controls['email'].valueChanges
+            .subscribe(value => this.selectedEmail = value);
     }
 
     ngOnInit() {
@@ -44,5 +53,9 @@ export class RegisterNewOrganizationComponent implements OnInit {
     resetAndClose() {
         this.orgFormGroup.reset();
         this.noAuthHomeService.activateSubPage(null);
+    }
+
+    activateAndClose() {
+        this.resetAndClose();
     }
 }

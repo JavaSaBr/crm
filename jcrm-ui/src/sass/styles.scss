@@ -54,3 +54,8 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
 .flex-center {
   justify-content: center;
 }
+
+.radio-button-vertical {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

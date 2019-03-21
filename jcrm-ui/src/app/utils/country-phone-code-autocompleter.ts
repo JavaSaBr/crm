@@ -17,21 +17,35 @@ export class CountryPhoneCodeAutocompleter {
             .then(value => this.filteredCountries.next(value));
     }
 
-    private filterByNameOrPhoneCode(value: string) {
+    private filterByNameOrPhoneCode(value: any) {
 
         if (!value) {
             this.countryRepository.findAll()
                 .then(countries => this.filteredCountries.next(countries));
-        } else if (value.startsWith('+') || Utils.isNumber(value)) {
+            return;
+        }
+
+        const countryValue = value as Country;
+
+        if (countryValue.id) {
             this.countryRepository.findAll()
                 .then(countries => {
-                    this.filteredCountries.next(countries.filter(country => country.phoneCode.includes(value)));
+                    this.filteredCountries.next(countries.filter(country => country.id == countryValue.id));
+                });
+        }
+
+        const stringValue = value.toString()
+            .toLowerCase();
+
+        if (stringValue.startsWith('+') || Utils.isNumber(stringValue)) {
+            this.countryRepository.findAll()
+                .then(countries => {
+                    this.filteredCountries.next(countries.filter(country => country.phoneCode.includes(stringValue)));
                 });
         } else {
-            value = value.toLowerCase();
             this.countryRepository.findAll()
                 .then(countries => {
-                    this.filteredCountries.next(countries.filter(country => country.nameInLowerCase.includes(value)));
+                    this.filteredCountries.next(countries.filter(country => country.nameInLowerCase.includes(stringValue)));
                 });
         }
     }
