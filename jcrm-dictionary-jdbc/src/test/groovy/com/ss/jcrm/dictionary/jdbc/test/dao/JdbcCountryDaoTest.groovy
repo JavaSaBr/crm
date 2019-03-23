@@ -56,4 +56,26 @@ class JdbcCountryDaoTest extends JdbcDictionarySpecification {
             def ex = thrown(CompletionException)
             ex.getCause() instanceof DuplicateObjectDaoException
     }
+
+    def "should load correctly created countries"() {
+
+        given:
+            countryDao.create("testcountry1", "testflag1", "testphone1")
+            countryDao.create("testcountry2", "testflag2", "testphone2")
+            countryDao.create("testcountry3", "testflag3", "testphone3")
+        when:
+            def result = countryDao.findAll()
+        then:
+            result.size() == 3
+        when:
+            def loaded = countryDao.findByName("testcountry2")
+        then:
+            loaded != null
+            loaded.getId() > 0
+        when:
+            def reloaded = countryDao.findById(loaded.getId())
+        then:
+            reloaded != null
+            reloaded.getId() == loaded.getId()
+    }
 }

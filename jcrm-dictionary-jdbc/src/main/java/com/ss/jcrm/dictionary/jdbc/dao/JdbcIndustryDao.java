@@ -2,10 +2,10 @@ package com.ss.jcrm.dictionary.jdbc.dao;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import com.ss.jcrm.dao.exception.GenerateIdDaoException;
-import com.ss.jcrm.dictionary.api.Country;
-import com.ss.jcrm.dictionary.api.dao.CountryDao;
+import com.ss.jcrm.dictionary.api.Industry;
+import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.dictionary.jdbc.AbstractDictionaryDao;
-import com.ss.jcrm.dictionary.jdbc.JdbcCountry;
+import com.ss.jcrm.dictionary.jdbc.JdbcIndustry;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,21 +19,17 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements CountryDao {
+public class JdbcIndustryDao extends AbstractDictionaryDao<Industry> implements IndustryDao {
 
-    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " FROM \"country\" where \"name\" = ?";
+    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\" FROM \"industry\" where \"name\" = ?";
 
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " FROM \"country\" where \"id\" = ?";
+    private static final String Q_SELECT_BY_ID = "select \"id\", \"name\" FROM \"industry\" where \"id\" = ?";
 
-    private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " FROM \"country\"";
+    private static final String Q_SELECT_ALL = "select \"id\", \"name\" FROM \"industry\"";
 
-    private static final String Q_INSERT = "insert into \"country\" (\"name\", \"flag_code\", \"phone_code\")" +
-        " values (?, ?, ?)";
+    private static final String Q_INSERT = "insert into \"industry\" (\"name\") values (?)";
 
-    public JdbcCountryDao(
+    public JdbcIndustryDao(
         @NotNull DataSource dataSource,
         @NotNull Executor fastDbTaskExecutor,
         @NotNull Executor slowDbTaskExecutor
@@ -42,27 +38,20 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
     }
 
     @Override
-    public @NotNull Country create(@NotNull String name, @NotNull String flagCode, @NotNull String phoneCode) {
+    public @NotNull Industry create(@NotNull String name) {
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(Q_INSERT, Statement.RETURN_GENERATED_KEYS)
         ) {
 
             statement.setString(1, name);
-            statement.setString(2, flagCode);
-            statement.setString(3, phoneCode);
             statement.execute();
 
             try (var rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    return new JdbcCountry(
-                        name,
-                        flagCode,
-                        phoneCode,
-                        rs.getLong(1)
-                    );
+                    return new JdbcIndustry(name, rs.getLong(1));
                 } else {
-                    throw new GenerateIdDaoException("Can't receive generated id for the new country entity.");
+                    throw new GenerateIdDaoException("Can't receive generated id for the new industry entity.");
                 }
             }
 
@@ -72,18 +61,14 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Country> createAsync(
-        @NotNull String name,
-        @NotNull String flagCode,
-        @NotNull String phoneCode
-    ) {
-        return supplyAsync(() -> create(name, flagCode, phoneCode), fastDbTaskExecutor);
+    public @NotNull CompletableFuture<@NotNull Industry> createAsync(@NotNull String name) {
+        return supplyAsync(() -> create(name), fastDbTaskExecutor);
     }
 
     @Override
-    public @NotNull List<Country> findAll() {
+    public @NotNull List<Industry> findAll() {
 
-        var result = new ArrayList<Country>();
+        var result = new ArrayList<Industry>();
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(Q_SELECT_ALL)
@@ -91,7 +76,7 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
 
             try (var rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    result.add(toCountry(rs));
+                    result.add(toIndustry(rs));
                 }
             }
 
@@ -101,8 +86,9 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
 
         return result;
     }
+
     @Override
-    public @Nullable Country findById(long id) {
+    public @Nullable Industry findById(long id) {
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(Q_SELECT_BY_ID)
@@ -112,7 +98,7 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
 
             try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return toCountry(rs);
+                    return toIndustry(rs);
                 }
             }
 
@@ -124,7 +110,7 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
     }
 
     @Override
-    public @Nullable Country findByName(@NotNull String name) {
+    public @Nullable Industry findByName(@NotNull String name) {
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(Q_SELECT_BY_NAME)
@@ -134,7 +120,7 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
 
             try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return toCountry(rs);
+                    return toIndustry(rs);
                 }
             }
 
@@ -145,12 +131,7 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
         return null;
     }
 
-    private @NotNull JdbcCountry toCountry(@NotNull ResultSet rs) throws SQLException {
-        return new JdbcCountry(
-            rs.getString(2),
-            rs.getString(3),
-            rs.getString(4),
-            rs.getLong(1)
-        );
+    private @NotNull JdbcIndustry toIndustry(@NotNull ResultSet rs) throws SQLException {
+        return new JdbcIndustry(rs.getString(2), rs.getLong(1));
     }
 }

@@ -12,10 +12,12 @@ import static com.ss.jcrm.integration.test.db.DbSpecificationUtils.clearTable
 @ContextConfiguration(classes = JdbcDictionarySpecificationConfig)
 class JdbcDictionarySpecification extends DefaultSpecification {
 
+    static final String TABLE_CITY = "city"
     static final String TABLE_COUNTRY = "country"
+    static final String TABLE_INDUSTRY = "industry"
 
     def static clearAllTables(@NotNull DataSource dictionaryDataSource) {
-        clearTable(dictionaryDataSource, TABLE_COUNTRY)
+        clearTable(dictionaryDataSource, TABLE_CITY, TABLE_COUNTRY, TABLE_INDUSTRY)
     }
 
     @Autowired

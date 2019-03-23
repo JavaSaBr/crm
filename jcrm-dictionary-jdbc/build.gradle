@@ -4,7 +4,6 @@ ext {
 }
 
 dependencies {
-    compile project(":jcrm-dao")
     compile project(":jcrm-dictionary-api")
     compile project(":jcrm-base-spring")
     compile project(":jcrm-jdbc")
