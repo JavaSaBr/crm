@@ -13,11 +13,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AllCountriesResource implements RestResource {
+public class AllCountriesOutResource implements RestResource {
 
-    private CountryResource[] countries;
+    private CountryOutResource[] countries;
 
-    public AllCountriesResource(@NotNull List<CountryResource> resources) {
-        this.countries = resources.toArray(CountryResource[]::new);
+    public AllCountriesOutResource(@NotNull List<CountryOutResource> resources) {
+        this.countries = resources.toArray(CountryOutResource[]::new);
     }
 }

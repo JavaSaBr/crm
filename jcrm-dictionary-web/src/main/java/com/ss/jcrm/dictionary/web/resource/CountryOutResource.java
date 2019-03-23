@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CountryResource implements RestResource {
+public class CountryOutResource implements RestResource {
 
     private long id;
 
@@ -20,7 +20,7 @@ public class CountryResource implements RestResource {
     private String flagCode;
     private String phoneCode;
 
-    public CountryResource(@NotNull Country country) {
+    public CountryOutResource(@NotNull Country country) {
         this(country.getId(), country.getName(), country.getFlagCode(), country.getPhoneCode());
     }
 }

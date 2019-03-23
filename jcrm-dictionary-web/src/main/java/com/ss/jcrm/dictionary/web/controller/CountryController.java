@@ -2,8 +2,8 @@ package com.ss.jcrm.dictionary.web.controller;
 
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
-import com.ss.jcrm.dictionary.web.resource.AllCountriesResource;
-import com.ss.jcrm.dictionary.web.resource.CountryResource;
+import com.ss.jcrm.dictionary.web.resource.AllCountriesOutResource;
+import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class CountryController {
 
-    private final CachedDictionaryService<CountryResource, AllCountriesResource> countryDictionaryService;
+    private final CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService;
 
     @GetMapping("/dictionary/countries")
-    @NotNull ResponseEntity<AllCountriesResource> getAll() {
+    @NotNull ResponseEntity<AllCountriesOutResource> getAll() {
         return ok(countryDictionaryService.getAll());
     }
 
     @GetMapping("/dictionary/country/{id}")
-    @NotNull ResponseEntity<CountryResource> get(@PathVariable("id") long id) {
+    @NotNull ResponseEntity<CountryOutResource> get(@PathVariable("id") long id) {
 
         var resource = countryDictionaryService.getById(id);
 
@@ -37,7 +37,7 @@ public class CountryController {
     }
 
     @GetMapping("/dictionary/name/{name}")
-    @NotNull ResponseEntity<CountryResource> getByName(@NotNull @PathVariable("name") String name) {
+    @NotNull ResponseEntity<CountryOutResource> getByName(@NotNull @PathVariable("name") String name) {
 
         var resource = countryDictionaryService.getByName(name.toLowerCase());
 

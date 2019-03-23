@@ -1,8 +1,8 @@
 package com.ss.jcrm.dictionary.web.test.controller
 
 import com.ss.jcrm.base.utils.Reloadable
-import com.ss.jcrm.dictionary.web.resource.AllCountriesResource
-import com.ss.jcrm.dictionary.web.resource.CountryResource
+import com.ss.jcrm.dictionary.web.resource.AllCountriesOutResource
+import com.ss.jcrm.dictionary.web.resource.CountryOutResource
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService
 import com.ss.jcrm.dictionary.web.test.DictionarySpecification
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.hasSize
 class CountryControllerTest extends DictionarySpecification {
 
     @Autowired
-    private CachedDictionaryService<CountryResource, AllCountriesResource> countryDictionaryService
+    private CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService
 
     def "should get all countries"() {
 
