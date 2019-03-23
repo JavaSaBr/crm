@@ -1,4 +1,4 @@
-package com.ss.jcrm.web.exception.handler;
+package com.ss.jcrm.web.exception;
 
 import com.ss.jcrm.web.exception.WebException;
 import org.jetbrains.annotations.NotNull;

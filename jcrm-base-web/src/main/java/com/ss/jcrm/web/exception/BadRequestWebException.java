@@ -1,11 +1,21 @@
 package com.ss.jcrm.web.exception;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 
 public class BadRequestWebException extends WebException {
 
-    public BadRequestWebException(@NotNull String message) {
-        super(message, HttpStatus.BAD_REQUEST.value());
+    @Getter
+    private final int errorCode;
+
+    public BadRequestWebException(int errorCode) {
+        super("", HttpStatus.BAD_REQUEST.value());
+        this.errorCode = errorCode;
+    }
+
+    public BadRequestWebException(@NotNull String errorMessage, int errorCode) {
+        super(errorMessage, HttpStatus.BAD_REQUEST.value());
+        this.errorCode = errorCode;
     }
 }
