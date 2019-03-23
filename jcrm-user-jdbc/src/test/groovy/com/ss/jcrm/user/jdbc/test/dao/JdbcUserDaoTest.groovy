@@ -29,7 +29,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should create and load a new user"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
         when:
@@ -45,7 +45,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should create and load a new user using async"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
         when:
@@ -61,7 +61,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should prevent creating a user with the same name"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
             userDao.create("User1", password, salt, org)
@@ -74,7 +74,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should prevent creating a user with the same name using async"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
             userDao.createAsync("User1", password, salt, org).join()
@@ -88,7 +88,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should load a changed user with correct version"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
             def user = userDao.create("User1", password, salt, org)
@@ -106,7 +106,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should add two new roles to a user"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
             def user = userDao.create("User1", password, salt, org)
@@ -131,7 +131,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should add two new roles to a user using async"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
             def user = userDao.create("User1", password, salt, org)
@@ -160,7 +160,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
 
         given:
 
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
 
             def password = passwordService.nextBytePassword(24)
@@ -178,7 +178,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should throw DuplicateObjectDaoException during creating a new user"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
             userDao.create("User1", password, salt, org)
@@ -191,7 +191,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should remove all roles from a user"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org =userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def firstRole = userRoleDao.create("Role1")
             def secondRole = userRoleDao.create("Role2")
@@ -221,7 +221,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should load a user by name"() {
 
         given:
-            def org = organizationDao.create("TestOrg1")
+            def org = userTestHelper.newOrg("TestOrg1")
             def salt = makeSlat(20)
             def password = passwordService.nextBytePassword(24)
             userDao.create("User1", password, salt, org)

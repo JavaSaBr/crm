@@ -1,5 +1,6 @@
 package com.ss.jcrm.dictionary.jdbc.test
 
+import com.ss.jcrm.dictionary.jdbc.test.helper.DictionaryTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,9 +22,9 @@ class JdbcDictionarySpecification extends DefaultSpecification {
     }
 
     @Autowired
-    DataSource dictionaryDataSource
+    DictionaryTestHelper dictionaryTestHelper
 
     def setup() {
-        clearAllTables(dictionaryDataSource)
+        dictionaryTestHelper.clearAllData()
     }
 }

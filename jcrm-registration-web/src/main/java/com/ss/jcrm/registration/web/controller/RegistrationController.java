@@ -1,10 +1,12 @@
 package com.ss.jcrm.registration.web.controller;
 
+import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.registration.web.resources.UserRegisterResource;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserRoleDao;
 import com.ss.rlib.common.util.StringUtils;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,22 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class RegistrationController {
+
 
     private final UserDao userDao;
     private final UserRoleDao userRoleDao;
     private final OrganizationDao organizationDao;
-
-    @Autowired
-    public RegistrationController(
-        @NotNull UserDao userDao,
-        @NotNull UserRoleDao userRoleDao,
-        @NotNull OrganizationDao organizationDao
-    ) {
-        this.userDao = userDao;
-        this.userRoleDao = userRoleDao;
-        this.organizationDao = organizationDao;
-    }
+    private final CountryDao countryDao;
 
     @PostMapping(
         path = "/registration/register",

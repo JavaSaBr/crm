@@ -16,8 +16,7 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
     def "should create a new organization"(String name, String resultName) {
 
         expect:
-            validate(organizationDao.create(name), resultName)
-
+            validate(organizationDao.create(name, dictionaryTestHelper.newCountry()), resultName)
         where:
             name                   | resultName
             "test1"                | "test1"
@@ -28,8 +27,7 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
     def "should create a new organization using async"(String name, String resultName) {
 
         expect:
-            validate(organizationDao.createAsync(name).join(), resultName)
-
+            validate(organizationDao.createAsync(name, dictionaryTestHelper.newCountry()).join(), resultName)
         where:
             name                   | resultName
             "test1"                | "test1"
@@ -41,7 +39,7 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
 
         given:
             def orgName = "TestOrgName1"
-            def created = organizationDao.create(orgName)
+            def created = organizationDao.create(orgName, dictionaryTestHelper.newCountry())
         when:
             def orgByName = organizationDao.findByName(orgName)
             def orgById = organizationDao.findById(created.getId())
@@ -49,15 +47,17 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
             orgByName != null
             orgByName.getName() == orgName
             orgByName.getId() != 0L
+            orgByName.getCountry() != null
             orgById != null
             orgById.getId() != 0L
+            orgById.getCountry() != null
     }
 
     def "should create and load a new organization using async"() {
 
         given:
             def orgName = "TestOrgName1"
-            def created = organizationDao.createAsync(orgName).join()
+            def created = organizationDao.createAsync(orgName, dictionaryTestHelper.newCountry()).join()
         when:
             def orgByName = organizationDao.findByNameAsync(orgName).join()
             def orgById = organizationDao.findByIdAsync(created.getId()).join()
@@ -65,8 +65,10 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
             orgByName != null
             orgByName.getName() == orgName
             orgByName.getId() != 0L
+            orgByName.getCountry() != null
             orgById != null
             orgById.getId() != 0L
+            orgById.getCountry() != null
     }
 
     def "should load all new organizations"() {
@@ -76,7 +78,7 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
             def orgNames = ["org1", "org2", "org3", "org4"]
 
             orgNames.forEach {
-                organizationDao.create(it)
+                organizationDao.create(it, dictionaryTestHelper.newCountry())
             }
 
         when:
@@ -94,7 +96,7 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
             def results = new ArrayList<CompletableFuture<?>>()
 
             orgNames.forEach {
-                results.add(organizationDao.createAsync(it))
+                results.add(organizationDao.createAsync(it, dictionaryTestHelper.newCountry()))
             }
 
             results.forEach {
@@ -111,6 +113,7 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
     private static boolean validate(Organization organization, String resultName) {
         return organization != null &&
             organization.getId() != 0 &&
-            StringUtils.equals(organization.getName(), resultName)
+            StringUtils.equals(organization.getName(), resultName) &&
+            organization.getCountry() != null
     }
 }

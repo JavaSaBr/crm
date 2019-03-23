@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import(RegistrationWebConfig.class)
-//@PropertySource("classpath:com/ss/jcrm/registration/web/application.properties")
 public class RegistrationApplication extends BaseWebApplication {
 
     public static void main(@NotNull String[] args) {

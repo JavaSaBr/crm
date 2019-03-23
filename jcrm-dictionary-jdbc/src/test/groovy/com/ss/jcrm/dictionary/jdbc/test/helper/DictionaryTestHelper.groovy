@@ -7,28 +7,17 @@ import javax.sql.DataSource
 
 class DictionaryTestHelper {
 
-    class TestCountry {
-
-        String name
-        String flagCode
-        String phoneCode
-
-        long id
-
-        TestCountry(String name, String flagCode, String phoneCode, long id) {
-            this.name = name
-            this.flagCode = flagCode
-            this.phoneCode = phoneCode
-            this.id = id
-        }
-    }
-
     private final DataSource dictionaryDataSource
     private final CountryDao countryDao
 
     DictionaryTestHelper(DataSource dictionaryDataSource, CountryDao countryDao) {
         this.dictionaryDataSource = dictionaryDataSource
         this.countryDao = countryDao
+    }
+
+    def newCountry() {
+        def name = String.valueOf(System.currentTimeMillis() + Thread.currentThread().id)
+        return newCountry(name, "none", "none")
     }
 
     def newCountry(String name) {

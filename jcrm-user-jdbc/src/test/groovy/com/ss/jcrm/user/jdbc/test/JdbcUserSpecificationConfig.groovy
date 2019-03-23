@@ -1,5 +1,7 @@
 package com.ss.jcrm.user.jdbc.test
 
+import com.ss.jcrm.dictionary.jdbc.test.JdbcDictionarySpecificationConfig
+import com.ss.jcrm.dictionary.jdbc.test.helper.DictionaryTestHelper
 import com.ss.jcrm.integration.test.db.DbSpecificationConfig
 import com.ss.jcrm.integration.test.db.DbSpecificationUtils
 import com.ss.jcrm.security.config.SecurityConfig
@@ -11,11 +13,7 @@ import com.ss.jcrm.user.jdbc.config.JdbcUserConfig
 import com.ss.jcrm.user.jdbc.test.helper.UserTestHelper
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.Lazy
-import org.springframework.context.annotation.PropertySource
+import org.springframework.context.annotation.*
 import org.springframework.core.env.Environment
 import org.testcontainers.containers.PostgreSQLContainer
 
@@ -25,6 +23,7 @@ import javax.sql.DataSource
 @Import([
     JdbcUserConfig,
     DbSpecificationConfig,
+    JdbcDictionarySpecificationConfig,
     SecurityConfig
 ])
 @PropertySource("classpath:com/ss/jcrm/user/jdbc/test/user-jdbc-test.properties")
@@ -48,6 +47,9 @@ class JdbcUserSpecificationConfig {
     @Autowired @Lazy
     UserRoleDao userRoleDao
 
+    @Autowired
+    DictionaryTestHelper dictionaryTestHelper
+
     @Bean
     @NotNull DataSource userDataSource() {
         return DbSpecificationUtils.newDataSource(
@@ -63,7 +65,8 @@ class JdbcUserSpecificationConfig {
             userRoleDao,
             organizationDao,
             passwordService,
-            userDataSource()
+            userDataSource(),
+            dictionaryTestHelper
         )
     }
 }

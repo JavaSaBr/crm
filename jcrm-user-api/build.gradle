@@ -1,4 +1,4 @@
 
 dependencies {
-    compile project(":jcrm-dao")
+    compile project(":jcrm-dictionary-api")
 }

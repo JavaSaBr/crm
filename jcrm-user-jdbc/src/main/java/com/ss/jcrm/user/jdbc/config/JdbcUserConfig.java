@@ -1,5 +1,8 @@
 package com.ss.jcrm.user.jdbc.config;
 
+import com.ss.jcrm.dictionary.api.dao.CityDao;
+import com.ss.jcrm.dictionary.api.dao.CountryDao;
+import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.jdbc.ConnectionPoolFactory;
 import com.ss.jcrm.jdbc.config.JdbcConfig;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
@@ -22,20 +25,23 @@ import java.util.concurrent.Executor;
 @Import(JdbcConfig.class)
 public class JdbcUserConfig {
 
-    private final Executor fastDbTaskExecutor;
-    private final Executor slowDbTaskExecutor;
-    private final Environment env;
+    @Autowired
+    private Executor fastDbTaskExecutor;
 
     @Autowired
-    public JdbcUserConfig(
-        @NotNull Executor fastDbTaskExecutor,
-        @NotNull Executor slowDbTaskExecutor,
-        @NotNull Environment env
-    ) {
-        this.fastDbTaskExecutor = fastDbTaskExecutor;
-        this.slowDbTaskExecutor = slowDbTaskExecutor;
-        this.env = env;
-    }
+    private Executor slowDbTaskExecutor;
+
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    private CityDao cityDao;
+
+    @Autowired
+    private IndustryDao industryDao;
+
+    @Autowired
+    private CountryDao countryDao;
 
     @Bean
     @NotNull DataSource userDataSource() {
@@ -65,6 +71,13 @@ public class JdbcUserConfig {
 
     @Bean
     @NotNull OrganizationDao organizationDao() {
-        return new JdbcOrganizationDao(userDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
+        return new JdbcOrganizationDao(
+            userDataSource(),
+            fastDbTaskExecutor,
+            slowDbTaskExecutor,
+            cityDao,
+            industryDao,
+            countryDao
+        );
     }
 }

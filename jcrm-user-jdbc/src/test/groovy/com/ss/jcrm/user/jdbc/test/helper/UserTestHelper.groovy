@@ -1,5 +1,6 @@
 package com.ss.jcrm.user.jdbc.test.helper
 
+import com.ss.jcrm.dictionary.jdbc.test.helper.DictionaryTestHelper
 import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
@@ -28,19 +29,22 @@ class UserTestHelper {
     private final OrganizationDao organizationDao
     private final PasswordService passwordService
     private final DataSource userDataSource
+    private final DictionaryTestHelper dictionaryTestHelper
 
     UserTestHelper(
         UserDao userDao,
         UserRoleDao userRoleDao,
         OrganizationDao organizationDao,
         PasswordService passwordService,
-        DataSource userDataSource
+        DataSource userDataSource,
+        DictionaryTestHelper dictionaryTestHelper
     ) {
         this.userDao = userDao
         this.userRoleDao = userRoleDao
         this.organizationDao = organizationDao
         this.passwordService = passwordService
         this.userDataSource = userDataSource
+        this.dictionaryTestHelper = dictionaryTestHelper
     }
 
     def synchronized getOrCreateDefaultOrg() {
@@ -48,21 +52,25 @@ class UserTestHelper {
         def org = organizationDao.findByName("TestOrg")
 
         if (org == null) {
-            return organizationDao.create("TestOrg")
+            return organizationDao.create("TestOrg", dictionaryTestHelper.newCountry())
         }
 
         return org
     }
 
-    def newDaoUser(String name) {
-        return newDaoUser(
+    def newOrg(String name) {
+        return organizationDao.create(name, dictionaryTestHelper.newCountry());
+    }
+
+    def newUser(String name) {
+        return newUser(
             name,
             passwordService.nextPassword(24),
             passwordService.nextSalt
         )
     }
 
-    def newDaoUser(String name, String password, byte[] salt) {
+    def newUser(String name, String password, byte[] salt) {
         return userDao.create(
             name,
             passwordService.hash(password, salt),
@@ -75,7 +83,7 @@ class UserTestHelper {
 
         def password = passwordService.nextPassword(24)
         def salt = passwordService.nextSalt
-        def user = newDaoUser(name, password, salt)
+        def user = newUser(name, password, salt)
 
         return new TestUser(user.id, name, password)
     }

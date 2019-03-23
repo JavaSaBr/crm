@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.testcontainers.containers.PostgreSQLContainer
 
-@Import(DefaultSpecificationConfig)
 @Configuration
+@Import(DefaultSpecificationConfig)
 class DbSpecificationConfig {
 
     static final String DB_NAME = "test-db"
