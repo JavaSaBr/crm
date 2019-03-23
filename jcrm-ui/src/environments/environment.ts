@@ -4,7 +4,10 @@
 
 export const environment = {
     production: false,
-    dictionaryUrl: 'http://localhost:8090/dictionary'
+    dictionaryUrl: 'http://localhost:8090/dictionary',
+    registrationUrl: 'http://localhost:8091/registration',
+    orgNameMinLength: 2,
+    orgNameMaxLength: 20
 };
 
 /*

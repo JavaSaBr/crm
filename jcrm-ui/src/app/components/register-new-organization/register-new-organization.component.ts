@@ -1,15 +1,21 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CountryRepository} from '../../repositories/country/country.repository';
 import {NoAuthHomeService} from '../../services/no-auth-home.service';
 import {PhoneNumberValidator} from '../../input/phone-number/phone-number-validator';
+import {PasswordValidator} from '../../utils/validator/password-validator';
+import {RegistrationService} from '../../services/registration.service';
+import {CountryValidator} from '../../input/country/country-validator';
+import {Country} from '../../entity/country';
+import {PhoneNumber} from '../../input/phone-number/phone-number';
+import {OrganizationValidator} from '../../utils/validator/organization-validator';
 
 @Component({
     selector: 'app-register-new-organization',
     templateUrl: './register-new-organization.component.html',
     styleUrls: ['./register-new-organization.component.scss']
 })
-export class RegisterNewOrganizationComponent implements OnInit {
+export class RegisterNewOrganizationComponent {
 
     public readonly orgFormGroup: FormGroup;
     public readonly ownerFormGroup: FormGroup;
@@ -18,15 +24,24 @@ export class RegisterNewOrganizationComponent implements OnInit {
     public selectedEmail: string;
 
     constructor(
-        private formBuilder: FormBuilder,
-        private countryRepository: CountryRepository,
-        private noAuthHomeService: NoAuthHomeService
+        formBuilder: FormBuilder,
+        private readonly countryRepository: CountryRepository,
+        private readonly noAuthHomeService: NoAuthHomeService,
+        private readonly registrationService: RegistrationService
     ) {
-        this.orgFormGroup = this.formBuilder.group({
-            orgName: ['', Validators.required],
-            country: ['', Validators.required]
+        this.orgFormGroup = formBuilder.group({
+            orgName: ['', [
+                Validators.required,
+                Validators.minLength(2),
+                Validators.maxLength(20),
+                new OrganizationValidator(this.registrationService)
+            ]],
+            country: ['', [
+                Validators.required,
+                CountryValidator.instance
+            ]]
         });
-        this.ownerFormGroup = this.formBuilder.group({
+        this.ownerFormGroup = formBuilder.group({
             firstName: [''],
             secondName: [''],
             thirdName: [''],
@@ -34,12 +49,24 @@ export class RegisterNewOrganizationComponent implements OnInit {
                 Validators.required,
                 Validators.email
             ]],
+            password: ['', [
+                Validators.required,
+                Validators.minLength(6),
+                Validators.maxLength(20),
+                new PasswordValidator(() => this.ownerFormGroup, 'password')
+            ]],
+            passwordConfirm: ['', [
+                Validators.required,
+                Validators.minLength(6),
+                Validators.maxLength(20),
+                new PasswordValidator(() => this.ownerFormGroup, 'passwordConfirm')
+            ]],
             phoneNumber: ['', [
                 Validators.required,
-                new PhoneNumberValidator()
+                PhoneNumberValidator.instance,
             ]]
         });
-        this.subscribeFormGroup = this.formBuilder.group({
+        this.subscribeFormGroup = formBuilder.group({
             subscribe: ['false'],
         });
 
@@ -47,15 +74,39 @@ export class RegisterNewOrganizationComponent implements OnInit {
             .subscribe(value => this.selectedEmail = value);
     }
 
-    ngOnInit() {
-    }
-
     resetAndClose() {
         this.orgFormGroup.reset();
+        this.ownerFormGroup.reset();
+        this.subscribeFormGroup.reset();
         this.noAuthHomeService.activateSubPage(null);
     }
 
     activateAndClose() {
-        this.resetAndClose();
+
+        let controls = this.orgFormGroup.controls;
+
+        const orgName = controls['orgName'].value as string;
+        const country = controls['country'].value as Country;
+
+        controls = this.ownerFormGroup.controls;
+
+        const firstName = controls['firstName'].value as string;
+        const secondName = controls['secondName'].value as string;
+        const thirdName = controls['thirdName'].value as string;
+        const email = controls['email'].value as string;
+        const password = controls['password'].value as string;
+        const phoneNumber = controls['phoneNumber'].value as PhoneNumber;
+
+        controls = this.subscribeFormGroup.controls;
+
+        const subscribe = controls['subscribe'].value as boolean;
+
+        this.registrationService.register(orgName, country, firstName, secondName, thirdName, email, password, phoneNumber, subscribe)
+            .then(value => {
+                this.resetAndClose();
+            }).catch(reason => {
+                console.log(reason);
+            //TODO show error
+        });
     }
 }

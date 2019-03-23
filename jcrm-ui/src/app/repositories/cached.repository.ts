@@ -22,7 +22,7 @@ export class CachedRepository<T extends Entity> implements Repository<T> {
             return this.executing;
         }
 
-        return new Promise<T[]>((resolve, reject) => {
+        const executing = new Promise<T[]>((resolve, reject) => {
 
             this.httpClient.get<T[]>(this.buildFetchUrl())
                 .subscribe(value => {
@@ -35,6 +35,10 @@ export class CachedRepository<T extends Entity> implements Repository<T> {
                         reject(error);
                     });
         });
+
+        this.executing = executing;
+
+        return executing;
     }
 
     public findById(id: number): Promise<T | null> {

@@ -11,6 +11,8 @@ import {Utils} from '../../utils/utils';
 })
 export class PhoneNumberValidator implements Validator {
 
+    public static readonly instance = new PhoneNumberValidator();
+
     validate(control: AbstractControl): ValidationErrors | null {
 
         const value = control.value;

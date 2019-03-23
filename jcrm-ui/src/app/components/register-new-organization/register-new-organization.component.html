@@ -42,7 +42,15 @@
                     <input matInput placeholder="Email" formControlName="email" type="email" required>
                 </mat-form-field>
                 <mat-form-field>
-                    <phone-number-input formControlName="phoneNumber" placeholder="Phone number" required></phone-number-input>
+                    <input matInput placeholder="Password" formControlName="password" type="password" required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Password confirm" formControlName="passwordConfirm" type="password"
+                           required>
+                </mat-form-field>
+                <mat-form-field>
+                    <phone-number-input formControlName="phoneNumber" placeholder="Phone number"
+                                        required></phone-number-input>
                 </mat-form-field>
                 <div class="flex-row">
                     <button mat-button matStepperPrevious>Back</button>
@@ -60,7 +68,7 @@
                 <h2>Будьте в курсе</h2>
                 <p>Хотите получать новости и персональные рекомендации
                     по настройке и управлению информацией от JCRM?</p>
-                <mat-radio-group class="flex-column" formControlName="subscribe" >
+                <mat-radio-group class="flex-column" formControlName="subscribe">
                     <mat-radio-button class="radio-button-vertical" value="true">Yes</mat-radio-button>
                     <mat-radio-button class="radio-button-vertical" value="false">No</mat-radio-button>
                 </mat-radio-group>
@@ -86,7 +94,7 @@
                     <button mat-button (click)="resetAndClose()">Cancel</button>
                     <button mat-button (click)="activateAndClose()">Activate</button>
                 </div>
-             </div>
+            </div>
         </div>
     </mat-step>
 </mat-horizontal-stepper>

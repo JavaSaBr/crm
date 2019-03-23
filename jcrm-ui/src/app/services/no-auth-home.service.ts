@@ -5,20 +5,17 @@ import {Injectable} from '@angular/core';
 })
 export class NoAuthHomeService {
 
-    private currentSubPage: string = null;
+    public currentSubPage: string;
 
     constructor() {
+        this.currentSubPage = null;
     }
 
-    hasSubPage() {
+    hasSubPage(): boolean {
         return this.currentSubPage != null;
     }
 
-    public activateSubPage(page: string) {
-        this.currentSubPage = page;
-    }
-
-    getCurrentSubPage() {
-        return this.currentSubPage;
+    activateSubPage(currentSubPage: string) {
+        this.currentSubPage = currentSubPage;
     }
 }
