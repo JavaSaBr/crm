@@ -8,7 +8,7 @@ import com.ss.jcrm.security.config.SecurityConfig
 import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
-import com.ss.jcrm.user.api.dao.UserRoleDao
+import com.ss.jcrm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig
 import com.ss.jcrm.user.jdbc.test.helper.UserTestHelper
 import org.jetbrains.annotations.NotNull
@@ -45,7 +45,7 @@ class JdbcUserSpecificationConfig {
     OrganizationDao organizationDao
 
     @Autowired @Lazy
-    UserRoleDao userRoleDao
+    UserGroupDao userRoleDao
 
     @Autowired
     DictionaryTestHelper dictionaryTestHelper

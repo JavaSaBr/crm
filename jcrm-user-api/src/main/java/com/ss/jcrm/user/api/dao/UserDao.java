@@ -3,12 +3,13 @@ package com.ss.jcrm.user.api.dao;
 import com.ss.jcrm.dao.NamedObjectDao;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
+import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.user.api.UserRole;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
@@ -21,7 +22,12 @@ public interface UserDao extends NamedObjectDao<User> {
         @NotNull String name,
         @NotNull byte[] password,
         @NotNull byte[] salt,
-        @Nullable Organization organization
+        @NotNull Organization organization,
+        @NotNull Set<AccessRole> roles,
+        @Nullable String firstName,
+        @Nullable String secondName,
+        @Nullable String thirdName,
+        @Nullable String phoneNumber
     );
 
     /**
@@ -31,26 +37,21 @@ public interface UserDao extends NamedObjectDao<User> {
         @NotNull String name,
         @NotNull byte[] password,
         @NotNull byte[] salt,
-        @Nullable Organization organization
+        @NotNull Organization organization,
+        @NotNull Set<AccessRole> roles,
+        @Nullable String firstName,
+        @Nullable String secondName,
+        @Nullable String thirdName,
+        @Nullable String phoneNumber
     );
 
     /**
      * @throws NotActualObjectDaoException if the user was changed in another thread/server.
      */
-    void addRole(@NotNull User user, @NotNull UserRole role);
+    void update(@NotNull User user);
 
     /**
      * @throws CompletionException -> NotActualObjectDaoException if the user was changed in another thread/server.
      */
-    @NotNull CompletableFuture<Void> addRoleAsync(@NotNull User user, @NotNull UserRole role);
-
-    /**
-     * @throws NotActualObjectDaoException if the user was changed in another thread/server.
-     */
-    void removeRole(@NotNull User user, @NotNull UserRole role);
-
-    /**
-     * @throws CompletionException -> NotActualObjectDaoException if the user was changed in another thread/server.
-     */
-    @NotNull CompletableFuture<Void> removeRoleAsync(@NotNull User user, @NotNull UserRole role);
+    @NotNull CompletableFuture<Void> updateAsync(@NotNull User user);
 }

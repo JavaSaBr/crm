@@ -7,7 +7,7 @@ import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
 import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserRoleDao;
+import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.rlib.common.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ import java.util.concurrent.CompletionException;
 public class OrganizationController {
 
     private final UserDao userDao;
-    private final UserRoleDao userRoleDao;
+    private final UserGroupDao userRoleDao;
     private final OrganizationDao organizationDao;
     private final CountryDao countryDao;
     private final PasswordService passwordService;
@@ -36,7 +36,7 @@ public class OrganizationController {
     @Autowired
     private OrganizationController(
         @NotNull UserDao userDao,
-        @NotNull UserRoleDao userRoleDao,
+        @NotNull UserGroupDao userRoleDao,
         @NotNull OrganizationDao organizationDao,
         @NotNull CountryDao countryDao,
         @NotNull PasswordService passwordService,

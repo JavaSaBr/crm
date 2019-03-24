@@ -5,7 +5,7 @@ import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
-import com.ss.jcrm.user.api.dao.UserRoleDao
+import com.ss.jcrm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom
 class JdbcUserDaoTest extends JdbcUserSpecification {
 
     @Autowired
-    UserRoleDao userRoleDao
+    UserGroupDao userRoleDao
 
     @Autowired
     UserDao userDao
@@ -93,7 +93,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def password = passwordService.nextBytePassword(24)
             def user = userDao.create("User1", password, salt, org)
             def role = userRoleDao.create("TestRole")
-            userDao.addRole(user, role)
+            userDao.addGroup(user, role)
         when:
             def user2 = userDao.findById(user.getId())
         then:
@@ -113,8 +113,8 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def firstRole = userRoleDao.create("Role1")
             def secondRole = userRoleDao.create("Role2")
         when:
-            userDao.addRole(user, firstRole)
-            userDao.addRole(user, secondRole)
+            userDao.addGroup(user, firstRole)
+            userDao.addGroup(user, secondRole)
         then:
             user != null
             user.getName() == "User1"
@@ -140,7 +140,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         when:
 
             userDao.addRoleAsync(user, firstRole)
-                .thenAccept { userDao.addRole(user, secondRole) }
+                .thenAccept { userDao.addGroup(user, secondRole) }
                 .join()
 
         then:
@@ -170,7 +170,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def role = userRoleDao.create("Role1")
 
         when:
-            userDao.addRole(user, role)
+            userDao.addGroup(user, role)
         then:
             thrown NotActualObjectDaoException
     }
@@ -197,8 +197,8 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def secondRole = userRoleDao.create("Role2")
             def password = passwordService.nextBytePassword(24)
             def user = userDao.create("User1", password, salt, org)
-            userDao.addRole(user, firstRole)
-            userDao.addRole(user, secondRole)
+            userDao.addGroup(user, firstRole)
+            userDao.addGroup(user, secondRole)
         when:
             userDao.removeRole(user, firstRole)
         then:

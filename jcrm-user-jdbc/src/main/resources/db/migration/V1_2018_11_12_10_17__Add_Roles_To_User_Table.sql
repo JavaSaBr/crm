@@ -1,1 +1,2 @@
-ALTER TABLE "jcrm-user-db"."user" ADD roles JSONB NULL;
+ALTER TABLE "jcrm-user-db"."user"
+  ADD roles JSONB NULL;

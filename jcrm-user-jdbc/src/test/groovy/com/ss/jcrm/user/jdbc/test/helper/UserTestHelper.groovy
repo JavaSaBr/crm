@@ -4,7 +4,7 @@ import com.ss.jcrm.dictionary.jdbc.test.helper.DictionaryTestHelper
 import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
-import com.ss.jcrm.user.api.dao.UserRoleDao
+import com.ss.jcrm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 
 import javax.sql.DataSource
@@ -25,7 +25,7 @@ class UserTestHelper {
     }
 
     private final UserDao userDao
-    private final UserRoleDao userRoleDao
+    private final UserGroupDao userRoleDao
     private final OrganizationDao organizationDao
     private final PasswordService passwordService
     private final DataSource userDataSource
@@ -33,7 +33,7 @@ class UserTestHelper {
 
     UserTestHelper(
         UserDao userDao,
-        UserRoleDao userRoleDao,
+        UserGroupDao userRoleDao,
         OrganizationDao organizationDao,
         PasswordService passwordService,
         DataSource userDataSource,
@@ -56,6 +56,13 @@ class UserTestHelper {
         }
 
         return org
+    }
+
+    def newOrg() {
+        return organizationDao.create(
+            System.currentTimeMillis() + "-" + Thread.currentThread().id,
+            dictionaryTestHelper.newCountry()
+        )
     }
 
     def newOrg(String name) {

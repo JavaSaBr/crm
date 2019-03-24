@@ -15,11 +15,11 @@ import static com.ss.jcrm.integration.test.db.DbSpecificationUtils.clearTable
 class JdbcUserSpecification extends DefaultSpecification {
 
     static final String TABLE_ORGANIZATION = "organization"
-    static final String TABLE_USER_ROLE = "user_role"
+    static final String TABLE_USER_GROUP = "user_group"
     static final String TABLE_USER = "user"
 
     def static clearAllTables(@NotNull DataSource userDataSource) {
-        clearTable(userDataSource, TABLE_USER, TABLE_USER_ROLE, TABLE_ORGANIZATION)
+        clearTable(userDataSource, TABLE_USER, TABLE_USER_GROUP, TABLE_ORGANIZATION)
     }
 
     @Autowired

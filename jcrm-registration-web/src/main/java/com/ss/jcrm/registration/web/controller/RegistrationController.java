@@ -4,7 +4,7 @@ import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.registration.web.resources.UserRegisterResource;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserRoleDao;
+import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +24,7 @@ public class RegistrationController {
 
 
     private final UserDao userDao;
-    private final UserRoleDao userRoleDao;
+    private final UserGroupDao userRoleDao;
     private final OrganizationDao organizationDao;
     private final CountryDao countryDao;
 

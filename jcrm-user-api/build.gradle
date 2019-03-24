@@ -1,4 +1,5 @@
 
 dependencies {
     compile project(":jcrm-dictionary-api")
+    compile project(":jcrm-security")
 }

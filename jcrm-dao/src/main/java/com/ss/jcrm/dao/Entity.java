@@ -1,6 +1,6 @@
 package com.ss.jcrm.dao;
 
-public interface Entity {
+import com.ss.jcrm.base.utils.HasId;
 
-    long getId();
+public interface Entity extends HasId {
 }

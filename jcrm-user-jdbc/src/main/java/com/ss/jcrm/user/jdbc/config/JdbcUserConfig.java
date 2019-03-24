@@ -7,10 +7,10 @@ import com.ss.jcrm.jdbc.ConnectionPoolFactory;
 import com.ss.jcrm.jdbc.config.JdbcConfig;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserRoleDao;
+import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcOrganizationDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcUserDao;
-import com.ss.jcrm.user.jdbc.dao.JdbcUserRoleDao;
+import com.ss.jcrm.user.jdbc.dao.JdbcUserGroupDao;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -60,13 +60,13 @@ public class JdbcUserConfig {
             fastDbTaskExecutor,
             slowDbTaskExecutor,
             organizationDao(),
-            userRoleDao()
+            userGroupDao()
         );
     }
 
     @Bean
-    @NotNull UserRoleDao userRoleDao() {
-        return new JdbcUserRoleDao(userDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
+    @NotNull UserGroupDao userGroupDao() {
+        return new JdbcUserGroupDao(userDataSource(), fastDbTaskExecutor, slowDbTaskExecutor, organizationDao());
     }
 
     @Bean

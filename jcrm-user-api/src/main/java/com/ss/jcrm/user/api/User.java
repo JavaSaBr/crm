@@ -1,24 +1,46 @@
 package com.ss.jcrm.user.api;
 
 import com.ss.jcrm.dao.NamedEntity;
+import com.ss.jcrm.dao.VersionedEntity;
+import com.ss.jcrm.security.AccessRole;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public interface User extends NamedEntity {
+public interface User extends NamedEntity, VersionedEntity {
+
+    @NotNull Organization getOrganization();
+
+    @Nullable String getFirstName();
+
+    void setFirstName(@Nullable String firstName);
+
+    @Nullable String getSecondName();
+
+    void setSecondName(@Nullable String secondName);
+
+    @Nullable String getThirdName();
+
+    void setThirdName(@Nullable String thirdName);
+
+    @Nullable String getPhoneNumber();
+
+    void setPhoneNumber(@Nullable String phoneNumber);
 
     @NotNull byte[] getPassword();
 
+    void setPassword(@NotNull byte[] password);
+
     @NotNull byte[] getSalt();
 
-    @Nullable Organization getOrganization();
+    void setSalt(@NotNull byte[] salt);
 
-    @NotNull Set<UserRole> getRoles();
+    @NotNull Set<AccessRole> getRoles();
 
-    void setRoles(@NotNull Set<UserRole> roles);
+    void setRoles(@NotNull Set<AccessRole> roles);
 
-    int getVersion();
+    @NotNull Set<UserGroup> getGroups();
 
-    void setVersion(int version);
+    void setGroups(@NotNull Set<UserGroup> groups);
 }
