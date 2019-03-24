@@ -1,20 +1,17 @@
 package com.ss.jcrm.user.jdbc.dao;
 
-import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static java.util.stream.Collectors.toUnmodifiableSet;
-import com.jsoniter.JsonIterator;
+import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dictionary.api.Country;
-import com.ss.jcrm.dictionary.api.Industry;
 import com.ss.jcrm.dictionary.api.dao.CityDao;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.jdbc.dao.AbstractNamedObjectJdbcDao;
+import com.ss.jcrm.jdbc.util.JdbcUtils;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.jdbc.JdbcOrganization;
-import com.ss.rlib.common.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,26 +22,23 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.IntStream;
 
 @Log4j2
 public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization> implements OrganizationDao {
 
     private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"country_id\", \"version\"," +
         "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
-        " FROM \"organization\"";
+        " from \"organization\"";
 
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"country_id\", \"version\", " +
         "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
-        " FROM \"organization\" where \"name\" = ?";
+        " from \"organization\" where \"name\" = ?";
 
     private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"country_id\", \"version\"," +
         "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
-        " FROM \"organization\" where \"id\" = ?";
+        " from \"organization\" where \"id\" = ?";
 
     private static final String Q_INSERT = "insert into \"organization\" (\"name\", \"country_id\") values (?, ?)";
     private static final String Q_EXIST_BY_NAME = "select \"id\" from \"organization\" where \"name\" = ?";
@@ -123,11 +117,6 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
     }
 
     @Override
-    public @NotNull CompletableFuture<@Nullable Organization> findByNameAsync(@NotNull String name) {
-        return supplyAsync(() -> findByName(name), fastDbTaskExecutor);
-    }
-
-    @Override
     public @Nullable Organization findById(long id) {
 
         try (var connection = dataSource.getConnection();
@@ -147,21 +136,6 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
         }
 
         return null;
-    }
-
-    @Override
-    public @NotNull CompletableFuture<@Nullable Organization> findByIdAsync(long id) {
-        return supplyAsync(() -> findById(id), fastDbTaskExecutor);
-    }
-
-    @Override
-    public @NotNull Organization requireById(long id) {
-        return notNull(findById(id));
-    }
-
-    @Override
-    public @NotNull CompletableFuture<@NotNull Organization> requireByIdAsync(long id) {
-        return supplyAsync(() -> requireById(id), fastDbTaskExecutor);
     }
 
     @Override
@@ -246,8 +220,7 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
         var country = countryId > 0 ? countryDao.findById(countryId) : null;
         var city = cityId > 0 ? cityDao.findById(cityId) : null;
 
-        var industryIds = rs.getString(10);
-        var industries = StringUtils.isEmpty(industryIds) ? Set.<Industry>of() : parseIndustries(industryIds);
+        var industries = JdbcUtils.fromJsonArray(rs.getString(10), industryDao, Dao::requireById);
 
         return new JdbcOrganization(
             rs.getLong(1),   // id
@@ -261,23 +234,5 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
             country,
             industries
         );
-    }
-
-    private @NotNull Set<Industry> parseIndustries(@Nullable String json) {
-
-        if (StringUtils.isEmpty(json)) {
-            return Set.of();
-        }
-
-        var deserialize = JsonIterator.deserialize(json, int[].class);
-
-        if (deserialize == null || deserialize.length < 1) {
-            return Set.of();
-        }
-
-        return IntStream.of(deserialize)
-            .mapToObj(industryDao::findById)
-            .filter(Objects::nonNull)
-            .collect(toUnmodifiableSet());
     }
 }

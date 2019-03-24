@@ -58,5 +58,6 @@ public class JdbcUser implements User {
         this.secondName = secondName;
         this.thirdName = thirdName;
         this.phoneNumber = phoneNumber;
+        this.groups = Set.of();
     }
 }

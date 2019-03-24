@@ -2,6 +2,7 @@ package com.ss.jcrm.user.jdbc.test.dao
 
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
+import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
@@ -10,7 +11,6 @@ import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.util.concurrent.CompletionException
-import java.util.concurrent.ThreadLocalRandom
 
 class JdbcUserDaoTest extends JdbcUserSpecification {
 
@@ -29,44 +29,63 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should create and load a new user"() {
 
         given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
+            def org = userTestHelper.newOrg()
+            def salt = passwordService.nextSalt
+            def password = passwordService.nextPassword(24)
+            def hash = passwordService.hash(password, salt)
+            def roles = userTestHelper.onlyOrgAdminRole()
         when:
-            def user = userDao.create("User1", password, salt, org)
+            def user = userDao.create("User1", hash, salt, org, roles, null, null, null, null)
         then:
             user != null
             user.getName() == "User1"
             Arrays.equals(user.getSalt(), salt)
             user.getId() != 0L
             user.getOrganization() == org
+            user.getRoles().size() == 1
+        when:
+            def loaded = userDao.findById(user.getId())
+        then:
+            loaded != null
+            loaded.getName() == "User1"
+            Arrays.equals(loaded.getSalt(), salt)
+            loaded.getOrganization() == org
+            loaded.getRoles().size() == 1
     }
 
     def "should create and load a new user using async"() {
 
         given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
+            def org = userTestHelper.newOrg()
+            def salt = passwordService.nextSalt
+            def password = passwordService.nextPassword(24)
+            def hash = passwordService.hash(password, salt)
+            def roles = userTestHelper.onlyOrgAdminRole()
         when:
-            def user = userDao.createAsync("User1", password, salt, org).join()
+            def user = userDao.createAsync("User1", hash, salt, org, roles, null, null, null, null).join()
         then:
             user != null
             user.getName() == "User1"
             Arrays.equals(user.getSalt(), salt)
             user.getId() != 0L
             user.getOrganization() == org
+            user.getRoles().size() == 1
+        when:
+            def loaded = userDao.findByIdAsync(user.getId()).join()
+        then:
+            loaded != null
+            loaded.getName() == "User1"
+            Arrays.equals(loaded.getSalt(), salt)
+            loaded.getOrganization() == org
+            loaded.getRoles().size() == 1
     }
 
     def "should prevent creating a user with the same name"() {
 
         given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
-            userDao.create("User1", password, salt, org)
+            userTestHelper.newUser("User1")
         when:
-            userDao.create("User1", password, salt, org)
+            userTestHelper.newUser("User1")
         then:
             thrown DuplicateObjectDaoException
     }
@@ -74,12 +93,9 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should prevent creating a user with the same name using async"() {
 
         given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
-            userDao.createAsync("User1", password, salt, org).join()
+            userTestHelper.newUserUsingAsync("User1")
         when:
-            userDao.createAsync("User1", password, salt, org).join()
+            userTestHelper.newUserUsingAsync("User1")
         then:
             def ex = thrown(CompletionException)
             ex.getCause() instanceof DuplicateObjectDaoException
@@ -88,12 +104,11 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
     def "should load a changed user with correct version"() {
 
         given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
-            def user = userDao.create("User1", password, salt, org)
-            def role = userRoleDao.create("TestRole")
-            userDao.addGroup(user, role)
+            def user = userTestHelper.newUser("User1")
+        when:
+            userDao.update(user)
+        then:
+            user.getVersion() == 1
         when:
             def user2 = userDao.findById(user.getId())
         then:
@@ -103,145 +118,60 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             user2.getVersion() == user.getVersion()
     }
 
-    def "should add two new roles to a user"() {
+    def "should update user correctly"() {
 
         given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
-            def user = userDao.create("User1", password, salt, org)
-            def firstRole = userRoleDao.create("Role1")
-            def secondRole = userRoleDao.create("Role2")
+        def org = userTestHelper.newOrg()
+            def group1 = userTestHelper.newGroup(org)
+            def group2 = userTestHelper.newGroup(org)
+            def user = userTestHelper.newUser("User1", org)
+            user.setFirstName("First name")
+            user.setSecondName("Second name")
+            user.setThirdName("Third name")
+            user.setPhoneNumber("Phone number")
+            user.setRoles(Set.of(AccessRole.SUPER_ADMIN, AccessRole.ORG_ADMIN))
+            user.setGroups(Set.of(group1, group2))
         when:
-            userDao.addGroup(user, firstRole)
-            userDao.addGroup(user, secondRole)
+            userDao.update(user)
         then:
-            user != null
-            user.getName() == "User1"
-            user.getVersion() == 2
-            Arrays.equals(user.getSalt(), salt)
-            user.getId() != 0L
-            user.getOrganization() == org
-            user.getRoles() != null
-            user.getRoles().size() == 2
-            user.getRoles().contains(firstRole)
-            user.getRoles().contains(secondRole)
-    }
-
-    def "should add two new roles to a user using async"() {
-
-        given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
-            def user = userDao.create("User1", password, salt, org)
-            def firstRole = userRoleDao.create("Role1")
-            def secondRole = userRoleDao.create("Role2")
+            user.getVersion() == 1
         when:
-
-            userDao.addRoleAsync(user, firstRole)
-                .thenAccept { userDao.addGroup(user, secondRole) }
-                .join()
-
+            def user2 = userDao.findById(user.getId())
         then:
-            user != null
-            user.getName() == "User1"
-            user.getVersion() == 2
-            Arrays.equals(user.getSalt(), salt)
-            user.getId() != 0L
-            user.getOrganization() == org
-            user.getRoles() != null
-            user.getRoles().size() == 2
-            user.getRoles().contains(firstRole)
-            user.getRoles().contains(secondRole)
+            user2 != null
+            user2.getName() == user.getName()
+            user2.getId() == user.getId()
+            user2.getFirstName() == user.getFirstName()
+            user2.getSecondName() == user.getSecondName()
+            user2.getThirdName() == user.getThirdName()
+            user2.getPhoneNumber() == user.getPhoneNumber()
+            user2.getVersion() == user.getVersion()
+            user2.getRoles().size() == 2
+            user2.getGroups().size() == 2
     }
 
     def "should throw NotActualObjectDaoException during changing a user"() {
 
         given:
-
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-
-            def password = passwordService.nextBytePassword(24)
-            def user = userDao.create("User1", password, salt, org)
-            user.setVersion(5)
-
-            def role = userRoleDao.create("Role1")
-
+            def user = userTestHelper.newUser("User1")
+            user.setVersion(-1)
         when:
-            userDao.addGroup(user, role)
+            userDao.update(user)
         then:
             thrown NotActualObjectDaoException
-    }
-
-    def "should throw DuplicateObjectDaoException during creating a new user"() {
-
-        given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
-            userDao.create("User1", password, salt, org)
-        when:
-            userDao.create("User1", password, salt, org)
-        then:
-            thrown DuplicateObjectDaoException
-    }
-
-    def "should remove all roles from a user"() {
-
-        given:
-            def org =userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def firstRole = userRoleDao.create("Role1")
-            def secondRole = userRoleDao.create("Role2")
-            def password = passwordService.nextBytePassword(24)
-            def user = userDao.create("User1", password, salt, org)
-            userDao.addGroup(user, firstRole)
-            userDao.addGroup(user, secondRole)
-        when:
-            userDao.removeRole(user, firstRole)
-        then:
-            user != null
-            user.getVersion() == 3
-            user.getRoles() != null
-            user.getRoles().size() == 1
-            !user.getRoles().contains(firstRole)
-            user.getRoles().contains(secondRole)
-        when:
-            userDao.removeRole(user, secondRole)
-        then:
-            user != null
-            user.getVersion() == 4
-            user.getOrganization() == org
-            user.getRoles() != null
-            user.getRoles().size() == 0
     }
 
     def "should load a user by name"() {
 
         given:
-            def org = userTestHelper.newOrg("TestOrg1")
-            def salt = makeSlat(20)
-            def password = passwordService.nextBytePassword(24)
-            userDao.create("User1", password, salt, org)
+            userTestHelper.newUser("User1")
         when:
             def user = userDao.findByName("User1")
         then:
             user != null
             user.getName() == "User1"
-            Arrays.equals(user.getSalt(), salt)
+            user.getSalt() != null
             user.getId() != 0L
-            user.getOrganization() == org
-    }
-
-    def makeSlat(int length) {
-
-        def salt = new byte[length]
-
-        ThreadLocalRandom.current()
-            .nextBytes(salt)
-
-        return salt
+            user.getOrganization() != null
     }
 }

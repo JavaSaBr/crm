@@ -47,8 +47,7 @@ class JdbcUserGroupDaoTest extends JdbcUserSpecification {
             groupById != null
             groupById.getId() != 0L
             groupById.getName() == groupName
-            groupById.getOrganization() != null
-            groupById.getOrganization().id == org.id
+            groupById.getOrganization() == org
     }
 
     def "should create and load a new group using async"() {
@@ -63,8 +62,7 @@ class JdbcUserGroupDaoTest extends JdbcUserSpecification {
             groupById != null
             groupById.getId() != 0L
             groupById.getName() == groupName
-            groupById.getOrganization() != null
-            groupById.getOrganization().id == org.id
+            groupById.getOrganization() == org
     }
 
     def "should load all groups of some organization"() {
