@@ -1,7 +1,7 @@
 package com.ss.jcrm.user.jdbc.test
 
+import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.dictionary.jdbc.test.JdbcDictionarySpecificationConfig
-import com.ss.jcrm.dictionary.jdbc.test.helper.DictionaryTestHelper
 import com.ss.jcrm.integration.test.db.DbSpecificationConfig
 import com.ss.jcrm.integration.test.db.DbSpecificationUtils
 import com.ss.jcrm.security.config.SecurityConfig
@@ -9,8 +9,9 @@ import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
+import com.ss.jcrm.user.api.test.UserTestHelper
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig
-import com.ss.jcrm.user.jdbc.test.helper.UserTestHelper
+import com.ss.jcrm.user.jdbc.test.helper.JdbcUserTestHelper
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.*
@@ -60,7 +61,7 @@ class JdbcUserSpecificationConfig {
 
     @Bean
     @NotNull UserTestHelper userTestHelper() {
-        return new UserTestHelper(
+        return new JdbcUserTestHelper(
             userDao,
             userRoleDao,
             organizationDao,

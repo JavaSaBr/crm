@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 })
 @Configuration
 @ComponentScan("com.ss.jcrm.dictionary.web")
-@PropertySource("classpath:com.ss.jcrm.dictionary.web/dictionary-web.properties")
+@PropertySource("classpath:com/ss/jcrm/dictionary/web/dictionary-web.properties")
 public class DictionaryWebConfig {
 
     @Autowired

@@ -1,30 +1,18 @@
 package com.ss.jcrm.user.jdbc.test.helper
 
-import com.ss.jcrm.dictionary.jdbc.test.helper.DictionaryTestHelper
+import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.Organization
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
+import com.ss.jcrm.user.api.test.UserTestHelper
 import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 
 import javax.sql.DataSource
 
-class UserTestHelper {
-
-    class TestUser {
-
-        Long id
-        String name
-        String password
-
-        TestUser(Long id, String name, String password) {
-            this.name = name
-            this.password = password
-            this.id = id
-        }
-    }
+class JdbcUserTestHelper implements UserTestHelper {
 
     private final UserDao userDao
     private final UserGroupDao userGroupDao
@@ -33,7 +21,7 @@ class UserTestHelper {
     private final DataSource userDataSource
     private final DictionaryTestHelper dictionaryTestHelper
 
-    UserTestHelper(
+    JdbcUserTestHelper(
         UserDao userDao,
         UserGroupDao userGroupDao,
         OrganizationDao organizationDao,
@@ -64,7 +52,8 @@ class UserTestHelper {
         return Set.of(AccessRole.ORG_ADMIN)
     }
 
-    def newOrg() {
+    @Override
+    Organization newOrg() {
         return organizationDao.create(
             nextUId(),
             dictionaryTestHelper.newCountry()
@@ -156,20 +145,13 @@ class UserTestHelper {
         )
     }
 
-    def newTestUser(String name) {
-
-        def password = passwordService.nextPassword(24)
-        def salt = passwordService.nextSalt
-        def user = newUser(name, password, salt)
-
-        return new TestUser(user.id, name, password)
-    }
-
-    def clearAllData() {
+    @Override
+    void clearAllData() {
         JdbcUserSpecification.clearAllTables(userDataSource)
     }
 
-    def nextUId() {
+    @Override
+    String nextUId() {
         return System.nanoTime() + "-" + Thread.currentThread().id
     }
 }

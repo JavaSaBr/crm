@@ -2,4 +2,5 @@
 dependencies {
     compile project(":jcrm-dictionary-api")
     compile project(":jcrm-security")
+    testCompile project(":jcrm-integration-test")
 }

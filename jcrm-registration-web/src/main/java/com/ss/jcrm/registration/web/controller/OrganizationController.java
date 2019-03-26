@@ -1,133 +1,127 @@
 package com.ss.jcrm.registration.web.controller;
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
+import static com.ss.jcrm.web.exception.ExceptionUtils.webException;
+import static org.springframework.http.ResponseEntity.*;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
+import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
+import com.ss.jcrm.registration.web.validator.ResourceValidator;
+import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.service.PasswordService;
+import com.ss.jcrm.user.api.Organization;
+import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.web.exception.BadRequestWebException;
-import com.ss.rlib.common.util.StringUtils;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 
 @RestController
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class OrganizationController {
 
     private final UserDao userDao;
-    private final UserGroupDao userRoleDao;
     private final OrganizationDao organizationDao;
     private final CountryDao countryDao;
     private final PasswordService passwordService;
-
-    private final int orgNameMinLength;
-    private final int orgNameMaxLength;
-
-    @Autowired
-    private OrganizationController(
-        @NotNull UserDao userDao,
-        @NotNull UserGroupDao userRoleDao,
-        @NotNull OrganizationDao organizationDao,
-        @NotNull CountryDao countryDao,
-        @NotNull PasswordService passwordService,
-        @Value("${registration.web.organization.name.min.length}") int orgNameMinLength,
-        @Value("${registration.web.organization.name.max.length}") int orgNameMaxLength
-    ) {
-        this.userDao = userDao;
-        this.userRoleDao = userRoleDao;
-        this.organizationDao = organizationDao;
-        this.countryDao = countryDao;
-        this.passwordService = passwordService;
-        this.orgNameMinLength = orgNameMinLength;
-        this.orgNameMaxLength = orgNameMaxLength;
-    }
+    private final ResourceValidator resourceValidator;
 
     @PostMapping(
         path = "/registration/organization/register",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    @NotNull CompletableFuture<?> register(@NotNull @RequestBody OrganizationRegisterInResource resource) {
-
-        var countryId = resource.getCountryId();
-        var orgName = resource.getOrgName();
-
-        if (StringUtils.isEmpty(orgName) ||
-            orgName.length() < orgNameMinLength ||
-            orgName.length() > orgNameMaxLength
-        ) {
-            throw new BadRequestWebException(ERROR_ORG_NAME_WRONG_LENGTH);
-        }
-
-        var email = resource.getEmail();
-
-        if (!StringUtils.checkEmail(email)) {
-            throw new BadRequestWebException(ERROR_INVALID_EMAIL);
-        }
-
-        return countryDao.findByIdAsync(countryId)
+    @NotNull CompletableFuture<ResponseEntity<?>> register(
+        @NotNull @RequestBody OrganizationRegisterInResource resource
+    ) {
+        resourceValidator.validate(resource);
+        return countryDao.findByIdAsync(resource.getCountryId())
             .thenCompose(country -> {
-
                 if(country == null) {
                     throw new BadRequestWebException(ERROR_COUNTRY_NOT_FOUND);
+                } else {
+                    return createOrganization(resource, country);
                 }
-
-                return organizationDao.createAsync(orgName)
-                    .exceptionally(throwable -> {
-
-                        if (throwable instanceof DuplicateObjectDaoException) {
-                            throw new BadRequestWebException(ERROR_ORG_ALREADY_EXIST);
-                        } else {
-                            throw new CompletionException(throwable);
-                        }
-                    })
-                    .thenCompose(organization -> {
-
-                        var salt = passwordService.getNextSalt();
-                        var hash = passwordService.hash(resource.getPassword(), salt);
-
-                        return userDao.createAsync(email, hash, salt, organization)
-                            .exceptionally(throwable -> {
-
-                                organizationDao.delete(organization.getId());
-
-                                if (throwable instanceof DuplicateObjectDaoException) {
-                                    throw new BadRequestWebException(ERROR_EMAIL_ALREADY_EXIST);
-                                } else {
-                                    throw new CompletionException(throwable);
-                                }
-                            })
-                            .thenApply(user -> ResponseEntity.status(HttpStatus.CREATED).build());
-                    });
             });
     }
 
-    @GetMapping("/registration/organization/exist/{name}")
-    @NotNull CompletableFuture<?> exist(@NotNull @PathVariable("name") String name) {
+    private CompletionStage<ResponseEntity<?>> createOrganization(
+        @NotNull OrganizationRegisterInResource resource,
+        @NotNull Country country
+    ) {
+        return organizationDao.createAsync(resource.getOrgName(), country)
+            .exceptionally(throwable -> webException(
+                throwable,
+                DuplicateObjectDaoException.class::isInstance,
+                ERROR_ORG_ALREADY_EXIST)
+            )
+            .thenCompose(organization -> createOrgAdmin(resource, organization));
+    }
 
-        if (StringUtils.isEmpty(name) ||
-            name.length() < orgNameMinLength ||
-            name.length() > orgNameMaxLength
-        ) {
-            return CompletableFuture.completedFuture(ResponseEntity.notFound());
-        }
+    private @NotNull CompletionStage<ResponseEntity<?>> createOrgAdmin(
+        @NotNull OrganizationRegisterInResource resource,
+        @NotNull Organization organization
+    ) {
 
-        return organizationDao.findByNameAsync(name)
-            .thenApply(organization -> {
-                if (organization == null) {
-                    return ResponseEntity.notFound().build();
+        var salt = passwordService.getNextSalt();
+        var hash = passwordService.hash(resource.getPassword(), salt);
+
+        resource.setPassword(null);
+
+        return createOrgAdmin(resource, organization, salt, hash)
+            .exceptionally(throwable -> {
+
+                organizationDao.delete(organization.getId());
+
+                return webException(
+                    throwable,
+                    DuplicateObjectDaoException.class::isInstance,
+                    ERROR_EMAIL_ALREADY_EXIST
+                );
+
+            })
+            .thenApply(user -> status(HttpStatus.CREATED).build());
+    }
+
+    private @NotNull CompletableFuture<@NotNull User> createOrgAdmin(
+        @NotNull OrganizationRegisterInResource resource,
+        @NotNull Organization organization,
+        @NotNull byte[] salt,
+        @NotNull byte[] hash
+    ) {
+        return userDao.createAsync(
+            resource.getEmail(),
+            hash,
+            salt,
+            organization,
+            Set.of(AccessRole.ORG_ADMIN),
+            resource.getFirstName(),
+            resource.getSecondName(),
+            resource.getThirdName(),
+            resource.getPhoneNumber()
+        );
+    }
+
+    @GetMapping("/registration/organization/exist/name/{name}")
+    @NotNull CompletableFuture<ResponseEntity<?>> exist(@NotNull @PathVariable("name") String name) {
+        resourceValidator.validateOrgName(name);
+        return organizationDao.existByNameAsync(name)
+            .thenApply(exist -> {
+                if (exist) {
+                    return ok().build();
                 } else {
-                    return ResponseEntity.ok().build();
+                    return notFound().build();
                 }
             });
     }

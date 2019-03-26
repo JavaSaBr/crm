@@ -1,8 +1,9 @@
 package com.ss.jcrm.dictionary.jdbc.test
 
 import com.ss.jcrm.dictionary.api.dao.CountryDao
+import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig
-import com.ss.jcrm.dictionary.jdbc.test.helper.DictionaryTestHelper
+import com.ss.jcrm.dictionary.jdbc.test.helper.JdbcDictionaryTestHelper
 import com.ss.jcrm.integration.test.db.DbSpecificationConfig
 import com.ss.jcrm.integration.test.db.DbSpecificationUtils
 import org.jetbrains.annotations.NotNull
@@ -44,6 +45,6 @@ class JdbcDictionarySpecificationConfig {
 
     @Bean
     @NotNull DictionaryTestHelper dictionaryTestHelper() {
-        return new DictionaryTestHelper(dictionaryDataSource(), countryDao)
+        return new JdbcDictionaryTestHelper(dictionaryDataSource(), countryDao)
     }
 }

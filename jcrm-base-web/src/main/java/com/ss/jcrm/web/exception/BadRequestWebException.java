@@ -14,6 +14,11 @@ public class BadRequestWebException extends WebException {
         this.errorCode = errorCode;
     }
 
+    public BadRequestWebException(@NotNull String errorMessage) {
+        super(errorMessage, HttpStatus.BAD_REQUEST.value());
+        this.errorCode = 0;
+    }
+
     public BadRequestWebException(@NotNull String errorMessage, int errorCode) {
         super(errorMessage, HttpStatus.BAD_REQUEST.value());
         this.errorCode = errorCode;

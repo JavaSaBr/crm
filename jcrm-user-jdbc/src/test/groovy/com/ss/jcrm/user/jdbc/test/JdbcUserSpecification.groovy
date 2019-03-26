@@ -1,8 +1,8 @@
 package com.ss.jcrm.user.jdbc.test
 
-import com.ss.jcrm.dictionary.jdbc.test.helper.DictionaryTestHelper
+import com.ss.jcrm.dictionary.jdbc.test.helper.JdbcDictionaryTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
-import com.ss.jcrm.user.jdbc.test.helper.UserTestHelper
+import com.ss.jcrm.user.jdbc.test.helper.JdbcUserTestHelper
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -26,10 +26,10 @@ class JdbcUserSpecification extends DefaultSpecification {
     DataSource userDataSource
 
     @Autowired
-    DictionaryTestHelper dictionaryTestHelper
+    JdbcDictionaryTestHelper dictionaryTestHelper
 
     @Autowired
-    UserTestHelper userTestHelper
+    JdbcUserTestHelper userTestHelper
 
     def setup() {
         userTestHelper.clearAllData()

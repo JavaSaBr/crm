@@ -1,4 +1,3 @@
-
 ext {
     lombok = "true"
 }
@@ -8,8 +7,9 @@ dependencies {
     compile project(":jcrm-user-api")
     compile project(":jcrm-base-spring")
     compile project(":jcrm-jdbc")
-    
+
     testCompile project(":jcrm-integration-test-db")
     testCompile project(":jcrm-security")
+    testCompile project(path: ":jcrm-user-api", configuration: "testArtifacts")
     testCompile project(path: ":jcrm-dictionary-jdbc", configuration: "testArtifacts")
 }
