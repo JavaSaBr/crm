@@ -8,6 +8,7 @@ dependencies {
     compile project(":jcrm-dictionary-jdbc")
     compile project(":jcrm-user-jdbc")
     compile project(":jcrm-security-web")
+    compile project(":jcrm-mail")
     testCompile project(path: ":jcrm-user-jdbc", configuration: "testArtifacts")
     testCompile project(":jcrm-integration-test-db")
     testCompile project(":jcrm-integration-test-web")

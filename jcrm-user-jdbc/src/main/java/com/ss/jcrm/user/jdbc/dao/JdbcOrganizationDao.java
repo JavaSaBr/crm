@@ -167,24 +167,7 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
 
     @Override
     public boolean existByName(@NotNull String name) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_EXIST_BY_NAME)
-        ) {
-
-            statement.setString(1, name);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return true;
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return false;
+        return existByString(Q_EXIST_BY_NAME, name);
     }
 
     @Override

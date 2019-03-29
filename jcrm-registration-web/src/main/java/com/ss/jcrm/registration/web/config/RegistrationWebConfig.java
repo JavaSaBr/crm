@@ -1,8 +1,10 @@
 package com.ss.jcrm.registration.web.config;
 
 import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig;
+import com.ss.jcrm.mail.MailConfig;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.web.WebSecurityConfig;
+import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +17,7 @@ import org.springframework.core.env.Environment;
     JdbcUserConfig.class,
     JdbcDictionaryConfig.class,
     WebSecurityConfig.class,
+    MailConfig.class
 })
 @Configuration
 @ComponentScan("com.ss.jcrm.registration.web")
@@ -27,5 +30,10 @@ public class RegistrationWebConfig {
     @Bean
     @NotNull ResourceValidator resourceValidator() {
         return new ResourceValidator(env);
+    }
+
+    @Bean
+    @NotNull TemplateRegistry emailCodeTemplate() {
+        return new TemplateRegistry("com/ss/jcrm/registration/web/templates/reg_activate.template");
     }
 }

@@ -46,6 +46,8 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
         " \"third_name\" = ?, \"phone_number\" = ?,  \"roles\" = ?, \"groups\" = ?, \"version\" = ? " +
         " where \"id\" = ? and \"version\" = ?";
 
+    private static final String Q_EXIST_BY_NAME = "select \"id\" from \"user\" where \"name\" = ?";
+
     private final OrganizationDao organizationDao;
     private final UserGroupDao userGroupDao;
 
@@ -216,6 +218,16 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
     @Override
     public @NotNull CompletableFuture<Void> updateAsync(@NotNull User user) {
         return runAsync(() -> update(user), fastDbTaskExecutor);
+    }
+
+    @Override
+    public boolean existByName(@NotNull String name) {
+        return existByString(Q_EXIST_BY_NAME, name);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> existByNameAsync(@NotNull String name) {
+        return supplyAsync(() -> existByName(name), fastDbTaskExecutor);
     }
 
     private @NotNull User toUser(@NotNull ResultSet rs) throws SQLException {

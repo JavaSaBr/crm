@@ -174,4 +174,14 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             user.getId() != 0L
             user.getOrganization() != null
     }
+
+    def "should found created user by name"() {
+
+        given:
+            def user = userTestHelper.newUser()
+        when:
+            def exist = userDao.existByName(user.name)
+        then:
+            exist
+    }
 }

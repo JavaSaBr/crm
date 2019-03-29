@@ -50,4 +50,8 @@ public class ResourceValidator extends BaseResourceValidator {
     public void validateOrgName(@Nullable String orgName) {
         validate(orgName, orgNameMinLength, orgNameMaxLength, ERROR_ORG_NAME_WRONG_LENGTH);
     }
+
+    public void validateUserName(@Nullable String userName) {
+        validateEmail(userName, userNameMinLength, userNameMaxLength, ERROR_INVALID_EMAIL);
+    }
 }

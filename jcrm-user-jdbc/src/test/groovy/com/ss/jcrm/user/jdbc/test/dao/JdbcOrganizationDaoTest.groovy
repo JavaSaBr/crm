@@ -110,6 +110,16 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
             loaded.size() == orgNames.size()
     }
 
+    def "should found created organization by name"() {
+
+        given:
+            def org = userTestHelper.newOrg()
+        when:
+            def exist = organizationDao.existByName(org.name)
+        then:
+            exist
+    }
+
     private static boolean validate(Organization organization, String resultName) {
         return organization != null &&
             organization.getId() != 0 &&

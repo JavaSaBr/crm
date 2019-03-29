@@ -6,10 +6,12 @@ import static org.springframework.http.ResponseEntity.*;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
+import com.ss.jcrm.mail.service.MailService;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.service.PasswordService;
+import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
@@ -36,6 +38,8 @@ public class OrganizationController {
     private final CountryDao countryDao;
     private final PasswordService passwordService;
     private final ResourceValidator resourceValidator;
+    private final TemplateRegistry emailCodeTemplate;
+    private final MailService mailService;
 
     @PostMapping(
         path = "/registration/organization/register",
@@ -117,12 +121,6 @@ public class OrganizationController {
     @NotNull CompletableFuture<ResponseEntity<?>> exist(@NotNull @PathVariable("name") String name) {
         resourceValidator.validateOrgName(name);
         return organizationDao.existByNameAsync(name)
-            .thenApply(exist -> {
-                if (exist) {
-                    return ok().build();
-                } else {
-                    return notFound().build();
-                }
-            });
+            .thenApply(exist -> new ResponseEntity<>(exist ? HttpStatus.OK : HttpStatus.NOT_FOUND));
     }
 }

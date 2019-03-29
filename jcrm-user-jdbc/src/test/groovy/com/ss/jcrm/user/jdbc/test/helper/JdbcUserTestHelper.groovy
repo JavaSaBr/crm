@@ -72,6 +72,15 @@ class JdbcUserTestHelper implements UserTestHelper {
         return userGroupDao.create(nextUId(), organization)
     }
 
+    def newUser() {
+        return newUser(
+            nextUId(),
+            passwordService.nextPassword(24),
+            passwordService.nextSalt,
+            getOrCreateDefaultOrg()
+        )
+    }
+
     def newUser(String name) {
         return newUser(
             name,

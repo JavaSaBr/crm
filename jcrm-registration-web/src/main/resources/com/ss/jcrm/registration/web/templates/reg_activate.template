@@ -1,0 +1,34 @@
+<table width="100%" height="100%" style="min-width:348px;" border="0" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr height="32px"></tr>
+        <tr align="center">
+            <td>
+                <center style="max-width: 600px; width: 100%;">
+                    <table border="0" cellpadding="0" cellspacing="0" style="margin:0; padding:0" width="100%">
+                        <tr>
+                            <td>
+                                <!-- Блок номер 1 -->
+                                <div style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;padding-left:20px;padding-right:20px;border-bottom:thin solid #f0f0f0;color:rgba(0,0,0,0.87);font-size:24px;padding-top:40px;text-align:center;">
+                                    <div>
+                                        <h3>Подтверждение адреса электронной почты</h3>
+                                        <p style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;color:rgba(0,0,0,0.87);font-size:16px;line-height:1.8;">
+                                            <a href="mailto:{email}">{email}</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Блок номер 1 -->
+                                <!-- Блок номер 2 -->
+                                <div style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;font-size:13px;color:rgba(0,0,0,0.87);line-height:1.6;padding-left:20px;padding-right:20px;padding-bottom:32px;padding-top:24px;">
+                                    <p>Этот адрес электронной почты недавно был указан для подтверждения Вашего адреса. Используйте этот код, чтобы подтвердить, что адрес принадлежит Вам.</p>
+                                    <div style="font-size:24px;padding-top:20px;padding-bottom:20px;font-weight:bold;text-align:center;">{code}</div>
+                                    <p>Если адрес указали не Вы, возможно, кто-то ошибся. В таком случае никаких действий от Вас не требуется.</p>
+                                </div>
+                                <!-- Блок номер 2 -->
+                            </td>
+                        </tr>
+                    </table>
+                </center>
+        </tr>
+        <tr height="32px"></tr>
+    </tbody>
+</table>

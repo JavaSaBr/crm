@@ -1,0 +1,10 @@
+
+ext {
+    lombok = "true"
+}
+
+dependencies {
+    compile project(":jcrm-base-spring")
+    compile "javax.mail:mail:$javaxMailVersion"
+    testCompile project(":jcrm-integration-test")
+}

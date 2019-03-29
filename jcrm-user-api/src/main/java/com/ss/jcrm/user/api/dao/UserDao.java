@@ -54,4 +54,8 @@ public interface UserDao extends NamedObjectDao<User> {
      * @throws CompletionException -> NotActualObjectDaoException if the user was changed in another thread/server.
      */
     @NotNull CompletableFuture<Void> updateAsync(@NotNull User user);
+
+    boolean existByName(@NotNull String name);
+
+    CompletableFuture<Boolean> existByNameAsync(@NotNull String name);
 }

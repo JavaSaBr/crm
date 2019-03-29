@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 @Configuration
 @AllArgsConstructor(onConstructor_ = @Autowired)
@@ -19,13 +18,20 @@ public class JdbcConfig {
 
     @Bean
     @NotNull Executor fastDbTaskExecutor() {
-        var threads = env.getProperty("jdbc.fast.db.task.executor.threads", Integer.class, CORES);
+        var threads = env.getProperty("jdbc.fast.db.task.executor.threads", int.class, CORES);
         return Executors.newFixedThreadPool(threads);
     }
 
     @Bean
     @NotNull Executor slowDbTaskExecutor() {
-        var threads = env.getProperty("jdbc.slow.db.task.executor.threads", Integer.class, CORES);
-        return Executors.newFixedThreadPool(threads);
+        return new ThreadPoolExecutor(
+            env.getProperty("jdbc.slow.db.task.executor.min.threads", int.class, 2),
+            env.getProperty("jdbc.slow.db.task.executor.max.threads", int.class, CORES * 3),
+            env.getProperty("jdbc.slow.db.task.executor.keep.alive", int.class, 120),
+            TimeUnit.SECONDS,
+            new SynchronousQueue<>(),
+            Executors.defaultThreadFactory(),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+        );
     }
 }
