@@ -131,6 +131,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             user.setPhoneNumber("Phone number")
             user.setRoles(Set.of(AccessRole.SUPER_ADMIN, AccessRole.ORG_ADMIN))
             user.setGroups(Set.of(group1, group2))
+            user.setEmailConfirmed(true)
         when:
             userDao.update(user)
         then:
@@ -148,6 +149,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             user2.getVersion() == user.getVersion()
             user2.getRoles().size() == 2
             user2.getGroups().size() == 2
+            user2.isEmailConfirmed() == user.isEmailConfirmed()
     }
 
     def "should throw NotActualObjectDaoException during changing a user"() {

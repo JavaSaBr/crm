@@ -20,7 +20,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -96,68 +95,17 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
 
     @Override
     public @Nullable Organization findByName(@NotNull String name) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_NAME)
-        ) {
-
-            statement.setString(1, name);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toOrganization(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return null;
+        return findByString(Q_SELECT_BY_NAME, name, JdbcOrganizationDao::toOrganization);
     }
 
     @Override
     public @Nullable Organization findById(long id) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_ID)
-        ) {
-
-            statement.setLong(1, id);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toOrganization(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return null;
+        return findById(Q_SELECT_BY_ID, id, JdbcOrganizationDao::toOrganization);
     }
 
     @Override
     public @NotNull List<Organization> getAll() {
-
-        var result = new ArrayList<Organization>();
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_ALL)
-        ) {
-
-            try (var rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(toOrganization(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return result;
+        return getAll(Q_SELECT_ALL, JdbcOrganizationDao::toOrganization);
     }
 
     @Override
@@ -177,17 +125,7 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
 
     @Override
     public boolean delete(long id) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_DELETE_BY_ID)
-        ) {
-
-            statement.setLong(1, id);
-            return statement.executeUpdate() == 1;
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
+        return deleteByLong(Q_DELETE_BY_ID, id);
     }
 
     @Override
@@ -195,7 +133,7 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
         return supplyAsync(() -> delete(id), fastDbTaskExecutor);
     }
 
-    private  @NotNull Organization toOrganization(@NotNull ResultSet rs) throws SQLException {
+    private @NotNull Organization toOrganization(@NotNull ResultSet rs) throws SQLException {
 
         var countryId = rs.getLong(3);
         var cityId = rs.getLong(9);

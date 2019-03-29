@@ -5,9 +5,11 @@ import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.jdbc.ConnectionPoolFactory;
 import com.ss.jcrm.jdbc.config.JdbcConfig;
+import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
+import com.ss.jcrm.user.jdbc.dao.JdbcEmailConfirmationDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcOrganizationDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcUserDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcUserGroupDao;
@@ -80,4 +82,10 @@ public class JdbcUserConfig {
             countryDao
         );
     }
+
+    @Bean
+    @NotNull EmailConfirmationDao emailConfirmationDao() {
+        return new JdbcEmailConfirmationDao(userDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
+    }
+
 }

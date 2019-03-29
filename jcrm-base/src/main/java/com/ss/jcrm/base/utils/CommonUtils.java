@@ -10,8 +10,6 @@ import java.io.UncheckedIOException;
 @UtilityClass
 public class CommonUtils {
 
-    public static final int CORES = Runtime.getRuntime().availableProcessors();
-
     private static final ThreadLocal<char[]> LOCAL_CHAR_BUFFER = ThreadLocal.withInitial(() -> new char[4096]);
 
     public @NotNull String toString(@NotNull Reader reader) {

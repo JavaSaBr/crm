@@ -4,7 +4,7 @@ import com.jsoniter.JsonIterator;
 import com.jsoniter.output.EncodingMode;
 import com.jsoniter.output.JsonStream;
 import com.jsoniter.spi.DecodingMode;
-import com.ss.jcrm.base.utils.CommonUtils;
+import com.ss.rlib.common.util.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter;
@@ -23,8 +23,7 @@ public class JsoniterHttpMessageConverter extends AbstractJsonHttpMessageConvert
 
     @Override
     protected @Nullable Object readInternal(@NotNull Type resolvedType, @NotNull Reader reader) throws Exception {
-        //TODO need to replace using reader
-        return JsonIterator.parse(CommonUtils.toString(reader))
+        return JsonIterator.parse(IOUtils.toStringUsingTLB(reader))
             .read(resolvedType);
     }
 

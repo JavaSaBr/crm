@@ -32,19 +32,19 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
 
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"organization_id\", \"name\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\" from \"user\" where \"name\" = ?";
+        " \"version\", \"email_confirmed\" from \"user\" where \"name\" = ?";
 
     private static final String Q_SELECT_BY_ID = "select \"id\", \"organization_id\", \"name\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\" from \"user\" where \"id\" = ?";
+        " \"version\", \"email_confirmed\" from \"user\" where \"id\" = ?";
 
     private static final String Q_INSERT = "insert into \"user\" (\"name\", \"password\", \"salt\", " +
         "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\")" +
         " values (?,?,?,?,?,?,?,?,?)";
 
     private static final String Q_UPDATE = "update \"user\" set \"first_name\" = ?, \"second_name\" = ?," +
-        " \"third_name\" = ?, \"phone_number\" = ?,  \"roles\" = ?, \"groups\" = ?, \"version\" = ? " +
-        " where \"id\" = ? and \"version\" = ?";
+        " \"third_name\" = ?, \"phone_number\" = ?,  \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
+        " \"email_confirmed\" = ? where \"id\" = ? and \"version\" = ?";
 
     private static final String Q_EXIST_BY_NAME = "select \"id\" from \"user\" where \"name\" = ?";
 
@@ -143,46 +143,12 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
 
     @Override
     public @Nullable User findByName(@NotNull String name) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_NAME)
-        ) {
-
-            statement.setString(1, name);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toUser(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return null;
+        return findByString(Q_SELECT_BY_NAME, name, JdbcUserDao::toUser);
     }
 
     @Override
     public @Nullable User findById(long id) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_ID)
-        ) {
-
-            statement.setLong(1, id);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toUser(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return null;
+        return findById(Q_SELECT_BY_ID, id, JdbcUserDao::toUser);
     }
 
     @Override
@@ -201,8 +167,9 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
             statement.setObject(5, toJsonArray(user.getRoles()));
             statement.setObject(6, toJsonArray(user.getGroups()));
             statement.setInt(7, version + 1);
-            statement.setLong(8, user.getId());
-            statement.setInt(9, version);
+            statement.setBoolean(8, user.isEmailConfirmed());
+            statement.setLong(9, user.getId());
+            statement.setInt(10, version);
 
             if (statement.executeUpdate() != 1) {
                 throw new NotActualObjectDaoException("The user's version " + version + " is outdated.");
@@ -238,23 +205,25 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
             AccessRole::require
         );
         var groups = JdbcUtils.fromJsonArray(
-            rs.getString(11), userGroupDao,
+            rs.getString(11),
+            userGroupDao,
             Dao::requireById
         );
 
         return new JdbcUser(
             rs.getLong(1),
             org,
-            rs.getString(3), // name
-            rs.getString(4), // first name
-            rs.getString(5), // second name
-            rs.getString(6), // third name
-            rs.getString(7), // phone number
-            rs.getBytes(8),  // password
-            rs.getBytes(9),  // salt
+            rs.getString(3),  // name
+            rs.getString(4),  // first name
+            rs.getString(5),  // second name
+            rs.getString(6),  // third name
+            rs.getString(7),  // phone number
+            rs.getBytes(8),   // password
+            rs.getBytes(9),   // salt
             roles,
             groups,
-            rs.getInt(12)    // version
+            rs.getInt(12),    // version
+            rs.getBoolean(13) // email confirmed
         );
     }
 

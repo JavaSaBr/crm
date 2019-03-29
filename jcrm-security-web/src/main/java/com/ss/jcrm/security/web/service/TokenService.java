@@ -11,6 +11,11 @@ import java.util.concurrent.CompletionException;
 
 public interface TokenService {
 
+    /**
+     * @throws IllegalArgumentException if the length less than 1.
+     */
+    @NotNull String generateActivateCode(int length);
+
     @NotNull String generateNewToken(@NotNull User user);
 
     /**

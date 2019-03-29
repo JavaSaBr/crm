@@ -43,4 +43,8 @@ public interface User extends NamedEntity, VersionedEntity {
     @NotNull Set<UserGroup> getGroups();
 
     void setGroups(@NotNull Set<UserGroup> groups);
+
+    boolean isEmailConfirmed();
+
+    void setEmailConfirmed(boolean confirmed);
 }

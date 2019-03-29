@@ -34,6 +34,8 @@ public class JdbcUser implements User {
 
     private volatile int version;
 
+    private boolean emailConfirmed;
+
     public JdbcUser(
         long id,
         @NotNull Organization organization,

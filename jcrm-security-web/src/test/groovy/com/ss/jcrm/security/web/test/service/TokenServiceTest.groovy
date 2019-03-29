@@ -109,4 +109,25 @@ class TokenServiceTest extends WebSecuritySpecification {
             def ex = thrown(CompletionException)
             ex.getCause() instanceof ObjectNotFoundDaoException
     }
+
+    def "should generate an activation code"(int length) {
+
+        when:
+            def code = unsafeTokenService.generateActivateCode(length)
+        then:
+            code != null
+            code.length() == length
+        where:
+            length << [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }
+
+    def "should throw exception with length less than 1"(int length) {
+
+        when:
+            unsafeTokenService.generateActivateCode(length)
+        then:
+            thrown IllegalArgumentException
+        where:
+            length << [0, -1, -255, -30]
+    }
 }

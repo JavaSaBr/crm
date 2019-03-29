@@ -82,46 +82,18 @@ public class JdbcUserGroupDao extends AbstractJdbcDao<UserGroup> implements User
 
     @Override
     public @Nullable UserGroup findById(long id) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_ID)
-        ) {
-
-            statement.setLong(1, id);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toUserGroup(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return null;
+        return findById(Q_SELECT_BY_ID, id, JdbcUserGroupDao::toUserGroup);
     }
 
     @Override
     public @NotNull Set<UserGroup> getAll(@NotNull Organization organization) {
 
-        var result = new HashSet<UserGroup>();
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_ALL_BY_ORG_ID)
-        ) {
-
-            statement.setLong(1, organization.getId());
-
-            try (var rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(toUserGroup(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
+        var result = getAllByLong(
+            Q_SELECT_ALL_BY_ORG_ID,
+            organization.getId(),
+            JdbcUserGroupDao::toUserGroup,
+            HashSet::new
+        );
 
         return unmodifiableSet(result);
     }

@@ -14,8 +14,12 @@ import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
+import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor
@@ -23,12 +27,43 @@ public class JjwtTokenService implements UnsafeTokenService {
 
     private final UserDao userDao;
     private final SecretKey secretKey;
+    private final Random random;
+
     private final int expirationTime;
 
     public JjwtTokenService(@NotNull UserDao userDao, @NotNull String secretKey, int expirationTime) {
         this.userDao = userDao;
         this.secretKey = Keys.hmacShaKeyFor(StringUtils.hexStringToBytes(secretKey));
         this.expirationTime = expirationTime;
+        try {
+            this.random = SecureRandom.getInstance("SHA1PRNG");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public @NotNull String generateActivateCode(int length) {
+
+        if (length < 1) {
+            throw new IllegalArgumentException("The length cannot be less than 1");
+        }
+
+        var buffer = ByteBuffer.allocate(length);
+
+        random.nextBytes(buffer.array());
+
+        buffer.position(length);
+        buffer.flip();
+
+        var builder = new StringBuilder(length);
+
+        while (buffer.hasRemaining()) {
+            builder.append(buffer.get() & 0xFF);
+        }
+
+        return builder.delete(length, builder.length())
+            .toString();
     }
 
     @Override
