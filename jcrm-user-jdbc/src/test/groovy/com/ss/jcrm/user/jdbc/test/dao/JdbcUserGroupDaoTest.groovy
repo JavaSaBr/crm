@@ -13,26 +13,24 @@ class JdbcUserGroupDaoTest extends JdbcUserSpecification {
     @Autowired
     UserGroupDao userGroupDao
 
-    def "should create a new group"(String name, String resultName) {
+    def "should create a new group"(String name) {
 
-        expect:
-            validate(userGroupDao.create(name, userTestHelper.newOrg()), resultName)
+        when:
+            def created = userGroupDao.create(name, userTestHelper.newOrg())
+        then:
+            validate(created, name)
         where:
-            name                   | resultName
-            "test1"                | "test1"
-            "test5"                | "test5"
-            "Test16"               | "Test16"
+            name << ["group1", "group2", "dweffw", "GROUP3"]
     }
 
-    def "should create a new group using async"(String name, String resultName) {
+    def "should create a new group using async"(String name) {
 
-        expect:
-            validate(userGroupDao.createAsync(name, userTestHelper.newOrg()).join(), resultName)
+        when:
+            def created = userGroupDao.createAsync(name, userTestHelper.newOrg()).join()
+        then:
+            validate(created, name)
         where:
-            name                   | resultName
-            "test1"                | "test1"
-            "test5"                | "test5"
-            "Test16"               | "Test16"
+            name << ["group1", "group2", "dweffw", "GROUP3"]
     }
 
     def "should create and load a new group"() {

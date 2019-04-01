@@ -9,7 +9,9 @@ import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.jdbc.AbstractDictionaryDao;
 import com.ss.jcrm.dictionary.jdbc.JdbcCity;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
+import com.ss.rlib.common.util.dictionary.LongDictionary;
 import lombok.extern.log4j.Log4j2;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +19,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -25,17 +26,19 @@ import java.util.concurrent.Executor;
 @Log4j2
 public class JdbcCityDao extends AbstractDictionaryDao<City> implements CityDao {
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"country_id\" " +
-        " FROM \"city\" where \"name\" = ?";
+        " from \"city\" where \"name\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"country_id\" " +
-        " FROM \"city\" where \"id\" = ?";
+        " from \"city\" where \"id\" = ?";
 
-    private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"country_id\" " +
-        " FROM \"city\"";
+    @Language("PostgreSQL")
+    private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"country_id\" from \"city\"";
 
-    private static final String Q_INSERT = "insert into \"city\" (\"name\", \"country_id\")" +
-        " values (?, ?)";
+    @Language("PostgreSQL")
+    private static final String Q_INSERT = "insert into \"city\" (\"name\", \"country_id\") values (?, ?)";
 
     private final CountryDao countryDao;
 
@@ -83,91 +86,29 @@ public class JdbcCityDao extends AbstractDictionaryDao<City> implements CityDao 
 
     @Override
     public @NotNull List<City> findAll() {
-
-        var result = new ArrayList<City>();
-        var countries = countryDao.findAllAsMap();
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_ALL)
-        ) {
-
-            try (var rs = statement.executeQuery()) {
-                while (rs.next()) {
-
-                    var id = rs.getLong(1);
-                    var name = rs.getString(2);
-                    var countryId = rs.getLong(3);
-                    var country = countries.get(countryId);
-
-                    if (country == null) {
-                        log.warn(
-                            "Can't load a city \"{}\" because cannot find its country with the id {}.",
-                            name,
-                            countryId
-                        );
-                        continue;
-                    }
-
-                    result.add(new JdbcCity(name, country, id));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return result;
+        return findAll(Q_SELECT_ALL, countryDao.findAllAsMap(), JdbcCityDao::toCities);
     }
 
     @Override
     public @Nullable City findById(long id) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_ID)
-        ) {
-
-            statement.setLong(1, id);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toCity(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return null;
+        return findByLong(Q_SELECT_BY_ID, id, JdbcCityDao::toCity);
     }
 
     @Override
     public @Nullable City findByName(@NotNull String name) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_NAME)
-        ) {
-
-            statement.setString(1, name);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toCity(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return null;
+        return findByString(Q_SELECT_BY_NAME, name, JdbcCityDao::toCity);
     }
 
     private @Nullable City toCity(@NotNull ResultSet rs) throws SQLException {
+        return toCities(null, rs);
+    }
+
+    private @Nullable City toCities(@Nullable LongDictionary<Country> countries, @NotNull ResultSet rs)
+        throws SQLException {
 
         var name = rs.getString(2);
         var countryId = rs.getLong(3);
-        var country = countryDao.findById(countryId);
+        var country = countries == null? countryDao.findById(countryId) : countries.get(countryId);
 
         if (country == null) {
             log.warn(

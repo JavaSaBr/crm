@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @FunctionalInterface
-public interface JdbcConverter<D extends Dao<T>, T extends Entity> {
+public interface JdbcBiConverter<D extends Dao<T>, A, T extends Entity> {
 
-    @Nullable T convert(@NotNull D dao, @NotNull ResultSet rset) throws SQLException;
+    @Nullable T convert(@NotNull D dao, @NotNull A attachment, @NotNull ResultSet rset) throws SQLException;
 }

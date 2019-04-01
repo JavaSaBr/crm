@@ -13,6 +13,7 @@ import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.jdbc.JdbcOrganization;
 import lombok.extern.log4j.Log4j2;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,20 +28,28 @@ import java.util.concurrent.Executor;
 @Log4j2
 public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization> implements OrganizationDao {
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"country_id\", \"version\"," +
         "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
         " from \"organization\"";
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"country_id\", \"version\", " +
         "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
         " from \"organization\" where \"name\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"country_id\", \"version\"," +
         "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
         " from \"organization\" where \"id\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"organization\" (\"name\", \"country_id\") values (?, ?)";
+
+    @Language("PostgreSQL")
     private static final String Q_EXIST_BY_NAME = "select \"id\" from \"organization\" where \"name\" = ?";
+
+    @Language("PostgreSQL")
     private static final String Q_DELETE_BY_ID = "delete from \"organization\" where \"id\" = ?";
 
     private final CityDao cityDao;
@@ -100,12 +109,12 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
 
     @Override
     public @Nullable Organization findById(long id) {
-        return findById(Q_SELECT_BY_ID, id, JdbcOrganizationDao::toOrganization);
+        return findByLong(Q_SELECT_BY_ID, id, JdbcOrganizationDao::toOrganization);
     }
 
     @Override
     public @NotNull List<Organization> getAll() {
-        return getAll(Q_SELECT_ALL, JdbcOrganizationDao::toOrganization);
+        return findAll(Q_SELECT_ALL, JdbcOrganizationDao::toOrganization);
     }
 
     @Override

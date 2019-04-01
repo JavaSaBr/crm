@@ -7,6 +7,7 @@ import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.jdbc.AbstractDictionaryDao;
 import com.ss.jcrm.dictionary.jdbc.JdbcCountry;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,22 +15,25 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements CountryDao {
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " FROM \"country\" where \"name\" = ?";
+        " from \"country\" where \"name\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " FROM \"country\" where \"id\" = ?";
+        " from \"country\" where \"id\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " FROM \"country\"";
+        " from \"country\"";
 
+    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"country\" (\"name\", \"flag_code\", \"phone_code\")" +
         " values (?, ?, ?)";
 
@@ -82,67 +86,17 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
 
     @Override
     public @NotNull List<Country> findAll() {
-
-        var result = new ArrayList<Country>();
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_ALL)
-        ) {
-
-            try (var rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(toCountry(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return result;
+        return findAll(Q_SELECT_ALL, JdbcCountryDao::toCountry);
     }
+
     @Override
     public @Nullable Country findById(long id) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_ID)
-        ) {
-
-            statement.setLong(1, id);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toCountry(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return null;
+        return findByLong(Q_SELECT_BY_ID, id, JdbcCountryDao::toCountry);
     }
 
     @Override
     public @Nullable Country findByName(@NotNull String name) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_NAME)
-        ) {
-
-            statement.setString(1, name);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toCountry(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return null;
+        return findByString(Q_SELECT_BY_NAME, name, JdbcCountryDao::toCountry);
     }
 
     private @NotNull JdbcCountry toCountry(@NotNull ResultSet rs) throws SQLException {

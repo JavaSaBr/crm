@@ -5,6 +5,7 @@ import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.Entity;
 import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
+import com.ss.jcrm.jdbc.function.JdbcBiConverter;
 import com.ss.jcrm.jdbc.function.JdbcConverter;
 import com.ss.rlib.common.util.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
@@ -90,7 +91,7 @@ public abstract class AbstractJdbcDao<T extends Entity> implements Dao<T> {
         @NotNull String query,
         @NotNull String firstValue,
         @NotNull String secondValue,
-        @NotNull JdbcConverter<T, D> converter
+        @NotNull JdbcConverter<D, T> converter
     ) {
 
         try (var connection = dataSource.getConnection();
@@ -116,7 +117,7 @@ public abstract class AbstractJdbcDao<T extends Entity> implements Dao<T> {
     protected <D extends Dao<T>> @Nullable T findByString(
         @NotNull String query,
         @NotNull String value,
-        @NotNull JdbcConverter<T, D> converter
+        @NotNull JdbcConverter<D, T> converter
     ) {
 
         try (var connection = dataSource.getConnection();
@@ -138,10 +139,10 @@ public abstract class AbstractJdbcDao<T extends Entity> implements Dao<T> {
         return null;
     }
 
-    protected <D extends Dao<T>> @Nullable T findById(
+    protected <D extends Dao<T>> @Nullable T findByLong(
         @NotNull String query,
         long id,
-        @NotNull JdbcConverter<T, D> converter
+        @NotNull JdbcConverter<D, T> converter
     ) {
 
         try (var connection = dataSource.getConnection();
@@ -163,9 +164,9 @@ public abstract class AbstractJdbcDao<T extends Entity> implements Dao<T> {
         return null;
     }
 
-    protected <D extends Dao<T>> @NotNull List<T> getAll(
+    protected <D extends Dao<T>> @NotNull List<T> findAll(
         @NotNull String query,
-        @NotNull JdbcConverter<T, D> converter
+        @NotNull JdbcConverter<D, T> converter
     ) {
 
         var result = new ArrayList<T>();
@@ -187,18 +188,43 @@ public abstract class AbstractJdbcDao<T extends Entity> implements Dao<T> {
         return result;
     }
 
-    protected <D extends Dao<T>> @NotNull List<T> getAllByLong(
+    protected <D extends Dao<T>, A> @NotNull List<T> findAll(
         @NotNull String query,
-        long value,
-        @NotNull JdbcConverter<T, D> converter
+        @NotNull A attachment,
+        @NotNull JdbcBiConverter<D, A, T> converter
     ) {
-        return getAllByLong(query, value, converter, ArrayList::new);
+
+        var result = new ArrayList<T>();
+
+        try (var connection = dataSource.getConnection();
+             var statement = connection.prepareStatement(query)
+        ) {
+
+            try (var rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    result.add(converter.convert((D) this, attachment, rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return result;
     }
 
-    protected <D extends Dao<T>, C extends Collection<T>> @NotNull C getAllByLong(
+    protected <D extends Dao<T>> @NotNull List<T> findAllByLong(
         @NotNull String query,
         long value,
-        @NotNull JdbcConverter<T, D> converter,
+        @NotNull JdbcConverter<D, T> converter
+    ) {
+        return findAllByLong(query, value, converter, ArrayList::new);
+    }
+
+    protected <D extends Dao<T>, C extends Collection<T>> @NotNull C findAllByLong(
+        @NotNull String query,
+        long value,
+        @NotNull JdbcConverter<D, T> converter,
         @NotNull Supplier<C> collectionFactory
     ) {
 

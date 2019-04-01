@@ -16,6 +16,7 @@ import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.user.jdbc.JdbcUser;
 import lombok.extern.log4j.Log4j2;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,22 +31,27 @@ import java.util.concurrent.Executor;
 @Log4j2
 public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements UserDao {
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"organization_id\", \"name\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
         " \"version\", \"email_confirmed\" from \"user\" where \"name\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"organization_id\", \"name\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
         " \"version\", \"email_confirmed\" from \"user\" where \"id\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"user\" (\"name\", \"password\", \"salt\", " +
         "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\")" +
         " values (?,?,?,?,?,?,?,?,?)";
 
+    @Language("PostgreSQL")
     private static final String Q_UPDATE = "update \"user\" set \"first_name\" = ?, \"second_name\" = ?," +
         " \"third_name\" = ?, \"phone_number\" = ?,  \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
         " \"email_confirmed\" = ? where \"id\" = ? and \"version\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_EXIST_BY_NAME = "select \"id\" from \"user\" where \"name\" = ?";
 
     private final OrganizationDao organizationDao;
@@ -148,7 +154,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
 
     @Override
     public @Nullable User findById(long id) {
-        return findById(Q_SELECT_BY_ID, id, JdbcUserDao::toUser);
+        return findByLong(Q_SELECT_BY_ID, id, JdbcUserDao::toUser);
     }
 
     @Override

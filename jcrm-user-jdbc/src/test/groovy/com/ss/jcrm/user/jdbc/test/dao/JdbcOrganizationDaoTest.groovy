@@ -13,26 +13,24 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
     @Autowired
     OrganizationDao organizationDao
 
-    def "should create a new organization"(String name, String resultName) {
+    def "should create a new organization"(String name) {
 
-        expect:
-            validate(organizationDao.create(name, dictionaryTestHelper.newCountry()), resultName)
+        when:
+            def created = organizationDao.create(name, dictionaryTestHelper.newCountry())
+        then:
+            validate(created, name)
         where:
-            name                   | resultName
-            "test1"                | "test1"
-            "test5"                | "test5"
-            "Test16"               | "Test16"
+            name << ["testOrg1", "testOrg2", "dweffw", "Org1234"]
     }
 
-    def "should create a new organization using async"(String name, String resultName) {
+    def "should create a new organization using async"(String name) {
 
-        expect:
-            validate(organizationDao.createAsync(name, dictionaryTestHelper.newCountry()).join(), resultName)
+        when:
+            def created = organizationDao.createAsync(name, dictionaryTestHelper.newCountry()).join()
+        then:
+            validate(created, name)
         where:
-            name                   | resultName
-            "test1"                | "test1"
-            "test5"                | "test5"
-            "Test16"               | "Test16"
+            name << ["testOrg1", "testOrg2", "dweffw", "Org1234"]
     }
 
     def "should create and load a new organization"() {

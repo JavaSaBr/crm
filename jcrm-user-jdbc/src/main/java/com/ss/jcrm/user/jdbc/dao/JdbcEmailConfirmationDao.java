@@ -6,6 +6,7 @@ import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
 import com.ss.jcrm.user.api.EmailConfirmation;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.user.jdbc.JdbcEmailConfirmation;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,15 +21,19 @@ import java.util.concurrent.Executor;
 
 public class JdbcEmailConfirmationDao extends AbstractJdbcDao<EmailConfirmation> implements EmailConfirmationDao {
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"code\", \"email\", \"expiration\"" +
         " from \"email_confirmation\" where \"id\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_CODE_AND_EMAIL = "select \"id\", \"code\", \"email\", \"expiration\"" +
         " from \"email_confirmation\" where \"code\" = ? and \"email\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"email_confirmation\" (\"code\", \"email\", \"expiration\")" +
         " values (?, ?, ?)";
 
+    @Language("PostgreSQL")
     private static final String Q_DELETE_BY_ID = "delete from \"email_confirmation\" where \"id\" = ?";
 
     public JdbcEmailConfirmationDao(
@@ -104,7 +109,7 @@ public class JdbcEmailConfirmationDao extends AbstractJdbcDao<EmailConfirmation>
 
     @Override
     public @Nullable EmailConfirmation findById(long id) {
-        return findById(Q_SELECT_BY_ID, id, JdbcEmailConfirmationDao::toEmailConformation);
+        return findByLong(Q_SELECT_BY_ID, id, JdbcEmailConfirmationDao::toEmailConformation);
     }
 
     private @NotNull EmailConfirmation toEmailConformation(@NotNull ResultSet rs) throws SQLException {

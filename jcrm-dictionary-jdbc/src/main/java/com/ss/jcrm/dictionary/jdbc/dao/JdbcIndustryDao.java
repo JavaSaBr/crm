@@ -7,6 +7,7 @@ import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.dictionary.jdbc.AbstractDictionaryDao;
 import com.ss.jcrm.dictionary.jdbc.JdbcIndustry;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,19 +15,22 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class JdbcIndustryDao extends AbstractDictionaryDao<Industry> implements IndustryDao {
 
-    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\" FROM \"industry\" where \"name\" = ?";
+    @Language("PostgreSQL")
+    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\" from \"industry\" where \"name\" = ?";
 
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"name\" FROM \"industry\" where \"id\" = ?";
+    @Language("PostgreSQL")
+    private static final String Q_SELECT_BY_ID = "select \"id\", \"name\" from \"industry\" where \"id\" = ?";
 
-    private static final String Q_SELECT_ALL = "select \"id\", \"name\" FROM \"industry\"";
+    @Language("PostgreSQL")
+    private static final String Q_SELECT_ALL = "select \"id\", \"name\" from \"industry\"";
 
+    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"industry\" (\"name\") values (?)";
 
     public JdbcIndustryDao(
@@ -67,68 +71,17 @@ public class JdbcIndustryDao extends AbstractDictionaryDao<Industry> implements 
 
     @Override
     public @NotNull List<Industry> findAll() {
-
-        var result = new ArrayList<Industry>();
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_ALL)
-        ) {
-
-            try (var rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(toIndustry(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return result;
+        return findAll(Q_SELECT_ALL, JdbcIndustryDao::toIndustry);
     }
 
     @Override
     public @Nullable Industry findById(long id) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_ID)
-        ) {
-
-            statement.setLong(1, id);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toIndustry(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return null;
+        return findByLong(Q_SELECT_BY_ID, id, JdbcIndustryDao::toIndustry);
     }
 
     @Override
     public @Nullable Industry findByName(@NotNull String name) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(Q_SELECT_BY_NAME)
-        ) {
-
-            statement.setString(1, name);
-
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return toIndustry(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw JdbcUtils.convert(e);
-        }
-
-        return null;
+        return findByString(Q_SELECT_BY_NAME, name, JdbcIndustryDao::toIndustry);
     }
 
     private @NotNull JdbcIndustry toIndustry(@NotNull ResultSet rs) throws SQLException {

@@ -12,6 +12,7 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.user.jdbc.JdbcUserGroup;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,12 +27,15 @@ import java.util.concurrent.Executor;
 
 public class JdbcUserGroupDao extends AbstractJdbcDao<UserGroup> implements UserGroupDao {
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_ALL_BY_ORG_ID = "select \"id\", \"name\", \"organization_id\", \"roles\"," +
         " \"version\" from \"user_group\" where \"organization_id\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"organization_id\", \"roles\"," +
         " \"version\" from \"user_group\" where \"id\" = ?";
 
+    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"user_group\" (\"name\", \"organization_id\") values (?, ?)";
 
     private final OrganizationDao organizationDao;
@@ -82,13 +86,13 @@ public class JdbcUserGroupDao extends AbstractJdbcDao<UserGroup> implements User
 
     @Override
     public @Nullable UserGroup findById(long id) {
-        return findById(Q_SELECT_BY_ID, id, JdbcUserGroupDao::toUserGroup);
+        return findByLong(Q_SELECT_BY_ID, id, JdbcUserGroupDao::toUserGroup);
     }
 
     @Override
     public @NotNull Set<UserGroup> getAll(@NotNull Organization organization) {
 
-        var result = getAllByLong(
+        var result = findAllByLong(
             Q_SELECT_ALL_BY_ORG_ID,
             organization.getId(),
             JdbcUserGroupDao::toUserGroup,
