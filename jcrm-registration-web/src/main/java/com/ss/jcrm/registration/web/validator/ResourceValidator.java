@@ -9,6 +9,9 @@ import org.springframework.core.env.Environment;
 
 public class ResourceValidator extends BaseResourceValidator {
 
+    private final int emailMaxLength;
+    private final int emailMinLength;
+
     private final int userNameMaxLength;
     private final int userNameMinLength;
 
@@ -27,6 +30,8 @@ public class ResourceValidator extends BaseResourceValidator {
     public ResourceValidator(@NotNull Environment env) {
         this.userNameMaxLength = env.getProperty("registration.web.user.name.max.length", Integer.class, 45);
         this.userNameMinLength = env.getProperty("registration.web.user.name.min.length", Integer.class, 6);
+        this.emailMaxLength = env.getProperty("registration.web.email.max.length", Integer.class, 45);
+        this.emailMinLength = env.getProperty("registration.web.email.min.length", Integer.class, 6);
         this.orgNameMaxLength = env.getProperty("registration.web.organization.name.max.length", Integer.class, 45);
         this.orgNameMinLength = env.getProperty("registration.web.organization.name.min.length", Integer.class, 6);
         this.phoneNumberMaxLength = env.getProperty("registration.web.phone.number.max.length", Integer.class, 10);
@@ -53,5 +58,9 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validateUserName(@Nullable String userName) {
         validateEmail(userName, userNameMinLength, userNameMaxLength, ERROR_INVALID_EMAIL);
+    }
+
+    public void validateEmail(@Nullable String email) {
+        validateEmail(email, emailMinLength, emailMaxLength, ERROR_INVALID_EMAIL);
     }
 }

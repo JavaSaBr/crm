@@ -66,6 +66,58 @@ public class JavaxMailService implements MailService {
         );
     }
 
+    public JavaxMailService(
+        @NotNull String host,
+        int port,
+        boolean smtpAuth,
+        boolean startTtls,
+        @NotNull String sslTrust,
+        @NotNull String username,
+        @NotNull String password,
+        @NotNull String smtpFrom,
+        int minThreads,
+        int maxThreads,
+        int keepAlive
+    ) {
+
+        var prop = new Properties();
+        prop.put("mail.smtp.auth", String.valueOf(smtpAuth));
+        prop.put("mail.smtp.starttls.enable", String.valueOf(startTtls));
+        prop.put("mail.smtp.host", host);
+        prop.put("mail.smtp.port", port);
+        prop.put("mail.smtp.socketFactory.port", port);
+        prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        prop.put("mail.smtp.ssl.trust", sslTrust);
+
+        this.session = Session.getInstance(prop, new Authenticator() {
+
+            @Override
+            protected @NotNull PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        try {
+            this.from = new InternetAddress(smtpFrom);
+        } catch (AddressException e) {
+            throw new RuntimeException(e);
+        }
+
+        log.info("Initialized mail services with settings:");
+        log.info("host : {}:{}", host, port);
+        log.info("from : {}", from);
+
+        this.executor = new ThreadPoolExecutor(
+            minThreads,
+            maxThreads,
+            keepAlive,
+            TimeUnit.SECONDS,
+            new SynchronousQueue<>(),
+            Executors.defaultThreadFactory(),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+        );
+    }
+
     @Override
     public void send(@NotNull String email, @NotNull String subject, @NotNull String content) {
 

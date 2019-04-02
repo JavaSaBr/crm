@@ -22,7 +22,8 @@ public class BaseResourceValidator {
     }
 
     protected void validateEmail(@Nullable String email, int minLength, int maxLength, int code) {
-        if (StringUtils.checkEmail(email) ||
+        if (email == null ||
+            StringUtils.checkEmail(email) ||
             email.length() < minLength ||
             email.length() > maxLength
         ) {
