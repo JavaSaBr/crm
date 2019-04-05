@@ -5,6 +5,7 @@ ext {
 
 dependencies {
     compile project(":jcrm-base-spring")
-    compile "javax.mail:mail:$javaxMailVersion"
+    compile "com.spaceshift:rlib.mail:$rlibVersion"
     testCompile project(":jcrm-integration-test")
+    testCompile "com.spaceshift:rlib.testcontainers:$rlibVersion"
 }

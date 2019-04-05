@@ -1,5 +1,6 @@
 package com.ss.jcrm.integration.test.web
 
+import com.ss.jcrm.web.exception.BadRequestWebException
 import org.springframework.test.web.reactive.server.WebTestClient
 
 class WebSpecificationExtensions {
@@ -14,5 +15,18 @@ class WebSpecificationExtensions {
         String headerValue
     ) {
         return self.header(headerName, headerValue)
+    }
+    
+    static WebTestClient.BodyContentSpec verifyBadRequest(
+        WebTestClient.ResponseSpec spec,
+        int errorCode,
+        String errorMessage
+    ) {
+        
+        return spec.expectHeader().valueEquals(BadRequestWebException.HEADER_ERROR_CODE, String.valueOf(errorCode))
+            .expectHeader().valueEquals(BadRequestWebException.HEADER_ERROR_MESSAGE, errorMessage)
+            .expectBody()
+            .jsonPath('$.errorCode').isEqualTo(errorCode)
+            .jsonPath('$.errorMessage').isEqualTo(errorMessage)
     }
 }

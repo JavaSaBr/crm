@@ -3,7 +3,9 @@ package com.ss.jcrm.web.exception.handler;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.exception.WebException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,6 +30,9 @@ public class WebExceptionHandler {
             HttpStatus.INTERNAL_SERVER_ERROR.value() : ex.getStatus();
 
         return ResponseEntity.status(status)
-            .body("{errorCode:" + ex.getErrorCode() + ",errorMessage:\"" + ex.getMessage() + "\"}");
+            .header(BadRequestWebException.HEADER_ERROR_CODE, String.valueOf(ex.getErrorCode()))
+            .header(BadRequestWebException.HEADER_ERROR_MESSAGE, ex.getMessage())
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+            .body("{\n\terrorCode: " + ex.getErrorCode() + ",\n\terrorMessage: \"" + ex.getMessage() + "\"\n}");
     }
 }

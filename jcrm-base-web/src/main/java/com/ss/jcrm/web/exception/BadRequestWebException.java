@@ -6,11 +6,14 @@ import org.springframework.http.HttpStatus;
 
 public class BadRequestWebException extends WebException {
 
+    public static final String HEADER_ERROR_CODE = "Error-Code";
+    public static final String HEADER_ERROR_MESSAGE = "Error-Message";
+
     @Getter
     private final int errorCode;
 
     public BadRequestWebException(int errorCode) {
-        super("", HttpStatus.BAD_REQUEST.value());
+        super("no description", HttpStatus.BAD_REQUEST.value());
         this.errorCode = errorCode;
     }
 

@@ -1,6 +1,8 @@
 package com.ss.jcrm.mail;
 
 import com.ss.jcrm.mail.service.impl.JavaxMailService;
+import com.ss.rlib.mail.sender.MailSenderConfig;
+import com.ss.rlib.mail.sender.impl.JavaxMailSender;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,18 +31,23 @@ public class MailConfig {
         int maxThreads = env.getProperty("javax.mail.executor.max.threads", int.class, 4);
         int keepAlive = env.getProperty("javax.mail.executor.keep.alive", int.class, 120);
 
-        return new JavaxMailService(
-            host,
-            port,
-            smtpAuth,
-            startTtls,
-            sslTrust,
-            username,
-            password,
-            smtpFrom,
-            minThreads,
-            maxThreads,
-            keepAlive
-        );
+        var config = MailSenderConfig.builder()
+            .sslHost(sslTrust)
+            .enableTtls(startTtls)
+            .port(port)
+            .host(host)
+            .useAuth(smtpAuth)
+            .username(username)
+            .password(password)
+            .from(smtpFrom)
+            .build();
+
+        JavaxMailSender.JavaxMailSenderConfig javaxConfig = JavaxMailSender.JavaxMailSenderConfig.builder()
+            .executorMaxThreads(maxThreads)
+            .executorMinThreads(minThreads)
+            .executorKeepAlive(keepAlive)
+            .build();
+
+        return new JavaxMailService(config, javaxConfig);
     }
 }

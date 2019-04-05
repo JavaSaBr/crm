@@ -1,8 +1,9 @@
 package com.ss.jcrm.mail.test
 
-import com.ss.jcrm.integration.test.smtp.FakeSMTPContainer
 import com.ss.jcrm.mail.MailConfig
 import com.ss.jcrm.mail.service.impl.JavaxMailService
+import com.ss.rlib.mail.sender.MailSenderConfig
+import com.ss.rlib.testcontainers.FakeSMTPTestContainer
 import org.jetbrains.annotations.NotNull
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,14 +16,11 @@ import org.springframework.context.annotation.PropertySource
 class MailSpecificationConfig {
 
     @Bean
-    FakeSMTPContainer fakeSMTPContainer() {
+    @NotNull FakeSMTPTestContainer fakeSMTPContainer() {
 
-        def container = new FakeSMTPContainer()
+        def container = new FakeSMTPTestContainer()
         container.start()
-
-        while (!container.isRunning()) {
-            Thread.sleep(500)
-        }
+        container.waitForReadyState()
 
         return container
     }
@@ -33,30 +31,21 @@ class MailSpecificationConfig {
         def container = fakeSMTPContainer()
 
         def host = 'localhost'
-        def port = container.getMappedPort(FakeSMTPContainer.SMTP_PORT)
-        def smtpAuth = true
-        def startTtls = false
-        def sslTrust = 'localhost'
-        def username = container.username
-        def password = container.password
+        def port = container.getSmtpPort()
+        def username = container.getSmtpUser()
+        def password = container.getSmtpPassword()
         def smtpFrom = 'test@test.test'
 
-        int minThreads = 1
-        int maxThreads = 1
-        int keepAlive = 60
+        def config = MailSenderConfig.builder()
+            .enableTtls(false)
+            .port(port)
+            .host(host)
+            .useAuth(true)
+            .username(username)
+            .password(password)
+            .from(smtpFrom)
+            .build()
 
-        return new JavaxMailService(
-            host,
-            port,
-            smtpAuth,
-            startTtls,
-            sslTrust,
-            username,
-            password,
-            smtpFrom,
-            minThreads,
-            maxThreads,
-            keepAlive
-        )
+        return new JavaxMailService(config)
     }
 }

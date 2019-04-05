@@ -1,28 +1,66 @@
 package com.ss.jcrm.ui.server.config;
 
+import static org.springframework.web.reactive.function.server.RouterFunctions.resources;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.server.HandlerFunction;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
-@EnableWebMvc
 @Configuration
-public class UiServerConfig implements WebMvcConfigurer {
+public class UiServerConfig {
 
-    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-        "classpath:/com/ss/jcrm/ui/server/"
-    };
+    public static class CustomWebFilter implements WebFilter {
 
-    @Override
-    public void addResourceHandlers(@NotNull ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**")
-            .addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+        @Override
+        public @NotNull Mono<Void> filter(@NotNull ServerWebExchange exchange, @NotNull WebFilterChain chain) {
+
+            var request = exchange.getRequest();
+
+            if (request.getURI().getPath().equals("/")) {
+
+                var newRequest = request.mutate()
+                    .path("/index.html")
+                    .build();
+
+                return chain.filter(exchange.mutate().request(newRequest).build());
+            }
+
+            return chain.filter(exchange);
+        }
     }
 
-    @Override
-    public void addViewControllers(@NotNull ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "index.html");
+    @Bean
+    @NotNull WebFilter customWebFilter() {
+        return new CustomWebFilter();
+    }
+
+    @Bean
+    @NotNull RouterFunction<ServerResponse> staticResourceRouter() {
+        return resources("/**", new ClassPathResource("com/ss/jcrm/ui/server/"));
+    }
+
+    @Bean
+    @NotNull RouterFunction<ServerResponse> htmlRouter(
+        @NotNull @Value("classpath:com/ss/jcrm/ui/server/index.html") Resource html
+    ) {
+
+        HandlerFunction<ServerResponse> function = request -> ok()
+            .contentType(MediaType.TEXT_HTML)
+            .syncBody(html);
+
+        return route().GET("/", function)
+            .build();
     }
 }

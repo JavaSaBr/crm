@@ -2,6 +2,9 @@ package com.ss.jcrm.registration.web.test.controller
 
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 
+import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL
+import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
+
 class EmailConfirmationControllerTest extends RegistrationSpecification {
 
     def "should send email confirmation request successfully"() {
@@ -13,12 +16,11 @@ class EmailConfirmationControllerTest extends RegistrationSpecification {
                 .url("/registration/email/confirmation/" + email)
                 .exchange()
         then:
-            response.expectStatus()
-                .isOk()
+            response.expectStatus().isOk()
     }
-
+    
     def "should not send email confirmation with invalid email"() {
-
+        
         given:
             def email = "@&%&#2"
         when:
@@ -26,7 +28,7 @@ class EmailConfirmationControllerTest extends RegistrationSpecification {
                 .url("/registration/email/confirmation/" + email)
                 .exchange()
         then:
-            response.expectStatus()
-                .isOk()
+            response.expectStatus().isBadRequest()
+                .verifyBadRequest(INVALID_EMAIL, INVALID_EMAIL_MESSAGE)
     }
 }

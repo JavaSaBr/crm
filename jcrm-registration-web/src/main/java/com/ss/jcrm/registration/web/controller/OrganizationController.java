@@ -53,7 +53,7 @@ public class OrganizationController {
         return countryDao.findByIdAsync(resource.getCountryId())
             .thenCompose(country -> {
                 if(country == null) {
-                    throw new BadRequestWebException(ERROR_COUNTRY_NOT_FOUND);
+                    throw new BadRequestWebException(COUNTRY_NOT_FOUND);
                 } else {
                     return createOrganization(resource, country);
                 }
@@ -67,8 +67,8 @@ public class OrganizationController {
         return organizationDao.createAsync(resource.getOrgName(), country)
             .exceptionally(throwable -> webException(
                 throwable,
-                DuplicateObjectDaoException.class::isInstance,
-                ERROR_ORG_ALREADY_EXIST)
+                DuplicateObjectDaoException.class::isInstance, ORG_ALREADY_EXIST
+                           )
             )
             .thenCompose(organization -> createOrgAdmin(resource, organization));
     }
@@ -90,8 +90,7 @@ public class OrganizationController {
 
                 return webException(
                     throwable,
-                    DuplicateObjectDaoException.class::isInstance,
-                    ERROR_EMAIL_ALREADY_EXIST
+                    DuplicateObjectDaoException.class::isInstance, EMAIL_ALREADY_EXIST
                 );
 
             })

@@ -103,10 +103,11 @@ allprojects {
 
     tasks.withType(Test) {
         maxParallelForks = Runtime.runtime.availableProcessors()
+        forkEvery = 100
     }
 }
 
 wrapper {
-    gradleVersion = '5.2'
+    gradleVersion = '5.3.1'
     distributionType = Wrapper.DistributionType.ALL
 }

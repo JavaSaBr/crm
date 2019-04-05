@@ -43,24 +43,24 @@ public class ResourceValidator extends BaseResourceValidator {
     }
 
     public void validate(@NotNull OrganizationRegisterInResource resource) {
-        validate(resource.getOrgName(), orgNameMinLength, orgNameMaxLength, ERROR_ORG_NAME_WRONG_LENGTH);
-        validateEmail(resource.getEmail(), userNameMinLength, userNameMaxLength, ERROR_INVALID_EMAIL);
-        validate(resource.getPassword(), passwordMinLength, passwordMaxLength, ERROR_INVALID_PASSWORD);
-        validate(resource.getPhoneNumber(), phoneNumberMinLength, phoneNumberMaxLength, ERROR_INVALID_PHONE_NUMBER);
-        validateNullable(resource.getFirstName(), otherUserNameMinLength, otherUserNameMaxLength, ERROR_INVALID_OTHER_NAME);
-        validateNullable(resource.getSecondName(), otherUserNameMinLength, otherUserNameMaxLength, ERROR_INVALID_OTHER_NAME);
-        validateNullable(resource.getThirdName(), otherUserNameMinLength, otherUserNameMaxLength, ERROR_INVALID_OTHER_NAME);
+        validate(resource.getOrgName(), orgNameMinLength, orgNameMaxLength, ORG_NAME_WRONG_LENGTH);
+        validateEmail(resource.getEmail(), userNameMinLength, userNameMaxLength, INVALID_EMAIL);
+        validate(resource.getPassword(), passwordMinLength, passwordMaxLength, INVALID_PASSWORD);
+        validate(resource.getPhoneNumber(), phoneNumberMinLength, phoneNumberMaxLength, INVALID_PHONE_NUMBER);
+        validateNullable(resource.getFirstName(), otherUserNameMinLength, otherUserNameMaxLength, INVALID_OTHER_NAME);
+        validateNullable(resource.getSecondName(), otherUserNameMinLength, otherUserNameMaxLength, INVALID_OTHER_NAME);
+        validateNullable(resource.getThirdName(), otherUserNameMinLength, otherUserNameMaxLength, INVALID_OTHER_NAME);
     }
 
     public void validateOrgName(@Nullable String orgName) {
-        validate(orgName, orgNameMinLength, orgNameMaxLength, ERROR_ORG_NAME_WRONG_LENGTH);
+        validate(orgName, orgNameMinLength, orgNameMaxLength, ORG_NAME_WRONG_LENGTH);
     }
 
     public void validateUserName(@Nullable String userName) {
-        validateEmail(userName, userNameMinLength, userNameMaxLength, ERROR_INVALID_EMAIL);
+        validateEmail(userName, userNameMinLength, userNameMaxLength, INVALID_EMAIL, INVALID_EMAIL_MESSAGE);
     }
 
     public void validateEmail(@Nullable String email) {
-        validateEmail(email, emailMinLength, emailMaxLength, ERROR_INVALID_EMAIL);
+        validateEmail(email, emailMinLength, emailMaxLength, INVALID_EMAIL, INVALID_EMAIL_MESSAGE);
     }
 }

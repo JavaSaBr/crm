@@ -5,5 +5,4 @@ dependencies {
     compile "org.spockframework:spock-core:$spockVersion"
     compile "org.spockframework:spock-spring:$spockVersion"
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"
-    compile "org.testcontainers:testcontainers:$testcontainersVersion"
 }

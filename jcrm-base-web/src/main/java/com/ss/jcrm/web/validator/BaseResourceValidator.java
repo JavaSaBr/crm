@@ -2,6 +2,7 @@ package com.ss.jcrm.web.validator;
 
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.rlib.common.util.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BaseResourceValidator {
@@ -23,11 +24,27 @@ public class BaseResourceValidator {
 
     protected void validateEmail(@Nullable String email, int minLength, int maxLength, int code) {
         if (email == null ||
-            StringUtils.checkEmail(email) ||
+            !StringUtils.checkEmail(email) ||
             email.length() < minLength ||
             email.length() > maxLength
         ) {
             throw new BadRequestWebException(code);
+        }
+    }
+
+    protected void validateEmail(
+        @Nullable String email,
+        int minLength,
+        int maxLength,
+        int code,
+        @NotNull String message
+    ) {
+        if (email == null ||
+            !StringUtils.checkEmail(email) ||
+            email.length() < minLength ||
+            email.length() > maxLength
+        ) {
+            throw new BadRequestWebException(message, code);
         }
     }
 }

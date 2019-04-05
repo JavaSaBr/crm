@@ -7,6 +7,7 @@ import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
 import com.ss.jcrm.web.config.BaseWebConfig;
+import com.ss.jcrm.web.exception.handler.WebExceptionHandler;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
@@ -35,5 +36,10 @@ public class RegistrationWebConfig {
     @Bean
     @NotNull TemplateRegistry emailCodeTemplate() {
         return new TemplateRegistry("com/ss/jcrm/registration/web/templates/reg_activate.template");
+    }
+
+    @Bean
+    @NotNull WebExceptionHandler webExceptionHandler() {
+        return new WebExceptionHandler();
     }
 }

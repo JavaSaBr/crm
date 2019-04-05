@@ -5,4 +5,5 @@ ext {
 
 dependencies {
     compile "com.spaceshift:rlib.common:$rlibVersion"
+    compile "com.spaceshift:rlib.logger.slf4j:$rlibVersion"
 }
