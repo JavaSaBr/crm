@@ -14,7 +14,8 @@ public class OrganizationRegisterInResource implements RestResource {
 
     private String orgName;
     private String email;
-    private String password;
+    private String activationCode;
+    private char[] password;
     private String firstName;
     private String secondName;
     private String thirdName;

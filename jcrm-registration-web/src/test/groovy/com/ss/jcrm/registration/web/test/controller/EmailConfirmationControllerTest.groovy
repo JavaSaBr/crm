@@ -13,7 +13,7 @@ class EmailConfirmationControllerTest extends RegistrationSpecification {
             def email = "testemail@test.com"
         when:
             def response = client.get()
-                .url("/registration/email/confirmation/" + email)
+                .url("/registration/email/confirmation/$email")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -25,7 +25,7 @@ class EmailConfirmationControllerTest extends RegistrationSpecification {
             def email = "@&%&#2"
         when:
             def response = client.get()
-                .url("/registration/email/confirmation/" + email)
+                .url("/registration/email/confirmation/$email")
                 .exchange()
         then:
             response.expectStatus().isBadRequest()

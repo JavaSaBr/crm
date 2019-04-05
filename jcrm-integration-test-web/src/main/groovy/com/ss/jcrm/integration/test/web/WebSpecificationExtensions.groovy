@@ -8,6 +8,10 @@ class WebSpecificationExtensions {
     static WebTestClient.RequestHeadersSpec url(WebTestClient.RequestHeadersUriSpec self, String uri) {
         return self.uri(uri)
     }
+    
+    static WebTestClient.RequestHeadersUriSpec body(WebTestClient.RequestBodyUriSpec self, Object body) {
+        return self.syncBody(body) as WebTestClient.RequestHeadersUriSpec
+    }
 
     static WebTestClient.RequestHeadersSpec headerValue(
         WebTestClient.RequestHeadersSpec self,

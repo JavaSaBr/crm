@@ -14,6 +14,7 @@ import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
+import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.BadRequestWebException;
@@ -25,6 +26,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -38,11 +41,10 @@ public class OrganizationController {
     private final CountryDao countryDao;
     private final PasswordService passwordService;
     private final ResourceValidator resourceValidator;
-    private final TemplateRegistry emailCodeTemplate;
-    private final MailService mailService;
+    private final EmailConfirmationDao emailConfirmationDao;
 
     @PostMapping(
-        path = "/registration/organization/register",
+        path = "/registration/register/organization",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
@@ -50,13 +52,22 @@ public class OrganizationController {
         @NotNull @RequestBody OrganizationRegisterInResource resource
     ) {
         resourceValidator.validate(resource);
-        return countryDao.findByIdAsync(resource.getCountryId())
-            .thenCompose(country -> {
-                if(country == null) {
-                    throw new BadRequestWebException(COUNTRY_NOT_FOUND);
-                } else {
-                    return createOrganization(resource, country);
+
+        return emailConfirmationDao.findByEmailAndCodeAsync(resource.getEmail(), resource.getActivationCode())
+            .thenCompose(confirmation -> {
+
+                if (confirmation == null || Instant.now().isAfter(confirmation.getExpiration())) {
+                    throw new BadRequestWebException(INVALID_ACTIVATION_CODE_MESSAGE, INVALID_ACTIVATION_CODE);
                 }
+
+                return countryDao.findByIdAsync(resource.getCountryId())
+                    .thenCompose(country -> {
+                        if(country == null) {
+                            throw new BadRequestWebException(COUNTRY_NOT_FOUND_MESSAGE, COUNTRY_NOT_FOUND);
+                        } else {
+                            return createOrganization(resource, country);
+                        }
+                    });
             });
     }
 
@@ -65,11 +76,11 @@ public class OrganizationController {
         @NotNull Country country
     ) {
         return organizationDao.createAsync(resource.getOrgName(), country)
-            .exceptionally(throwable -> webException(
-                throwable,
-                DuplicateObjectDaoException.class::isInstance, ORG_ALREADY_EXIST
-                           )
-            )
+            .exceptionally(throwable -> webException(throwable,
+                DuplicateObjectDaoException.class::isInstance,
+                ORG_ALREADY_EXIST,
+                ORG_ALREADY_EXIST_MESSAGE
+            ))
             .thenCompose(organization -> createOrgAdmin(resource, organization));
     }
 
@@ -81,18 +92,17 @@ public class OrganizationController {
         var salt = passwordService.getNextSalt();
         var hash = passwordService.hash(resource.getPassword(), salt);
 
-        resource.setPassword(null);
+        Arrays.fill(resource.getPassword(), ' ');
 
         return createOrgAdmin(resource, organization, salt, hash)
             .exceptionally(throwable -> {
-
                 organizationDao.delete(organization.getId());
-
                 return webException(
                     throwable,
-                    DuplicateObjectDaoException.class::isInstance, EMAIL_ALREADY_EXIST
+                    DuplicateObjectDaoException.class::isInstance,
+                    EMAIL_ALREADY_EXIST,
+                    EMAIL_ALREADY_EXIST_MESSAGE
                 );
-
             })
             .thenApply(user -> status(HttpStatus.CREATED).build());
     }
@@ -116,7 +126,7 @@ public class OrganizationController {
         );
     }
 
-    @GetMapping("/registration/organization/exist/name/{name}")
+    @GetMapping("/registration/exist/organization/name/{name}")
     @NotNull CompletableFuture<ResponseEntity<?>> exist(@NotNull @PathVariable("name") String name) {
         resourceValidator.validateOrgName(name);
         return organizationDao.existByNameAsync(name)

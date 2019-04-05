@@ -17,9 +17,10 @@ class JdbcUserSpecification extends DefaultSpecification {
     static final String TABLE_ORGANIZATION = "organization"
     static final String TABLE_USER_GROUP = "user_group"
     static final String TABLE_USER = "user"
+    static final String TABLE_EMAIL_CONFIRMATION = "email_confirmation"
 
     def static clearAllTables(@NotNull DataSource userDataSource) {
-        clearTable(userDataSource, TABLE_USER, TABLE_USER_GROUP, TABLE_ORGANIZATION)
+        clearTable(userDataSource, TABLE_USER, TABLE_USER_GROUP, TABLE_ORGANIZATION, TABLE_EMAIL_CONFIRMATION)
     }
 
     @Autowired

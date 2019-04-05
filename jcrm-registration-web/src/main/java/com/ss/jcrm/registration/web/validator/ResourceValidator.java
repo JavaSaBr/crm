@@ -12,9 +12,6 @@ public class ResourceValidator extends BaseResourceValidator {
     private final int emailMaxLength;
     private final int emailMinLength;
 
-    private final int userNameMaxLength;
-    private final int userNameMinLength;
-
     private final int orgNameMaxLength;
     private final int orgNameMinLength;
 
@@ -28,8 +25,6 @@ public class ResourceValidator extends BaseResourceValidator {
     private final int otherUserNameMinLength;
 
     public ResourceValidator(@NotNull Environment env) {
-        this.userNameMaxLength = env.getProperty("registration.web.user.name.max.length", Integer.class, 45);
-        this.userNameMinLength = env.getProperty("registration.web.user.name.min.length", Integer.class, 6);
         this.emailMaxLength = env.getProperty("registration.web.email.max.length", Integer.class, 45);
         this.emailMinLength = env.getProperty("registration.web.email.min.length", Integer.class, 6);
         this.orgNameMaxLength = env.getProperty("registration.web.organization.name.max.length", Integer.class, 45);
@@ -43,21 +38,43 @@ public class ResourceValidator extends BaseResourceValidator {
     }
 
     public void validate(@NotNull OrganizationRegisterInResource resource) {
-        validate(resource.getOrgName(), orgNameMinLength, orgNameMaxLength, ORG_NAME_WRONG_LENGTH);
-        validateEmail(resource.getEmail(), userNameMinLength, userNameMaxLength, INVALID_EMAIL);
-        validate(resource.getPassword(), passwordMinLength, passwordMaxLength, INVALID_PASSWORD);
-        validate(resource.getPhoneNumber(), phoneNumberMinLength, phoneNumberMaxLength, INVALID_PHONE_NUMBER);
-        validateNullable(resource.getFirstName(), otherUserNameMinLength, otherUserNameMaxLength, INVALID_OTHER_NAME);
-        validateNullable(resource.getSecondName(), otherUserNameMinLength, otherUserNameMaxLength, INVALID_OTHER_NAME);
-        validateNullable(resource.getThirdName(), otherUserNameMinLength, otherUserNameMaxLength, INVALID_OTHER_NAME);
+
+        validateOrgName(resource.getOrgName());
+        validateEmail(resource.getEmail());
+        validateNotBlank(resource.getActivationCode(), INVALID_ACTIVATION_CODE, INVALID_OTHER_NAME_MESSAGE);
+        validateOtherName(resource.getFirstName());
+        validateOtherName(resource.getSecondName());
+        validateOtherName(resource.getThirdName());
+
+        validate(
+            resource.getPassword(),
+            passwordMinLength,
+            passwordMaxLength,
+            INVALID_PASSWORD,
+            INVALID_PASSWORD_MESSAGE
+        );
+
+        validate(
+            resource.getPhoneNumber(),
+            phoneNumberMinLength,
+            phoneNumberMaxLength,
+            INVALID_PHONE_NUMBER,
+            INVALID_PHONE_NUMBER_MESSAGE
+        );
     }
 
     public void validateOrgName(@Nullable String orgName) {
-        validate(orgName, orgNameMinLength, orgNameMaxLength, ORG_NAME_WRONG_LENGTH);
+        validate(orgName, orgNameMinLength, orgNameMaxLength, ORG_NAME_WRONG_LENGTH, ORG_NAME_WRONG_LENGTH_MESSAGE);
     }
 
-    public void validateUserName(@Nullable String userName) {
-        validateEmail(userName, userNameMinLength, userNameMaxLength, INVALID_EMAIL, INVALID_EMAIL_MESSAGE);
+    public void validateOtherName(@Nullable String userName) {
+        validateNullable(
+            userName,
+            otherUserNameMinLength,
+            otherUserNameMaxLength,
+            INVALID_OTHER_NAME,
+            INVALID_OTHER_NAME_MESSAGE
+        );
     }
 
     public void validateEmail(@Nullable String email) {

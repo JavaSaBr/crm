@@ -3,7 +3,10 @@ package com.ss.jcrm.user.jdbc.test.helper
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.service.PasswordService
+import com.ss.jcrm.user.api.EmailConfirmation
 import com.ss.jcrm.user.api.Organization
+import com.ss.jcrm.user.api.User
+import com.ss.jcrm.user.api.dao.EmailConfirmationDao
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
@@ -11,6 +14,8 @@ import com.ss.jcrm.user.api.test.UserTestHelper
 import com.ss.jcrm.user.jdbc.test.JdbcUserSpecification
 
 import javax.sql.DataSource
+import java.time.Instant
+import java.util.concurrent.ThreadLocalRandom
 
 class JdbcUserTestHelper implements UserTestHelper {
 
@@ -20,6 +25,7 @@ class JdbcUserTestHelper implements UserTestHelper {
     private final PasswordService passwordService
     private final DataSource userDataSource
     private final DictionaryTestHelper dictionaryTestHelper
+    private final EmailConfirmationDao emailConfirmationDao
 
     JdbcUserTestHelper(
         UserDao userDao,
@@ -27,7 +33,8 @@ class JdbcUserTestHelper implements UserTestHelper {
         OrganizationDao organizationDao,
         PasswordService passwordService,
         DataSource userDataSource,
-        DictionaryTestHelper dictionaryTestHelper
+        DictionaryTestHelper dictionaryTestHelper,
+        EmailConfirmationDao emailConfirmationDao
     ) {
         this.userDao = userDao
         this.userGroupDao = userGroupDao
@@ -35,6 +42,7 @@ class JdbcUserTestHelper implements UserTestHelper {
         this.passwordService = passwordService
         this.userDataSource = userDataSource
         this.dictionaryTestHelper = dictionaryTestHelper
+        this.emailConfirmationDao = emailConfirmationDao
     }
 
     def synchronized getOrCreateDefaultOrg() {
@@ -72,9 +80,10 @@ class JdbcUserTestHelper implements UserTestHelper {
         return userGroupDao.create(nextUId(), organization)
     }
 
-    def newUser() {
+    @Override
+    User newUser() {
         return newUser(
-            nextUId(),
+            nextEmail(),
             passwordService.nextPassword(24),
             passwordService.nextSalt,
             getOrCreateDefaultOrg()
@@ -162,5 +171,20 @@ class JdbcUserTestHelper implements UserTestHelper {
     @Override
     String nextUId() {
         return System.nanoTime() + "-" + Thread.currentThread().id
+    }
+    
+    @Override
+    String nextEmail() {
+        return ThreadLocalRandom.current()
+            .nextInt(100) + "-" + Thread.currentThread().id + "@test.com"
+    }
+    
+    @Override
+    EmailConfirmation newEmailConfirmation() {
+        return emailConfirmationDao.create(
+            String.valueOf(System.nanoTime()),
+            nextEmail(),
+            Instant.now() + 60
+        )
     }
 }

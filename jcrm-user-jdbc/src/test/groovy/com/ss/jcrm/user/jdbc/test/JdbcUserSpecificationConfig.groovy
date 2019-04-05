@@ -6,6 +6,7 @@ import com.ss.jcrm.integration.test.db.DbSpecificationConfig
 import com.ss.jcrm.integration.test.db.DbSpecificationUtils
 import com.ss.jcrm.security.config.SecurityConfig
 import com.ss.jcrm.security.service.PasswordService
+import com.ss.jcrm.user.api.dao.EmailConfirmationDao
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
@@ -47,6 +48,9 @@ class JdbcUserSpecificationConfig {
 
     @Autowired @Lazy
     UserGroupDao userRoleDao
+    
+    @Autowired @Lazy
+    EmailConfirmationDao emailConfirmationDao
 
     @Autowired
     DictionaryTestHelper dictionaryTestHelper
@@ -67,7 +71,8 @@ class JdbcUserSpecificationConfig {
             organizationDao,
             passwordService,
             userDataSource(),
-            dictionaryTestHelper
+            dictionaryTestHelper,
+            emailConfirmationDao
         )
     }
 }
