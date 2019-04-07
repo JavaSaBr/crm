@@ -1,26 +1,25 @@
-import {AbstractControl, AsyncValidator, ValidationErrors} from '@angular/forms';
+import {ValidationErrors} from '@angular/forms';
 import {RegistrationService} from '../../services/registration.service';
 import {environment} from '../../../environments/environment';
+import {BaseLazyAsyncValidator} from "./base-lazy-async-validator";
 
-export class OrganizationValidator implements AsyncValidator {
+export class OrganizationValidator extends BaseLazyAsyncValidator<boolean> {
 
     constructor(private readonly registrationService: RegistrationService) {
+        super();
     }
 
-    validate(control: AbstractControl): Promise<ValidationErrors | null> {
-
-        const value = control.value as string;
-
-        if (!value) {
-            return Promise.resolve(null);
-        }
+    validateSync(value): ValidationErrors {
 
         if (value.length < environment.orgNameMinLength || value.length > environment.orgNameMaxLength) {
-            return Promise.resolve({'wrong length': value.length});
+            return {'wrong length': value.length};
         }
 
-        return this.registrationService.exist(value)
-            .then(exist => this.convertToResult(exist, value));
+        return null;
+    }
+
+    validateAsync(value): Promise<boolean> {
+        return this.registrationService.orgExistByName(value);
     }
 
     convertToResult(exist: boolean, value: string): ValidationErrors | null {

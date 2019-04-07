@@ -56,7 +56,7 @@
                     <button mat-button matStepperPrevious>Back</button>
                     <span class="space-filler"></span>
                     <button mat-button (click)="resetAndClose()">Cancel</button>
-                    <button mat-button matStepperNext>Next</button>
+                    <button mat-button matStepperNext (click)="sendEmailConfirmation()">Next</button>
                 </div>
             </form>
         </div>
@@ -83,18 +83,20 @@
     </mat-step>
     <mat-step>
         <div class="register-new-org-form-step-container">
-            <div class="flex-column register-new-org-form-step">
+            <form [formGroup]="activationFormGroup" class="flex-column register-new-org-form-step">
                 <ng-template matStepLabel>Step 4<br/>Activate</ng-template>
                 <h2>Завершите настройку и пройдите подтверждение</h2>
-                <p>Чтобы получить доступ, необходимо подтвердить свою регистрацию перейдя по ссылке
-                    в электроном письме, отправленном на <b>{{selectedEmail}}</b>.</p>
+                <p>Чтобы завершить регистрацию новой организации, введи полученный код активации на указанную
+                    почту:{{selectedEmail}}.</p>
+                <mat-form-field>
+                    <input matInput placeholder="Activation code" formControlName="activationCode" required>
+                </mat-form-field>
                 <div class="flex-row">
-                    <button mat-button matStepperPrevious>Back</button>
                     <span class="space-filler"></span>
                     <button mat-button (click)="resetAndClose()">Cancel</button>
                     <button mat-button (click)="activateAndClose()">Activate</button>
                 </div>
-            </div>
+            </form>
         </div>
     </mat-step>
 </mat-horizontal-stepper>

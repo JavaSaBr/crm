@@ -9,6 +9,8 @@ import {CountryValidator} from '../../input/country/country-validator';
 import {Country} from '../../entity/country';
 import {PhoneNumber} from '../../input/phone-number/phone-number';
 import {OrganizationValidator} from '../../utils/validator/organization-validator';
+import {OtherUserNameValidator} from "../../utils/validator/other-user-name-validator";
+import {UserValidator} from "../../utils/validator/user-validator";
 
 @Component({
     selector: 'app-register-new-organization',
@@ -20,6 +22,7 @@ export class RegisterNewOrganizationComponent {
     public readonly orgFormGroup: FormGroup;
     public readonly ownerFormGroup: FormGroup;
     public readonly subscribeFormGroup: FormGroup;
+    public readonly activationFormGroup: FormGroup;
 
     public selectedEmail: string;
 
@@ -31,10 +34,9 @@ export class RegisterNewOrganizationComponent {
     ) {
         this.orgFormGroup = formBuilder.group({
             orgName: ['', [
-                Validators.required,
-                Validators.minLength(2),
-                Validators.maxLength(20),
-                new OrganizationValidator(this.registrationService)
+                Validators.required
+            ], [
+                new OrganizationValidator(registrationService)
             ]],
             country: ['', [
                 Validators.required,
@@ -42,23 +44,27 @@ export class RegisterNewOrganizationComponent {
             ]]
         });
         this.ownerFormGroup = formBuilder.group({
-            firstName: [''],
-            secondName: [''],
-            thirdName: [''],
+            firstName: ['', [
+                OtherUserNameValidator.instance
+            ]],
+            secondName: ['', [
+                OtherUserNameValidator.instance
+            ]],
+            thirdName: ['', [
+                OtherUserNameValidator.instance
+            ]],
             email: ['', [
                 Validators.required,
                 Validators.email
+            ], [
+                new UserValidator(registrationService)
             ]],
             password: ['', [
                 Validators.required,
-                Validators.minLength(6),
-                Validators.maxLength(20),
                 new PasswordValidator(() => this.ownerFormGroup, 'password')
             ]],
             passwordConfirm: ['', [
                 Validators.required,
-                Validators.minLength(6),
-                Validators.maxLength(20),
                 new PasswordValidator(() => this.ownerFormGroup, 'passwordConfirm')
             ]],
             phoneNumber: ['', [
@@ -69,10 +75,14 @@ export class RegisterNewOrganizationComponent {
         this.subscribeFormGroup = formBuilder.group({
             subscribe: ['false'],
         });
+        this.activationFormGroup = formBuilder.group({
+            activationCode: ['', Validators.required],
+        });
 
         this.ownerFormGroup.controls['email'].valueChanges
             .subscribe(value => this.selectedEmail = value);
     }
+
 
     resetAndClose() {
         this.orgFormGroup.reset();
@@ -101,12 +111,40 @@ export class RegisterNewOrganizationComponent {
 
         const subscribe = controls['subscribe'].value as boolean;
 
-        this.registrationService.register(orgName, country, firstName, secondName, thirdName, email, password, phoneNumber, subscribe)
-            .then(value => {
-                this.resetAndClose();
-            }).catch(reason => {
-                console.log(reason);
+        controls = this.activationFormGroup.controls;
+
+        const activationCode = controls['activationCode'].value as string;
+
+        this.registrationService.register(
+            orgName,
+            country,
+            firstName,
+            secondName,
+            thirdName,
+            email,
+            activationCode,
+            password,
+            phoneNumber,
+            subscribe
+        ).then(value => {
+            this.resetAndClose();
+        }).catch(reason => {
+            console.log(reason);
             //TODO show error
         });
+    }
+
+    sendEmailConfirmation() {
+
+        const controls = this.ownerFormGroup.controls;
+        const email = controls['email'].value as string;
+
+        this.registrationService.confirmEmail(email)
+            .then(value => {
+                //TODO handle result
+            })
+            .catch(reason => {
+                //TODO handle result
+            })
     }
 }

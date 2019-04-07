@@ -6,8 +6,16 @@ export const environment = {
     production: false,
     dictionaryUrl: 'http://localhost:8090/dictionary',
     registrationUrl: 'http://localhost:8091/registration',
+
+    // validation
     orgNameMinLength: 2,
-    orgNameMaxLength: 20
+    orgNameMaxLength: 20,
+    emailMinLength: 6,
+    emailMaxLength: 45,
+    phoneNumberMinLength: 6,
+    phoneNumberMaxLength: 10,
+    otherUserNameMinLength: 2,
+    otherUserNameMaxLength: 45
 };
 
 /*

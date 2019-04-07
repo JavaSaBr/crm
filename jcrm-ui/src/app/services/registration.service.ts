@@ -20,38 +20,43 @@ export class RegistrationService {
         secondName: string,
         thirdName: string,
         email: string,
+        activationCode: string,
         password: string,
         phoneNumber: PhoneNumber,
         subscribe: boolean
     ): Promise<number | null> {
 
-        return this.securityService.postRequest(environment.registrationUrl + '/organization/register', {
-                orgName: orgName,
-                countryId: country.id,
-                firstName: firstName,
-                secondName: secondName,
-                thirdName: thirdName,
-                email: email,
-                password: password,
-                phoneNumber: phoneNumber.country.phoneCode + phoneNumber.phoneNumber,
-                subscribe: subscribe
-            })
-            .then(resp => {
-
-                if (resp.ok) {
-                    return null;
-                } else if (resp.status == 400) {
-                    const body = resp.body as ErrorResponse;
-                    return body.errorCode;
-                }
-
-                return resp.statusText;
-            })
+        return this.securityService.postRequest(environment.registrationUrl + '/register/organization', {
+            orgName: orgName,
+            countryId: country.id,
+            firstName: firstName,
+            secondName: secondName,
+            thirdName: thirdName,
+            email: email,
+            activationCode: activationCode,
+            password: password,
+            phoneNumber: phoneNumber.country.phoneCode + phoneNumber.phoneNumber,
+            subscribe: subscribe
+        })
+            .then(resp => ErrorResponse.convertToErrorCodeOrNull(resp))
             .catch(reason => reason);
     }
 
-    exist(orgName: string): Promise<boolean> {
-        return this.securityService.getRequest(environment.registrationUrl + '/organization/exist/' + orgName)
+    confirmEmail(email: string): Promise<number | null> {
+
+        return this.securityService.getRequest(environment.registrationUrl + '/email/confirmation/' + email)
+            .then(resp => ErrorResponse.convertToErrorCodeOrNull(resp))
+            .catch(reason => reason);
+    }
+
+    orgExistByName(orgName: string): Promise<boolean> {
+        return this.securityService.getRequest(environment.registrationUrl + '/exist/organization/name/' + orgName)
+            .then(value => value.ok)
+            .catch(() => false);
+    }
+
+    userExistByName(name: string): Promise<boolean> {
+        return this.securityService.getRequest(environment.registrationUrl + '/exist/user/name/' + name)
             .then(value => value.ok)
             .catch(() => false);
     }
