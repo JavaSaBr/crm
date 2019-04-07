@@ -1,5 +1,6 @@
 package com.ss.jcrm.dictionary.jdbc.test.helper
 
+import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dictionary.api.Country
 import com.ss.jcrm.dictionary.api.dao.CountryDao
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
@@ -16,13 +17,20 @@ class JdbcDictionaryTestHelper implements DictionaryTestHelper {
         this.dictionaryDataSource = dictionaryDataSource
         this.countryDao = countryDao
     }
-
+    
     @Override
     Country newCountry() {
-        def name = String.valueOf(System.currentTimeMillis() + Thread.currentThread().id)
-        return newCountry(name, "none", "none")
+        
+        for (def i = 0; i <3; i++) {
+            try {
+                return newCountry(nextUID(), "none", "none")
+            } catch (DuplicateObjectDaoException e) {
+            }
+        }
+    
+        return newCountry(nextUID(), "none", "none")
     }
-
+    
     @Override
     Country newCountry(String name) {
         return newCountry(name, "none", "none")
@@ -36,5 +44,9 @@ class JdbcDictionaryTestHelper implements DictionaryTestHelper {
     @Override
     void clearAllData() {
         JdbcDictionarySpecification.clearAllTables(dictionaryDataSource)
+    }
+    
+    static def nextUID() {
+        return String.valueOf(System.nanoTime() + Thread.currentThread().id)
     }
 }

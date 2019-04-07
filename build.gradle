@@ -70,6 +70,7 @@ allprojects {
         }
 
         if (project.ext.has("web") && project.ext["web"] == "true") {
+            
             project.apply (plugin: "org.springframework.boot")
             println "Adding Springboot plugin to $project"
         }
@@ -104,6 +105,12 @@ allprojects {
     tasks.withType(Test) {
         maxParallelForks = Runtime.runtime.availableProcessors()
         forkEvery = 100
+    }
+    
+    tasks.withType(Exec) {
+        doLast {
+            println execAction
+        }
     }
 }
 

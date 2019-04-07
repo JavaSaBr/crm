@@ -17,7 +17,17 @@ dependencies {
 
 afterEvaluate {
     tasks.bootRun {
+        
+        def smtpUser = System.getProperty("javax.mail.username")
+        def smtpPassword = System.getProperty("javax.mail.password")
+        def smtpFrom = System.getProperty("javax.mail.smtp.from")
+        
         main = 'com.ss.jcrm.registration.web.RegistrationApplication'
-        jvmArgs = ["-Dserver.port=8091"]
+        jvmArgs = [
+            "-Dserver.port=8091",
+            "-Djavax.mail.username=$smtpUser",
+            "-Djavax.mail.password=$smtpPassword",
+            "-Djavax.mail.smtp.from=$smtpFrom"
+        ]
     }
 }

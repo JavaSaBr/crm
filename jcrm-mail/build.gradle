@@ -5,7 +5,11 @@ ext {
 
 dependencies {
     compile project(":jcrm-base-spring")
-    compile "com.spaceshift:rlib.mail:$rlibVersion"
+    compile ("com.spaceshift:rlib.mail:$rlibVersion") {
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
     testCompile project(":jcrm-integration-test")
-    testCompile "com.spaceshift:rlib.testcontainers:$rlibVersion"
+    testCompile ("com.spaceshift:rlib.testcontainers:$rlibVersion") {
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
 }
