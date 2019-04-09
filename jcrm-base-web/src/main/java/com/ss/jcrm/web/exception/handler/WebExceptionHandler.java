@@ -33,6 +33,6 @@ public class WebExceptionHandler {
             .header(BadRequestWebException.HEADER_ERROR_CODE, String.valueOf(ex.getErrorCode()))
             .header(BadRequestWebException.HEADER_ERROR_MESSAGE, ex.getMessage())
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
-            .body("{\n\terrorCode: " + ex.getErrorCode() + ",\n\terrorMessage: \"" + ex.getMessage() + "\"\n}");
+            .body("{\n\t\"errorCode\": " + ex.getErrorCode() + ",\n\t\"errorMessage\": \"" + ex.getMessage() + "\"\n}");
     }
 }

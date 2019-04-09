@@ -59,3 +59,11 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.fill-width {
+  flex: 1 1 auto;
+}
+
+.error-label {
+  color: red;
+}

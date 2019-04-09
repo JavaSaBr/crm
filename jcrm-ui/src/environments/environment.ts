@@ -13,7 +13,7 @@ export const environment = {
     emailMinLength: 6,
     emailMaxLength: 45,
     phoneNumberMinLength: 6,
-    phoneNumberMaxLength: 10,
+    phoneNumberMaxLength: 16,
     otherUserNameMinLength: 2,
     otherUserNameMaxLength: 45
 };

@@ -25,6 +25,7 @@ export class RegisterNewOrganizationComponent {
     public readonly activationFormGroup: FormGroup;
 
     public selectedEmail: string;
+    public errorMessage: string;
 
     constructor(
         formBuilder: FormBuilder,
@@ -85,6 +86,8 @@ export class RegisterNewOrganizationComponent {
 
 
     resetAndClose() {
+        this.selectedEmail = null;
+        this.errorMessage = null;
         this.orgFormGroup.reset();
         this.ownerFormGroup.reset();
         this.subscribeFormGroup.reset();
@@ -116,22 +119,24 @@ export class RegisterNewOrganizationComponent {
         const activationCode = controls['activationCode'].value as string;
 
         this.registrationService.register(
-            orgName,
-            country,
-            firstName,
-            secondName,
-            thirdName,
-            email,
-            activationCode,
-            password,
-            phoneNumber,
-            subscribe
-        ).then(value => {
-            this.resetAndClose();
-        }).catch(reason => {
-            console.log(reason);
-            //TODO show error
-        });
+                orgName,
+                country,
+                firstName,
+                secondName,
+                thirdName,
+                email,
+                activationCode,
+                password,
+                phoneNumber,
+                subscribe
+            )
+            .then(value => {
+                if (value != null) {
+                    this.errorMessage = value.errorMessage;
+                } else {
+                    this.resetAndClose();
+                }
+            })
     }
 
     sendEmailConfirmation() {
@@ -140,11 +145,5 @@ export class RegisterNewOrganizationComponent {
         const email = controls['email'].value as string;
 
         this.registrationService.confirmEmail(email)
-            .then(value => {
-                //TODO handle result
-            })
-            .catch(reason => {
-                //TODO handle result
-            })
     }
 }

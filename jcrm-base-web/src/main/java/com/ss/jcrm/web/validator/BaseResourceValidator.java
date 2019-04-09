@@ -59,7 +59,7 @@ public class BaseResourceValidator {
         int code,
         @NotNull String message
     ) {
-        if (string != null && (string.length() < minLength || string.length() > maxLength)) {
+        if (!StringUtils.isEmpty(string) && (string.length() < minLength || string.length() > maxLength)) {
             throw new BadRequestWebException(message, code);
         }
     }

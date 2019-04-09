@@ -2,6 +2,7 @@ import {Directive} from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
 import {PhoneNumber} from './phone-number';
 import {Utils} from '../../utils/utils';
+import {environment} from "../../../environments/environment";
 
 @Directive({
     selector: 'phoneNumber',
@@ -25,6 +26,15 @@ export class PhoneNumberValidator implements Validator {
                 return {'no country code': {value: phoneNumber}};
             } else if (!Utils.isNumber(phoneNumber.phoneNumber)) {
                 return {'phone number is not valid': {value: phoneNumber}};
+            }
+
+            let phoneCode = phoneNumber.country.phoneCode;
+            let phoneNumberLength = phoneNumber.phoneNumber.length + phoneCode.length;
+
+            if (phoneNumberLength < environment.phoneNumberMinLength ||
+                phoneNumberLength > environment.phoneNumberMaxLength
+            ) {
+                return {'wrong length': phoneNumberLength};
             }
         }
 

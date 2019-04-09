@@ -16,3 +16,7 @@
 .register-new-org-subscribe-radio-group {
 
 }
+
+:host {
+  flex-direction: column;
+}

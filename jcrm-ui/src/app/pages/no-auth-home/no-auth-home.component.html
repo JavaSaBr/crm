@@ -48,7 +48,7 @@
 
 <div class="flex-column">
     <div class="flex-row flex-center">
-        <app-register-new-organization *ngIf="noAuthHomeService.currentSubPage === 'registration'"
-                                       class="full-screen-form"></app-register-new-organization>
+        <app-register-new-organization class="full-screen-form"
+                *ngIf="noAuthHomeService.currentSubPage === 'registration'"></app-register-new-organization>
     </div>
 </div>

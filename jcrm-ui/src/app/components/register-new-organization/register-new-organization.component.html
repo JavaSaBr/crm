@@ -2,11 +2,13 @@
     <mat-step [stepControl]="orgFormGroup">
         <div class="register-new-org-form-step-container">
             <form [formGroup]="orgFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel>Step 1<br/>Organization</ng-template>
+                <ng-template matStepLabel>Шаг 1<br/>Приступим!</ng-template>
                 <h1>Приступим!</h1>
                 <p>Вся ваша команда включится в работу с первого дня с самой легкой в использовании CRM на рынке.
-                    Интерфейс интуитивно понятен и не требует обучения или периода внедрения и адаптации. В течение 14
-                    дней сервисом можно пользоваться бесплатно. <b>Скачивать программное обеспечение не требуется.</b>
+                    Интерфейс интуитивно понятен и не требует обучения или периода внедрения и адаптации. В течение
+                    14
+                    дней сервисом можно пользоваться бесплатно. <b>Скачивать программное обеспечение не
+                        требуется.</b>
                 </p>
                 <mat-form-field>
                     <input matInput placeholder="Organization name" formControlName="orgName" required>
@@ -15,8 +17,8 @@
                     <country-input formControlName="country" placeholder="Country" required></country-input>
                 </mat-form-field>
                 <div class="flex-row flex-end">
-                    <button mat-button (click)="resetAndClose()">Cancel</button>
-                    <button mat-button matStepperNext>Next</button>
+                    <button mat-button (click)="resetAndClose()">Отменить</button>
+                    <button mat-button matStepperNext>Далее</button>
                 </div>
             </form>
         </div>
@@ -24,11 +26,10 @@
     <mat-step [stepControl]="ownerFormGroup">
         <div class="register-new-org-form-step-container">
             <form [formGroup]="ownerFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel>Step 2<br/>Organization owner</ng-template>
+                <ng-template matStepLabel>Шаг 2<br/>Контакты</ng-template>
                 <h2>Предоставьте свою контактную информацию</h2>
-                <p>Вы создали аккаунт JCRM, поэтому будете назначены его
-                    администратором. Позже эту роль можно передать
-                    другому пользователю.</p>
+                <p>Вы создаете аккаунт JCRM, поэтому будете назначены администратором.
+                    Позже эту роль можно передать другому пользователю.</p>
                 <mat-form-field>
                     <input matInput placeholder="First name" formControlName="firstName">
                 </mat-form-field>
@@ -53,10 +54,10 @@
                                         required></phone-number-input>
                 </mat-form-field>
                 <div class="flex-row">
-                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperPrevious>Назад</button>
                     <span class="space-filler"></span>
-                    <button mat-button (click)="resetAndClose()">Cancel</button>
-                    <button mat-button matStepperNext (click)="sendEmailConfirmation()">Next</button>
+                    <button mat-button (click)="resetAndClose()">Отменить</button>
+                    <button mat-button matStepperNext>Далее</button>
                 </div>
             </form>
         </div>
@@ -64,19 +65,17 @@
     <mat-step>
         <div class="register-new-org-form-step-container">
             <form [formGroup]="subscribeFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel>Step 3<br/>Subscribe</ng-template>
+                <ng-template matStepLabel>Шаг 3<br/>Подписка</ng-template>
                 <h2>Будьте в курсе</h2>
-                <p>Хотите получать новости и персональные рекомендации
-                    по настройке и управлению информацией от JCRM?</p>
+                <p>Хотите получать новости и персональные рекомендации по настройке и управлению информацией?</p>
                 <mat-radio-group class="flex-column" formControlName="subscribe">
                     <mat-radio-button class="radio-button-vertical" value="true">Yes</mat-radio-button>
                     <mat-radio-button class="radio-button-vertical" value="false">No</mat-radio-button>
                 </mat-radio-group>
                 <div class="flex-row">
-                    <button mat-button matStepperPrevious>Back</button>
                     <span class="space-filler"></span>
-                    <button mat-button (click)="resetAndClose()">Cancel</button>
-                    <button mat-button matStepperNext>Next</button>
+                    <button mat-button (click)="resetAndClose()">Отменить</button>
+                    <button mat-button matStepperNext (click)="sendEmailConfirmation()">Далее</button>
                 </div>
             </form>
         </div>
@@ -84,19 +83,19 @@
     <mat-step>
         <div class="register-new-org-form-step-container">
             <form [formGroup]="activationFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel>Step 4<br/>Activate</ng-template>
+                <ng-template matStepLabel>Шаг 4<br/>Активация</ng-template>
                 <h2>Завершите настройку и пройдите подтверждение</h2>
-                <p>Чтобы завершить регистрацию новой организации, введи полученный код активации на указанную
-                    почту:{{selectedEmail}}.</p>
+                <p>Чтобы получить доступ, необходимо подтвердить свою регистрацию. Код подтверждения,
+                    отправлен на адрес <b>{{selectedEmail}}</b>. Если письма нет во входящих, проверьте папку “Спам”.</p>
                 <mat-form-field>
                     <input matInput placeholder="Activation code" formControlName="activationCode" required>
                 </mat-form-field>
                 <div class="flex-row">
                     <span class="space-filler"></span>
-                    <button mat-button (click)="resetAndClose()">Cancel</button>
-                    <button mat-button (click)="activateAndClose()">Activate</button>
+                    <button mat-button (click)="activateAndClose()">Готово</button>
                 </div>
             </form>
         </div>
     </mat-step>
 </mat-horizontal-stepper>
+<p class="error-label" *ngIf="errorMessage">{{errorMessage}}</p>
