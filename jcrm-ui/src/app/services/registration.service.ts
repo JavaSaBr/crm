@@ -45,8 +45,8 @@ export class RegistrationService {
     confirmEmail(email: string): Promise<number | null> {
 
         return this.securityService.getRequest(environment.registrationUrl + '/email/confirmation/' + email)
-            .then(resp => ErrorResponse.convertToErrorCodeOrNull(resp))
-            .catch(reason => reason);
+            .then(() => null)
+            .catch(resp => ErrorResponse.convertToErrorOrNull(resp));
     }
 
     orgExistByName(orgName: string): Promise<boolean> {
