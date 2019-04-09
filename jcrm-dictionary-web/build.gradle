@@ -1,7 +1,7 @@
 
 ext {
     lombok = "true"
-    web = "true"
+   // springboot = "true"
 }
 
 dependencies {
@@ -11,10 +11,10 @@ dependencies {
     testCompile project(":jcrm-integration-test-db")
     testCompile project(":jcrm-integration-test-web")
 }
-
+/*
 afterEvaluate {
     tasks.bootRun {
         main = 'com.ss.jcrm.dictionary.web.DictionaryApplication'
         jvmArgs = ["-Dserver.port=8090"]
     }
-}
+}*/

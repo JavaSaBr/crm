@@ -1,24 +1,32 @@
-import java.nio.file.Paths
-
-ext {
-    web = "true"
-}
-
 dependencies {
     compile project(":jcrm-base-web")
     compile project(":jcrm-ui")
 }
 
-task copyFrontEnd(type: Copy) {
-
-    def project = project(':jcrm-ui')
-    def projectPath = project.projectDir.getPath()
-
-    from Paths.get(projectPath, 'build', 'front-end').toString()
-    into './build/resources/main/com/ss/jcrm/ui/server'
+task deleteOldFrontEnd(type: Delete) {
+    delete getStaticResourcesFolder().toString()
 }
 
+task copyFrontEnd(type: Copy) {
+
+    def uiProject = project(':jcrm-ui')
+    def sourceFolder = uiProject.projectDir.toPath().resolve('build/front-end')
+    def targetFolder = getStaticResourcesFolder()
+    
+    from sourceFolder.toString()
+    into targetFolder.toString()
+}
+
+
 afterEvaluate {
-    tasks.jar.dependsOn copyFrontEnd
-    tasks.bootJar.dependsOn copyFrontEnd
+    tasks.copyFrontEnd.dependsOn deleteOldFrontEnd
+    tasks.build.dependsOn copyFrontEnd
+}
+
+def getStaticResourcesFolder() {
+    return sourceSets.main.getResources()
+        .getSrcDirs()
+        .first()
+        .toPath()
+        .resolve('static')
 }

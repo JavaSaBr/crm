@@ -7,3 +7,5 @@
 /out/
 /**/out/
 /**/node_modules/
+*.directory
+/jcrm-ui-server/src/main/resources/static/

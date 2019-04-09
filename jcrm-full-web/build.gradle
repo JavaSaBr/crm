@@ -1,0 +1,28 @@
+
+ext {
+    lombok = "true"
+    springboot = "true"
+}
+
+dependencies {
+    compile project(":jcrm-registration-web")
+    compile project(":jcrm-dictionary-web")
+    compile project(":jcrm-ui-server")
+}
+
+afterEvaluate {
+    tasks.bootRun {
+        
+        def smtpUser = System.getProperty("javax.mail.username")
+        def smtpPassword = System.getProperty("javax.mail.password")
+        def smtpFrom = System.getProperty("javax.mail.smtp.from")
+        
+        main = 'com.ss.jcrm.full.web.FullWebApplication'
+        jvmArgs = [
+            "-Dserver.port=8080",
+            "-Djavax.mail.username=$smtpUser",
+            "-Djavax.mail.password=$smtpPassword",
+            "-Djavax.mail.smtp.from=$smtpFrom"
+        ]
+    }
+}

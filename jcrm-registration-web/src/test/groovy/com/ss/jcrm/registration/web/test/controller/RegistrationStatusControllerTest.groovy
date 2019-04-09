@@ -2,7 +2,7 @@ package com.ss.jcrm.registration.web.test.controller
 
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 
-class StatusControllerTest extends RegistrationSpecification {
+class RegistrationStatusControllerTest extends RegistrationSpecification {
 
     def "should return status ok"() {
 

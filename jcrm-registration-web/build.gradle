@@ -1,7 +1,7 @@
 
 ext {
     lombok = "true"
-    web = "true"
+    //springboot = "true"
 }
 
 dependencies {
@@ -15,6 +15,7 @@ dependencies {
     testCompile project(":jcrm-integration-test-web")
 }
 
+/*
 afterEvaluate {
     tasks.bootRun {
         
@@ -31,3 +32,4 @@ afterEvaluate {
         ]
     }
 }
+*/

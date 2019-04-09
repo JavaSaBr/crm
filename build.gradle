@@ -61,18 +61,13 @@ allprojects {
 
             project.apply (plugin: "net.ltgt.apt")
             project.dependencies {
-
                 it.compileOnly "org.projectlombok:lombok:$lombokVersion"
                 it.annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-
-                println "Adding Lombok plugin to $project"
             }
         }
 
-        if (project.ext.has("web") && project.ext["web"] == "true") {
-            
+        if (project.ext.has("springboot") && project.ext["springboot"] == "true") {
             project.apply (plugin: "org.springframework.boot")
-            println "Adding Springboot plugin to $project"
         }
     }
 
@@ -105,12 +100,6 @@ allprojects {
     tasks.withType(Test) {
         maxParallelForks = Runtime.runtime.availableProcessors()
         forkEvery = 100
-    }
-    
-    tasks.withType(Exec) {
-        doLast {
-            println execAction
-        }
     }
 }
 
