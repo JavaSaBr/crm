@@ -3,10 +3,6 @@ task installNodeModules(type: Exec) {
     commandLine 'npm', 'install'
 }
 
-task installNodeSass10(type: Exec) {
-    commandLine 'npm', 'install', 'node-sass@4.10.0', '--no-save'
-}
-
 task buildAngular(type: Exec) {
     commandLine 'ng', 'build'
 }
@@ -28,6 +24,5 @@ sourceSets {
     }
 }
 
-tasks.installNodeSass10.dependsOn installNodeModules
-tasks.buildAngular.dependsOn installNodeSass10
-tasks.build.dependsOn buildAngular
+tasks.buildAngular.dependsOn installNodeModules
+tasks.classes.dependsOn buildAngular

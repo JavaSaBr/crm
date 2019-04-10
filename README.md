@@ -9,7 +9,6 @@ npm 6+
 
 ## Build
 ```bash
-./gradlew build -Djavax.mail.username=user \
-          -Djavax.mail.password=pass \
-          -Djavax.mail.smtp.from=from
+./gradlew build 
 ```
+

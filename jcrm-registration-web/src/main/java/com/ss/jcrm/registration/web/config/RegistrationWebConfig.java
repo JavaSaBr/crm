@@ -22,7 +22,13 @@ import org.springframework.core.env.Environment;
 })
 @Configuration
 @ComponentScan("com.ss.jcrm.registration.web")
-@PropertySource("classpath:com/ss/jcrm/registration/web/registration-web.properties")
+@PropertySources({
+    @PropertySource("classpath:com/ss/jcrm/registration/web/registration-web.properties"),
+    @PropertySource(
+        value = "classpath:com/ss/jcrm/registration/web/registration-web-${spring.profiles.active:default}.properties",
+        ignoreResourceNotFound = true
+    )
+})
 public class RegistrationWebConfig {
 
     @Autowired

@@ -23,7 +23,13 @@ import java.util.concurrent.TimeUnit;
 })
 @Configuration
 @ComponentScan("com.ss.jcrm.dictionary.web")
-@PropertySource("classpath:com/ss/jcrm/dictionary/web/dictionary-web.properties")
+@PropertySources({
+    @PropertySource("classpath:com/ss/jcrm/dictionary/web/dictionary-web.properties"),
+    @PropertySource(
+        value = "classpath:com/ss/jcrm/dictionary/web/dictionary-web-${spring.profiles.active:default}.properties",
+        ignoreResourceNotFound = true
+    )
+})
 public class DictionaryWebConfig {
 
     @Autowired
