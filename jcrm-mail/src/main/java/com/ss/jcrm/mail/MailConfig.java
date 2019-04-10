@@ -1,6 +1,7 @@
 package com.ss.jcrm.mail;
 
 import com.ss.jcrm.mail.service.impl.JavaxMailService;
+import com.ss.rlib.common.util.StringUtils;
 import com.ss.rlib.mail.sender.MailSenderConfig;
 import com.ss.rlib.mail.sender.impl.JavaxMailSender;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,10 @@ public class MailConfig {
         var username = env.getRequiredProperty("javax.mail.username");
         var password = env.getRequiredProperty("javax.mail.password");
         var smtpFrom = env.getRequiredProperty("javax.mail.smtp.from");
+
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(smtpFrom)) {
+            throw new RuntimeException("SMTP username/password/from should not be null");
+        }
 
         int minThreads = env.getProperty("javax.mail.executor.min.threads", int.class, 1);
         int maxThreads = env.getProperty("javax.mail.executor.max.threads", int.class, 4);
