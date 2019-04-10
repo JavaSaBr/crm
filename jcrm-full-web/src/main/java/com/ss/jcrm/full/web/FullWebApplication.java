@@ -9,6 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import java.util.Arrays;
+
 @Configuration
 @Import({
     RegistrationWebConfig.class,
@@ -18,6 +20,7 @@ import org.springframework.context.annotation.Import;
 public class FullWebApplication extends BaseWebApplication {
 
     public static void main(@NotNull String[] args) {
+        System.setProperty("server.port", "8090");
         SpringApplication.run(FullWebApplication.class, args);
     }
 }
