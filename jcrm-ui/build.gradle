@@ -1,4 +1,8 @@
 
+task installNodeModules(type: Exec) {
+    commandLine 'npm', 'install'
+}
+
 task buildAngular(type: Exec) {
     commandLine 'ng', 'build'
 }
@@ -20,4 +24,5 @@ sourceSets {
     }
 }
 
+tasks.buildAngular.dependsOn installNodeModules
 tasks.build.dependsOn buildAngular

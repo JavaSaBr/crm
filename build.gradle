@@ -70,12 +70,6 @@ allprojects {
             project.apply (plugin: "org.springframework.boot")
         }
     }
-    
-    test {
-        testLogging {
-            showStandardStreams = true
-        }
-    }
 
     sourceSets {
         main {
