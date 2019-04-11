@@ -19,7 +19,4 @@ import org.springframework.context.annotation.PropertySource
 ])
 @PropertySource("classpath:com/ss/jcrm/registration/web/test/registration-web-test.properties")
 class RegistrationSpecificationConfig {
-
-    @Autowired
-    Flyway flyway
 }

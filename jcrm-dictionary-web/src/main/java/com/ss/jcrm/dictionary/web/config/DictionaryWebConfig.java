@@ -8,11 +8,13 @@ import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import com.ss.jcrm.dictionary.web.service.impl.DefaultCachedDictionaryService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.web.config.BaseWebConfig;
+import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +42,9 @@ public class DictionaryWebConfig {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private List<? extends Flyway> flyways;
 
     @Bean
     @NotNull CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService() {

@@ -13,10 +13,12 @@ import com.ss.jcrm.user.jdbc.dao.JdbcEmailConfirmationDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcOrganizationDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcUserDao;
 import com.ss.jcrm.user.jdbc.dao.JdbcUserGroupDao;
+import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
@@ -44,6 +46,28 @@ public class JdbcUserConfig {
 
     @Autowired
     private CountryDao countryDao;
+
+    @Bean
+    @DependsOn("userDataSource")
+    @NotNull Flyway userFlyway() {
+
+        var flyway = Flyway.configure()
+            .locations("classpath:com/ss/jcrm/user/db/migration")
+            .baselineOnMigrate(true)
+            .schemas(env.getRequiredProperty("jdbc.user.db.schema"))
+            .dataSource(
+                env.getRequiredProperty("jdbc.user.db.url"),
+                env.getRequiredProperty("jdbc.user.db.username"),
+                env.getRequiredProperty("jdbc.user.db.password")
+            )
+            .load();
+
+        if (env.getProperty("db.upgrading.enabled", boolean.class, false)) {
+            flyway.migrate();
+        }
+
+        return flyway;
+    }
 
     @Bean
     @NotNull DataSource userDataSource() {

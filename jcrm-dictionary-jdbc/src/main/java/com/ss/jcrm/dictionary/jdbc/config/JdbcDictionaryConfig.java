@@ -8,11 +8,10 @@ import com.ss.jcrm.dictionary.jdbc.dao.JdbcCountryDao;
 import com.ss.jcrm.dictionary.jdbc.dao.JdbcIndustryDao;
 import com.ss.jcrm.jdbc.ConnectionPoolFactory;
 import com.ss.jcrm.jdbc.config.JdbcConfig;
+import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
@@ -30,6 +29,28 @@ public class JdbcDictionaryConfig {
 
     @Autowired
     private Environment env;
+
+    @Bean
+    @DependsOn("dictionaryDataSource")
+    @NotNull Flyway dictionaryFlyway() {
+
+        var flyway = Flyway.configure()
+            .locations("classpath:com/ss/jcrm/dictionary/db/migration")
+            .baselineOnMigrate(true)
+            .schemas(env.getRequiredProperty("jdbc.dictionary.db.schema"))
+            .dataSource(
+                env.getRequiredProperty("jdbc.dictionary.db.url"),
+                env.getRequiredProperty("jdbc.dictionary.db.username"),
+                env.getRequiredProperty("jdbc.dictionary.db.password")
+            )
+            .load();
+
+        if (env.getProperty("db.upgrading.enabled", boolean.class, false)) {
+            flyway.migrate();
+        }
+
+        return flyway;
+    }
 
     @Bean
     @NotNull DataSource dictionaryDataSource() {

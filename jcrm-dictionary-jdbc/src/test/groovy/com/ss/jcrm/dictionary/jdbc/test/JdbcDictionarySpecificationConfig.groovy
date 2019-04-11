@@ -34,9 +34,14 @@ class JdbcDictionarySpecificationConfig {
 
     @Autowired @Lazy
     CountryDao countryDao
-
+    
     @Bean
     @NotNull DataSource dictionaryDataSource() {
+        
+        System.setProperty("jdbc.dictionary.db.url", System.getProperty("db.test.url"))
+        System.setProperty("jdbc.dictionary.db.username", System.getProperty("db.test.username"))
+        System.setProperty("jdbc.dictionary.db.password", System.getProperty("db.test.password"))
+        
         return DbSpecificationUtils.newDataSource(
             postgreSQLContainer,
             env.getRequiredProperty("jdbc.dictionary.db.schema")

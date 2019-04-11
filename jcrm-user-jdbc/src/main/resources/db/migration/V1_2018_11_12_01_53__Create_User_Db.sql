@@ -1,1 +1,0 @@
-CREATE SCHEMA "jcrm-user-db";

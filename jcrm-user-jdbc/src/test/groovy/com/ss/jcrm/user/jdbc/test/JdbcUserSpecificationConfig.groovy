@@ -57,6 +57,12 @@ class JdbcUserSpecificationConfig {
 
     @Bean
     @NotNull DataSource userDataSource() {
+        
+        System.setProperty("jdbc.user.db.url", System.getProperty("db.test.url"))
+        System.setProperty("jdbc.user.db.username", System.getProperty("db.test.username"))
+        System.setProperty("jdbc.user.db.password", System.getProperty("db.test.password"))
+    
+        
         return DbSpecificationUtils.newDataSource(
             postgreSQLContainer,
             env.getRequiredProperty("jdbc.user.db.schema")

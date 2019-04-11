@@ -8,10 +8,13 @@ import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import com.ss.jcrm.web.exception.handler.WebExceptionHandler;
+import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+
+import java.util.List;
 
 @Import({
     BaseWebConfig.class,
@@ -33,6 +36,9 @@ public class RegistrationWebConfig {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private List<? extends Flyway> flyways;
 
     @Bean
     @NotNull ResourceValidator resourceValidator() {

@@ -3,6 +3,7 @@ package com.ss.jcrm.user.jdbc.test
 import com.ss.jcrm.dictionary.jdbc.test.helper.JdbcDictionaryTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
 import com.ss.jcrm.user.jdbc.test.helper.JdbcUserTestHelper
+import org.flywaydb.core.Flyway
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -31,7 +32,10 @@ class JdbcUserSpecification extends DefaultSpecification {
 
     @Autowired
     JdbcUserTestHelper userTestHelper
-
+    
+    @Autowired
+    List<? extends Flyway> flyways
+    
     def setup() {
         userTestHelper.clearAllData()
         dictionaryTestHelper.clearAllData()

@@ -1,1 +1,0 @@
-CREATE SCHEMA "jcrm-dictionary-db";

@@ -2,6 +2,7 @@ package com.ss.jcrm.dictionary.jdbc.test
 
 import com.ss.jcrm.dictionary.jdbc.test.helper.JdbcDictionaryTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
+import org.flywaydb.core.Flyway
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -23,7 +24,10 @@ class JdbcDictionarySpecification extends DefaultSpecification {
 
     @Autowired
     JdbcDictionaryTestHelper dictionaryTestHelper
-
+    
+    @Autowired
+    List<? extends Flyway> flyways
+    
     def setup() {
         dictionaryTestHelper.clearAllData()
     }

@@ -16,13 +16,15 @@ afterEvaluate {
         def smtpUser = System.getProperty("javax.mail.username")
         def smtpPassword = System.getProperty("javax.mail.password")
         def smtpFrom = System.getProperty("javax.mail.smtp.from")
-        
+        def dbUpgradingEnabled = System.getProperty("db.upgrading.enabled", "false")
+    
         main = 'com.ss.jcrm.full.web.FullWebApplication'
         jvmArgs = [
             "-Dserver.port=8080",
             "-Djavax.mail.username=$smtpUser",
             "-Djavax.mail.password=$smtpPassword",
-            "-Djavax.mail.smtp.from=$smtpFrom"
+            "-Djavax.mail.smtp.from=$smtpFrom",
+            "-Ddb.upgrading.enabled=$dbUpgradingEnabled"
         ]
     }
 }

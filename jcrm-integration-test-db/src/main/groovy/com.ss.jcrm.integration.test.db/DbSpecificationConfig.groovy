@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.testcontainers.containers.PostgreSQLContainer
 
+import static org.testcontainers.containers.PostgreSQLContainer.POSTGRESQL_PORT
+
 @Configuration
 @Import(DefaultSpecificationConfig)
 class DbSpecificationConfig {
@@ -29,29 +31,13 @@ class DbSpecificationConfig {
         while (!container.isRunning()) {
             Thread.sleep(500)
         }
+    
+        def mappedPort = container.getMappedPort(POSTGRESQL_PORT)
+        
+        System.setProperty("db.test.url", "jdbc:postgresql://${container.getContainerIpAddress()}:${ mappedPort}/$DB_NAME")
+        System.setProperty("db.test.username", USER)
+        System.setProperty("db.test.password", PWD)
 
         return container
-    }
-
-    @Bean
-    @NotNull Flyway flyway() {
-
-        def container = postgreSQLContainer()
-        def address = container.getContainerIpAddress()
-        def port = container.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
-
-        def flyway = Flyway.configure()
-            .locations("classpath:db/migration")
-            .baselineOnMigrate(true)
-            .dataSource(
-                "jdbc:postgresql://" + address + ":" + port + "/" + DbSpecificationConfig.DB_NAME,
-                DbSpecificationConfig.USER,
-                DbSpecificationConfig.PWD
-            )
-            .load()
-
-        flyway.migrate()
-
-        return flyway
     }
 }

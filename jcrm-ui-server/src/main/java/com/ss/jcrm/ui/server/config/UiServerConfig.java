@@ -27,8 +27,9 @@ public class UiServerConfig {
         public @NotNull Mono<Void> filter(@NotNull ServerWebExchange exchange, @NotNull WebFilterChain chain) {
 
             var request = exchange.getRequest();
+            var path = request.getURI().getPath();
 
-            if (request.getURI().getPath().equals("/")) {
+            if (path.equals("/") || path.equals("/home")) {
 
                 var newRequest = request.mutate()
                     .path("/index.html")
