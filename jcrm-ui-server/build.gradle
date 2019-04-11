@@ -20,7 +20,7 @@ task copyFrontEnd(type: Copy) {
 
 afterEvaluate {
     tasks.copyFrontEnd.dependsOn deleteOldFrontEnd
-    tasks.build.dependsOn copyFrontEnd
+    tasks.classes.dependsOn copyFrontEnd
 }
 
 def getStaticResourcesFolder() {

@@ -103,7 +103,6 @@ allprojects {
         forkEvery = 100
     }
     
-    
     processResources {
         filter(ReplaceTokens, tokens: [
             
