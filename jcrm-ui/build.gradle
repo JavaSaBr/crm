@@ -4,7 +4,7 @@ task installNodeModules(type: Exec) {
 }
 
 task buildAngular(type: Exec) {
-    commandLine 'ng', 'build'
+    commandLine 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
 }
 
 task debug(type: Exec) {

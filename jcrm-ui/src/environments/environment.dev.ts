@@ -1,5 +1,5 @@
 export const environment = {
-    production: true,
+    production: false,
     dictionaryUrl: 'http://185.186.208.229:8090/dictionary',
     registrationUrl: 'http://185.186.208.229:8090/registration',
 
