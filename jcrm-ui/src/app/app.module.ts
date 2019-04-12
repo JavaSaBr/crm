@@ -16,7 +16,7 @@ import {
     MatListModule,
     MatMenuModule, MatRadioModule,
     MatSelectModule,
-    MatSidenavModule,
+    MatSidenavModule, MatSnackBarModule,
     MatStepperModule,
     MatToolbarModule
 } from '@angular/material';
@@ -32,6 +32,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {NoAuthHomeService} from './services/no-auth-home.service';
 import {PhoneNumberValidator} from './input/phone-number/phone-number-validator';
 import {CountryInput} from './input/country/country-input';
+import {ErrorService} from "./services/error.service";
 
 @NgModule({
     declarations: [
@@ -65,9 +66,10 @@ import {CountryInput} from './input/country/country-input';
         MatAutocompleteModule,
         MatSelectModule,
         HttpClientModule,
-        MatRadioModule
+        MatRadioModule,
+        MatSnackBarModule,
     ],
-    providers: [SideMenuService, UserService, NoAuthHomeService],
+    providers: [SideMenuService, UserService, NoAuthHomeService, ErrorService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

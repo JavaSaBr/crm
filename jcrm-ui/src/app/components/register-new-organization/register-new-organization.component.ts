@@ -11,6 +11,7 @@ import {PhoneNumber} from '../../input/phone-number/phone-number';
 import {OrganizationValidator} from '../../utils/validator/organization-validator';
 import {OtherUserNameValidator} from "../../utils/validator/other-user-name-validator";
 import {UserValidator} from "../../utils/validator/user-validator";
+import {ErrorService} from "../../services/error.service";
 
 @Component({
     selector: 'app-register-new-organization',
@@ -25,13 +26,14 @@ export class RegisterNewOrganizationComponent {
     public readonly activationFormGroup: FormGroup;
 
     public selectedEmail: string;
-    public errorMessage: string;
+    public disabled: boolean;
 
     constructor(
         formBuilder: FormBuilder,
         private readonly countryRepository: CountryRepository,
         private readonly noAuthHomeService: NoAuthHomeService,
-        private readonly registrationService: RegistrationService
+        private readonly registrationService: RegistrationService,
+        private readonly errorService: ErrorService
     ) {
         this.orgFormGroup = formBuilder.group({
             orgName: ['', [
@@ -51,9 +53,9 @@ export class RegisterNewOrganizationComponent {
             secondName: ['', [
                 OtherUserNameValidator.instance
             ]],
-            thirdName: ['', [
+/*            thirdName: ['', [
                 OtherUserNameValidator.instance
-            ]],
+            ]],*/
             email: ['', [
                 Validators.required,
                 Validators.email
@@ -82,12 +84,12 @@ export class RegisterNewOrganizationComponent {
 
         this.ownerFormGroup.controls['email'].valueChanges
             .subscribe(value => this.selectedEmail = value);
-    }
 
+        this.disabled = false;
+    }
 
     resetAndClose() {
         this.selectedEmail = null;
-        this.errorMessage = null;
         this.orgFormGroup.reset();
         this.ownerFormGroup.reset();
         this.subscribeFormGroup.reset();
@@ -95,6 +97,7 @@ export class RegisterNewOrganizationComponent {
     }
 
     activateAndClose() {
+        this.disabled = true;
 
         let controls = this.orgFormGroup.controls;
 
@@ -105,7 +108,7 @@ export class RegisterNewOrganizationComponent {
 
         const firstName = controls['firstName'].value as string;
         const secondName = controls['secondName'].value as string;
-        const thirdName = controls['thirdName'].value as string;
+       // const thirdName = controls['thirdName'].value as string;
         const email = controls['email'].value as string;
         const password = controls['password'].value as string;
         const phoneNumber = controls['phoneNumber'].value as PhoneNumber;
@@ -123,7 +126,7 @@ export class RegisterNewOrganizationComponent {
                 country,
                 firstName,
                 secondName,
-                thirdName,
+                null,
                 email,
                 activationCode,
                 password,
@@ -132,18 +135,28 @@ export class RegisterNewOrganizationComponent {
             )
             .then(value => {
                 if (value != null) {
-                    this.errorMessage = value.errorMessage;
+                    this.errorService.showError(value.errorMessage);
                 } else {
                     this.resetAndClose();
                 }
+                this.disabled = false;
             })
     }
 
     sendEmailConfirmation() {
+        this.disabled = true;
 
         const controls = this.ownerFormGroup.controls;
         const email = controls['email'].value as string;
 
         this.registrationService.confirmEmail(email)
+            .then(value => {
+                if (value != null) {
+                    this.errorService.showError(value.errorMessage);
+                } else {
+                    this.resetAndClose();
+                }
+                this.disabled = false;
+            })
     }
 }

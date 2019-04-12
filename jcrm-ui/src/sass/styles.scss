@@ -47,6 +47,10 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
   flex: 50%;
 }
 
+.flex-100 {
+  flex: 100%;
+}
+
 .flex-end {
   justify-content: flex-end;
 }
@@ -66,4 +70,15 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
 
 .error-label {
   color: red;
+}
+
+.icon-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.filed-icon-wrapper {
+  padding-bottom: 1.34375em;
 }

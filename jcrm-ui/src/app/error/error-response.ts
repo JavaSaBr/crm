@@ -19,10 +19,15 @@ export class ErrorResponse {
         } else if (resp.status == 400) {
             return resp.error as ErrorResponse;
         } else {
-            throw new Error(resp.message);
+            throw new ErrorResponse(resp.status, resp.statusText);
         }
     }
 
     errorCode: number;
     errorMessage: string;
+
+    constructor(errorCode: number = 0, errorMessage: string = null) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
 }

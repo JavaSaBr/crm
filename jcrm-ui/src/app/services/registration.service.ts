@@ -3,7 +3,7 @@ import {SecurityService} from './security.service';
 import {environment} from '../../environments/environment';
 import {PhoneNumber} from '../input/phone-number/phone-number';
 import {Country} from '../entity/country';
-import {ErrorResponse} from '../error/ErrorResponse';
+import {ErrorResponse} from '../error/error-response';
 
 @Injectable({
     providedIn: 'root'
@@ -31,7 +31,7 @@ export class RegistrationService {
                 countryId: country.id,
                 firstName: firstName,
                 secondName: secondName,
-                thirdName: thirdName,
+                //thirdName: thirdName,
                 email: email,
                 activationCode: activationCode,
                 password: password,
@@ -42,7 +42,7 @@ export class RegistrationService {
             .catch(resp => ErrorResponse.convertToErrorOrNull(resp));
     }
 
-    confirmEmail(email: string): Promise<number | null> {
+    confirmEmail(email: string): Promise<ErrorResponse | null> {
 
         return this.securityService.getRequest(environment.registrationUrl + '/email/confirmation/' + email)
             .then(() => null)

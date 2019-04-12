@@ -10,15 +10,17 @@
                     дней сервисом можно пользоваться бесплатно. <b>Скачивать программное обеспечение не
                         требуется.</b>
                 </p>
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Organization name</mat-label>
                     <input matInput placeholder="Organization name" formControlName="orgName" required>
                 </mat-form-field>
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Country</mat-label>
                     <country-input formControlName="country" placeholder="Country" required></country-input>
                 </mat-form-field>
                 <div class="flex-row flex-end">
-                    <button mat-button (click)="resetAndClose()">Отменить</button>
-                    <button mat-button matStepperNext>Далее</button>
+                    <button mat-button (click)="resetAndClose()" [disabled]="disabled">Отменить</button>
+                    <button mat-button matStepperNext [disabled]="disabled">Далее</button>
                 </div>
             </form>
         </div>
@@ -30,34 +32,52 @@
                 <h2>Предоставьте свою контактную информацию</h2>
                 <p>Вы создаете аккаунт JCRM, поэтому будете назначены администратором.
                     Позже эту роль можно передать другому пользователю.</p>
-                <mat-form-field>
-                    <input matInput placeholder="First name" formControlName="firstName">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Second name" formControlName="secondName">
-                </mat-form-field>
-                <mat-form-field>
+                <div class="flex-row flex-center">
+                    <mat-form-field class="half-field-width" appearance="outline">
+                        <mat-label>First name</mat-label>
+                        <input matInput placeholder="First name" formControlName="firstName">
+                    </mat-form-field>
+                    <span class="row-fields-offset"></span>
+                    <mat-form-field class="half-field-width" appearance="outline">
+                        <mat-label>Second name</mat-label>
+                        <input matInput placeholder="Second name" formControlName="secondName">
+                    </mat-form-field>
+                </div>
+ <!--               <mat-form-field appearance="outline">
+                    <mat-label>Third name</mat-label>
                     <input matInput placeholder="Third name" formControlName="thirdName">
-                </mat-form-field>
-                <mat-form-field>
+                </mat-form-field>-->
+                <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
                     <input matInput placeholder="Email" formControlName="email" type="email" required>
+                    <mat-hint>Вам нужно будет подтвердить, что это ваш адрес электронной почты.</mat-hint>
                 </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Password" formControlName="password" type="password" required>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Password confirm" formControlName="passwordConfirm" type="password"
-                           required>
-                </mat-form-field>
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Phone number</mat-label>
                     <phone-number-input formControlName="phoneNumber" placeholder="Phone number"
                                         required></phone-number-input>
                 </mat-form-field>
+                <div class="flex-row flex-center">
+                    <mat-form-field class="half-field-width-45" appearance="outline">
+                        <mat-label>Password</mat-label>
+                        <input matInput placeholder="Password" formControlName="password" type="password" required>
+                    </mat-form-field>
+                    <span class="row-fields-offset"></span>
+                    <mat-form-field class="half-field-width-45" appearance="outline">
+                        <mat-label>Password confirm</mat-label>
+                        <input matInput placeholder="Password confirm" formControlName="passwordConfirm" type="password"
+                               required>
+                    </mat-form-field>
+                    <span class="row-fields-offset"></span>
+                    <div class="icon-wrapper filed-icon-wrapper">
+                        <mat-icon matSuffix>visibility_off</mat-icon>
+                    </div>
+                </div>
                 <div class="flex-row">
-                    <button mat-button matStepperPrevious>Назад</button>
+                    <button mat-button matStepperPrevious [disabled]="disabled">Назад</button>
                     <span class="space-filler"></span>
-                    <button mat-button (click)="resetAndClose()">Отменить</button>
-                    <button mat-button matStepperNext>Далее</button>
+                    <button mat-button (click)="resetAndClose()" [disabled]="disabled">Отменить</button>
+                    <button mat-button matStepperNext [disabled]="disabled">Далее</button>
                 </div>
             </form>
         </div>
@@ -73,9 +93,10 @@
                     <mat-radio-button class="radio-button-vertical" value="false">No</mat-radio-button>
                 </mat-radio-group>
                 <div class="flex-row">
+                    <button mat-button matStepperPrevious [disabled]="disabled">Назад</button>
                     <span class="space-filler"></span>
-                    <button mat-button (click)="resetAndClose()">Отменить</button>
-                    <button mat-button matStepperNext (click)="sendEmailConfirmation()">Далее</button>
+                    <button mat-button (click)="resetAndClose()" [disabled]="disabled">Отменить</button>
+                    <button mat-button matStepperNext (click)="sendEmailConfirmation()" [disabled]="disabled">Далее</button>
                 </div>
             </form>
         </div>
@@ -87,15 +108,15 @@
                 <h2>Завершите настройку и пройдите подтверждение</h2>
                 <p>Чтобы получить доступ, необходимо подтвердить свою регистрацию. Код подтверждения,
                     отправлен на адрес <b>{{selectedEmail}}</b>. Если письма нет во входящих, проверьте папку “Спам”.</p>
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Activation code</mat-label>
                     <input matInput placeholder="Activation code" formControlName="activationCode" required>
                 </mat-form-field>
                 <div class="flex-row">
                     <span class="space-filler"></span>
-                    <button mat-button (click)="activateAndClose()">Готово</button>
+                    <button mat-button (click)="activateAndClose()" [disabled]="disabled">Готово</button>
                 </div>
             </form>
         </div>
     </mat-step>
 </mat-horizontal-stepper>
-<p class="error-label" *ngIf="errorMessage">{{errorMessage}}</p>
