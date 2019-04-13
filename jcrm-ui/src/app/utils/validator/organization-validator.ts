@@ -1,9 +1,21 @@
-import {ValidationErrors} from '@angular/forms';
+import {FormControl, ValidationErrors} from '@angular/forms';
 import {RegistrationService} from '../../services/registration.service';
 import {environment} from '../../../environments/environment';
 import {BaseLazyAsyncValidator} from "./base-lazy-async-validator";
 
 export class OrganizationValidator extends BaseLazyAsyncValidator<boolean> {
+
+    static isTooShort(control: FormControl) {
+        return control.hasError('tooShort')
+    }
+
+    static isTooLong(control: FormControl) {
+        return control.hasError('tooLong')
+    }
+
+    static isAlreadyExist(control: FormControl) {
+        return control.hasError('alreadyExists')
+    }
 
     constructor(private readonly registrationService: RegistrationService) {
         super();
@@ -11,8 +23,10 @@ export class OrganizationValidator extends BaseLazyAsyncValidator<boolean> {
 
     validateSync(value): ValidationErrors {
 
-        if (value.length < environment.orgNameMinLength || value.length > environment.orgNameMaxLength) {
-            return {'wrong length': value.length};
+        if (value.length < environment.orgNameMinLength) {
+            return {'tooShort': true};
+        } else if (value.length > environment.orgNameMaxLength) {
+            return {'tooLong': true};
         }
 
         return null;
@@ -24,7 +38,7 @@ export class OrganizationValidator extends BaseLazyAsyncValidator<boolean> {
 
     convertToResult(exist: boolean, value: string): ValidationErrors | null {
         if (exist) {
-            return {'already exists': value};
+            return {'alreadyExists': true};
         } else {
             return null;
         }

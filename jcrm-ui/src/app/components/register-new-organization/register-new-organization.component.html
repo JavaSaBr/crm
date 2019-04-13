@@ -1,4 +1,4 @@
-<mat-horizontal-stepper [linear]="true" #stepper class="register-new-org-component">
+<mat-horizontal-stepper [linear]="true" class="register-new-org-component">
     <mat-step [stepControl]="orgFormGroup">
         <div class="register-new-org-form-step-container">
             <form [formGroup]="orgFormGroup" class="flex-column register-new-org-form-step">
@@ -13,10 +13,12 @@
                 <mat-form-field appearance="outline">
                     <mat-label>Organization name</mat-label>
                     <input matInput placeholder="Organization name" formControlName="orgName" required>
+                    <mat-error *ngIf="orgName.invalid">{{getOrgNameErrorMessage()}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Country</mat-label>
                     <country-input formControlName="country" placeholder="Country" required></country-input>
+                    <mat-error *ngIf="country.invalid">{{getCountryErrorMessage()}}</mat-error>
                 </mat-form-field>
                 <div class="flex-row flex-end">
                     <button mat-button (click)="resetAndClose()" [disabled]="disabled">Отменить</button>
@@ -43,19 +45,17 @@
                         <input matInput placeholder="Second name" formControlName="secondName">
                     </mat-form-field>
                 </div>
- <!--               <mat-form-field appearance="outline">
-                    <mat-label>Third name</mat-label>
-                    <input matInput placeholder="Third name" formControlName="thirdName">
-                </mat-form-field>-->
                 <mat-form-field appearance="outline">
                     <mat-label>Email</mat-label>
                     <input matInput placeholder="Email" formControlName="email" type="email" required>
                     <mat-hint>Вам нужно будет подтвердить, что это ваш адрес электронной почты.</mat-hint>
+                    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Phone number</mat-label>
                     <phone-number-input formControlName="phoneNumber" placeholder="Phone number"
                                         required></phone-number-input>
+                    <mat-error *ngIf="phoneNumber.invalid">{{getPhoneNumberErrorMessage()}}</mat-error>
                 </mat-form-field>
                 <div class="flex-row flex-center">
                     <mat-form-field class="half-field-width-45" appearance="outline">
@@ -113,6 +113,7 @@
                     <input matInput placeholder="Activation code" formControlName="activationCode" required>
                 </mat-form-field>
                 <div class="flex-row">
+                    <button mat-button matStepperPrevious [disabled]="disabled">Назад</button>
                     <span class="space-filler"></span>
                     <button mat-button (click)="activateAndClose()" [disabled]="disabled">Готово</button>
                 </div>

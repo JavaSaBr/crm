@@ -21,7 +21,7 @@ import {CountryPhoneCodeAutocompleter} from '../../utils/country-phone-code-auto
         '(focusout)': 'onTouched()',
     }
 })
-export class PhoneNumberInput extends BaseInput<PhoneNumber> implements OnInit {
+export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements OnInit {
 
     public readonly formGroup: FormGroup;
 
@@ -30,7 +30,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber> implements OnInit {
 
     public filteredCountries: Observable<Country[]>;
 
-    private _selectedCountry: Country | null;
+    private _selectedCountry: Country | string | null;
 
     constructor(
         formBuilder: FormBuilder,
@@ -57,12 +57,12 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber> implements OnInit {
             .subscribe(() => this.changeFromSubControls());
     }
 
-    set selectedCountry(selectedCountry: Country | null) {
+    set selectedCountry(selectedCountry: Country | string | null) {
         this._selectedCountry = selectedCountry;
         this.changeFromSubControls();
     }
 
-    get selectedCountry(): Country | null {
+    get selectedCountry(): Country | string | null {
         return this._selectedCountry;
     }
 
@@ -79,17 +79,22 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber> implements OnInit {
     }
 
     @Input()
-    get value(): PhoneNumber | null {
+    get value(): PhoneNumber | string | null {
 
-        const country = this.selectedCountry;
+        const country = this.selectedCountry as Country;
         const phoneNumber = this.phoneNumberControl.value;
 
-        return new PhoneNumber(country, phoneNumber);
+        if (country && country.id) {
+            return new PhoneNumber(country, phoneNumber);
+        } else {
+            return new PhoneNumber(null, phoneNumber);
+        }
     }
 
-    set value(phoneNumber: PhoneNumber | null) {
+    set value(value: PhoneNumber | string | null) {
 
-        if (phoneNumber != null) {
+        let phoneNumber = value as PhoneNumber;
+        if (phoneNumber && phoneNumber.country && phoneNumber.phoneNumber) {
             this.countryControl.setValue(phoneNumber.country);
             this.phoneNumberControl.setValue(phoneNumber.phoneNumber);
         } else {
@@ -114,7 +119,13 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber> implements OnInit {
                 .then(selectedCountry => this.selectedCountry = selectedCountry);
         } else {
             this.countryRepository.findByPhoneCode(countryValue.toString())
-                .then(selectedCountry => this.selectedCountry = selectedCountry);
+                .then(selectedCountry => {
+                    if (selectedCountry == null) {
+                        this.selectedCountry = countryValue
+                    } else {
+                        this.selectedCountry = selectedCountry
+                    }
+                });
         }
     }
 

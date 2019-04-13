@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {CountryRepository} from '../../repositories/country/country.repository';
 import {NoAuthHomeService} from '../../services/no-auth-home.service';
 import {PhoneNumberValidator} from '../../input/phone-number/phone-number-validator';
@@ -24,6 +24,11 @@ export class RegisterNewOrganizationComponent {
     public readonly ownerFormGroup: FormGroup;
     public readonly subscribeFormGroup: FormGroup;
     public readonly activationFormGroup: FormGroup;
+
+    public orgName: FormControl;
+    public country: FormControl;
+    public email: FormControl;
+    public phoneNumber: FormControl;
 
     public selectedEmail: string;
     public disabled: boolean;
@@ -53,12 +58,9 @@ export class RegisterNewOrganizationComponent {
             secondName: ['', [
                 OtherUserNameValidator.instance
             ]],
-/*            thirdName: ['', [
-                OtherUserNameValidator.instance
-            ]],*/
             email: ['', [
                 Validators.required,
-                Validators.email
+                Validators.pattern('^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$')
             ], [
                 new UserValidator(registrationService)
             ]],
@@ -86,6 +88,11 @@ export class RegisterNewOrganizationComponent {
             .subscribe(value => this.selectedEmail = value);
 
         this.disabled = false;
+
+        this.orgName = this.orgFormGroup.controls['orgName'] as FormControl;
+        this.country = this.orgFormGroup.controls['country'] as FormControl;
+        this.email = this.ownerFormGroup.controls['email'] as FormControl;
+        this.phoneNumber = this.ownerFormGroup.controls['phoneNumber'] as FormControl;
     }
 
     resetAndClose() {
@@ -99,19 +106,16 @@ export class RegisterNewOrganizationComponent {
     activateAndClose() {
         this.disabled = true;
 
-        let controls = this.orgFormGroup.controls;
+        const orgName = this.orgName.value as string;
+        const country = this.country.value as Country;
 
-        const orgName = controls['orgName'].value as string;
-        const country = controls['country'].value as Country;
-
-        controls = this.ownerFormGroup.controls;
+        let controls = this.ownerFormGroup.controls;
 
         const firstName = controls['firstName'].value as string;
         const secondName = controls['secondName'].value as string;
-       // const thirdName = controls['thirdName'].value as string;
-        const email = controls['email'].value as string;
         const password = controls['password'].value as string;
-        const phoneNumber = controls['phoneNumber'].value as PhoneNumber;
+        const phoneNumber = this.phoneNumber.value as PhoneNumber;
+        const email = this.email.value as string;
 
         controls = this.subscribeFormGroup.controls;
 
@@ -126,7 +130,6 @@ export class RegisterNewOrganizationComponent {
                 country,
                 firstName,
                 secondName,
-                null,
                 email,
                 activationCode,
                 password,
@@ -146,8 +149,7 @@ export class RegisterNewOrganizationComponent {
     sendEmailConfirmation() {
         this.disabled = true;
 
-        const controls = this.ownerFormGroup.controls;
-        const email = controls['email'].value as string;
+        const email = this.email.value as string;
 
         this.registrationService.confirmEmail(email)
             .then(value => {
@@ -158,5 +160,58 @@ export class RegisterNewOrganizationComponent {
                 }
                 this.disabled = false;
             })
+    }
+
+    getOrgNameErrorMessage() {
+
+        if (this.orgName.hasError('required')) {
+            return 'You must enter an organization name'
+        } else if (OrganizationValidator.isTooShort(this.orgName)) {
+            return 'Organization name is too short'
+        } else if (OrganizationValidator.isTooLong(this.orgName)) {
+            return 'Organization name is too long'
+        } else if (OrganizationValidator.isAlreadyExist(this.orgName)) {
+            return 'Organization is already exist'
+        }
+
+        return null
+    }
+
+    getCountryErrorMessage() {
+        return this.country.hasError('required') ? 'You must select a country' : null;
+    }
+
+    getEmailErrorMessage() {
+
+        if (this.email.hasError('required')) {
+            return 'You must enter an email'
+        } if (this.email.hasError('pattern')) {
+            return 'Email is invalid'
+        } else if (UserValidator.isTooShort(this.email)) {
+            return 'Email is too short'
+        } else if (UserValidator.isTooLong(this.email)) {
+            return 'Email is too long'
+        } else if (UserValidator.isAlreadyExist(this.email)) {
+            return 'Email is already exist'
+        }
+
+        return null
+    }
+
+    getPhoneNumberErrorMessage() {
+
+        if (this.phoneNumber.hasError('required')) {
+            return 'You must enter a phone number'
+        } else if (PhoneNumberValidator.isTooShort(this.phoneNumber)) {
+            return 'Phone number is too short'
+        } else if (PhoneNumberValidator.isTooLong(this.phoneNumber)) {
+            return 'Phone number is too long'
+        } else if (PhoneNumberValidator.isNoCountry(this.phoneNumber)) {
+            return 'You must select a country code'
+        } else if (PhoneNumberValidator.isInvalidPhoneNumber(this.phoneNumber)) {
+            return 'Phone number is invalid'
+        }
+
+        return null
     }
 }
