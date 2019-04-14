@@ -2,7 +2,7 @@
     <mat-step [stepControl]="orgFormGroup">
         <div class="register-new-org-form-step-container">
             <form [formGroup]="orgFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel>Шаг 1<br/>Приступим!</ng-template>
+                <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_1' | translate"></p></ng-template>
                 <h1>Приступим!</h1>
                 <p>Вся ваша команда включится в работу с первого дня с самой легкой в использовании CRM на рынке.
                     Интерфейс интуитивно понятен и не требует обучения или периода внедрения и адаптации. В течение
@@ -30,7 +30,7 @@
     <mat-step [stepControl]="ownerFormGroup">
         <div class="register-new-org-form-step-container">
             <form [formGroup]="ownerFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel>Шаг 2<br/>Контакты</ng-template>
+                <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_2' | translate"></ng-template>
                 <h2>Предоставьте свою контактную информацию</h2>
                 <p>Вы создаете аккаунт JCRM, поэтому будете назначены администратором.
                     Позже эту роль можно передать другому пользователю.</p>
@@ -85,7 +85,7 @@
     <mat-step>
         <div class="register-new-org-form-step-container">
             <form [formGroup]="subscribeFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel>Шаг 3<br/>Подписка</ng-template>
+                <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_3' | translate"></ng-template>
                 <h2>Будьте в курсе</h2>
                 <p>Хотите получать новости и персональные рекомендации по настройке и управлению информацией?</p>
                 <mat-radio-group class="flex-column" formControlName="subscribe">
@@ -104,7 +104,7 @@
     <mat-step>
         <div class="register-new-org-form-step-container">
             <form [formGroup]="activationFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel>Шаг 4<br/>Активация</ng-template>
+                <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_4' | translate"></ng-template>
                 <h2>Завершите настройку и пройдите подтверждение</h2>
                 <p>Чтобы получить доступ, необходимо подтвердить свою регистрацию. Код подтверждения,
                     отправлен на адрес <b>{{selectedEmail}}</b>. Если письма нет во входящих, проверьте папку “Спам”.</p>

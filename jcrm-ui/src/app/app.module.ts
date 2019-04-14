@@ -28,11 +28,23 @@ import {UserService} from './services/user.service';
 import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
 import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
 import {PhoneNumberInput} from './input/phone-number/phone-number-input';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NoAuthHomeService} from './services/no-auth-home.service';
 import {PhoneNumberValidator} from './input/phone-number/phone-number-validator';
 import {CountryInput} from './input/country/country-input';
-import {ErrorService} from "./services/error.service";
+import {ErrorService} from './services/error.service';
+import {registerLocaleData} from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
+import localeEn from '@angular/common/locales/en';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
+registerLocaleData(localeRu);
+registerLocaleData(localeEn);
+
+export function HttpLoaderFactory(http: HttpClient) {
+    return new TranslateHttpLoader(http);
+}
 
 @NgModule({
     declarations: [
@@ -68,6 +80,16 @@ import {ErrorService} from "./services/error.service";
         HttpClientModule,
         MatRadioModule,
         MatSnackBarModule,
+        TranslateModule.forRoot(
+            {
+                useDefaultLang: true,
+                loader: {
+                    provide: TranslateLoader,
+                    useFactory: HttpLoaderFactory,
+                    deps: [HttpClient]
+                }
+            }
+        ),
     ],
     providers: [SideMenuService, UserService, NoAuthHomeService, ErrorService],
     bootstrap: [AppComponent]

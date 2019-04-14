@@ -1,0 +1,8 @@
+{
+  "REGISTER_ORG": {
+    "STEP_1": "Step 1<br/>Organization",
+    "STEP_2": "Step 2<br/>Owner",
+    "STEP_3": "Step 3<br/>Subscription",
+    "STEP_4": "Step 4<br/>Activation"
+  }
+}
