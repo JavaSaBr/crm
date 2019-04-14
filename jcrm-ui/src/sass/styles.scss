@@ -82,3 +82,8 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
 .filed-icon-wrapper {
   padding-bottom: 1.34375em;
 }
+
+.stepper-step-title {
+  text-align: center;
+  font-weight: normal;
+}

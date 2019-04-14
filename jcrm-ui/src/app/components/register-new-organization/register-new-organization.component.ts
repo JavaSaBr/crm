@@ -30,8 +30,9 @@ export class RegisterNewOrganizationComponent {
     public email: FormControl;
     public phoneNumber: FormControl;
 
-    public selectedEmail: string;
+    public selectedEmail;
     public disabled: boolean;
+    public canEditSteps: boolean;
 
     constructor(
         formBuilder: FormBuilder,
@@ -85,18 +86,21 @@ export class RegisterNewOrganizationComponent {
         });
 
         this.ownerFormGroup.controls['email'].valueChanges
-            .subscribe(value => this.selectedEmail = value);
+            .subscribe(value => this.selectedEmail = {value: value});
 
         this.disabled = false;
+        this.selectedEmail = {value: ''};
 
         this.orgName = this.orgFormGroup.controls['orgName'] as FormControl;
         this.country = this.orgFormGroup.controls['country'] as FormControl;
         this.email = this.ownerFormGroup.controls['email'] as FormControl;
         this.phoneNumber = this.ownerFormGroup.controls['phoneNumber'] as FormControl;
+        this.canEditSteps = true;
     }
 
     resetAndClose() {
-        this.selectedEmail = null;
+        this.selectedEmail = {value: ''};
+        this.canEditSteps = true;
         this.orgFormGroup.reset();
         this.ownerFormGroup.reset();
         this.subscribeFormGroup.reset();
@@ -148,6 +152,7 @@ export class RegisterNewOrganizationComponent {
 
     sendEmailConfirmation() {
         this.disabled = true;
+        this.canEditSteps = false;
 
         const email = this.email.value as string;
 
@@ -155,8 +160,6 @@ export class RegisterNewOrganizationComponent {
             .then(value => {
                 if (value != null) {
                     this.errorService.showError(value.errorMessage);
-                } else {
-                    this.resetAndClose();
                 }
                 this.disabled = false;
             })

@@ -1,8 +1,38 @@
 {
+  "FORMS": {
+    "BUTTON": {
+      "BACK": "Back",
+      "NEXT": "Next",
+      "CANCEL": "Cancel",
+      "COMPLETE": "Complete"
+    }
+  },
   "REGISTER_ORG": {
-    "STEP_1": "Step 1<br/>Organization",
-    "STEP_2": "Step 2<br/>Owner",
-    "STEP_3": "Step 3<br/>Subscription",
-    "STEP_4": "Step 4<br/>Activation"
+    "STEP_1": {
+      "HEADER": "Step 1<br/>Organization",
+      "TITLE": "Let's go!",
+      "DESCRIPTION": "Your entire team will get involved from day one with the easiest-to-use CRM on the market. The interface is intuitive and does not require training or a period of implementation and adaptation. The service is free for 14 days. <b>you do not need to Download the software.</b>",
+      "ORG_NAME": {
+        "LABEL": "Organization name"
+      },
+      "COUNTRY": {
+        "LABEL": "Country"
+      }
+    },
+    "STEP_2": {
+      "HEADER": "Step 2<br/>Owner",
+      "TITLE": "Provide your contact information",
+      "DESCRIPTION": "You create a JCRM account, so you will be assigned as an administrator. Later, you can transfer this role to another user."
+    },
+    "STEP_3": {
+      "HEADER": "Step 3<br/>Subscription",
+      "TITLE": "To keep abreast",
+      "DESCRIPTION": "Do you want to receive news and personal recommendations on setting up and managing information?"
+    },
+    "STEP_4": {
+      "HEADER": "Step 4<br/>Activation",
+      "TITLE": "Complete the setup and confirm",
+      "DESCRIPTION": "To gain access, you must confirm your registration. Confirmation code sent to <b>{{value}}</b>. If the email is not in your Inbox, check your Spam folder."
+    }
   }
 }

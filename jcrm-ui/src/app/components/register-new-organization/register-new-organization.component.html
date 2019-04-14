@@ -1,123 +1,125 @@
 <mat-horizontal-stepper [linear]="true" class="register-new-org-component">
-    <mat-step [stepControl]="orgFormGroup">
-        <div class="register-new-org-form-step-container">
-            <form [formGroup]="orgFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_1' | translate"></p></ng-template>
-                <h1>Приступим!</h1>
-                <p>Вся ваша команда включится в работу с первого дня с самой легкой в использовании CRM на рынке.
-                    Интерфейс интуитивно понятен и не требует обучения или периода внедрения и адаптации. В течение
-                    14
-                    дней сервисом можно пользоваться бесплатно. <b>Скачивать программное обеспечение не
-                        требуется.</b>
-                </p>
-                <mat-form-field appearance="outline">
-                    <mat-label>Organization name</mat-label>
-                    <input matInput placeholder="Organization name" formControlName="orgName" required>
-                    <mat-error *ngIf="orgName.invalid">{{getOrgNameErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Country</mat-label>
-                    <country-input formControlName="country" placeholder="Country" required></country-input>
-                    <mat-error *ngIf="country.invalid">{{getCountryErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <div class="flex-row flex-end">
-                    <button mat-button (click)="resetAndClose()" [disabled]="disabled">Отменить</button>
-                    <button mat-button matStepperNext [disabled]="disabled">Далее</button>
-                </div>
-            </form>
+  <mat-step [stepControl]="orgFormGroup" [editable]="canEditSteps">
+    <div class="register-new-org-form-step-container">
+      <form [formGroup]="orgFormGroup" class="flex-column register-new-org-form-step">
+        <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_1.HEADER' | translate"></p></ng-template>
+        <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_1.TITLE' | translate }}</h2>
+        <p [innerHTML]="'REGISTER_ORG.STEP_1.DESCRIPTION' | translate"></p>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'REGISTER_ORG.STEP_1.ORG_NAME.LABEL' | translate }}</mat-label>
+          <input matInput formControlName="orgName" required>
+          <mat-error *ngIf="orgName.invalid">{{getOrgNameErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'REGISTER_ORG.STEP_1.COUNTRY.LABEL' | translate }}</mat-label>
+          <country-input formControlName="country" required></country-input>
+          <mat-error *ngIf="country.invalid">{{getCountryErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <div class="flex-row flex-end">
+          <button mat-button (click)="resetAndClose()"
+                  [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
+          <button mat-raised-button matStepperNext color="primary"
+                  [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}</button>
         </div>
-    </mat-step>
-    <mat-step [stepControl]="ownerFormGroup">
-        <div class="register-new-org-form-step-container">
-            <form [formGroup]="ownerFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_2' | translate"></ng-template>
-                <h2>Предоставьте свою контактную информацию</h2>
-                <p>Вы создаете аккаунт JCRM, поэтому будете назначены администратором.
-                    Позже эту роль можно передать другому пользователю.</p>
-                <div class="flex-row flex-center">
-                    <mat-form-field class="half-field-width" appearance="outline">
-                        <mat-label>First name</mat-label>
-                        <input matInput placeholder="First name" formControlName="firstName">
-                    </mat-form-field>
-                    <span class="row-fields-offset"></span>
-                    <mat-form-field class="half-field-width" appearance="outline">
-                        <mat-label>Second name</mat-label>
-                        <input matInput placeholder="Second name" formControlName="secondName">
-                    </mat-form-field>
-                </div>
-                <mat-form-field appearance="outline">
-                    <mat-label>Email</mat-label>
-                    <input matInput placeholder="Email" formControlName="email" type="email" required>
-                    <mat-hint>Вам нужно будет подтвердить, что это ваш адрес электронной почты.</mat-hint>
-                    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Phone number</mat-label>
-                    <phone-number-input formControlName="phoneNumber" placeholder="Phone number"
-                                        required></phone-number-input>
-                    <mat-error *ngIf="phoneNumber.invalid">{{getPhoneNumberErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <div class="flex-row flex-center">
-                    <mat-form-field class="half-field-width-45" appearance="outline">
-                        <mat-label>Password</mat-label>
-                        <input matInput placeholder="Password" formControlName="password" type="password" required>
-                    </mat-form-field>
-                    <span class="row-fields-offset"></span>
-                    <mat-form-field class="half-field-width-45" appearance="outline">
-                        <mat-label>Password confirm</mat-label>
-                        <input matInput placeholder="Password confirm" formControlName="passwordConfirm" type="password"
-                               required>
-                    </mat-form-field>
-                    <span class="row-fields-offset"></span>
-                    <div class="icon-wrapper filed-icon-wrapper">
-                        <mat-icon matSuffix>visibility_off</mat-icon>
-                    </div>
-                </div>
-                <div class="flex-row">
-                    <button mat-button matStepperPrevious [disabled]="disabled">Назад</button>
-                    <span class="space-filler"></span>
-                    <button mat-button (click)="resetAndClose()" [disabled]="disabled">Отменить</button>
-                    <button mat-button matStepperNext [disabled]="disabled">Далее</button>
-                </div>
-            </form>
+      </form>
+    </div>
+  </mat-step>
+  <mat-step [stepControl]="ownerFormGroup" [editable]="canEditSteps">
+    <div class="register-new-org-form-step-container">
+      <form [formGroup]="ownerFormGroup" class="flex-column register-new-org-form-step">
+        <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_2.HEADER' | translate"></ng-template>
+        <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_2.TITLE' | translate }}</h2>
+        <p [innerHTML]="'REGISTER_ORG.STEP_2.DESCRIPTION' | translate"></p>
+        <div class="flex-row flex-center">
+          <mat-form-field class="half-field-width" appearance="outline">
+            <mat-label>First name</mat-label>
+            <input matInput placeholder="First name" formControlName="firstName">
+          </mat-form-field>
+          <span class="row-fields-offset"></span>
+          <mat-form-field class="half-field-width" appearance="outline">
+            <mat-label>Second name</mat-label>
+            <input matInput placeholder="Second name" formControlName="secondName">
+          </mat-form-field>
         </div>
-    </mat-step>
-    <mat-step>
-        <div class="register-new-org-form-step-container">
-            <form [formGroup]="subscribeFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_3' | translate"></ng-template>
-                <h2>Будьте в курсе</h2>
-                <p>Хотите получать новости и персональные рекомендации по настройке и управлению информацией?</p>
-                <mat-radio-group class="flex-column" formControlName="subscribe">
-                    <mat-radio-button class="radio-button-vertical" value="true">Yes</mat-radio-button>
-                    <mat-radio-button class="radio-button-vertical" value="false">No</mat-radio-button>
-                </mat-radio-group>
-                <div class="flex-row">
-                    <button mat-button matStepperPrevious [disabled]="disabled">Назад</button>
-                    <span class="space-filler"></span>
-                    <button mat-button (click)="resetAndClose()" [disabled]="disabled">Отменить</button>
-                    <button mat-button matStepperNext (click)="sendEmailConfirmation()" [disabled]="disabled">Далее</button>
-                </div>
-            </form>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="Email" formControlName="email" type="email" required>
+          <mat-hint>Вам нужно будет подтвердить, что это ваш адрес электронной почты.</mat-hint>
+          <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Phone number</mat-label>
+          <phone-number-input formControlName="phoneNumber" placeholder="Phone number"
+                              required></phone-number-input>
+          <mat-error *ngIf="phoneNumber.invalid">{{getPhoneNumberErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <div class="flex-row flex-center">
+          <mat-form-field class="half-field-width" appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="Password" formControlName="password" type="password" required>
+          </mat-form-field>
+          <span class="row-fields-offset"></span>
+          <mat-form-field class="half-field-width" appearance="outline">
+            <mat-label>Password confirm</mat-label>
+            <input matInput placeholder="Password confirm" formControlName="passwordConfirm" type="password"
+                   required>
+          </mat-form-field>
+          <span class="row-fields-offset"></span>
+          <div class="icon-wrapper filed-icon-wrapper">
+            <mat-icon matSuffix>visibility_off</mat-icon>
+          </div>
         </div>
-    </mat-step>
-    <mat-step>
-        <div class="register-new-org-form-step-container">
-            <form [formGroup]="activationFormGroup" class="flex-column register-new-org-form-step">
-                <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_4' | translate"></ng-template>
-                <h2>Завершите настройку и пройдите подтверждение</h2>
-                <p>Чтобы получить доступ, необходимо подтвердить свою регистрацию. Код подтверждения,
-                    отправлен на адрес <b>{{selectedEmail}}</b>. Если письма нет во входящих, проверьте папку “Спам”.</p>
-                <mat-form-field appearance="outline">
-                    <mat-label>Activation code</mat-label>
-                    <input matInput placeholder="Activation code" formControlName="activationCode" required>
-                </mat-form-field>
-                <div class="flex-row">
-                    <button mat-button matStepperPrevious [disabled]="disabled">Назад</button>
-                    <span class="space-filler"></span>
-                    <button mat-button (click)="activateAndClose()" [disabled]="disabled">Готово</button>
-                </div>
-            </form>
+        <div class="flex-row">
+          <button mat-button matStepperPrevious [disabled]="disabled">{{ 'FORMS.BUTTON.BACK' | translate }}</button>
+          <span class="space-filler"></span>
+          <button mat-button (click)="resetAndClose()"
+                  [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
+          <button mat-raised-button matStepperNext color="primary"
+                  [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}</button>
         </div>
-    </mat-step>
+      </form>
+    </div>
+  </mat-step>
+  <mat-step [stepControl]="subscribeFormGroup" [editable]="canEditSteps">
+    <div class="register-new-org-form-step-container">
+      <form [formGroup]="subscribeFormGroup" class="flex-column register-new-org-form-step">
+        <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_3.HEADER' | translate"></ng-template>
+        <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_3.TITLE' | translate }}</h2>
+        <p [innerHTML]="'REGISTER_ORG.STEP_3.DESCRIPTION' | translate"></p>
+        <mat-radio-group class="flex-column" formControlName="subscribe">
+          <mat-radio-button class="radio-button-vertical" value="true">Yes</mat-radio-button>
+          <mat-radio-button class="radio-button-vertical" value="false">No</mat-radio-button>
+        </mat-radio-group>
+        <div class="flex-row">
+          <button mat-button matStepperPrevious [disabled]="disabled">{{ 'FORMS.BUTTON.BACK' | translate }}</button>
+          <span class="space-filler"></span>
+          <button mat-button (click)="resetAndClose()"
+                  [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
+          <button mat-raised-button matStepperNext color="primary" (click)="sendEmailConfirmation()"
+                  [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </mat-step>
+  <mat-step [stepControl]="activationFormGroup" [editable]="canEditSteps">
+    <div class="register-new-org-form-step-container">
+      <form [formGroup]="activationFormGroup" class="flex-column register-new-org-form-step">
+        <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_4.HEADER' | translate"></ng-template>
+        <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_4.TITLE' | translate }}</h2>
+        <p [innerHTML]="'REGISTER_ORG.STEP_4.DESCRIPTION' | translate:selectedEmail"></p>
+        <mat-form-field appearance="outline">
+          <mat-label>Activation code</mat-label>
+          <input matInput placeholder="Activation code" formControlName="activationCode" required>
+        </mat-form-field>
+        <div class="flex-row">
+          <span class="space-filler"></span>
+          <button mat-button (click)="resetAndClose()"
+                  [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
+          <button mat-raised-button color="primary" (click)="activateAndClose()"
+                  [disabled]="disabled">{{ 'FORMS.BUTTON.COMPLETE' | translate }}</button>
+        </div>
+      </form>
+    </div>
+  </mat-step>
 </mat-horizontal-stepper>
