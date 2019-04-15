@@ -1,10 +1,54 @@
 {
+  "SERVER": {
+    "ERROR":{
+      "1000": "Unknown country",
+      "1001": "Organization is already exist",
+      "1002": "Invalid organization name",
+      "1003": "Invalid email",
+      "1004": "Email is already exist",
+      "1005": "Invalid password",
+      "1006": "Invalid phone number",
+      "1007": "Invalid name",
+      "1008": "Invalid activation code"
+    }
+  },
   "FORMS": {
     "BUTTON": {
       "BACK": "Back",
       "NEXT": "Next",
       "CANCEL": "Cancel",
-      "COMPLETE": "Complete"
+      "COMPLETE": "Complete",
+      "YES": "Yes",
+      "NO": "No"
+    },
+    "ERROR": {
+      "ORG": {
+        "NAME": {
+          "REQUIRED": "You must enter an organization name",
+          "TOO_SHORT": "Organization name is too short",
+          "TOO_LONG": "Organization name is too long",
+          "ALREADY_EXIST": "The organization is already exist"
+        }
+      },
+      "COUNTRY": {
+        "REQUIRED": "You must select a country"
+      },
+      "USER": {
+        "EMAIL": {
+          "REQUIRED": "You must enter an email",
+          "INVALID": "Email is invalid",
+          "TOO_SHORT": "Email is too short",
+          "TOO_LONG": "Email is too long",
+          "ALREADY_EXIST": "Email is already exist"
+        }
+      },
+      "PHONE_NUMBER": {
+        "REQUIRED": "You must enter a phone number",
+        "INVALID": "Phone number is invalid",
+        "TOO_SHORT": "Phone number is too short",
+        "TOO_LONG": "Phone number is too long",
+        "NO_COUNTRY": "You must select a country code"
+      }
     }
   },
   "REGISTER_ORG": {
@@ -22,7 +66,26 @@
     "STEP_2": {
       "HEADER": "Step 2<br/>Owner",
       "TITLE": "Provide your contact information",
-      "DESCRIPTION": "You create a JCRM account, so you will be assigned as an administrator. Later, you can transfer this role to another user."
+      "DESCRIPTION": "You create a JCRM account, so you will be assigned as an administrator. Later, you can transfer this role to another user.",
+      "FIRST_NAME": {
+        "LABEL": "First name"
+      },
+      "SECOND_NAME": {
+        "LABEL": "Second name"
+      },
+      "EMAIL": {
+        "LABEL": "Email",
+        "HINT": "You will need to confirm that this is your email address."
+      },
+      "PHONE_NUMBER": {
+        "LABEL": "Phone number"
+      },
+      "PASSWORD": {
+        "LABEL": "Password"
+      },
+      "PASSWORD_CONFIRM": {
+        "LABEL": "Password confirm"
+      }
     },
     "STEP_3": {
       "HEADER": "Step 3<br/>Subscription",
@@ -32,7 +95,10 @@
     "STEP_4": {
       "HEADER": "Step 4<br/>Activation",
       "TITLE": "Complete the setup and confirm",
-      "DESCRIPTION": "To gain access, you must confirm your registration. Confirmation code sent to <b>{{value}}</b>. If the email is not in your Inbox, check your Spam folder."
+      "DESCRIPTION": "To gain access, you must confirm your registration. Confirmation code sent to <b>{{value}}</b>. If the email is not in your Inbox, check your Spam folder.",
+      "ACTIVATE_CODE": {
+        "LABEL": "Activation code"
+      }
     }
   }
 }

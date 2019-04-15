@@ -1,18 +1,29 @@
-import {Directive} from '@angular/core';
-import {AbstractControl, FormControl, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
+import {AbstractControl, FormControl, ValidationErrors, Validator} from '@angular/forms';
 import {PhoneNumber} from './phone-number';
 import {Utils} from '../../utils/utils';
 import {environment} from "../../../environments/environment";
+import {TranslateService} from '@ngx-translate/core';
 
-@Directive({
-    selector: 'phoneNumber',
-    providers: [
-        {provide: NG_VALIDATORS, useExisting: PhoneNumberValidator, multi: true}
-    ]
-})
 export class PhoneNumberValidator implements Validator {
 
     public static readonly instance = new PhoneNumberValidator();
+
+    static getErrorDescription(control: FormControl, translateService: TranslateService): string | null {
+
+        if (control.hasError('required')) {
+            return translateService.instant('FORMS.ERROR.PHONE_NUMBER.REQUIRED');
+        } else if (PhoneNumberValidator.isNoCountry(control)) {
+            return translateService.instant('FORMS.ERROR.PHONE_NUMBER.NO_COUNTRY');
+        } else if (PhoneNumberValidator.isInvalidPhoneNumber(control)) {
+            return translateService.instant('FORMS.ERROR.PHONE_NUMBER.INVALID');
+        } else if (PhoneNumberValidator.isTooShort(control)) {
+            return translateService.instant('FORMS.ERROR.PHONE_NUMBER.TOO_SHORT');
+        } else if (PhoneNumberValidator.isTooLong(control)) {
+            return translateService.instant('FORMS.ERROR.PHONE_NUMBER.TOO_LONG');
+        }
+
+        return null;
+    }
 
     static isTooShort(control: FormControl) {
         return control.hasError('tooShort')

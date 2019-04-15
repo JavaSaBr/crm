@@ -26,6 +26,6 @@ public interface RegistrationErrors {
     int INVALID_OTHER_NAME = 1007;
     String INVALID_OTHER_NAME_MESSAGE = "Invalid name";
 
-    int INVALID_ACTIVATION_CODE = 1007;
+    int INVALID_ACTIVATION_CODE = 1008;
     String INVALID_ACTIVATION_CODE_MESSAGE = "Invalid activation code";
 }

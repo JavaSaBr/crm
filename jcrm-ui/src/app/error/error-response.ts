@@ -1,25 +1,24 @@
 import {HttpErrorResponse} from "@angular/common/http";
+import {TranslateService} from '@ngx-translate/core';
 
 export class ErrorResponse {
 
-    public static convertToErrorCodeOrNull(resp: HttpErrorResponse): number | null {
+    public static convertToErrorOrNull(resp: HttpErrorResponse, translateService: TranslateService): ErrorResponse | null {
         if (resp.ok) {
             return null;
         } else if (resp.status == 400) {
-            const json = resp.error as ErrorResponse;
-            return json.errorCode;
-        } else {
-            throw new Error(resp.message);
-        }
-    }
 
-    public static convertToErrorOrNull(resp: HttpErrorResponse): ErrorResponse | null {
-        if (resp.ok) {
-            return null;
-        } else if (resp.status == 400) {
-            return resp.error as ErrorResponse;
+            let error = resp.error as ErrorResponse;
+            let errorMessage = translateService.instant('SERVER.ERROR.' + error.errorCode) as string;
+
+            if (!errorMessage.startsWith('SERVER.ERROR')) {
+                return new ErrorResponse(error.errorCode, errorMessage);
+            }
+
+            return error;
+
         } else {
-            throw new ErrorResponse(resp.status, resp.statusText);
+            return new ErrorResponse(resp.status, resp.statusText);
         }
     }
 

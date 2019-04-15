@@ -4,13 +4,17 @@ import {environment} from '../../environments/environment';
 import {PhoneNumber} from '../input/phone-number/phone-number';
 import {Country} from '../entity/country';
 import {ErrorResponse} from '../error/error-response';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RegistrationService {
 
-    constructor(private securityService: SecurityService) {
+    constructor(
+        private securityService: SecurityService,
+        private translateService: TranslateService
+    ) {
     }
 
     register(
@@ -37,14 +41,14 @@ export class RegistrationService {
                 subscribe: subscribe
             })
             .then(() => null)
-            .catch(resp => ErrorResponse.convertToErrorOrNull(resp));
+            .catch(resp => ErrorResponse.convertToErrorOrNull(resp, this.translateService));
     }
 
     confirmEmail(email: string): Promise<ErrorResponse | null> {
 
         return this.securityService.getRequest(environment.registrationUrl + '/email/confirmation/' + email)
             .then(() => null)
-            .catch(resp => ErrorResponse.convertToErrorOrNull(resp));
+            .catch(resp => ErrorResponse.convertToErrorOrNull(resp, this.translateService));
     }
 
     orgExistByName(orgName: string): Promise<boolean> {

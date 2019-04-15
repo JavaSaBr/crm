@@ -12,6 +12,7 @@ import {OrganizationValidator} from '../../utils/validator/organization-validato
 import {OtherUserNameValidator} from "../../utils/validator/other-user-name-validator";
 import {UserValidator} from "../../utils/validator/user-validator";
 import {ErrorService} from "../../services/error.service";
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -39,7 +40,8 @@ export class RegisterNewOrganizationComponent {
         private readonly countryRepository: CountryRepository,
         private readonly noAuthHomeService: NoAuthHomeService,
         private readonly registrationService: RegistrationService,
-        private readonly errorService: ErrorService
+        private readonly errorService: ErrorService,
+        private readonly translateService: TranslateService
     ) {
         this.orgFormGroup = formBuilder.group({
             orgName: ['', [
@@ -61,7 +63,7 @@ export class RegisterNewOrganizationComponent {
             ]],
             email: ['', [
                 Validators.required,
-                Validators.pattern('^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$')
+                Validators.pattern(UserValidator.EMAIL_PATTERN)
             ], [
                 new UserValidator(registrationService)
             ]],
@@ -166,55 +168,18 @@ export class RegisterNewOrganizationComponent {
     }
 
     getOrgNameErrorMessage() {
-
-        if (this.orgName.hasError('required')) {
-            return 'You must enter an organization name'
-        } else if (OrganizationValidator.isTooShort(this.orgName)) {
-            return 'Organization name is too short'
-        } else if (OrganizationValidator.isTooLong(this.orgName)) {
-            return 'Organization name is too long'
-        } else if (OrganizationValidator.isAlreadyExist(this.orgName)) {
-            return 'Organization is already exist'
-        }
-
-        return null
+        return OrganizationValidator.getNameErrorDescription(this.orgName, this.translateService);
     }
 
     getCountryErrorMessage() {
-        return this.country.hasError('required') ? 'You must select a country' : null;
+        return CountryValidator.getErrorDescription(this.country, this.translateService);
     }
 
     getEmailErrorMessage() {
-
-        if (this.email.hasError('required')) {
-            return 'You must enter an email'
-        } if (this.email.hasError('pattern')) {
-            return 'Email is invalid'
-        } else if (UserValidator.isTooShort(this.email)) {
-            return 'Email is too short'
-        } else if (UserValidator.isTooLong(this.email)) {
-            return 'Email is too long'
-        } else if (UserValidator.isAlreadyExist(this.email)) {
-            return 'Email is already exist'
-        }
-
-        return null
+        return UserValidator.getEmailErrorDescription(this.email, this.translateService);
     }
 
     getPhoneNumberErrorMessage() {
-
-        if (this.phoneNumber.hasError('required')) {
-            return 'You must enter a phone number'
-        } else if (PhoneNumberValidator.isTooShort(this.phoneNumber)) {
-            return 'Phone number is too short'
-        } else if (PhoneNumberValidator.isTooLong(this.phoneNumber)) {
-            return 'Phone number is too long'
-        } else if (PhoneNumberValidator.isNoCountry(this.phoneNumber)) {
-            return 'You must select a country code'
-        } else if (PhoneNumberValidator.isInvalidPhoneNumber(this.phoneNumber)) {
-            return 'Phone number is invalid'
-        }
-
-        return null
+        return PhoneNumberValidator.getErrorDescription(this.phoneNumber, this.translateService);
     }
 }

@@ -32,37 +32,35 @@
         <p [innerHTML]="'REGISTER_ORG.STEP_2.DESCRIPTION' | translate"></p>
         <div class="flex-row flex-center">
           <mat-form-field class="half-field-width" appearance="outline">
-            <mat-label>First name</mat-label>
-            <input matInput placeholder="First name" formControlName="firstName">
+            <mat-label>{{ 'REGISTER_ORG.STEP_2.FIRST_NAME.LABEL' | translate }}</mat-label>
+            <input matInput formControlName="firstName">
           </mat-form-field>
           <span class="row-fields-offset"></span>
           <mat-form-field class="half-field-width" appearance="outline">
-            <mat-label>Second name</mat-label>
-            <input matInput placeholder="Second name" formControlName="secondName">
+            <mat-label>{{ 'REGISTER_ORG.STEP_2.SECOND_NAME.LABEL' | translate }}</mat-label>
+            <input matInput formControlName="secondName">
           </mat-form-field>
         </div>
         <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput placeholder="Email" formControlName="email" type="email" required>
-          <mat-hint>Вам нужно будет подтвердить, что это ваш адрес электронной почты.</mat-hint>
+          <mat-label>{{ 'REGISTER_ORG.STEP_2.EMAIL.LABEL' | translate }}</mat-label>
+          <input matInput formControlName="email" type="email" required>
+          <mat-hint>{{ 'REGISTER_ORG.STEP_2.EMAIL.HINT' | translate }}</mat-hint>
           <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Phone number</mat-label>
-          <phone-number-input formControlName="phoneNumber" placeholder="Phone number"
-                              required></phone-number-input>
+          <mat-label>{{ 'REGISTER_ORG.STEP_2.PHONE_NUMBER.LABEL' | translate }}</mat-label>
+          <phone-number-input formControlName="phoneNumber" required></phone-number-input>
           <mat-error *ngIf="phoneNumber.invalid">{{getPhoneNumberErrorMessage()}}</mat-error>
         </mat-form-field>
         <div class="flex-row flex-center">
           <mat-form-field class="half-field-width" appearance="outline">
-            <mat-label>Password</mat-label>
-            <input matInput placeholder="Password" formControlName="password" type="password" required>
+            <mat-label>{{ 'REGISTER_ORG.STEP_2.PASSWORD.LABEL' | translate }}</mat-label>
+            <input matInput formControlName="password" type="password" required>
           </mat-form-field>
           <span class="row-fields-offset"></span>
           <mat-form-field class="half-field-width" appearance="outline">
-            <mat-label>Password confirm</mat-label>
-            <input matInput placeholder="Password confirm" formControlName="passwordConfirm" type="password"
-                   required>
+            <mat-label>{{ 'REGISTER_ORG.STEP_2.PASSWORD_CONFIRM.LABEL' | translate }}</mat-label>
+            <input matInput formControlName="passwordConfirm" type="password" required>
           </mat-form-field>
           <span class="row-fields-offset"></span>
           <div class="icon-wrapper filed-icon-wrapper">
@@ -87,8 +85,10 @@
         <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_3.TITLE' | translate }}</h2>
         <p [innerHTML]="'REGISTER_ORG.STEP_3.DESCRIPTION' | translate"></p>
         <mat-radio-group class="flex-column" formControlName="subscribe">
-          <mat-radio-button class="radio-button-vertical" value="true">Yes</mat-radio-button>
-          <mat-radio-button class="radio-button-vertical" value="false">No</mat-radio-button>
+          <mat-radio-button class="radio-button-vertical"
+                            value="true">{{ 'FORMS.BUTTON.YES' | translate }}</mat-radio-button>
+          <mat-radio-button class="radio-button-vertical"
+                            value="false">{{ 'FORMS.BUTTON.NO' | translate }}</mat-radio-button>
         </mat-radio-group>
         <div class="flex-row">
           <button mat-button matStepperPrevious [disabled]="disabled">{{ 'FORMS.BUTTON.BACK' | translate }}</button>
@@ -109,8 +109,8 @@
         <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_4.TITLE' | translate }}</h2>
         <p [innerHTML]="'REGISTER_ORG.STEP_4.DESCRIPTION' | translate:selectedEmail"></p>
         <mat-form-field appearance="outline">
-          <mat-label>Activation code</mat-label>
-          <input matInput placeholder="Activation code" formControlName="activationCode" required>
+          <mat-label>{{ 'REGISTER_ORG.STEP_4.ACTIVATE_CODE.LABEL' | translate }}</mat-label>
+          <input matInput formControlName="activationCode" required>
         </mat-form-field>
         <div class="flex-row">
           <span class="space-filler"></span>

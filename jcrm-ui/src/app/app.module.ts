@@ -56,7 +56,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         RegisterNewOrganizationComponent,
         PhoneNumberInput,
         CountryInput,
-        PhoneNumberValidator
     ],
     imports: [
         BrowserModule,
