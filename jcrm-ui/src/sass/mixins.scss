@@ -1,6 +1,6 @@
 @import "../app/components/nav-bar/nav-bar.component";
 @import "../app/components/side-nav/side-nav.component";
-@import "../app/pages/no-auth-home/no-auth-home.component";
+@import "../app/components/no-auth-home/no-auth-home.component";
 @import "../app/app.component";
 
 @mixin custom-components-theme($theme) {

@@ -1,10 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {HomeComponent} from './pages/home/home.component';
+import {NoAuthHomeComponent} from './components/no-auth-home/no-auth-home.component';
+import {HomeComponent} from './components/home/home.component';
 
 const routes: Routes = [
-    {path: '', redirectTo: '/home', pathMatch: 'full'},
-    {path: 'home', component: HomeComponent},
+    {path: '', component: HomeComponent},
+    {path: 'no-auth', component: NoAuthHomeComponent},
 ];
 
 @NgModule({
@@ -12,4 +13,5 @@ const routes: Routes = [
     exports: [RouterModule]
 })
 export class AppRoutingModule {
+
 }

@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {CountryRepository} from '../../repositories/country/country.repository';
 import {NoAuthHomeService} from '../../services/no-auth-home.service';
 import {PhoneNumberValidator} from '../../input/phone-number/phone-number-validator';
 import {PasswordValidator} from '../../utils/validator/password-validator';
@@ -15,6 +14,7 @@ import {ErrorService} from "../../services/error.service";
 import {TranslateService} from '@ngx-translate/core';
 import {ErrorResponse} from '../../error/error-response';
 import {UserService} from '../../services/user.service';
+import {CountryRepository} from '../../repositories/country/country.repository';
 
 @Component({
     selector: 'app-register-new-organization',

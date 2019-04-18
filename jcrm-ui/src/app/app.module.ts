@@ -14,23 +14,22 @@ import {
     MatIconModule,
     MatInputModule,
     MatListModule,
-    MatMenuModule, MatRadioModule,
+    MatMenuModule,
+    MatRadioModule,
     MatSelectModule,
-    MatSidenavModule, MatSnackBarModule,
+    MatSidenavModule,
+    MatSnackBarModule,
     MatStepperModule,
     MatToolbarModule
 } from '@angular/material';
 import {SideNavComponent} from './components/side-nav/side-nav.component';
-import {HomeComponent} from './pages/home/home.component';
+import {HomeComponent} from './components/home/home.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SideMenuService} from './services/side-menu.service';
 import {UserService} from './services/user.service';
-import {NoAuthHomeComponent} from './pages/no-auth-home/no-auth-home.component';
-import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
 import {PhoneNumberInput} from './input/phone-number/phone-number-input';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NoAuthHomeService} from './services/no-auth-home.service';
-import {PhoneNumberValidator} from './input/phone-number/phone-number-validator';
 import {CountryInput} from './input/country/country-input';
 import {ErrorService} from './services/error.service';
 import {registerLocaleData} from '@angular/common';
@@ -38,6 +37,8 @@ import localeRu from '@angular/common/locales/ru';
 import localeEn from '@angular/common/locales/en';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
+import {NoAuthHomeComponent} from './components/no-auth-home/no-auth-home.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -52,10 +53,10 @@ export function HttpLoaderFactory(http: HttpClient) {
         NavBarComponent,
         SideNavComponent,
         HomeComponent,
-        NoAuthHomeComponent,
-        RegisterNewOrganizationComponent,
         PhoneNumberInput,
         CountryInput,
+        RegisterNewOrganizationComponent,
+        NoAuthHomeComponent
     ],
     imports: [
         BrowserModule,
