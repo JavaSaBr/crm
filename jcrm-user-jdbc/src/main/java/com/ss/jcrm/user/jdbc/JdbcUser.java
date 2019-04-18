@@ -1,5 +1,6 @@
 package com.ss.jcrm.user.jdbc;
 
+import com.jsoniter.annotation.JsonIgnore;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;

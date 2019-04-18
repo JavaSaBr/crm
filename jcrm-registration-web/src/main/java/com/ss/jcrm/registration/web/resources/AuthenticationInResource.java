@@ -10,7 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationResponse implements RestResource {
+public class AuthenticationInResource implements RestResource {
 
-    private String token;
+    private String name;
+    private String password;
 }

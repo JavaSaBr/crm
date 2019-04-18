@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {UserService} from './services/user.service';
 import {TranslateService} from '@ngx-translate/core';
+import {SecurityService} from './services/security.service';
 
 @Component({
     selector: 'app-root',
@@ -9,18 +10,20 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class AppComponent {
 
+    authenticated: boolean;
+
     constructor(
-        private userService: UserService,
-        private translate: TranslateService
+        private readonly userService: UserService,
+        private readonly securityService: SecurityService,
+        private readonly translateService: TranslateService
     ) {
-        translate.addLangs(['en', 'ru']);
-        translate.setDefaultLang('en');
+        translateService.addLangs(['en', 'ru']);
+        translateService.setDefaultLang('en');
 
-        const browserLang = translate.getBrowserLang();
-        translate.use(browserLang.match(/en|ru/) ? browserLang : 'en');
-    }
+        const browserLang = translateService.getBrowserLang();
+        translateService.use(browserLang.match(/en|ru/) ? browserLang : 'en');
 
-    isAuthenticated() {
-        return this.userService.isAuthenticated();
+        securityService.authenticated
+            .subscribe(value => this.authenticated = value);
     }
 }

@@ -1,7 +1,8 @@
 package com.ss.jcrm.registration.web.controller;
 
-import com.ss.jcrm.registration.web.resources.AuthenticationRequest;
-import com.ss.jcrm.registration.web.resources.AuthenticationResponse;
+import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
+import com.ss.jcrm.registration.web.resources.AuthenticationOutResource;
+import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.user.api.dao.UserDao;
@@ -43,8 +44,8 @@ public class AuthenticationController extends AsyncRestController {
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    @NotNull CompletableFuture<@NotNull AuthenticationResponse> authenticate(
-        @NotNull @RequestBody AuthenticationRequest resource
+    @NotNull CompletableFuture<@NotNull AuthenticationOutResource> authenticate(
+        @NotNull @RequestBody AuthenticationInResource resource
     ) {
 
         var name = resource.getName();
@@ -63,7 +64,10 @@ public class AuthenticationController extends AsyncRestController {
                     throw new BadRequestWebException("The name or password isn't correct.");
                 }
 
-                return new AuthenticationResponse(tokenService.generateNewToken(user));
+                return new AuthenticationOutResource(
+                    new UserOutResource(user),
+                    tokenService.generateNewToken(user)
+                );
 
             }, controllerExecutor);
     }

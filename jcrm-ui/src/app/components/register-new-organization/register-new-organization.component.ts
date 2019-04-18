@@ -13,6 +13,8 @@ import {OtherUserNameValidator} from "../../utils/validator/other-user-name-vali
 import {UserValidator} from "../../utils/validator/user-validator";
 import {ErrorService} from "../../services/error.service";
 import {TranslateService} from '@ngx-translate/core';
+import {ErrorResponse} from '../../error/error-response';
+import {UserService} from '../../services/user.service';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -41,7 +43,8 @@ export class RegisterNewOrganizationComponent {
         private readonly noAuthHomeService: NoAuthHomeService,
         private readonly registrationService: RegistrationService,
         private readonly errorService: ErrorService,
-        private readonly translateService: TranslateService
+        private readonly translateService: TranslateService,
+        private readonly userService: UserService
     ) {
         this.orgFormGroup = formBuilder.group({
             orgName: ['', [
@@ -143,11 +146,13 @@ export class RegisterNewOrganizationComponent {
                 subscribe
             )
             .then(value => {
-                if (value != null) {
-                    this.errorService.showError(value.errorMessage);
-                } else {
-                    this.resetAndClose();
-                }
+                this.userService.authenticate(value.user, value.token);
+                this.disabled = false;
+                this.resetAndClose();
+            })
+            .catch(reason => {
+                let error = reason as ErrorResponse;
+                this.errorService.showError(error.errorMessage);
                 this.disabled = false;
             })
     }

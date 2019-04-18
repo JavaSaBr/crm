@@ -2,16 +2,16 @@ package com.ss.jcrm.registration.web.controller;
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
 import static com.ss.jcrm.web.exception.ExceptionUtils.webException;
-import static org.springframework.http.ResponseEntity.*;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
-import com.ss.jcrm.mail.service.MailService;
+import com.ss.jcrm.registration.web.resources.AuthenticationOutResource;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
+import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.service.PasswordService;
-import com.ss.jcrm.spring.base.template.TemplateRegistry;
+import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
@@ -42,6 +42,7 @@ public class OrganizationController {
     private final PasswordService passwordService;
     private final ResourceValidator resourceValidator;
     private final EmailConfirmationDao emailConfirmationDao;
+    private final TokenService tokenService;
 
     @PostMapping(
         path = "/registration/register/organization",
@@ -71,7 +72,7 @@ public class OrganizationController {
             });
     }
 
-    private CompletionStage<ResponseEntity<?>> createOrganization(
+    private @NotNull CompletionStage<ResponseEntity<?>> createOrganization(
         @NotNull OrganizationRegisterInResource resource,
         @NotNull Country country
     ) {
@@ -104,7 +105,11 @@ public class OrganizationController {
                     EMAIL_ALREADY_EXIST_MESSAGE
                 );
             })
-            .thenApply(user -> status(HttpStatus.CREATED).build());
+            .thenApply(user -> {
+                var token = tokenService.generateNewToken(user);
+                var outResource = new AuthenticationOutResource(new UserOutResource(user), token);
+                return new ResponseEntity<>(outResource, HttpStatus.CREATED);
+            });
     }
 
     private @NotNull CompletableFuture<@NotNull User> createOrgAdmin(

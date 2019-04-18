@@ -5,6 +5,9 @@ import {PhoneNumber} from '../input/phone-number/phone-number';
 import {Country} from '../entity/country';
 import {ErrorResponse} from '../error/error-response';
 import {TranslateService} from '@ngx-translate/core';
+import {OrganizationRegisterOutResource} from '../resources/organization-register-out-resource';
+import {Body} from '@angular/http/src/body';
+import {AuthenticationInResource} from '../resources/authentication-in-resource';
 
 @Injectable({
     providedIn: 'root'
@@ -27,21 +30,25 @@ export class RegistrationService {
         password: string,
         phoneNumber: PhoneNumber,
         subscribe: boolean
-    ): Promise<ErrorResponse | null> {
+    ): Promise<AuthenticationInResource> {
 
-        return this.securityService.postRequest(environment.registrationUrl + '/register/organization', {
-                orgName: orgName,
-                countryId: country.id,
-                firstName: firstName,
-                secondName: secondName,
-                email: email,
-                activationCode: activationCode,
-                password: password,
-                phoneNumber: phoneNumber.country.phoneCode + phoneNumber.phoneNumber,
-                subscribe: subscribe
-            })
-            .then(() => null)
-            .catch(resp => ErrorResponse.convertToErrorOrNull(resp, this.translateService));
+        let body = new OrganizationRegisterOutResource(
+            orgName,
+            email,
+            activationCode,
+            password,
+            firstName,
+            secondName,
+            phoneNumber.country.phoneCode + phoneNumber.phoneNumber,
+            subscribe,
+            country.id
+        );
+
+        return new Promise<AuthenticationInResource>((resolve, reject) => {
+            this.securityService.postRequest<AuthenticationInResource>(environment.registrationUrl + '/register/organization', body)
+                .then(resp => resolve(resp.body))
+                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
+        });
     }
 
     confirmEmail(email: string): Promise<ErrorResponse | null> {
@@ -52,13 +59,13 @@ export class RegistrationService {
     }
 
     orgExistByName(orgName: string): Promise<boolean> {
-        return this.securityService.getRequest(environment.registrationUrl + '/exist/organization/name/' + orgName)
+        return this.securityService.getRequest<{}>(environment.registrationUrl + '/exist/organization/name/' + orgName)
             .then(value => value.ok)
             .catch(() => false);
     }
 
     userExistByName(name: string): Promise<boolean> {
-        return this.securityService.getRequest(environment.registrationUrl + '/exist/user/name/' + name)
+        return this.securityService.getRequest<{}>(environment.registrationUrl + '/exist/user/name/' + name)
             .then(value => value.ok)
             .catch(() => false);
     }

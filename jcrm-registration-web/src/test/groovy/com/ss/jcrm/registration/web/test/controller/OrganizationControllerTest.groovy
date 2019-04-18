@@ -3,15 +3,18 @@ package com.ss.jcrm.registration.web.test.controller
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao
+import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
 
-class OrganizationControllerTest extends RegistrationSpecification {
+import static org.hamcrest.Matchers.is;
 
+class OrganizationControllerTest extends RegistrationSpecification {
+    
     @Autowired
     EmailConfirmationDao emailConfirmationDao
     
     def "should found that an organization is exist"() {
-
+        
         given:
             def organization = userTestHelper.newOrg()
         when:
@@ -21,9 +24,9 @@ class OrganizationControllerTest extends RegistrationSpecification {
         then:
             response.expectStatus().isOk()
     }
-
+    
     def "should found that an organization is not exist"() {
-
+        
         when:
             def response = client.get()
                 .url("/registration/exist/organization/name/nonexist")
@@ -33,7 +36,7 @@ class OrganizationControllerTest extends RegistrationSpecification {
     }
     
     def "should register a new organization"() {
-    
+        
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
@@ -51,5 +54,11 @@ class OrganizationControllerTest extends RegistrationSpecification {
                 .exchange()
         then:
             response.expectStatus().isCreated()
+                .expectBody()
+                .jsonPath('$.token').isNotEmpty()
+                .jsonPath('$.user').isNotEmpty()
+                .jsonPath('$.user.id').isNotEmpty()
+                .jsonPath('$.user.name').value(is(confirmation.email))
+                .jsonPath('$.user.phoneNumber').value(is(request.phoneNumber))
     }
 }
