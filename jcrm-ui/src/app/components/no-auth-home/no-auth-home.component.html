@@ -1,10 +1,10 @@
-<div class="mat-elevation-z4" *ngIf="!noAuthHomeService.hasSubPage()">
+<div class="mat-elevation-z4" *ngIf="!activatedSubPages">
   <mat-toolbar>
     <mat-toolbar-row class="top-toolbar">
       <span class="space-filler"></span>
       <div class="top-buttons-container">
         <button mat-stroked-button color="primary">СВЯЗАТЬСЯ С ОТДЕЛОМ ПРОДАЖ</button>
-        <button mat-raised-button color="primary" (click)="noAuthHomeService.activateSubPage('registration')">
+        <button mat-raised-button color="primary" routerLink="./register">
           НАЧАТЬ ЗДЕСЬ
         </button>
       </div>
@@ -30,7 +30,7 @@
   </mat-toolbar>
 </div>
 
-<div class="flex-column" *ngIf="!noAuthHomeService.hasSubPage()">
+<div class="flex-column" *ngIf="!activatedSubPages">
   <div class="flex-row">
     <div class="big-cell flex-50">Не теряйте клиентов</div>
     <div class="big-cell flex-50"></div>
@@ -46,7 +46,7 @@
   </div>
 </div>
 
-<div class="flex-column">
+<div *ngIf="activatedSubPages" class="flex-column">
   <div class="flex-row flex-center">
     <router-outlet></router-outlet>
   </div>

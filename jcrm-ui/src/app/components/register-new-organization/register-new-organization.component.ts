@@ -8,9 +8,9 @@ import {CountryValidator} from '../../input/country/country-validator';
 import {Country} from '../../entity/country';
 import {PhoneNumber} from '../../input/phone-number/phone-number';
 import {OrganizationValidator} from '../../utils/validator/organization-validator';
-import {OtherUserNameValidator} from "../../utils/validator/other-user-name-validator";
-import {UserValidator} from "../../utils/validator/user-validator";
-import {ErrorService} from "../../services/error.service";
+import {OtherUserNameValidator} from '../../utils/validator/other-user-name-validator';
+import {UserValidator} from '../../utils/validator/user-validator';
+import {ErrorService} from '../../services/error.service';
 import {TranslateService} from '@ngx-translate/core';
 import {ErrorResponse} from '../../error/error-response';
 import {UserService} from '../../services/user.service';
@@ -19,7 +19,8 @@ import {CountryRepository} from '../../repositories/country/country.repository';
 @Component({
     selector: 'app-register-new-organization',
     templateUrl: './register-new-organization.component.html',
-    styleUrls: ['./register-new-organization.component.scss']
+    styleUrls: ['./register-new-organization.component.scss'],
+    host: {'class': 'full-screen-form'}
 })
 export class RegisterNewOrganizationComponent {
 
@@ -135,16 +136,16 @@ export class RegisterNewOrganizationComponent {
         const activationCode = controls['activationCode'].value as string;
 
         this.registrationService.register(
-                orgName,
-                country,
-                firstName,
-                secondName,
-                email,
-                activationCode,
-                password,
-                phoneNumber,
-                subscribe
-            )
+            orgName,
+            country,
+            firstName,
+            secondName,
+            email,
+            activationCode,
+            password,
+            phoneNumber,
+            subscribe
+        )
             .then(value => {
                 this.userService.authenticate(value.user, value.token);
                 this.disabled = false;
@@ -154,7 +155,7 @@ export class RegisterNewOrganizationComponent {
                 let error = reason as ErrorResponse;
                 this.errorService.showError(error.errorMessage);
                 this.disabled = false;
-            })
+            });
     }
 
     sendEmailConfirmation() {
@@ -169,7 +170,7 @@ export class RegisterNewOrganizationComponent {
                     this.errorService.showError(value.errorMessage);
                 }
                 this.disabled = false;
-            })
+            });
     }
 
     getOrgNameErrorMessage() {
