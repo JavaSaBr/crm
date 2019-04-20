@@ -3,6 +3,7 @@ package com.ss.jcrm.ui.server.config;
 import static org.springframework.web.reactive.function.server.RouterFunctions.resources;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import com.ss.rlib.common.util.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,8 +29,9 @@ public class UiServerConfig {
 
             var request = exchange.getRequest();
             var path = request.getURI().getPath();
+            var extension = FileUtils.getExtension(path);
 
-            if (path.equals("/") || path.equals("/home")) {
+            if (extension.isEmpty()) {
 
                 var newRequest = request.mutate()
                     .path("/index.html")
