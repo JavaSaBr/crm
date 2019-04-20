@@ -16,7 +16,7 @@
           <mat-error *ngIf="country.invalid">{{getCountryErrorMessage()}}</mat-error>
         </mat-form-field>
         <div class="flex-row flex-end">
-          <button mat-button (click)="resetAndClose()"
+          <button mat-button routerLink="../"
                   [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
           <button mat-raised-button matStepperNext color="primary"
                   [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}</button>
@@ -70,7 +70,7 @@
         <div class="flex-row">
           <button mat-button matStepperPrevious [disabled]="disabled">{{ 'FORMS.BUTTON.BACK' | translate }}</button>
           <span class="space-filler"></span>
-          <button mat-button (click)="resetAndClose()"
+          <button mat-button routerLink="../"
                   [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
           <button mat-raised-button matStepperNext color="primary"
                   [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}</button>
@@ -93,7 +93,7 @@
         <div class="flex-row">
           <button mat-button matStepperPrevious [disabled]="disabled">{{ 'FORMS.BUTTON.BACK' | translate }}</button>
           <span class="space-filler"></span>
-          <button mat-button (click)="resetAndClose()"
+          <button mat-button routerLink="../"
                   [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
           <button mat-raised-button matStepperNext color="primary" (click)="sendEmailConfirmation()"
                   [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}
@@ -114,7 +114,7 @@
         </mat-form-field>
         <div class="flex-row">
           <span class="space-filler"></span>
-          <button mat-button (click)="resetAndClose()"
+          <button mat-button routerLink="../"
                   [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
           <button mat-raised-button color="primary" (click)="activateAndClose()"
                   [disabled]="disabled">{{ 'FORMS.BUTTON.COMPLETE' | translate }}</button>

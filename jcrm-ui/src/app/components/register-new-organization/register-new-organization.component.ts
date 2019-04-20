@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {NoAuthHomeService} from '../../services/no-auth-home.service';
 import {PhoneNumberValidator} from '../../input/phone-number/phone-number-validator';
 import {PasswordValidator} from '../../utils/validator/password-validator';
 import {RegistrationService} from '../../services/registration.service';
@@ -15,6 +14,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {ErrorResponse} from '../../error/error-response';
 import {UserService} from '../../services/user.service';
 import {CountryRepository} from '../../repositories/country/country.repository';
+import {AuthenticationInResource} from '../../resources/authentication-in-resource';
+import {ActivatedRoute, Route, Router} from '@angular/router';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -29,10 +30,10 @@ export class RegisterNewOrganizationComponent {
     public readonly subscribeFormGroup: FormGroup;
     public readonly activationFormGroup: FormGroup;
 
-    public orgName: FormControl;
-    public country: FormControl;
-    public email: FormControl;
-    public phoneNumber: FormControl;
+    public readonly orgName: FormControl;
+    public readonly country: FormControl;
+    public readonly email: FormControl;
+    public readonly phoneNumber: FormControl;
 
     public selectedEmail;
     public disabled: boolean;
@@ -41,11 +42,11 @@ export class RegisterNewOrganizationComponent {
     constructor(
         formBuilder: FormBuilder,
         private readonly countryRepository: CountryRepository,
-        private readonly noAuthHomeService: NoAuthHomeService,
         private readonly registrationService: RegistrationService,
         private readonly errorService: ErrorService,
         private readonly translateService: TranslateService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly router: Router
     ) {
         this.orgFormGroup = formBuilder.group({
             orgName: ['', [
@@ -104,15 +105,6 @@ export class RegisterNewOrganizationComponent {
         this.canEditSteps = true;
     }
 
-    resetAndClose() {
-        this.selectedEmail = {value: ''};
-        this.canEditSteps = true;
-        this.orgFormGroup.reset();
-        this.ownerFormGroup.reset();
-        this.subscribeFormGroup.reset();
-        this.noAuthHomeService.activateSubPage(null);
-    }
-
     activateAndClose() {
         this.disabled = true;
 
@@ -135,7 +127,7 @@ export class RegisterNewOrganizationComponent {
 
         const activationCode = controls['activationCode'].value as string;
 
-        this.registrationService.register(
+        let result = this.registrationService.register(
             orgName,
             country,
             firstName,
@@ -145,17 +137,22 @@ export class RegisterNewOrganizationComponent {
             password,
             phoneNumber,
             subscribe
-        )
-            .then(value => {
-                this.userService.authenticate(value.user, value.token);
-                this.disabled = false;
-                this.resetAndClose();
-            })
-            .catch(reason => {
-                let error = reason as ErrorResponse;
-                this.errorService.showError(error.errorMessage);
-                this.disabled = false;
-            });
+        );
+
+        result.then(value => this.finishRegistration(value))
+            .catch(reason => this.handleError(reason));
+    }
+
+    private handleError(reason: any) {
+        let error = reason as ErrorResponse;
+        this.errorService.showError(error.errorMessage);
+        this.disabled = false;
+    }
+
+    private finishRegistration(value: AuthenticationInResource) {
+        this.userService.authenticate(value.user, value.token);
+        this.disabled = false;
+        this.router.navigate(['/']);
     }
 
     sendEmailConfirmation() {

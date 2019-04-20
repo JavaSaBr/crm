@@ -14,9 +14,9 @@ export class NoAuthHomeComponent {
     constructor(private readonly router: Router) {
         this.router.events.subscribe(value => {
             if (value instanceof NavigationEnd) {
+                //FIXME how it can be done better?
                 this.activatedSubPages = value.url.startsWith('/no-auth/');
             }
         });
     }
-
 }
