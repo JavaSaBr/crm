@@ -7,7 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
 import {
     MatAutocompleteModule,
-    MatButtonModule,
+    MatButtonModule, MatCardModule,
     MatDividerModule,
     MatFormFieldModule,
     MatGridListModule,
@@ -39,6 +39,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
 import {NoAuthHomeComponent} from './components/no-auth-home/no-auth-home.component';
+import {AuthenticationComponent} from './components/authentication/authentication.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -56,7 +57,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         PhoneNumberInput,
         CountryInput,
         RegisterNewOrganizationComponent,
-        NoAuthHomeComponent
+        NoAuthHomeComponent,
+        AuthenticationComponent
     ],
     imports: [
         BrowserModule,
@@ -80,6 +82,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         HttpClientModule,
         MatRadioModule,
         MatSnackBarModule,
+        MatCardModule,
         TranslateModule.forRoot(
             {
                 useDefaultLang: true,

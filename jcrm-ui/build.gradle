@@ -25,4 +25,4 @@ sourceSets {
 }
 
 tasks.buildAngular.dependsOn installNodeModules
-tasks.classes.dependsOn buildAngular
+//tasks.classes.dependsOn buildAngular

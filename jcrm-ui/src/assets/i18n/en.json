@@ -19,7 +19,8 @@
       "CANCEL": "Cancel",
       "COMPLETE": "Complete",
       "YES": "Yes",
-      "NO": "No"
+      "NO": "No",
+      "DONE": "Done"
     },
     "ERROR": {
       "ORG": {
@@ -48,6 +49,16 @@
         "TOO_SHORT": "Phone number is too short",
         "TOO_LONG": "Phone number is too long",
         "NO_COUNTRY": "You must select a country code"
+      },
+      "LOGIN": {
+        "REQUIRED": "You must enter an email address or phone number",
+        "TOO_SHORT": "Value too short",
+        "TOO_LONG": "Value too long"
+      },
+      "PASSWORD": {
+        "REQUIRED": "You must enter a password",
+        "TOO_SHORT": "Password is too short",
+        "TOO_LONG": "Password is too long"
       }
     }
   },
@@ -100,5 +111,15 @@
         "LABEL": "Activation code"
       }
     }
+  },
+  "AUTHENTICATION": {
+    "TITLE": "Enter",
+    "MAIN_DESCRIPTION": "Enter your phone number or email address",
+    "LOGIN": "Phone number or email address",
+    "PASSWORD": "Password",
+    "FORGOT_EMAIL": "Forgot your email address?",
+    "GUEST_MODE": "Works on someone else's computer? Turn on the guest mode.",
+    "GUEST_MODE_DETAILS": "Details…",
+    "CREATE_ACCOUNT": "Create account"
   }
 }

@@ -3,9 +3,21 @@
 @import "../app/components/no-auth-home/no-auth-home.component";
 @import "../app/app.component";
 
+@mixin additional-components($theme) {
+
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .material-panel {
+    background-color: mat-color($foreground, divider);
+    padding: 10px;
+  }
+}
+
 @mixin custom-components-theme($theme) {
   @include nav-bar-theme($theme);
   @include side-nav-theme($theme);
   @include app-root-theme($theme);
   @include no-auth-home($theme);
+  @include additional-components($theme)
 }

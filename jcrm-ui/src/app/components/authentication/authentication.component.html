@@ -1,0 +1,29 @@
+<mat-card class="card-form-container">
+  <form [formGroup]="authFormGroup" class="card-form">
+    <mat-card-title class="card-center-title">{{ "AUTHENTICATION.TITLE" | translate }}</mat-card-title>
+    <p class="card-form-description-block">{{ "AUTHENTICATION.MAIN_DESCRIPTION" | translate }}</p>
+    <mat-form-field class="card-form-field" appearance="outline">
+      <mat-label>{{ "AUTHENTICATION.LOGIN" | translate }}</mat-label>
+      <input matInput formControlName="login" required>
+      <mat-error *ngIf="login.invalid">{{getLoginErrorMessage()}}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="card-form-field" appearance="outline">
+      <mat-label>{{ "AUTHENTICATION.PASSWORD" | translate }}</mat-label>
+      <input matInput formControlName="password" type="password" required>
+      <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+    </mat-form-field>
+    <br>
+    <a class="card-form-description-block" routerLink="../">{{ "AUTHENTICATION.FORGOT_EMAIL" | translate }}</a>
+    <p class="card-form-description-block">{{ "AUTHENTICATION.GUEST_MODE" | translate }}
+      <a routerLink="../">{{ "AUTHENTICATION.GUEST_MODE_DETAILS" | translate }}</a></p>
+    <div class="card-form-button-container">
+      <button mat-button color="primary" routerLink="../register"
+              [disabled]="disabled">{{ "AUTHENTICATION.CREATE_ACCOUNT" | translate }}</button>
+      <span class="space-filler"></span>
+      <button mat-button routerLink="../"
+              [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
+      <button mat-raised-button color="primary" (click)="authenticate()"
+              [disabled]="disabled">{{ 'FORMS.BUTTON.DONE' | translate }}</button>
+    </div>
+  </form>
+</mat-card>

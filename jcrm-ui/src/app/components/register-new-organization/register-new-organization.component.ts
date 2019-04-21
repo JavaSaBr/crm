@@ -15,7 +15,8 @@ import {ErrorResponse} from '../../error/error-response';
 import {UserService} from '../../services/user.service';
 import {CountryRepository} from '../../repositories/country/country.repository';
 import {AuthenticationInResource} from '../../resources/authentication-in-resource';
-import {ActivatedRoute, Route, Router} from '@angular/router';
+import {Router} from '@angular/router';
+import {environment} from '../../../environments/environment';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -74,10 +75,14 @@ export class RegisterNewOrganizationComponent {
             ]],
             password: ['', [
                 Validators.required,
+                Validators.minLength(environment.passwordMinLength),
+                Validators.maxLength(environment.passwordMaxLength),
                 new PasswordValidator(() => this.ownerFormGroup, 'password')
             ]],
             passwordConfirm: ['', [
                 Validators.required,
+                Validators.minLength(environment.passwordMinLength),
+                Validators.maxLength(environment.passwordMaxLength),
                 new PasswordValidator(() => this.ownerFormGroup, 'passwordConfirm')
             ]],
             phoneNumber: ['', [
