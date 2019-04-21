@@ -20,7 +20,7 @@ afterEvaluate {
     
         main = 'com.ss.jcrm.full.web.FullWebApplication'
         jvmArgs = [
-            "-Dserver.port=8080",
+            "-Dserver.port=8090",
             "-Djavax.mail.username=$smtpUser",
             "-Djavax.mail.password=$smtpPassword",
             "-Djavax.mail.smtp.from=$smtpFrom",

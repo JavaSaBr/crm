@@ -6,6 +6,7 @@ import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
+import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import com.ss.jcrm.web.exception.handler.WebExceptionHandler;
 import org.flywaydb.core.Flyway;
@@ -53,5 +54,10 @@ public class RegistrationWebConfig {
     @Bean
     @NotNull WebExceptionHandler webExceptionHandler() {
         return new WebExceptionHandler();
+    }
+
+    @Bean
+    @NotNull ApiEndpointServer registrationApiEndpointServer() {
+        return new ApiEndpointServer("/registration");
     }
 }

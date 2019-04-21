@@ -7,6 +7,7 @@ import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import com.ss.jcrm.dictionary.web.service.impl.DefaultCachedDictionaryService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
+import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
@@ -61,5 +62,10 @@ public class DictionaryWebConfig {
         reloadScheduler.scheduleAtFixedRate(service::reloadAsync, interval, interval, TimeUnit.SECONDS);
 
         return service;
+    }
+
+    @Bean
+    @NotNull ApiEndpointServer dictionaryApiEndpointServer() {
+        return new ApiEndpointServer("/dictionary");
     }
 }
