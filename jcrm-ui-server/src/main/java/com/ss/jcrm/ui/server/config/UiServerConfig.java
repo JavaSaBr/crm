@@ -39,19 +39,14 @@ public class UiServerConfig {
             var request = exchange.getRequest();
             var path = request.getURI().getPath();
 
-            if (apiEndpoints.length > 0) {
+            if (FileUtils.hasExtension(path)) {
+                return chain.filter(exchange);
+            } else if (apiEndpoints.length > 0) {
                 for (var endpoint : apiEndpoints) {
                     if (path.startsWith(endpoint)) {
                         return chain.filter(exchange);
                     }
                 }
-            }
-
-            //FIXME need to replace using hasExtension()
-            var extension = FileUtils.getExtension(path);
-
-            if (!extension.isEmpty()) {
-                return chain.filter(exchange);
             }
 
             var newRequest = request.mutate()

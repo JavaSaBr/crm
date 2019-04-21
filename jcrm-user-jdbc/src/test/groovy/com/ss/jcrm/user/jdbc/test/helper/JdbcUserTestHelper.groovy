@@ -98,6 +98,26 @@ class JdbcUserTestHelper implements UserTestHelper {
             getOrCreateDefaultOrg()
         )
     }
+    
+    def newUser(String name, String phoneNumber) {
+        return newUser(
+            name,
+            passwordService.nextPassword(24),
+            passwordService.nextSalt,
+            getOrCreateDefaultOrg(),
+            phoneNumber
+        )
+    }
+    
+    User newUser(String name, String phoneNumber, String password) {
+        return newUser(
+            name,
+            password,
+            passwordService.nextSalt,
+            getOrCreateDefaultOrg(),
+            phoneNumber
+        )
+    }
 
     def newUser(String name, Organization organization) {
         return newUser(
@@ -128,6 +148,20 @@ class JdbcUserTestHelper implements UserTestHelper {
             null,
             null,
             null
+        )
+    }
+    
+    def newUser(String name, String password, byte[] salt, Organization organization, String phoneNumber) {
+        return userDao.create(
+            name,
+            passwordService.hash(password, salt),
+            salt,
+            organization,
+            onlyOrgAdminRole(),
+            null,
+            null,
+            null,
+            phoneNumber
         )
     }
 

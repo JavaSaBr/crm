@@ -28,4 +28,10 @@ public interface RegistrationErrors {
 
     int INVALID_ACTIVATION_CODE = 1008;
     String INVALID_ACTIVATION_CODE_MESSAGE = "Invalid activation code";
+
+    int EMPTY_LOGIN = 1009;
+    String EMPTY_LOGIN_MESSAGE = "Login is empty";
+
+    int INVALID_CREDENTIALS = 1010;
+    String INVALID_CREDENTIALS_MESSAGE = "Invalid credentials";
 }

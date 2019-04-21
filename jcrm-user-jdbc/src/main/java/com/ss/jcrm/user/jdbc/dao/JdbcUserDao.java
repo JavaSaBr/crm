@@ -6,7 +6,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.exception.GenerateIdDaoException;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
-import com.ss.jcrm.jdbc.dao.AbstractNamedObjectJdbcDao;
+import com.ss.jcrm.jdbc.dao.AbstractJdbcDao;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
@@ -29,20 +29,26 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Log4j2
-public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements UserDao {
+public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
 
     @Language("PostgreSQL")
-    private static final String Q_SELECT_BY_NAME = "select \"id\", \"organization_id\", \"name\", \"first_name\"," +
+    private static final String Q_SELECT_BY_EMAIL = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\" from \"user\" where \"name\" = ?";
+        " \"version\", \"email_confirmed\" from \"user\" where \"email\" = ?";
 
     @Language("PostgreSQL")
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"organization_id\", \"name\", \"first_name\"," +
+    private static final String Q_SELECT_BY_ID = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
         " \"version\", \"email_confirmed\" from \"user\" where \"id\" = ?";
 
     @Language("PostgreSQL")
-    private static final String Q_INSERT = "insert into \"user\" (\"name\", \"password\", \"salt\", " +
+    private static final String Q_SELECT_BY_PHONE_NUMBER = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
+        " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
+        " \"version\", \"email_confirmed\" from \"user\" where \"phone_number\" = ?";
+
+
+    @Language("PostgreSQL")
+    private static final String Q_INSERT = "insert into \"user\" (\"email\", \"password\", \"salt\", " +
         "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\")" +
         " values (?,?,?,?,?,?,?,?,?)";
 
@@ -52,7 +58,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
         " \"email_confirmed\" = ? where \"id\" = ? and \"version\" = ?";
 
     @Language("PostgreSQL")
-    private static final String Q_EXIST_BY_NAME = "select \"id\" from \"user\" where \"name\" = ?";
+    private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"user\" where \"email\" = ?";
 
     private final OrganizationDao organizationDao;
     private final UserGroupDao userGroupDao;
@@ -71,7 +77,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
 
     @Override
     public @NotNull User create(
-        @NotNull String name,
+        @NotNull String email,
         @NotNull byte[] password,
         @NotNull byte[] salt,
         @NotNull Organization organization,
@@ -86,7 +92,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
              var statement = connection.prepareStatement(Q_INSERT, Statement.RETURN_GENERATED_KEYS)
         ) {
 
-            statement.setString(1, name);
+            statement.setString(1, email);
             statement.setBytes(2, password);
             statement.setBytes(3, salt);
             statement.setLong(4, organization.getId());
@@ -101,8 +107,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
                 if (rs.next()) {
                     return new JdbcUser(
                         rs.getLong(1),
-                        organization,
-                        name,
+                        organization, email,
                         password,
                         salt,
                         roles,
@@ -113,7 +118,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
                         0
                     );
                 } else {
-                    throw new GenerateIdDaoException("Can't receive generated id for the new user [" + name + "].");
+                    throw new GenerateIdDaoException("Can't receive generated id for the new user [" + email + "].");
                 }
             }
 
@@ -124,7 +129,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
 
     @Override
     public @NotNull CompletableFuture<@NotNull User> createAsync(
-        @NotNull String name,
+        @NotNull String email,
         @NotNull byte[] password,
         @NotNull byte[] salt,
         @NotNull Organization organization,
@@ -135,7 +140,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
         @Nullable String phoneNumber
     ) {
         return supplyAsync(() -> create(
-            name,
+            email,
             password,
             salt,
             organization,
@@ -148,8 +153,13 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
     }
 
     @Override
-    public @Nullable User findByName(@NotNull String name) {
-        return findByString(Q_SELECT_BY_NAME, name, JdbcUserDao::toUser);
+    public @Nullable User findByEmail(@NotNull String email) {
+        return findByString(Q_SELECT_BY_EMAIL, email, JdbcUserDao::toUser);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<@Nullable User> findByEmailAsync(@NotNull String email) {
+        return supplyAsync(() -> findByEmail(email), fastDbTaskExecutor);
     }
 
     @Override
@@ -194,13 +204,23 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
     }
 
     @Override
-    public boolean existByName(@NotNull String name) {
-        return existByString(Q_EXIST_BY_NAME, name);
+    public boolean existByEmail(@NotNull String email) {
+        return existByString(Q_EXIST_BY_EMAIL, email);
     }
 
     @Override
-    public CompletableFuture<Boolean> existByNameAsync(@NotNull String name) {
-        return supplyAsync(() -> existByName(name), fastDbTaskExecutor);
+    public CompletableFuture<Boolean> existByEmailAsync(@NotNull String email) {
+        return supplyAsync(() -> existByEmail(email), fastDbTaskExecutor);
+    }
+
+    @Override
+    public @Nullable User findByPhoneNumber(@NotNull String phoneNumber) {
+        return findByString(Q_SELECT_BY_PHONE_NUMBER, phoneNumber, JdbcUserDao::toUser);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<@Nullable User> findByPhoneNumberAsync(@NotNull String phoneNumber) {
+        return supplyAsync(() -> findByPhoneNumber(phoneNumber), fastDbTaskExecutor);
     }
 
     private @NotNull User toUser(@NotNull ResultSet rs) throws SQLException {
@@ -219,7 +239,7 @@ public class JdbcUserDao extends AbstractNamedObjectJdbcDao<User> implements Use
         return new JdbcUser(
             rs.getLong(1),
             org,
-            rs.getString(3),  // name
+            rs.getString(3),  // email
             rs.getString(4),  // first name
             rs.getString(5),  // second name
             rs.getString(6),  // third name

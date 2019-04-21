@@ -1,6 +1,5 @@
 package com.ss.jcrm.user.jdbc;
 
-import com.jsoniter.annotation.JsonIgnore;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
@@ -15,13 +14,13 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString(of = {"id", "name", "organization"})
+@ToString(of = {"id", "email", "organization"})
 public class JdbcUser implements User {
 
     private final long id;
     private final Organization organization;
 
-    private String name;
+    private String email;
     private String firstName;
     private String secondName;
     private String thirdName;
@@ -40,7 +39,7 @@ public class JdbcUser implements User {
     public JdbcUser(
         long id,
         @NotNull Organization organization,
-        @NotNull String name,
+        @NotNull String email,
         @NotNull byte[] password,
         @NotNull byte[] salt,
         @NotNull Set<AccessRole> roles,
@@ -52,7 +51,7 @@ public class JdbcUser implements User {
     ) {
         this.organization = organization;
         this.id = id;
-        this.name = name;
+        this.email = email;
         this.password = password;
         this.salt = salt;
         this.roles = roles;

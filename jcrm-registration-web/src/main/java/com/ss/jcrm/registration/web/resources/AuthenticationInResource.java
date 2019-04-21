@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AuthenticationInResource implements RestResource {
 
-    private String name;
-    private String password;
+    private String login;
+    private char[] password;
 }

@@ -38,7 +38,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def user = userDao.create("User1", hash, salt, org, roles, null, null, null, null)
         then:
             user != null
-            user.getName() == "User1"
+            user.getEmail() == "User1"
             Arrays.equals(user.getSalt(), salt)
             user.getId() != 0L
             user.getOrganization() == org
@@ -47,7 +47,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def loaded = userDao.findById(user.getId())
         then:
             loaded != null
-            loaded.getName() == "User1"
+            loaded.getEmail() == "User1"
             Arrays.equals(loaded.getSalt(), salt)
             loaded.getOrganization() == org
             loaded.getRoles().size() == 1
@@ -65,7 +65,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def user = userDao.createAsync("User1", hash, salt, org, roles, null, null, null, null).join()
         then:
             user != null
-            user.getName() == "User1"
+            user.getEmail() == "User1"
             Arrays.equals(user.getSalt(), salt)
             user.getId() != 0L
             user.getOrganization() == org
@@ -74,7 +74,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def loaded = userDao.findByIdAsync(user.getId()).join()
         then:
             loaded != null
-            loaded.getName() == "User1"
+            loaded.getEmail() == "User1"
             Arrays.equals(loaded.getSalt(), salt)
             loaded.getOrganization() == org
             loaded.getRoles().size() == 1
@@ -113,7 +113,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def user2 = userDao.findById(user.getId())
         then:
             user2 != null
-            user2.getName() == user.getName()
+            user2.getEmail() == user.getEmail()
             user2.getId() == user.getId()
             user2.getVersion() == user.getVersion()
     }
@@ -140,7 +140,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
             def user2 = userDao.findById(user.getId())
         then:
             user2 != null
-            user2.getName() == user.getName()
+            user2.getEmail() == user.getEmail()
             user2.getId() == user.getId()
             user2.getFirstName() == user.getFirstName()
             user2.getSecondName() == user.getSecondName()
@@ -168,10 +168,24 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             userTestHelper.newUser("User1")
         when:
-            def user = userDao.findByName("User1")
+            def user = userDao.findByEmail("User1")
         then:
             user != null
-            user.getName() == "User1"
+            user.getEmail() == "User1"
+            user.getSalt() != null
+            user.getId() != 0L
+            user.getOrganization() != null
+    }
+    
+    def "should load a user by phone number"() {
+    
+        given:
+            userTestHelper.newUser("User1", "+24223423")
+        when:
+            def user = userDao.findByPhoneNumber("+24223423")
+        then:
+            user != null
+            user.getEmail() == "User1"
             user.getSalt() != null
             user.getId() != 0L
             user.getOrganization() != null
@@ -182,7 +196,7 @@ class JdbcUserDaoTest extends JdbcUserSpecification {
         given:
             def user = userTestHelper.newUser()
         when:
-            def exist = userDao.existByName(user.name)
+            def exist = userDao.existByEmail(user.email)
         then:
             exist
     }

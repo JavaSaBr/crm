@@ -92,7 +92,7 @@ public class BaseResourceValidator {
         @NotNull String message
     ) {
         if (email == null ||
-            !StringUtils.checkEmail(email) ||
+            !StringUtils.isValidEmail(email) ||
             email.length() < minLength ||
             email.length() > maxLength
         ) {

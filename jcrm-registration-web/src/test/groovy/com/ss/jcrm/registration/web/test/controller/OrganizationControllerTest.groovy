@@ -55,10 +55,10 @@ class OrganizationControllerTest extends RegistrationSpecification {
         then:
             response.expectStatus().isCreated()
                 .expectBody()
-                .jsonPath('$.token').isNotEmpty()
-                .jsonPath('$.user').isNotEmpty()
-                .jsonPath('$.user.id').isNotEmpty()
-                .jsonPath('$.user.name').value(is(confirmation.email))
-                .jsonPath('$.user.phoneNumber').value(is(request.phoneNumber))
+                    .jsonPath('$.token').isNotEmpty()
+                    .jsonPath('$.user').isNotEmpty()
+                    .jsonPath('$.user.id').isNotEmpty()
+                    .jsonPath('$.user.email').value(is(confirmation.email))
+                    .jsonPath('$.user.phoneNumber').value(is(request.phoneNumber))
     }
 }

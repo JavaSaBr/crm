@@ -20,10 +20,10 @@ public class UserController {
     private final UserDao userDao;
     private final ResourceValidator resourceValidator;
 
-    @GetMapping("/registration/exist/user/name/{name}")
-    @NotNull CompletableFuture<ResponseEntity<?>> exist(@NotNull @PathVariable("name") String name) {
-        resourceValidator.validateEmail(name);
-        return userDao.existByNameAsync(name)
+    @GetMapping("/registration/exist/user/email/{email}")
+    @NotNull CompletableFuture<ResponseEntity<?>> exist(@NotNull @PathVariable("email") String email) {
+        resourceValidator.validateEmail(email);
+        return userDao.existByEmailAsync(email)
             .thenApply(exist -> new ResponseEntity<>(exist ? HttpStatus.OK : HttpStatus.NOT_FOUND));
     }
 }

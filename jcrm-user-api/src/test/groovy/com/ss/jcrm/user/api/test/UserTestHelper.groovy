@@ -10,6 +10,8 @@ interface UserTestHelper {
     
     User newUser();
     
+    User newUser(String name, String phoneNumber, String password);
+    
     EmailConfirmation newEmailConfirmation();
     
     void clearAllData()

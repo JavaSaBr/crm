@@ -1,5 +1,6 @@
 package com.ss.jcrm.user.api.dao;
 
+import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.NamedObjectDao;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
@@ -13,13 +14,13 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-public interface UserDao extends NamedObjectDao<User> {
+public interface UserDao extends Dao<User> {
 
     /**
      * @throws DuplicateObjectDaoException if a user with the same name is already exist.
      */
     @NotNull User create(
-        @NotNull String name,
+        @NotNull String email,
         @NotNull byte[] password,
         @NotNull byte[] salt,
         @NotNull Organization organization,
@@ -34,7 +35,7 @@ public interface UserDao extends NamedObjectDao<User> {
      * @throws CompletionException -> DuplicateObjectDaoException if a user with the same name is already exist.
      */
     @NotNull CompletableFuture<@NotNull User> createAsync(
-        @NotNull String name,
+        @NotNull String email,
         @NotNull byte[] password,
         @NotNull byte[] salt,
         @NotNull Organization organization,
@@ -55,7 +56,15 @@ public interface UserDao extends NamedObjectDao<User> {
      */
     @NotNull CompletableFuture<Void> updateAsync(@NotNull User user);
 
-    boolean existByName(@NotNull String name);
+    boolean existByEmail(@NotNull String email);
 
-    CompletableFuture<Boolean> existByNameAsync(@NotNull String name);
+    CompletableFuture<Boolean> existByEmailAsync(@NotNull String email);
+
+    @Nullable User findByEmail(@NotNull String email);
+
+    @NotNull CompletableFuture<@Nullable User> findByEmailAsync(@NotNull String email);
+
+    @Nullable User findByPhoneNumber(@NotNull String phoneNumber);
+
+    @NotNull CompletableFuture<@Nullable User> findByPhoneNumberAsync(@NotNull String phoneNumber);
 }

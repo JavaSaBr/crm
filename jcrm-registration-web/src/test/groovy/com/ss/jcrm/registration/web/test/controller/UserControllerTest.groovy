@@ -10,7 +10,7 @@ class UserControllerTest extends RegistrationSpecification {
             def user = userTestHelper.newUser()
         when:
             def response = client.get()
-                .url("/registration/exist/user/name/$user.name")
+                .url("/registration/exist/user/email/$user.email")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -20,7 +20,7 @@ class UserControllerTest extends RegistrationSpecification {
 
         when:
             def response = client.get()
-                .url("/registration/exist/user/name/nonexist@test.com")
+                .url("/registration/exist/user/email/nonexist@test.com")
                 .exchange()
         then:
             response.expectStatus().isNotFound()

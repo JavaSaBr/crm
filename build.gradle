@@ -32,7 +32,7 @@ allprojects {
 
     ext {
         annotationVersion = "16.0.3"
-        rlibVersion = "9.1.0"
+        rlibVersion = "9.1.1"
         lombokVersion = '1.18.4'
         lombokGradlePluginVersion = '0.19'
         springbootVersion = '2.1.3.RELEASE'
@@ -49,7 +49,6 @@ allprojects {
         jsonwebtokenVersion = "0.10.5"
         hamcrestVersion = "1.3"
         jsonpathVersion = "2.4.0"
-        javaxMailVersion = "1.5.0-b01"
     }
 
     dependencies {
@@ -99,7 +98,7 @@ allprojects {
     }
 
     tasks.withType(Test) {
-        maxParallelForks = Runtime.runtime.availableProcessors()
+        maxParallelForks = 2
         forkEvery = 100
     }
     

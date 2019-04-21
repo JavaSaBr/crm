@@ -1,8 +1,11 @@
 package com.ss.jcrm.registration.web.validator;
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
+import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
+import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.validator.BaseResourceValidator;
+import com.ss.rlib.common.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,17 +41,43 @@ public class ResourceValidator extends BaseResourceValidator {
         this.otherUserNameMinLength = env.getProperty("registration.web.other.user.name.min.length", Integer.class, 2);
         this.otherUserNameMaxLength = env.getProperty("registration.web.other.user.name.max.length", Integer.class, 45);
 
-        log.info("resource validator settings:");
-        log.info("email min length : {}", emailMinLength);
-        log.info("email max length : {}", emailMaxLength);
-        log.info("org name min length : {}", orgNameMinLength);
-        log.info("org name max length : {}", orgNameMaxLength);
-        log.info("phone number min length : {}", phoneNumberMinLength);
-        log.info("phone number max length : {}", phoneNumberMaxLength);
-        log.info("password min length : {}", passwordMinLength);
-        log.info("password max length : {}", passwordMaxLength);
-        log.info("other user name min length : {}", otherUserNameMinLength);
-        log.info("other user name max length :{}", otherUserNameMaxLength);
+        log.info("Resource validator settings:");
+        log.info("Email min length : {}", emailMinLength);
+        log.info("Email max length : {}", emailMaxLength);
+        log.info("Org name min length : {}", orgNameMinLength);
+        log.info("Org name max length : {}", orgNameMaxLength);
+        log.info("Phone number min length : {}", phoneNumberMinLength);
+        log.info("Phone number max length : {}", phoneNumberMaxLength);
+        log.info("Password min length : {}", passwordMinLength);
+        log.info("Password max length : {}", passwordMaxLength);
+        log.info("Other user name min length : {}", otherUserNameMinLength);
+        log.info("Other user name max length :{}", otherUserNameMaxLength);
+    }
+
+    public void validate(@NotNull AuthenticationInResource resource) {
+
+        var login = resource.getLogin();
+
+        if (StringUtils.isEmpty(login)) {
+            throw new BadRequestWebException(EMPTY_LOGIN_MESSAGE, EMPTY_LOGIN);
+        } else if (StringUtils.isEmail(login)) {
+            validateEmail(login);
+        } else {
+            validate(login,
+                phoneNumberMinLength,
+                phoneNumberMaxLength,
+                INVALID_PHONE_NUMBER,
+                INVALID_PHONE_NUMBER_MESSAGE
+            );
+        }
+
+        validate(
+            resource.getPassword(),
+            passwordMinLength,
+            passwordMaxLength,
+            INVALID_PASSWORD,
+            INVALID_PASSWORD_MESSAGE
+        );
     }
 
     public void validate(@NotNull OrganizationRegisterInResource resource) {

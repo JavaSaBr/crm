@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public class UserOutResource implements RestResource {
 
-    private final String name;
+    private final String email;
     private final String firstName;
     private final String secondName;
     private final String phoneNumber;
@@ -16,7 +16,7 @@ public class UserOutResource implements RestResource {
     private long id;
 
     public UserOutResource(@NotNull User user) {
-        this.name = user.getName();
+        this.email = user.getEmail();
         this.firstName = user.getFirstName();
         this.secondName = user.getSecondName();
         this.phoneNumber = user.getPhoneNumber();
