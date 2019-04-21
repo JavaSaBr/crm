@@ -8,11 +8,9 @@ import com.ss.jcrm.web.config.BaseWebConfig;
 import com.ss.rlib.common.util.FileUtils;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
@@ -28,7 +26,6 @@ import java.util.List;
 
 @Configuration
 @Import(BaseWebConfig.class)
-@ComponentScan("com.ss.jcrm.ui.server.controller")
 public class UiServerConfig {
 
     @AllArgsConstructor
@@ -50,6 +47,7 @@ public class UiServerConfig {
                 }
             }
 
+            //FIXME need to replace using hasExtension()
             var extension = FileUtils.getExtension(path);
 
             if (!extension.isEmpty()) {
