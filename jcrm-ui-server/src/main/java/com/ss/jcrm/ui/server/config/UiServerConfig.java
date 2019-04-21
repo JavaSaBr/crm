@@ -59,7 +59,7 @@ public class UiServerConfig {
 
     private final String[] apiEndpoints;
 
-    @Autowired(required = false)
+    @Autowired
     public UiServerConfig(@NotNull List<ApiEndpointServer> servers) {
         this.apiEndpoints = servers.stream()
             .map(ApiEndpointServer::getContextPath)

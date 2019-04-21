@@ -11,5 +11,7 @@ export const environment = {
     phoneNumberMinLength: 6,
     phoneNumberMaxLength: 16,
     otherUserNameMinLength: 2,
-    otherUserNameMaxLength: 45
+    otherUserNameMaxLength: 45,
+    passwordMinLength: 6,
+    passwordMaxLength: 25
 };

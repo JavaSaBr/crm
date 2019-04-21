@@ -6,8 +6,8 @@ import {Country} from '../entity/country';
 import {ErrorResponse} from '../error/error-response';
 import {TranslateService} from '@ngx-translate/core';
 import {OrganizationRegisterOutResource} from '../resources/organization-register-out-resource';
-import {Body} from '@angular/http/src/body';
 import {AuthenticationInResource} from '../resources/authentication-in-resource';
+import {AuthenticationOutResource} from '../resources/authentication-out-resource';
 
 @Injectable({
     providedIn: 'root'
@@ -46,6 +46,20 @@ export class RegistrationService {
 
         return new Promise<AuthenticationInResource>((resolve, reject) => {
             this.securityService.postRequest<AuthenticationInResource>(environment.registrationUrl + '/register/organization', body)
+                .then(resp => resolve(resp.body))
+                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
+        });
+    }
+
+    authenticate(
+        login: string,
+        password: string
+    ): Promise<AuthenticationInResource> {
+
+        let body = new AuthenticationOutResource(login, password);
+
+        return new Promise<AuthenticationInResource>((resolve, reject) => {
+            this.securityService.postRequest<AuthenticationInResource>(environment.registrationUrl + '/authenticate', body)
                 .then(resp => resolve(resp.body))
                 .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
         });

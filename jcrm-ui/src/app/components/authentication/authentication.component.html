@@ -23,7 +23,7 @@
       <button mat-button routerLink="../"
               [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
       <button mat-raised-button color="primary" (click)="authenticate()"
-              [disabled]="disabled">{{ 'FORMS.BUTTON.DONE' | translate }}</button>
+              [disabled]="disabled || !authFormGroup.valid">{{ 'FORMS.BUTTON.DONE' | translate }}</button>
     </div>
   </form>
 </mat-card>

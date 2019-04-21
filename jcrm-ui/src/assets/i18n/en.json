@@ -9,7 +9,9 @@
       "1005": "Invalid password",
       "1006": "Invalid phone number",
       "1007": "Invalid name",
-      "1008": "Invalid activation code"
+      "1008": "Invalid activation code",
+      "1009": "No authorization data",
+      "1010": "Invalid password or the user not found"
     }
   },
   "FORMS": {

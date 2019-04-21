@@ -26,19 +26,19 @@ import {environment} from '../../../environments/environment';
 })
 export class RegisterNewOrganizationComponent {
 
-    public readonly orgFormGroup: FormGroup;
-    public readonly ownerFormGroup: FormGroup;
-    public readonly subscribeFormGroup: FormGroup;
-    public readonly activationFormGroup: FormGroup;
+    readonly orgFormGroup: FormGroup;
+    readonly ownerFormGroup: FormGroup;
+    readonly subscribeFormGroup: FormGroup;
+    readonly activationFormGroup: FormGroup;
 
-    public readonly orgName: FormControl;
-    public readonly country: FormControl;
-    public readonly email: FormControl;
-    public readonly phoneNumber: FormControl;
+    readonly orgName: FormControl;
+    readonly country: FormControl;
+    readonly email: FormControl;
+    readonly phoneNumber: FormControl;
 
-    public selectedEmail;
-    public disabled: boolean;
-    public canEditSteps: boolean;
+    selectedEmail;
+    disabled: boolean;
+    canEditSteps: boolean;
 
     constructor(
         formBuilder: FormBuilder,
