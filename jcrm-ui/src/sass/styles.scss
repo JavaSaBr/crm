@@ -73,21 +73,28 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
   padding-bottom: 1.34375em;
 }
 
-.stepper-step-title {
-  text-align: center;
-  font-weight: normal;
-}
-
-.card-center-title {
-  text-align: center;
-  font-weight: normal;
-}
 
 .description-block {
   max-width: 90%;
 }
 
+/** FORMS **/
+
+.form-field {
+  width: 100%;
+}
+
 /** CARD FORMS **/
+.card-center-title {
+  text-align: center;
+  font-weight: normal;
+}
+
+.card-form-wrapper {
+  padding: 5px;
+  margin: auto;
+}
+
 .card-form-container {
   min-width: 30%;
   padding-top: 20px;
@@ -116,4 +123,11 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
   flex-direction: row;
   width: 90%;
   justify-content: flex-end;
+}
+
+/** STEPPER **/
+
+.stepper-step-title {
+  text-align: center;
+  font-weight: normal;
 }

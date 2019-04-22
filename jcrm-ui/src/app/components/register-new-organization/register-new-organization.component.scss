@@ -1,26 +1,5 @@
 
 .register-new-org-component {
-  width: 50%;
-}
-
-.register-new-org-form-step-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.register-new-org-form-step {
-  width: 80%;
-}
-
-.register-new-org-subscribe-radio-group {
-
-}
-
-.row-fields-offset {
-  width: 15px;
-}
-
-.half-field-width {
-  width: 50%;
+  max-width: 700px;
+  min-width: 10px;
 }
