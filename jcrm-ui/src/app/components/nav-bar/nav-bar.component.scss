@@ -2,41 +2,47 @@
 
 @mixin nav-bar-theme($theme) {
 
-  $background: map-get($theme, background);
-  $foreground: map-get($theme, foreground);
-
-  app-nav-bar {
-    display: flex;
-    flex-direction: column;
-    flex: 48px;
-    z-index: 2;
-  }
+  //$background: map-get($theme, background);
+  //$foreground: map-get($theme, foreground);
 
   .header-divider {
-    width: 2px;
+    /*width: 2px;
     margin: 8px;
     height: 38px;
     background: mat-color($background, app-bar);
-    color: mat-color($foreground, text);
+    color: mat-color($foreground, text);*/
   }
-
+/*
   .search-form {
     min-width: 150px;
     max-width: 500px;
     width: 100%;
   }
 
-  .search-field {
-    width: 100%;
-  }
 
   .search-icon {
     margin: 6px;
+  }*/
+
+  .search-field {
+    max-height: 50px;
+    font-size: medium;
   }
 }
 
+.navigation-bar {
+  height: 56px;
+  padding-left: 8px;
+  z-index: 999;
+}
+
 .mat-toolbar-row, .mat-toolbar-single-row {
-  padding: 0 0 0 0;
+  //padding: 0 0 0 0;
+  //height: 60px;
+}
+
+:host {
+  z-index: 2;
 }
 
 
@@ -52,7 +58,6 @@
   display: inline-block;
   overflow: visible;
   margin: 0;
-  padding: 12px 12px 6px 12px;
   cursor: pointer;
   transition-timing-function: linear;
   transition-duration: .15s;
@@ -61,6 +66,7 @@
   color: inherit;
   border: 0;
   background-color: transparent;
+  height: 24px;
 }
 
 .hamburger.is-active:hover, .hamburger:hover {
@@ -68,14 +74,14 @@
 }
 
 .hamburger.is-active .hamburger-inner, .hamburger.is-active .hamburger-inner:after, .hamburger.is-active .hamburger-inner:before {
-  background-color: white;
+  background-color: black;
 }
 
 .hamburger-box {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 24px
+  width: 24px;
+  height: 24px;
 }
 
 .hamburger-inner {
@@ -86,13 +92,13 @@
 
 .hamburger-inner, .hamburger-inner:after, .hamburger-inner:before {
   position: absolute;
-  width: 40px;
-  height: 4px;
+  width: 24px;
+  height: 2px;
   transition-timing-function: ease;
   transition-duration: .15s;
   transition-property: transform;
-  border-radius: 4px;
-  background-color: white
+  border-radius: 2px;
+  background-color: black;
 }
 
 .hamburger-inner:after, .hamburger-inner:before {
@@ -101,11 +107,11 @@
 }
 
 .hamburger-inner:before {
-  top: -10px
+  top: -5px
 }
 
 .hamburger-inner:after {
-  bottom: -10px
+  bottom: -5px
 }
 
 .hamburger--3dx .hamburger-box {

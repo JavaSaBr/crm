@@ -12,11 +12,11 @@ import {UserValidator} from '../../utils/validator/user-validator';
 import {ErrorService} from '../../services/error.service';
 import {TranslateService} from '@ngx-translate/core';
 import {ErrorResponse} from '../../error/error-response';
-import {UserService} from '../../services/user.service';
 import {CountryRepository} from '../../repositories/country/country.repository';
 import {AuthenticationInResource} from '../../resources/authentication-in-resource';
 import {Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
+import {SecurityService} from '../../services/security.service';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -46,7 +46,7 @@ export class RegisterNewOrganizationComponent {
         private readonly registrationService: RegistrationService,
         private readonly errorService: ErrorService,
         private readonly translateService: TranslateService,
-        private readonly userService: UserService,
+        private readonly securityService: SecurityService,
         private readonly router: Router
     ) {
         this.orgFormGroup = formBuilder.group({
@@ -155,7 +155,7 @@ export class RegisterNewOrganizationComponent {
     }
 
     private finishRegistration(value: AuthenticationInResource) {
-        this.userService.authenticate(value.user, value.token);
+        this.securityService.authenticate(value.user, value.token);
         this.disabled = false;
         this.router.navigate(['/']);
     }

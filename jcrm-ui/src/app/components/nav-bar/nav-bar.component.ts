@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../../services/user.service';
 import {SideMenuService} from '../../services/side-menu.service';
 import {SecurityService} from '../../services/security.service';
 
@@ -10,17 +9,14 @@ import {SecurityService} from '../../services/security.service';
 })
 export class NavBarComponent implements OnInit {
 
+    searchValue: string;
     additionalHamburgerStyle: string;
-    authenticated: boolean;
 
     constructor(
-        private readonly userService: UserService,
         private readonly securityService: SecurityService,
         private readonly sideMenuService: SideMenuService
     ) {
         this.additionalHamburgerStyle = '';
-        this.securityService.authenticated
-            .subscribe(value => this.authenticated = value);
     }
 
     ngOnInit() {

@@ -23,10 +23,9 @@ import {
     MatToolbarModule
 } from '@angular/material';
 import {SideNavComponent} from './components/side-nav/side-nav.component';
-import {HomeComponent} from './components/home/home.component';
+import {WorkspaceComponent} from './components/workspace/workspace.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SideMenuService} from './services/side-menu.service';
-import {UserService} from './services/user.service';
 import {PhoneNumberInput} from './input/phone-number/phone-number-input';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NoAuthHomeService} from './services/no-auth-home.service';
@@ -53,7 +52,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         AppComponent,
         NavBarComponent,
         SideNavComponent,
-        HomeComponent,
+        WorkspaceComponent,
         PhoneNumberInput,
         CountryInput,
         RegisterNewOrganizationComponent,
@@ -94,7 +93,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             }
         ),
     ],
-    providers: [SideMenuService, UserService, NoAuthHomeService, ErrorService],
+    providers: [SideMenuService, NoAuthHomeService, ErrorService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

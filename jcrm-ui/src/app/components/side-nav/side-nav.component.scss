@@ -3,46 +3,30 @@
 @mixin side-nav-theme($theme) {
 
   $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
   $background: map-get($theme, background);
-
-  app-side-nav {
-    display: flex;
-    flex: 100%;
-  }
+  $foreground: map-get($theme, foreground);
 
   .sidebar {
     display: flex;
-    flex: 48px;
     flex-direction: column;
-    background: mat-color($primary);
+    width: 56px;
+    background: mat-color($background, app-bar);
+    color: mat-color($foreground, text);
   }
 
   .main-view {
     display: flex;
     flex: 100%;
     flex-direction: column;
+    border-width: 0px;
+    border-left-width: 1px;
+    border-color: lightgray;
+    border-style: solid;
   }
 }
 
-mat-sidenav-content {
-  display: flex;
-  flex-direction: row;
-  flex: 100%;
-}
-
-mat-sidenav-container {
-  display: flex;
-  flex: 100%;
-}
-
-.side-env-container {
-  display: flex;
-  flex: 100%;
-  flex-direction: row;
-}
-
-.side-env-content {
-  display: flex;
-  flex: 100%;
-  flex-direction: row;
+:host {
+  position: relative;
 }

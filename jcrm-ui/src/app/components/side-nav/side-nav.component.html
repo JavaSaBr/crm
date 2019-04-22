@@ -1,27 +1,28 @@
-<mat-sidenav-container>
-    <mat-sidenav #sidenav mode="over">
-        <p>Auto-resizing sidenav</p>
-        <p>Lorem, ipsum dolor sit amet consectetur.</p>
-        <button mat-raised-button>
-            Toggle extra text
+<mat-sidenav-container class="flex-column" style="display: flex">
+  <mat-sidenav #sidenav mode="over">
+    <p>Auto-resizing sidenav</p>
+    <p>Lorem, ipsum dolor sit amet consectetur.</p>
+    <button mat-raised-button>
+      Toggle extra text
+    </button>
+  </mat-sidenav>
+  <mat-sidenav-content class="flex-column" style="display: flex">
+    <div class="flex-row">
+      <div class="sidebar flex-center-items">
+        <button mat-icon-button>
+          <mat-icon aria-label="Some button">view_module</mat-icon>
         </button>
-    </mat-sidenav>
-    <mat-sidenav-content>
-
-        <div class="sidebar">
-            <button mat-icon-button>
-                <mat-icon aria-label="Some button">view_module</mat-icon>
-            </button>
-            <button mat-icon-button>
-                <mat-icon aria-label="Some button">shopping_basket</mat-icon>
-            </button>
-            <button mat-icon-button>
-                <mat-icon aria-label="Some button">more_vert</mat-icon>
-            </button>
-        </div>
-
-        <div class="main-view">
-            <router-outlet></router-outlet>
-        </div>
-    </mat-sidenav-content>
+        <button mat-icon-button>
+          <mat-icon aria-label="Some button">shopping_basket</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon aria-label="Some button">more_vert</mat-icon>
+        </button>
+      </div>
+      <div class="main-view">
+        <p>WEFWEFEWFWFEFWEFWFEF</p>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </mat-sidenav-content>
 </mat-sidenav-container>

@@ -5,7 +5,8 @@ import {SideMenuService} from '../../services/side-menu.service';
 @Component({
     selector: 'app-side-nav',
     templateUrl: './side-nav.component.html',
-    styleUrls: ['./side-nav.component.scss']
+    styleUrls: ['./side-nav.component.scss'],
+    host: {'class': 'flex-column'}
 })
 export class SideNavComponent implements OnInit {
 

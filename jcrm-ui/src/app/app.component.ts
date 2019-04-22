@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {UserService} from './services/user.service';
 import {TranslateService} from '@ngx-translate/core';
 import {SecurityService} from './services/security.service';
 
@@ -13,7 +12,6 @@ export class AppComponent {
     authenticated: boolean;
 
     constructor(
-        private readonly userService: UserService,
         private readonly securityService: SecurityService,
         private readonly translateService: TranslateService
     ) {

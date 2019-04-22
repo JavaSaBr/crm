@@ -1,14 +1,13 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {environment} from '../../../environments/environment';
-import {OrganizationValidator} from '../../utils/validator/organization-validator';
 import {TranslateService} from '@ngx-translate/core';
 import {RegistrationService} from '../../services/registration.service';
 import {ErrorService} from '../../services/error.service';
 import {ErrorResponse} from '../../error/error-response';
 import {AuthenticationInResource} from '../../resources/authentication-in-resource';
-import {UserService} from '../../services/user.service';
 import {Router} from '@angular/router';
+import {SecurityService} from '../../services/security.service';
 
 @Component({
     selector: 'app-authentication',
@@ -29,7 +28,7 @@ export class AuthenticationComponent {
         private readonly translateService: TranslateService,
         private readonly registrationService: RegistrationService,
         private readonly errorService: ErrorService,
-        private readonly userService: UserService,
+        private readonly securityService: SecurityService,
         private readonly router: Router
     ) {
         this.authFormGroup = formBuilder.group({
@@ -63,7 +62,7 @@ export class AuthenticationComponent {
     }
 
     private finishAuthentication(value: AuthenticationInResource) {
-        this.userService.authenticate(value.user, value.token);
+        this.securityService.authenticate(value.user, value.token);
         this.disabled = false;
         this.router.navigate(['/']);
     }
