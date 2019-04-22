@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {SideMenuService} from '../../services/side-menu.service';
 import {SecurityService} from '../../services/security.service';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-nav-bar',
@@ -14,7 +15,8 @@ export class NavBarComponent implements OnInit {
 
     constructor(
         private readonly securityService: SecurityService,
-        private readonly sideMenuService: SideMenuService
+        private readonly sideMenuService: SideMenuService,
+        private readonly router: Router
     ) {
         this.additionalHamburgerStyle = '';
     }
@@ -33,5 +35,10 @@ export class NavBarComponent implements OnInit {
 
     toggleSideMenu() {
         this.sideMenuService.toggleMenu();
+    }
+
+    logout() {
+        this.securityService.logout();
+        this.router.navigate(['/no-auth']);
     }
 }

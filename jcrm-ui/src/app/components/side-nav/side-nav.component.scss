@@ -14,6 +14,8 @@
     width: 56px;
     background: mat-color($background, app-bar);
     color: mat-color($foreground, text);
+    padding-bottom: 16px;
+    padding-top: 16px;
   }
 
   .main-view {

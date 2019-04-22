@@ -26,6 +26,17 @@ export class SecurityService {
         this._authenticated.next(false);
     }
 
+    private internalAuthenticate(user: User, token: string) {
+        this._accessToken = token;
+        this._userObservable.next(user);
+        this._authenticated.next(this.isAuthenticated());
+    }
+
+    logout() {
+        localStorage.removeItem(SecurityService.LOCAL_STORAGE_TOKEN);
+        this.internalAuthenticate(null, null);
+    }
+
     tryToRestoreToken(): Promise<boolean> {
 
         //TODO
@@ -38,12 +49,6 @@ export class SecurityService {
 
         //let registrationService = this.injector.get(RegistrationService);
         return Promise.resolve(false)
-    }
-
-    private internalAuthenticate(user: User, token: string) {
-        this._accessToken = token;
-        this._userObservable.next(user);
-        this._authenticated.next(this.isAuthenticated());
     }
 
     authenticate(user: User, token: string) {

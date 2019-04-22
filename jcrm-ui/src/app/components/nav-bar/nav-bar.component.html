@@ -7,21 +7,24 @@
       </span>
     </div>
   </button>
-
-  <!-- <span>JCRM</span>
-
-  <div class="header-divider"></div>
-
-  <span>Current Page</span>
   <span class="space-filler"></span>
-
-  <mat-icon class="search-icon">search</mat-icon>
-  <mat-form-field class="search-field">
-    <input matInput type="text" placeholder="Search" [(ngModel)]="searchValue">
-    <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchValue=''">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-form-field>
-
-  <span class="space-filler"></span>-->
+  <div>
+    <mat-icon class="search-icon">search</mat-icon>
+    <mat-form-field class="search-field">
+      <input matInput type="text" placeholder="Search" [(ngModel)]="searchValue">
+      <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchValue=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <span class="space-filler"></span>
+  <button mat-icon-button>
+    <mat-icon>notifications</mat-icon>
+  </button>
+  <button mat-icon-button>
+    <mat-icon>apps</mat-icon>
+  </button>
+  <button mat-icon-button (click)="logout()">
+    <mat-icon>exit_to_app</mat-icon>
+  </button>
 </mat-toolbar>
