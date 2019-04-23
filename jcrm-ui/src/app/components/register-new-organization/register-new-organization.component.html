@@ -3,7 +3,7 @@
     <mat-horizontal-stepper [linear]="true">
       <mat-step [editable]="canEditSteps">
         <div>
-          <form [formGroup]="orgFormGroup">
+          <form [formGroup]="orgFormGroup" (keydown.esc)="cancelButton1._getHostElement().click()">
             <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_1.HEADER' | translate"></p></ng-template>
             <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_1.TITLE' | translate }}</h2>
             <p [innerHTML]="'REGISTER_ORG.STEP_1.DESCRIPTION' | translate"></p>
@@ -11,7 +11,7 @@
               <mat-grid-tile>
                 <mat-form-field class="form-field" appearance="outline">
                   <mat-label>{{ 'REGISTER_ORG.STEP_1.ORG_NAME.LABEL' | translate }}</mat-label>
-                  <input matInput formControlName="orgName" required>
+                  <input matInput formControlName="orgName" #orgNameField required>
                   <mat-error *ngIf="orgName.invalid">{{getOrgNameErrorMessage()}}</mat-error>
                 </mat-form-field>
               </mat-grid-tile>
@@ -24,9 +24,9 @@
               </mat-grid-tile>
             </mat-grid-list>
             <div class="flex-row flex-end">
-              <button mat-button routerLink="../"
+              <button mat-button routerLink="../" type="button" #cancelButton1
                       [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
-              <button mat-raised-button matStepperNext color="primary"
+              <button mat-raised-button matStepperNext color="primary" type="submit"
                       [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}</button>
             </div>
           </form>
@@ -34,7 +34,7 @@
       </mat-step>
       <mat-step [stepControl]="ownerFormGroup" [editable]="canEditSteps">
         <div>
-          <form [formGroup]="ownerFormGroup">
+          <form [formGroup]="ownerFormGroup" (keydown.esc)="backButton1._getHostElement().click()">
             <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_2.HEADER' | translate"></ng-template>
             <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_2.TITLE' | translate }}</h2>
             <p [innerHTML]="'REGISTER_ORG.STEP_2.DESCRIPTION' | translate"></p>
@@ -54,7 +54,7 @@
               <mat-grid-tile [colspan]="2">
                 <mat-form-field class="form-field" appearance="outline">
                   <mat-label>{{ 'REGISTER_ORG.STEP_2.EMAIL.LABEL' | translate }}</mat-label>
-                  <input matInput formControlName="email" type="email" required>
+                  <input matInput formControlName="email" type="email" #emailField required>
                   <mat-hint>{{ 'REGISTER_ORG.STEP_2.EMAIL.HINT' | translate }}</mat-hint>
                   <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
                 </mat-form-field>
@@ -80,11 +80,12 @@
               </mat-grid-tile>
             </mat-grid-list>
             <div class="flex-row">
-              <button mat-button matStepperPrevious [disabled]="disabled">{{ 'FORMS.BUTTON.BACK' | translate }}</button>
+              <button mat-button matStepperPrevious type="button"
+                      [disabled]="disabled" #backButton1>{{ 'FORMS.BUTTON.BACK' | translate }}</button>
               <span class="space-filler"></span>
-              <button mat-button routerLink="../"
+              <button mat-button routerLink="../" type="button"
                       [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
-              <button mat-raised-button matStepperNext color="primary"
+              <button mat-raised-button matStepperNext color="primary" type="submit"
                       [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}</button>
             </div>
           </form>
@@ -92,7 +93,7 @@
       </mat-step>
       <mat-step [stepControl]="subscribeFormGroup" [editable]="canEditSteps">
         <div>
-          <form [formGroup]="subscribeFormGroup">
+          <form [formGroup]="subscribeFormGroup" (keydown.esc)="backButton2._getHostElement().click()">
             <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_3.HEADER' | translate"></ng-template>
             <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_3.TITLE' | translate }}</h2>
             <p [innerHTML]="'REGISTER_ORG.STEP_3.DESCRIPTION' | translate"></p>
@@ -109,11 +110,12 @@
               </mat-grid-list>
             </mat-radio-group>
             <div class="flex-row">
-              <button mat-button matStepperPrevious [disabled]="disabled">{{ 'FORMS.BUTTON.BACK' | translate }}</button>
+              <button mat-button matStepperPrevious type="button"
+                      [disabled]="disabled" #backButton2>{{ 'FORMS.BUTTON.BACK' | translate }}</button>
               <span class="space-filler"></span>
-              <button mat-button routerLink="../"
+              <button mat-button routerLink="../" type="button"
                       [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
-              <button mat-raised-button matStepperNext color="primary" (click)="sendEmailConfirmation()"
+              <button mat-raised-button matStepperNext color="primary" (click)="sendEmailConfirmation()" type="submit"
                       [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}
               </button>
             </div>
@@ -122,7 +124,7 @@
       </mat-step>
       <mat-step [stepControl]="activationFormGroup" [editable]="canEditSteps">
         <div>
-          <form [formGroup]="activationFormGroup">
+          <form [formGroup]="activationFormGroup" (keydown.esc)="cancelButton2._getHostElement().click()">
             <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_4.HEADER' | translate"></ng-template>
             <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_4.TITLE' | translate }}</h2>
             <p [innerHTML]="'REGISTER_ORG.STEP_4.DESCRIPTION' | translate:selectedEmail"></p>
@@ -130,15 +132,15 @@
               <mat-grid-tile>
                 <mat-form-field class="form-field" appearance="outline">
                   <mat-label>{{ 'REGISTER_ORG.STEP_4.ACTIVATE_CODE.LABEL' | translate }}</mat-label>
-                  <input matInput formControlName="activationCode" required>
+                  <input matInput formControlName="activationCode" #activationCodeField required>
                 </mat-form-field>
               </mat-grid-tile>
             </mat-grid-list>
             <div class="flex-row">
               <span class="space-filler"></span>
-              <button mat-button routerLink="../"
+              <button mat-button routerLink="../" type="button" #cancelButton2
                       [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
-              <button mat-raised-button color="primary" (click)="activateAndClose()"
+              <button mat-raised-button color="primary" (click)="activateAndClose()" type="submit"
                       [disabled]="disabled">{{ 'FORMS.BUTTON.COMPLETE' | translate }}</button>
             </div>
           </form>

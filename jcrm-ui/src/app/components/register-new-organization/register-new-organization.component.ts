@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PhoneNumberValidator} from '../../input/phone-number/phone-number-validator';
 import {PasswordValidator} from '../../utils/validator/password-validator';
@@ -18,6 +18,7 @@ import {Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {SecurityService} from '../../services/security.service';
 import {UiUtils} from '../../utils/ui-utils';
+import {MatHorizontalStepper, MatInput} from '@angular/material';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -25,7 +26,7 @@ import {UiUtils} from '../../utils/ui-utils';
     styleUrls: ['./register-new-organization.component.scss'],
     host: {'class': 'full-screen-form'}
 })
-export class RegisterNewOrganizationComponent {
+export class RegisterNewOrganizationComponent implements OnInit {
 
     readonly rowHeight = UiUtils.FORM_ROW_HEIGHT;
     readonly rowRadioButtonHeight = UiUtils.FORM_ROW_RADIO_BUTTON_HEIGHT;
@@ -40,6 +41,18 @@ export class RegisterNewOrganizationComponent {
     readonly country: FormControl;
     readonly email: FormControl;
     readonly phoneNumber: FormControl;
+
+    @ViewChild(MatHorizontalStepper)
+    stepper: MatHorizontalStepper;
+
+    @ViewChild('orgNameField')
+    orgNameField: ElementRef;
+
+    @ViewChild('emailField')
+    emailField: ElementRef;
+
+    @ViewChild('activationCodeField')
+    activationCodeField: ElementRef;
 
     selectedEmail;
     disabled: boolean;
@@ -113,6 +126,28 @@ export class RegisterNewOrganizationComponent {
         this.email = this.ownerFormGroup.controls['email'] as FormControl;
         this.phoneNumber = this.ownerFormGroup.controls['phoneNumber'] as FormControl;
         this.canEditSteps = true;
+    }
+
+    ngOnInit(): void {
+        setTimeout(() => this.orgNameField.nativeElement.focus(), 100);
+        this.stepper.selectionChange.subscribe(value => {
+            setTimeout(() => {
+                switch (value.selectedIndex) {
+                    case 0: {
+                        this.orgNameField.nativeElement.focus();
+                        break;
+                    }
+                    case 1: {
+                        this.emailField.nativeElement.focus();
+                        break;
+                    }
+                    case 3: {
+                        this.activationCodeField.nativeElement.focus();
+                        break;
+                    }
+                }
+            }, 100);
+        });
     }
 
     activateAndClose() {

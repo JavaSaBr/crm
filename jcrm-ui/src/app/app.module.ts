@@ -39,6 +39,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
 import {NoAuthHomeComponent} from './components/no-auth-home/no-auth-home.component';
 import {AuthenticationComponent} from './components/authentication/authentication.component';
+import {AutofocusDirective} from './directives/autofocus.directive';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -57,7 +58,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         CountryInput,
         RegisterNewOrganizationComponent,
         NoAuthHomeComponent,
-        AuthenticationComponent
+        AuthenticationComponent,
+        AutofocusDirective
     ],
     imports: [
         BrowserModule,
