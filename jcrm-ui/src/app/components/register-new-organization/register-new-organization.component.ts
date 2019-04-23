@@ -17,6 +17,7 @@ import {AuthenticationInResource} from '../../resources/authentication-in-resour
 import {Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {SecurityService} from '../../services/security.service';
+import {UiUtils} from '../../utils/ui-utils';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -25,6 +26,10 @@ import {SecurityService} from '../../services/security.service';
     host: {'class': 'full-screen-form'}
 })
 export class RegisterNewOrganizationComponent {
+
+    readonly rowHeight = UiUtils.FORM_ROW_HEIGHT;
+    readonly rowRadioButtonHeight = UiUtils.FORM_ROW_RADIO_BUTTON_HEIGHT;
+    readonly gutterSize = UiUtils.FORM_GUTTER_SIZE;
 
     readonly orgFormGroup: FormGroup;
     readonly ownerFormGroup: FormGroup;

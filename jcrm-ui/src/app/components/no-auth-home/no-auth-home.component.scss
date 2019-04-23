@@ -2,37 +2,28 @@
 
 @mixin no-auth-home($theme) {
 
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  .top-toolbar {
-  }
-
-  .tool-bar-separator {
+  .no-auth-tool-bar-separator {
     background-color: mat-color($foreground, divider);
     height: 1px;
   }
 }
 
-.top-buttons-container button {
-  margin-right: 8px;
+.no-auth-tool-bar {
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
-.mat-toolbar-multiple-rows {
+.no-auth-toolbar-button {
+  margin-left: 8px;
+}
+
+.no-auth-toolbar-multiple-rows {
   min-height: 48px;
   max-height: 48px;
-}
-
-.big-cell {
-  min-height: 400px;
-}
-
-.full-screen-form {
-  margin-top: auto;
-  margin-bottom: auto;
-  //display: flex;
-  //align-items: center;
-  //justify-content: center;
-  //flex-direction: column;
-  //width: 100%;
 }

@@ -1,22 +1,28 @@
 <div class="card-form-wrapper register-new-org-component">
   <mat-card class="card-form-container">
-    <mat-horizontal-stepper [linear]="true">
+    <mat-horizontal-stepper [linear]="false">
       <mat-step [editable]="canEditSteps">
         <div>
-          <form [formGroup]="orgFormGroup" class="flex-column">
+          <form [formGroup]="orgFormGroup">
             <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_1.HEADER' | translate"></p></ng-template>
             <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_1.TITLE' | translate }}</h2>
             <p [innerHTML]="'REGISTER_ORG.STEP_1.DESCRIPTION' | translate"></p>
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'REGISTER_ORG.STEP_1.ORG_NAME.LABEL' | translate }}</mat-label>
-              <input matInput formControlName="orgName" required>
-              <mat-error *ngIf="orgName.invalid">{{getOrgNameErrorMessage()}}</mat-error>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'REGISTER_ORG.STEP_1.COUNTRY.LABEL' | translate }}</mat-label>
-              <country-input formControlName="country" required></country-input>
-              <mat-error *ngIf="country.invalid">{{getCountryErrorMessage()}}</mat-error>
-            </mat-form-field>
+            <mat-grid-list cols="1" [rowHeight]="rowHeight" [gutterSize]="gutterSize">
+              <mat-grid-tile>
+                <mat-form-field class="form-field" appearance="outline">
+                  <mat-label>{{ 'REGISTER_ORG.STEP_1.ORG_NAME.LABEL' | translate }}</mat-label>
+                  <input matInput formControlName="orgName" required>
+                  <mat-error *ngIf="orgName.invalid">{{getOrgNameErrorMessage()}}</mat-error>
+                </mat-form-field>
+              </mat-grid-tile>
+              <mat-grid-tile>
+                <mat-form-field class="form-field" appearance="outline">
+                  <mat-label>{{ 'REGISTER_ORG.STEP_1.COUNTRY.LABEL' | translate }}</mat-label>
+                  <country-input formControlName="country" required></country-input>
+                  <mat-error *ngIf="country.invalid">{{getCountryErrorMessage()}}</mat-error>
+                </mat-form-field>
+              </mat-grid-tile>
+            </mat-grid-list>
             <div class="flex-row flex-end">
               <button mat-button routerLink="../"
                       [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
@@ -28,11 +34,11 @@
       </mat-step>
       <mat-step [stepControl]="ownerFormGroup" [editable]="canEditSteps">
         <div>
-          <form [formGroup]="ownerFormGroup" class="flex-column">
+          <form [formGroup]="ownerFormGroup">
             <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_2.HEADER' | translate"></ng-template>
             <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_2.TITLE' | translate }}</h2>
             <p [innerHTML]="'REGISTER_ORG.STEP_2.DESCRIPTION' | translate"></p>
-            <mat-grid-list cols="2" [rowHeight]="81" [gutterSize]="10">
+            <mat-grid-list cols="2" [rowHeight]="rowHeight" [gutterSize]="gutterSize">
               <mat-grid-tile>
                 <mat-form-field class="form-field" appearance="outline">
                   <mat-label>{{ 'REGISTER_ORG.STEP_2.FIRST_NAME.LABEL' | translate }}</mat-label>
@@ -86,15 +92,21 @@
       </mat-step>
       <mat-step [stepControl]="subscribeFormGroup" [editable]="canEditSteps">
         <div>
-          <form [formGroup]="subscribeFormGroup" class="flex-column">
+          <form [formGroup]="subscribeFormGroup">
             <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_3.HEADER' | translate"></ng-template>
             <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_3.TITLE' | translate }}</h2>
             <p [innerHTML]="'REGISTER_ORG.STEP_3.DESCRIPTION' | translate"></p>
-            <mat-radio-group class="flex-column" formControlName="subscribe">
-              <mat-radio-button class="radio-button-vertical"
-                                value="true">{{ 'FORMS.BUTTON.YES' | translate }}</mat-radio-button>
-              <mat-radio-button class="radio-button-vertical"
-                                value="false">{{ 'FORMS.BUTTON.NO' | translate }}</mat-radio-button>
+            <mat-radio-group formControlName="subscribe">
+              <mat-grid-list cols="1" [rowHeight]="rowRadioButtonHeight" [gutterSize]="gutterSize">
+                <mat-grid-tile>
+                  <mat-radio-button class="radio-button-vertical form-field form-field-radio-button"
+                                    value="true">{{ 'FORMS.BUTTON.YES' | translate }}</mat-radio-button>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                  <mat-radio-button class="radio-button-vertical form-field form-field-radio-button"
+                                    value="false">{{ 'FORMS.BUTTON.NO' | translate }}</mat-radio-button>
+                </mat-grid-tile>
+              </mat-grid-list>
             </mat-radio-group>
             <div class="flex-row">
               <button mat-button matStepperPrevious [disabled]="disabled">{{ 'FORMS.BUTTON.BACK' | translate }}</button>
@@ -110,14 +122,18 @@
       </mat-step>
       <mat-step [stepControl]="activationFormGroup" [editable]="canEditSteps">
         <div>
-          <form [formGroup]="activationFormGroup" class="flex-column">
+          <form [formGroup]="activationFormGroup">
             <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_4.HEADER' | translate"></ng-template>
             <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_4.TITLE' | translate }}</h2>
             <p [innerHTML]="'REGISTER_ORG.STEP_4.DESCRIPTION' | translate:selectedEmail"></p>
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'REGISTER_ORG.STEP_4.ACTIVATE_CODE.LABEL' | translate }}</mat-label>
-              <input matInput formControlName="activationCode" required>
-            </mat-form-field>
+            <mat-grid-list cols="1" [rowHeight]="rowHeight" [gutterSize]="gutterSize">
+              <mat-grid-tile>
+                <mat-form-field class="form-field" appearance="outline">
+                  <mat-label>{{ 'REGISTER_ORG.STEP_4.ACTIVATE_CODE.LABEL' | translate }}</mat-label>
+                  <input matInput formControlName="activationCode" required>
+                </mat-form-field>
+              </mat-grid-tile>
+            </mat-grid-list>
             <div class="flex-row">
               <span class="space-filler"></span>
               <button mat-button routerLink="../"

@@ -3,16 +3,22 @@
     <form [formGroup]="authFormGroup" class="card-form">
       <mat-card-title class="card-center-title">{{ "AUTHENTICATION.TITLE" | translate }}</mat-card-title>
       <p class="card-form-description-block">{{ "AUTHENTICATION.MAIN_DESCRIPTION" | translate }}</p>
-      <mat-form-field class="card-form-field" appearance="outline">
-        <mat-label>{{ "AUTHENTICATION.LOGIN" | translate }}</mat-label>
-        <input matInput formControlName="login" required>
-        <mat-error *ngIf="login.invalid">{{getLoginErrorMessage()}}</mat-error>
-      </mat-form-field>
-      <mat-form-field class="card-form-field" appearance="outline">
-        <mat-label>{{ "AUTHENTICATION.PASSWORD" | translate }}</mat-label>
-        <input matInput formControlName="password" type="password" required>
-        <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
-      </mat-form-field>
+      <mat-grid-list cols="1" [rowHeight]="rowHeight">
+        <mat-grid-tile>
+          <mat-form-field class="card-form-field" appearance="outline">
+            <mat-label>{{ "AUTHENTICATION.LOGIN" | translate }}</mat-label>
+            <input matInput formControlName="login" required>
+            <mat-error *ngIf="login.invalid">{{getLoginErrorMessage()}}</mat-error>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field class="card-form-field" appearance="outline">
+            <mat-label>{{ "AUTHENTICATION.PASSWORD" | translate }}</mat-label>
+            <input matInput formControlName="password" type="password" required>
+            <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
       <br>
       <a class="card-form-description-block" routerLink="../">{{ "AUTHENTICATION.FORGOT_EMAIL" | translate }}</a>
       <p class="card-form-description-block">{{ "AUTHENTICATION.GUEST_MODE" | translate }}

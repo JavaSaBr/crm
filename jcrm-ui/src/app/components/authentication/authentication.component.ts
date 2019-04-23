@@ -8,6 +8,7 @@ import {ErrorResponse} from '../../error/error-response';
 import {AuthenticationInResource} from '../../resources/authentication-in-resource';
 import {Router} from '@angular/router';
 import {SecurityService} from '../../services/security.service';
+import {UiUtils} from '../../utils/ui-utils';
 
 @Component({
     selector: 'app-authentication',
@@ -16,6 +17,8 @@ import {SecurityService} from '../../services/security.service';
     host: {'class': 'full-screen-form'}
 })
 export class AuthenticationComponent {
+
+    readonly rowHeight = UiUtils.FORM_ROW_HEIGHT;
 
     readonly authFormGroup: FormGroup;
     readonly login: FormControl;
