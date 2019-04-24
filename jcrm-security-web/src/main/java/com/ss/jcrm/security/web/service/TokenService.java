@@ -4,6 +4,7 @@ import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.security.web.exception.InvalidTokenException;
 import com.ss.jcrm.security.web.exception.ExpiredTokenException;
 import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException;
+import com.ss.jcrm.security.web.exception.PrematureTokenException;
 import com.ss.jcrm.user.api.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +22,7 @@ public interface TokenService {
 
     /**
      * @throws ExpiredTokenException if the token is expired.
+     * @throws PrematureTokenException if the token is from future.
      * @throws InvalidTokenException if the token isn't valid.
      * @throws ObjectNotFoundDaoException if the token's user cannot be found.
      */
@@ -28,6 +30,7 @@ public interface TokenService {
 
     /**
      * @throws ExpiredTokenException if the token is expired.
+     * @throws PrematureTokenException if the token is from future.
      * @throws InvalidTokenException if the token isn't valid.
      * @throws CompletionException -> ObjectNotFoundDaoException if the token's user cannot be found.
      */
@@ -36,7 +39,8 @@ public interface TokenService {
     /**
      * @throws MaxRefreshedTokenException if the token reached max count of revokes.
      * @throws ExpiredTokenException if the token is expired.
+     * @throws PrematureTokenException if the token is from future.
      * @throws InvalidTokenException if the token isn't valid.
      */
-    @NotNull String refresh(@NotNull String token);
+    @NotNull String refresh(@NotNull User user, @NotNull String token);
 }

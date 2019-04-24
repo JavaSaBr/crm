@@ -33,6 +33,7 @@ public class JdbcUser implements User {
     private Set<UserGroup> groups;
 
     private volatile int version;
+    private volatile int passwordVersion;
 
     private boolean emailConfirmed;
 
@@ -47,7 +48,8 @@ public class JdbcUser implements User {
         @Nullable String secondName,
         @Nullable String thirdName,
         @Nullable String phoneNumber,
-        int version
+        int version,
+        int passwordVersion
     ) {
         this.organization = organization;
         this.id = id;
@@ -61,5 +63,6 @@ public class JdbcUser implements User {
         this.thirdName = thirdName;
         this.phoneNumber = phoneNumber;
         this.groups = Set.of();
+        this.passwordVersion = passwordVersion;
     }
 }

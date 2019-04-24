@@ -34,17 +34,17 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
     @Language("PostgreSQL")
     private static final String Q_SELECT_BY_EMAIL = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\" from \"user\" where \"email\" = ?";
+        " \"version\", \"email_confirmed\", \"password_version\" from \"user\" where \"email\" = ?";
 
     @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\" from \"user\" where \"id\" = ?";
+        " \"version\", \"email_confirmed\", \"password_version\" from \"user\" where \"id\" = ?";
 
     @Language("PostgreSQL")
     private static final String Q_SELECT_BY_PHONE_NUMBER = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\" from \"user\" where \"phone_number\" = ?";
+        " \"version\", \"email_confirmed\", \"password_version\" from \"user\" where \"phone_number\" = ?";
 
 
     @Language("PostgreSQL")
@@ -55,7 +55,7 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
     @Language("PostgreSQL")
     private static final String Q_UPDATE = "update \"user\" set \"first_name\" = ?, \"second_name\" = ?," +
         " \"third_name\" = ?, \"phone_number\" = ?,  \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
-        " \"email_confirmed\" = ? where \"id\" = ? and \"version\" = ?";
+        " \"email_confirmed\" = ?, \"password_version\" = ? where \"id\" = ? and \"version\" = ?";
 
     @Language("PostgreSQL")
     private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"user\" where \"email\" = ?";
@@ -115,6 +115,7 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
                         secondName,
                         thirdName,
                         phoneNumber,
+                        0,
                         0
                     );
                 } else {
@@ -184,8 +185,9 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
             statement.setObject(6, toJsonArray(user.getGroups()));
             statement.setInt(7, version + 1);
             statement.setBoolean(8, user.isEmailConfirmed());
-            statement.setLong(9, user.getId());
-            statement.setInt(10, version);
+            statement.setInt(9, user.getPasswordVersion());
+            statement.setLong(10, user.getId());
+            statement.setInt(11, version);
 
             if (statement.executeUpdate() != 1) {
                 throw new NotActualObjectDaoException("The user's version " + version + " is outdated.");
@@ -249,6 +251,7 @@ public class JdbcUserDao extends AbstractJdbcDao<User> implements UserDao {
             roles,
             groups,
             rs.getInt(12),    // version
+            rs.getInt(14),    // password version
             rs.getBoolean(13) // email confirmed
         );
     }

@@ -50,4 +50,8 @@ public interface User extends VersionedEntity {
     boolean isEmailConfirmed();
 
     void setEmailConfirmed(boolean confirmed);
+
+    int getPasswordVersion();
+
+    void setPasswordVersion(int passwordVersion);
 }

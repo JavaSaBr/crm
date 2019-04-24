@@ -1,11 +1,15 @@
 package com.ss.jcrm.security.web.test.service
 
 import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException
+import com.ss.jcrm.security.web.exception.ChangedPasswordTokenException
 import com.ss.jcrm.security.web.exception.InvalidTokenException
 import com.ss.jcrm.security.web.exception.ExpiredTokenException
+import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException
+import com.ss.jcrm.security.web.exception.PrematureTokenException
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.test.WebSecuritySpecification
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 
 import java.time.ZonedDateTime
 import java.util.concurrent.CompletionException
@@ -15,6 +19,9 @@ class TokenServiceTest extends WebSecuritySpecification {
     @Autowired
     UnsafeTokenService unsafeTokenService
 
+    @Value('${token.max.refreshes}')
+    Integer maxRefreshes
+    
     def "should generate a new token for a user"() {
 
         given:
@@ -39,6 +46,18 @@ class TokenServiceTest extends WebSecuritySpecification {
         then:
             foundUser != null
             foundUser.getId() == user.getId()
+    }
+    
+    def "should refresh a token"() {
+        
+        given:
+            def user = userTestHelper.newUser("User1")
+            def token = unsafeTokenService.generateNewToken(user)
+        when:
+            def newToken = unsafeTokenService.refresh(user, token)
+        then:
+            newToken != null
+            newToken != token
     }
 
     def "should thrown ObjectNotFoundDaoException when user isn't exist"() {
@@ -68,11 +87,60 @@ class TokenServiceTest extends WebSecuritySpecification {
 
         given:
             def user = userTestHelper.newUser("User1")
-            def token = unsafeTokenService.generateNewToken(user, ZonedDateTime.now().minusDays(300))
+            def token = unsafeTokenService.generateNewToken(
+                user.id,
+                ZonedDateTime.now().minusDays(300),
+                ZonedDateTime.now().minusDays(350),
+                0,
+                0
+            )
         when:
             unsafeTokenService.findUserIfNotExpired(token)
         then:
             thrown ExpiredTokenException
+    }
+    
+    def "should thrown PrematureTokenException when a token is from future"() {
+        
+        given:
+            def user = userTestHelper.newUser("User1")
+            def token = unsafeTokenService.generateNewToken(
+                user.id,
+                ZonedDateTime.now().plusDays(2),
+                ZonedDateTime.now().plusDays(1),
+                0,
+                0
+            )
+        when:
+            unsafeTokenService.findUserIfNotExpired(token)
+        then:
+            thrown PrematureTokenException
+    }
+    
+    def "should thrown MaxRefreshedTokenException when a token has reached max refreshes"() {
+        
+        given:
+            def user = userTestHelper.newUser("User1")
+            def token = unsafeTokenService.generateNewToken(user)
+        when:
+            def newToken = unsafeTokenService.refresh(user, token)
+            (maxRefreshes + 1).times {
+                newToken = unsafeTokenService.refresh(user, newToken)
+            }
+        then:
+            thrown MaxRefreshedTokenException
+    }
+    
+    def "should thrown ChangedPasswordTokenException when a user changed a password"() {
+        
+        given:
+            def user = userTestHelper.newUser("User1")
+            def token = unsafeTokenService.generateNewToken(user)
+            user.setPasswordVersion(2)
+        when:
+            unsafeTokenService.refresh(user, token)
+        then:
+            thrown ChangedPasswordTokenException
     }
 
     def "should thrown InvalidTokenException when a token isn't valid async"() {
@@ -90,7 +158,13 @@ class TokenServiceTest extends WebSecuritySpecification {
 
         given:
             def user = userTestHelper.newUser("User1")
-            def token = unsafeTokenService.generateNewToken(user, ZonedDateTime.now().minusDays(300))
+            def token = unsafeTokenService.generateNewToken(
+                user.id,
+                ZonedDateTime.now().minusDays(300),
+                ZonedDateTime.now().minusDays(350),
+                0,
+                0
+            )
         when:
             unsafeTokenService.findUserIfNotExpiredAsync(token).join()
         then:

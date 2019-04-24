@@ -1,9 +1,7 @@
 package com.ss.jcrm.security.web.service.impl;
 
 import static java.time.ZonedDateTime.now;
-import com.ss.jcrm.security.web.exception.InvalidTokenException;
-import com.ss.jcrm.security.web.exception.ExpiredTokenException;
-import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException;
+import com.ss.jcrm.security.web.exception.*;
 import com.ss.jcrm.security.web.service.UnsafeTokenService;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.dao.UserDao;
@@ -28,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 public class JjwtTokenService implements UnsafeTokenService {
 
     private static final String TOKEN_REFRESHES_FIELD = "refreshes";
+    private static final String TOKEN_PWD_VERSION_FIELD = "pwd_version";
 
     private final UserDao userDao;
     private final SecretKey secretKey;
@@ -77,7 +76,14 @@ public class JjwtTokenService implements UnsafeTokenService {
 
     @Override
     public @NotNull String generateNewToken(@NotNull User user) {
-        return generateNewToken(user.getId(), now().plusMinutes(expirationTime));
+        var now = now();
+        return generateNewToken(
+            user.getId(),
+            now.plusMinutes(expirationTime),
+            now,
+            0,
+            user.getPasswordVersion()
+        );
     }
 
     @Override
@@ -85,13 +91,15 @@ public class JjwtTokenService implements UnsafeTokenService {
         long userId,
         @NotNull ZonedDateTime expiration,
         @NotNull ZonedDateTime notBefore,
-        int refreshes
+        int refreshes,
+        int passwordVersion
     ) {
         return Jwts.builder()
             .setSubject(String.valueOf(userId))
             .setExpiration(Date.from(expiration.toInstant()))
             .setNotBefore(Date.from(notBefore.toInstant()))
             .claim(TOKEN_REFRESHES_FIELD, refreshes)
+            .claim(TOKEN_PWD_VERSION_FIELD, passwordVersion)
             .signWith(secretKey)
             .compact();
     }
@@ -109,38 +117,51 @@ public class JjwtTokenService implements UnsafeTokenService {
     }
 
     @Override
-    public @NotNull String refresh(@NotNull String token) {
+    public @NotNull String refresh(@NotNull User user, @NotNull String token) {
 
         var claims = getClaims(token);
         var refreshes = (Integer) claims.get(TOKEN_REFRESHES_FIELD);
 
         if (refreshes == null) {
             throw new InvalidTokenException("The token [" + token + "] doesn't include field 'refreshes'.");
-        } else if(refreshes > maxRefreshes) {
+        } else if (refreshes > maxRefreshes) {
             throw new MaxRefreshedTokenException("The token [" + token + "] has reached max refreshes.");
         }
 
-        var id = claims.getId();
+        var passwordVersion = (Integer) claims.get(TOKEN_PWD_VERSION_FIELD);
+
+        if (passwordVersion == null) {
+            throw new InvalidTokenException("The token [" + token + "] doesn't include field 'refreshes'.");
+        } else if (passwordVersion != user.getPasswordVersion()) {
+            throw new ChangedPasswordTokenException(
+                "The token [" + token + "] cannot be used for the user [" + user.getEmail() +
+                    "] because his password was changed.");
+        }
+
         var now = now();
 
-        return generateNewToken(
-            Long.parseLong(id),
+        return generateNewToken(user.getId(),
             now.plusMinutes(expirationTime),
             now,
-            refreshes + 1
+            refreshes + 1,
+            user.getPasswordVersion()
         );
     }
 
     private @NotNull Claims getClaims(@NotNull String token) {
         try {
 
-             return Jwts.parser()
+            return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
 
         } catch (ExpiredJwtException e) {
-            throw new ExpiredTokenException("The token [" + token + "] is expired.");
+            throw new ExpiredTokenException(
+                "The token [" + token + "] is expired [" + e.getClaims().getExpiration() + "].");
+        } catch (PrematureJwtException e) {
+            throw new PrematureTokenException(
+                "The token [" + token + "] is from future [" + e.getClaims().getNotBefore() + "].");
         } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
             throw new InvalidTokenException(e);
         }
