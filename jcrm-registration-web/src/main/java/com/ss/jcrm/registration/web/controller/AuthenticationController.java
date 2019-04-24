@@ -7,18 +7,18 @@ import com.ss.jcrm.registration.web.resources.AuthenticationOutResource;
 import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.service.PasswordService;
+import com.ss.jcrm.security.web.exception.InvalidTokenException;
+import com.ss.jcrm.security.web.exception.ExpiredTokenException;
+import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.controller.AsyncRestController;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.rlib.common.util.StringUtils;
-import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
@@ -81,5 +81,15 @@ public class AuthenticationController extends AsyncRestController {
             return new AuthenticationOutResource(new UserOutResource(user), tokenService.generateNewToken(user));
 
         }, controllerExecutor);
+    }
+
+    @GetMapping(
+        path = "/registration/revoke",
+        produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
+    @NotNull CompletableFuture<@NotNull AuthenticationOutResource> refresh(@NotNull @RequestParam String token) {
+        var newToken = tokenService.refresh(token);
+        return tokenService.findUserIfNotExpiredAsync(newToken)
+            .thenApply(user -> new AuthenticationOutResource(new UserOutResource(user), newToken));
     }
 }

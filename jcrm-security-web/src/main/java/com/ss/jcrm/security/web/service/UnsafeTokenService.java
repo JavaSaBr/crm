@@ -1,11 +1,19 @@
 package com.ss.jcrm.security.web.service;
 
-import com.ss.jcrm.user.api.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.ZonedDateTime;
 
 public interface UnsafeTokenService extends TokenService {
 
-    @NotNull String generateNewToken(@NotNull User user, @NotNull ZonedDateTime expiry);
+    default @NotNull String generateNewToken(long userId, @NotNull ZonedDateTime expiration) {
+        return generateNewToken(userId, expiration, ZonedDateTime.now(), 0);
+    }
+
+    @NotNull String generateNewToken(
+        long userId,
+        @NotNull ZonedDateTime expiration,
+        @NotNull ZonedDateTime notBefore,
+        int refreshes
+    );
 }

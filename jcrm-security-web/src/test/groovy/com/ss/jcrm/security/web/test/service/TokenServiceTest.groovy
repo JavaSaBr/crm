@@ -2,7 +2,7 @@ package com.ss.jcrm.security.web.test.service
 
 import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException
 import com.ss.jcrm.security.web.exception.InvalidTokenException
-import com.ss.jcrm.security.web.exception.TokenExpiredException
+import com.ss.jcrm.security.web.exception.ExpiredTokenException
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.test.WebSecuritySpecification
 import org.springframework.beans.factory.annotation.Autowired
@@ -72,7 +72,7 @@ class TokenServiceTest extends WebSecuritySpecification {
         when:
             unsafeTokenService.findUserIfNotExpired(token)
         then:
-            thrown TokenExpiredException
+            thrown ExpiredTokenException
     }
 
     def "should thrown InvalidTokenException when a token isn't valid async"() {
@@ -94,7 +94,7 @@ class TokenServiceTest extends WebSecuritySpecification {
         when:
             unsafeTokenService.findUserIfNotExpiredAsync(token).join()
         then:
-            thrown TokenExpiredException
+            thrown ExpiredTokenException
     }
 
     def "should thrown ExecutionException -> ObjectNotFoundDaoException when a token is expired async"() {
