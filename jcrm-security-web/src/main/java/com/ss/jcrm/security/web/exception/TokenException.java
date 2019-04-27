@@ -1,9 +1,8 @@
 package com.ss.jcrm.security.web.exception;
 
-import com.ss.jcrm.web.exception.WebException;
 import org.jetbrains.annotations.NotNull;
 
-public class TokenException extends WebException {
+public class TokenException extends RuntimeException {
 
     public TokenException(@NotNull String message) {
         super(message);

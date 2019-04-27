@@ -47,7 +47,7 @@ public class JjwtTokenService implements UnsafeTokenService {
         }
 
         log.info("Expiration time: {}", expirationTime);
-        log.info("Max revokes: {}", maxRefreshes);
+        log.info("Max refreshes: {}", maxRefreshes);
     }
 
     @Override
@@ -105,9 +105,21 @@ public class JjwtTokenService implements UnsafeTokenService {
     }
 
     @Override
+    public @NotNull User findUser(@NotNull String token) {
+        var claims = getPossibleExpiredClaims(token);
+        return userDao.requireById(Long.parseLong(claims.getSubject()));
+    }
+
+    @Override
     public @NotNull User findUserIfNotExpired(@NotNull String token) {
         var claims = getClaims(token);
         return userDao.requireById(Long.parseLong(claims.getSubject()));
+    }
+
+    @Override
+    public @NotNull CompletableFuture<@NotNull User> findUserAsync(@NotNull String token) {
+        var claims = getPossibleExpiredClaims(token);
+        return userDao.requireByIdAsync(Long.parseLong(claims.getSubject()));
     }
 
     @Override
@@ -119,7 +131,7 @@ public class JjwtTokenService implements UnsafeTokenService {
     @Override
     public @NotNull String refresh(@NotNull User user, @NotNull String token) {
 
-        var claims = getClaims(token);
+        var claims = getPossibleExpiredClaims(token);
         var refreshes = (Integer) claims.get(TOKEN_REFRESHES_FIELD);
 
         if (refreshes == null) {
@@ -146,6 +158,24 @@ public class JjwtTokenService implements UnsafeTokenService {
             refreshes + 1,
             user.getPasswordVersion()
         );
+    }
+
+    private @NotNull Claims getPossibleExpiredClaims(@NotNull String token) {
+        try {
+
+            return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        } catch (PrematureJwtException e) {
+            throw new PrematureTokenException(
+                "The token [" + token + "] is from future [" + e.getClaims().getNotBefore() + "].");
+        } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
+            throw new InvalidTokenException(e);
+        }
     }
 
     private @NotNull Claims getClaims(@NotNull String token) {

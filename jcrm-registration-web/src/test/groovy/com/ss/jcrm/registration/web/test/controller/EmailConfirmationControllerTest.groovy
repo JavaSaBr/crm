@@ -29,6 +29,6 @@ class EmailConfirmationControllerTest extends RegistrationSpecification {
                 .exchange()
         then:
             response.expectStatus().isBadRequest()
-                .verifyBadRequest(INVALID_EMAIL, INVALID_EMAIL_MESSAGE)
+                .verifyErrorResponse(INVALID_EMAIL, INVALID_EMAIL_MESSAGE)
     }
 }

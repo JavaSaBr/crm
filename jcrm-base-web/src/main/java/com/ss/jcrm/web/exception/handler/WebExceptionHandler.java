@@ -1,6 +1,5 @@
 package com.ss.jcrm.web.exception.handler;
 
-import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.exception.WebException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
@@ -14,25 +13,26 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class WebExceptionHandler {
 
     @ExceptionHandler(WebException.class)
-    protected @NotNull ResponseEntity<?> handle(@NotNull WebException ex) {
-
-        var status = ex.getStatus() == 0 ?
-            HttpStatus.INTERNAL_SERVER_ERROR.value() : ex.getStatus();
-
-        return ResponseEntity.status(status)
-            .body(ex.getMessage());
+    @NotNull ResponseEntity<?> webException(@NotNull WebException ex) {
+        return buildError(ex.getStatus(), ex.getErrorCode(), ex.getMessage());
     }
 
-    @ExceptionHandler(BadRequestWebException.class)
-    protected @NotNull ResponseEntity<?> handle(@NotNull BadRequestWebException ex) {
+    public @NotNull ResponseEntity<?> buildError(int errorCode, @NotNull String message) {
+        return buildError(0, errorCode, message);
+    }
 
-        var status = ex.getStatus() == 0 ?
-            HttpStatus.INTERNAL_SERVER_ERROR.value() : ex.getStatus();
+    public @NotNull ResponseEntity<?> buildError(@NotNull HttpStatus status, int errorCode, @NotNull String message) {
+        return buildError(status.value(), errorCode, message);
+    }
 
-        return ResponseEntity.status(status)
-            .header(BadRequestWebException.HEADER_ERROR_CODE, String.valueOf(ex.getErrorCode()))
-            .header(BadRequestWebException.HEADER_ERROR_MESSAGE, ex.getMessage())
+    public @NotNull ResponseEntity<?> buildError(int status, int errorCode, @NotNull String message) {
+
+        var finalStatus = status == 0 ? HttpStatus.INTERNAL_SERVER_ERROR.value() : status;
+
+        return ResponseEntity.status(finalStatus)
+            .header(WebException.HEADER_ERROR_CODE, String.valueOf(errorCode))
+            .header(WebException.HEADER_ERROR_MESSAGE, message)
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
-            .body("{\n\t\"errorCode\": " + ex.getErrorCode() + ",\n\t\"errorMessage\": \"" + ex.getMessage() + "\"\n}");
+            .body("{\n\t\"errorCode\": " + errorCode + ",\n\t\"errorMessage\": \"" + message + "\"\n}");
     }
 }

@@ -34,4 +34,13 @@ public interface RegistrationErrors {
 
     int INVALID_CREDENTIALS = 1010;
     String INVALID_CREDENTIALS_MESSAGE = "Invalid credentials";
+
+    int EXPIRED_TOKEN = 1011;
+    String EXPIRED_TOKEN_MESSAGE = "Token is expired";
+
+    int MAX_REFRESHED_TOKEN = 1012;
+    String MAX_REFRESHED_TOKEN_MESSAGE = "Token has reached max of refreshes";
+
+    int INVALID_TOKEN = 1013;
+    String INVALID_TOKEN_MESSAGE = "Invalid token";
 }

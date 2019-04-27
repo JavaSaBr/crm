@@ -25,7 +25,7 @@ class WebSpecificationExtensions {
         return self.header(headerName, headerValue)
     }
     
-    static WebTestClient.BodyContentSpec verifyBadRequest(
+    static WebTestClient.BodyContentSpec verifyErrorResponse(
         WebTestClient.ResponseSpec spec,
         int errorCode,
         String errorMessage

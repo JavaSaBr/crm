@@ -1,13 +1,12 @@
 package com.ss.jcrm.registration.web.controller;
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
-import static com.ss.jcrm.web.exception.ExceptionUtils.webException;
+import static com.ss.jcrm.web.exception.ExceptionUtils.badRequest;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.registration.web.resources.AuthenticationOutResource;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
-import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.service.PasswordService;
@@ -18,6 +17,7 @@ import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.BadRequestWebException;
+import com.ss.jcrm.web.exception.ExceptionUtils;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class OrganizationController {
         @NotNull Country country
     ) {
         return organizationDao.createAsync(resource.getOrgName(), country)
-            .exceptionally(throwable -> webException(throwable,
+            .exceptionally(throwable -> ExceptionUtils.badRequest(throwable,
                 DuplicateObjectDaoException.class::isInstance,
                 ORG_ALREADY_EXIST,
                 ORG_ALREADY_EXIST_MESSAGE
@@ -98,7 +98,7 @@ public class OrganizationController {
         return createOrgAdmin(resource, organization, salt, hash)
             .exceptionally(throwable -> {
                 organizationDao.delete(organization.getId());
-                return webException(
+                return ExceptionUtils.badRequest(
                     throwable,
                     DuplicateObjectDaoException.class::isInstance,
                     EMAIL_ALREADY_EXIST,
@@ -107,7 +107,7 @@ public class OrganizationController {
             })
             .thenApply(user -> {
                 var token = tokenService.generateNewToken(user);
-                var outResource = new AuthenticationOutResource(new UserOutResource(user), token);
+                var outResource = new AuthenticationOutResource(user, token);
                 return new ResponseEntity<>(outResource, HttpStatus.CREATED);
             });
     }

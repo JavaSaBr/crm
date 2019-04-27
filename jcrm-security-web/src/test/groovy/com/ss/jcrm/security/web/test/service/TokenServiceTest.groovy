@@ -36,13 +36,42 @@ class TokenServiceTest extends WebSecuritySpecification {
             token1 != token2
     }
 
-    def "should find a user"() {
+    def "should find a user if token is not expired"() {
 
         given:
             def user = userTestHelper.newUser("User1")
             def token = unsafeTokenService.generateNewToken(user)
         when:
             def foundUser = unsafeTokenService.findUserIfNotExpired(token)
+        then:
+            foundUser != null
+            foundUser.getId() == user.getId()
+        when:
+            token = unsafeTokenService.generateNewToken(
+                user.id,
+                ZonedDateTime.now().minusDays(300),
+                ZonedDateTime.now().minusDays(350),
+                0,
+                0
+            )
+            unsafeTokenService.findUserIfNotExpired(token)
+        then:
+            thrown ExpiredTokenException
+    }
+    
+    def "should find a user even if token is expired"() {
+        
+        given:
+            def user = userTestHelper.newUser("User1")
+            def token = unsafeTokenService.generateNewToken(
+                user.id,
+                ZonedDateTime.now().minusDays(300),
+                ZonedDateTime.now().minusDays(350),
+                0,
+                0
+            )
+        when:
+            def foundUser = unsafeTokenService.findUser(token)
         then:
             foundUser != null
             foundUser.getId() == user.getId()
@@ -53,6 +82,24 @@ class TokenServiceTest extends WebSecuritySpecification {
         given:
             def user = userTestHelper.newUser("User1")
             def token = unsafeTokenService.generateNewToken(user)
+        when:
+            def newToken = unsafeTokenService.refresh(user, token)
+        then:
+            newToken != null
+            newToken != token
+    }
+    
+    def "should refresh a token after expiration"() {
+        
+        given:
+            def user = userTestHelper.newUser("User1")
+            def token = unsafeTokenService.generateNewToken(
+                user.id,
+                ZonedDateTime.now().minusDays(300),
+                ZonedDateTime.now().minusDays(350),
+                0,
+                0
+            )
         when:
             def newToken = unsafeTokenService.refresh(user, token)
         then:

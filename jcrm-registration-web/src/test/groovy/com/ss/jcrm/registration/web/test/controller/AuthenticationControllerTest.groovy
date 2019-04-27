@@ -74,8 +74,8 @@ class AuthenticationControllerTest extends RegistrationSpecification {
                 .exchange()
         
         then:
-            response.expectStatus().isBadRequest()
-                .verifyBadRequest(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)
+            response.expectStatus().isUnauthorized()
+                .verifyErrorResponse(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)
         when:
         
             response = client.post()
@@ -84,8 +84,8 @@ class AuthenticationControllerTest extends RegistrationSpecification {
                 .exchange()
     
         then:
-            response.expectStatus().isBadRequest()
-                .verifyBadRequest(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)
+            response.expectStatus().isUnauthorized()
+                .verifyErrorResponse(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)
         when:
         
             response = client.post()
@@ -96,6 +96,6 @@ class AuthenticationControllerTest extends RegistrationSpecification {
     
         then:
             response.expectStatus().isBadRequest()
-                .verifyBadRequest(EMPTY_LOGIN, EMPTY_LOGIN_MESSAGE)
+                .verifyErrorResponse(EMPTY_LOGIN, EMPTY_LOGIN_MESSAGE)
     }
 }

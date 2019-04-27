@@ -2,18 +2,17 @@ package com.ss.jcrm.registration.web.controller;
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_CREDENTIALS;
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_CREDENTIALS_MESSAGE;
+import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
+import com.ss.jcrm.registration.web.exception.RegistrationErrors;
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.AuthenticationOutResource;
-import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.service.PasswordService;
-import com.ss.jcrm.security.web.exception.InvalidTokenException;
-import com.ss.jcrm.security.web.exception.ExpiredTokenException;
-import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.controller.AsyncRestController;
-import com.ss.jcrm.web.exception.BadRequestWebException;
+import com.ss.jcrm.web.exception.ExceptionUtils;
+import com.ss.jcrm.web.exception.UnauthorizedWebException;
 import com.ss.rlib.common.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,27 +68,47 @@ public class AuthenticationController extends AsyncRestController {
             try {
 
                 if (user == null) {
-                    throw new BadRequestWebException(INVALID_CREDENTIALS_MESSAGE, INVALID_CREDENTIALS);
+                    throw new UnauthorizedWebException(INVALID_CREDENTIALS_MESSAGE, INVALID_CREDENTIALS);
                 } else if (!passwordService.isCorrect(password, user.getSalt(), user.getPassword())) {
-                    throw new BadRequestWebException(INVALID_CREDENTIALS_MESSAGE, INVALID_CREDENTIALS);
+                    throw new UnauthorizedWebException(INVALID_CREDENTIALS_MESSAGE, INVALID_CREDENTIALS);
                 }
 
             } finally {
                 Arrays.fill(password, ' ');
             }
 
-            return new AuthenticationOutResource(new UserOutResource(user), tokenService.generateNewToken(user));
+            return new AuthenticationOutResource(user, tokenService.generateNewToken(user));
 
         }, controllerExecutor);
     }
 
     @GetMapping(
-        path = "/registration/revoke",
+        path = "/registration/authenticate",
+        produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
+    @NotNull CompletableFuture<@NotNull AuthenticationOutResource> authenticate(@NotNull @RequestParam String token) {
+        return tokenService.findUserIfNotExpiredAsync(token)
+            .exceptionally(throwable -> ExceptionUtils.unauthorized(
+                throwable,
+                ObjectNotFoundDaoException.class::isInstance,
+                RegistrationErrors.INVALID_TOKEN,
+                RegistrationErrors.INVALID_TOKEN_MESSAGE
+            ))
+            .thenApply(user -> new AuthenticationOutResource(user, token));
+    }
+
+    @GetMapping(
+        path = "/registration/token/refresh",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
     @NotNull CompletableFuture<@NotNull AuthenticationOutResource> refresh(@NotNull @RequestParam String token) {
-        var newToken = tokenService.refresh(token);
-        return tokenService.findUserIfNotExpiredAsync(newToken)
-            .thenApply(user -> new AuthenticationOutResource(new UserOutResource(user), newToken));
+        return tokenService.findUserAsync(token)
+            .exceptionally(throwable -> ExceptionUtils.badRequest(
+                throwable,
+                ObjectNotFoundDaoException.class::isInstance,
+                RegistrationErrors.INVALID_TOKEN,
+                RegistrationErrors.INVALID_TOKEN_MESSAGE
+            ))
+            .thenApply(user -> new AuthenticationOutResource(user, tokenService.refresh(user, token)));
     }
 }

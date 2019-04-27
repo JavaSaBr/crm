@@ -21,6 +21,20 @@ public interface TokenService {
     @NotNull String generateNewToken(@NotNull User user);
 
     /**
+     * @throws PrematureTokenException if the token is from future.
+     * @throws InvalidTokenException if the token isn't valid.
+     * @throws ObjectNotFoundDaoException if the token's user cannot be found.
+     */
+    @NotNull User findUser(@NotNull String token);
+
+    /**
+     * @throws PrematureTokenException if the token is from future.
+     * @throws InvalidTokenException if the token isn't valid.
+     * @throws CompletionException -> ObjectNotFoundDaoException if the token's user cannot be found.
+     */
+    @NotNull CompletableFuture<@NotNull User> findUserAsync(@NotNull String token);
+
+    /**
      * @throws ExpiredTokenException if the token is expired.
      * @throws PrematureTokenException if the token is from future.
      * @throws InvalidTokenException if the token isn't valid.
