@@ -2,11 +2,25 @@ package com.ss.jcrm.integration.test.web
 
 import com.ss.jcrm.web.exception.BadRequestWebException
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.util.UriBuilder
+
+import java.util.function.Function
 
 class WebSpecificationExtensions {
 
     static WebTestClient.RequestHeadersSpec url(WebTestClient.RequestHeadersUriSpec self, String uri) {
         return self.uri(uri)
+    }
+    
+    static WebTestClient.RequestHeadersSpec url(
+        WebTestClient.RequestHeadersUriSpec self,
+        Function<UriBuilder, URI> uriFunction
+    ) {
+        return self.uri(uriFunction)
+    }
+    
+    static WebTestClient.RequestHeadersSpec param(WebTestClient.RequestHeadersSpec self, String name, String value) {
+        return self.attribute(name, value)
     }
     
     static WebTestClient.RequestHeadersUriSpec body(WebTestClient.RequestBodyUriSpec self, Object body) {

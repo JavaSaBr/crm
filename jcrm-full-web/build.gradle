@@ -26,5 +26,6 @@ afterEvaluate {
             "-Djavax.mail.smtp.from=$smtpFrom",
             "-Ddb.upgrading.enabled=$dbUpgradingEnabled"
         ]
+        args = ["--debug"]
     }
 }

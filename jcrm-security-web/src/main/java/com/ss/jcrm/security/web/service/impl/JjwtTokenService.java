@@ -169,7 +169,16 @@ public class JjwtTokenService implements UnsafeTokenService {
                 .getBody();
 
         } catch (ExpiredJwtException e) {
-            return e.getClaims();
+
+            var claims = e.getClaims();
+
+            if (new Date().before(claims.getNotBefore())) {
+                throw new PrematureTokenException(
+                    "The token [" + token + "] is from future [" + claims.getNotBefore() + "].");
+            }
+
+            return claims;
+
         } catch (PrematureJwtException e) {
             throw new PrematureTokenException(
                 "The token [" + token + "] is from future [" + e.getClaims().getNotBefore() + "].");

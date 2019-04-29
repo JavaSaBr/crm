@@ -35,8 +35,9 @@ allprojects {
         rlibVersion = "9.1.1"
         lombokVersion = '1.18.4'
         lombokGradlePluginVersion = '0.19'
-        springbootVersion = '2.1.3.RELEASE'
-        springVersion = '5.1.5.RELEASE'
+        nettyBoringsslVersion = "2.0.25.Final"
+        springbootVersion = '2.1.4.RELEASE'
+        springVersion = '5.1.6.RELEASE'
         junitJupiterVersion = "5.2.0"
         hikariCPVersion = "2.7.8"
         flywayVersion = "5.2.1"
@@ -124,6 +125,11 @@ allprojects {
             'mailUser': System.getProperty("mailUser", ""),
             'mailPassword': System.getProperty("mailPassword", ""),
             'mailFrom': System.getProperty("mailFrom", ""),
+            
+            //SSL
+            'keystorePath': System.getProperty("keystorePath", "/opt/jcrm/dev.p12"),
+            'keystorePassword': System.getProperty("keystorePassword", "devdevdev"),
+            'keystoreAlias': System.getProperty("keystoreAlias", "dev"),
         ])
     }
 }
