@@ -83,10 +83,12 @@ public class AuthenticationController extends AsyncRestController {
     }
 
     @GetMapping(
-        path = "/registration/authenticate",
+        path = "/registration/authenticate/{token}",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    @NotNull CompletableFuture<@NotNull AuthenticationOutResource> authenticate(@NotNull @RequestParam String token) {
+    @NotNull CompletableFuture<@NotNull AuthenticationOutResource> authenticate(
+        @NotNull @PathVariable("token") String token
+    ) {
         return tokenService.findUserIfNotExpiredAsync(token)
             .exceptionally(throwable -> ExceptionUtils.unauthorized(
                 throwable,
@@ -98,10 +100,12 @@ public class AuthenticationController extends AsyncRestController {
     }
 
     @GetMapping(
-        path = "/registration/token/refresh",
+        path = "/registration/token/refresh/{token}",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    @NotNull CompletableFuture<@NotNull AuthenticationOutResource> refresh(@NotNull @RequestParam String token) {
+    @NotNull CompletableFuture<@NotNull AuthenticationOutResource> refresh(
+        @NotNull @PathVariable("token") String token
+    ) {
         return tokenService.findUserAsync(token)
             .exceptionally(throwable -> ExceptionUtils.badRequest(
                 throwable,

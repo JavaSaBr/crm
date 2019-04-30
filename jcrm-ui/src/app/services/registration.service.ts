@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {SecurityService} from './security.service';
 import {environment} from '../../environments/environment';
 import {PhoneNumber} from '../input/phone-number/phone-number';
 import {Country} from '../entity/country';
@@ -8,15 +7,18 @@ import {TranslateService} from '@ngx-translate/core';
 import {OrganizationRegisterOutResource} from '../resources/organization-register-out-resource';
 import {AuthenticationInResource} from '../resources/authentication-in-resource';
 import {AuthenticationOutResource} from '../resources/authentication-out-resource';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RegistrationService {
 
+    static readonly ERROR_EXPIRED_TOKEN = 1011;
+
     constructor(
-        private securityService: SecurityService,
-        private translateService: TranslateService
+        private readonly translateService: TranslateService,
+        private readonly httpClient: HttpClient,
     ) {
     }
 
@@ -45,7 +47,8 @@ export class RegistrationService {
         );
 
         return new Promise<AuthenticationInResource>((resolve, reject) => {
-            this.securityService.postRequest<AuthenticationInResource>(environment.registrationUrl + '/register/organization', body)
+            this.httpClient.post<AuthenticationInResource>(environment.registrationUrl + '/register/organization', body, {observe: 'response'})
+                .toPromise()
                 .then(resp => resolve(resp.body))
                 .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
         });
@@ -59,7 +62,28 @@ export class RegistrationService {
         let body = new AuthenticationOutResource(login, password);
 
         return new Promise<AuthenticationInResource>((resolve, reject) => {
-            this.securityService.postRequest<AuthenticationInResource>(environment.registrationUrl + '/authenticate', body)
+            this.httpClient.post<AuthenticationInResource>(environment.registrationUrl + '/authenticate', body, {observe: 'response'})
+                .toPromise()
+                .then(resp => resolve(resp.body))
+                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
+        });
+    }
+
+    authenticateByToken(token: string): Promise<AuthenticationInResource> {
+
+        return new Promise<AuthenticationInResource>((resolve, reject) => {
+            this.httpClient.get<AuthenticationInResource>(environment.registrationUrl + '/authenticate/' + token, {observe: 'response'})
+                .toPromise()
+                .then(resp => resolve(resp.body))
+                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
+        });
+    }
+
+    refreshToken(token: string): Promise<AuthenticationInResource> {
+
+        return new Promise<AuthenticationInResource>((resolve, reject) => {
+            this.httpClient.get<AuthenticationInResource>(environment.registrationUrl + '/token/refresh/' + token, {observe: 'response'})
+                .toPromise()
                 .then(resp => resolve(resp.body))
                 .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
         });
@@ -67,19 +91,22 @@ export class RegistrationService {
 
     confirmEmail(email: string): Promise<ErrorResponse | null> {
 
-        return this.securityService.getRequest(environment.registrationUrl + '/email/confirmation/' + email)
+        return this.httpClient.get(environment.registrationUrl + '/email/confirmation/' + email, {observe: 'response'})
+            .toPromise()
             .then(() => null)
             .catch(resp => ErrorResponse.convertToErrorOrNull(resp, this.translateService));
     }
 
     orgExistByName(orgName: string): Promise<boolean> {
-        return this.securityService.getRequest<{}>(environment.registrationUrl + '/exist/organization/name/' + orgName)
+        return this.httpClient.get<{}>(environment.registrationUrl + '/exist/organization/name/' + orgName, {observe: 'response'})
+            .toPromise()
             .then(value => value.ok)
             .catch(() => false);
     }
 
     userExistByName(name: string): Promise<boolean> {
-        return this.securityService.getRequest<{}>(environment.registrationUrl + '/exist/user/name/' + name)
+        return this.httpClient.get<{}>(environment.registrationUrl + '/exist/user/name/' + name, {observe: 'response'})
+            .toPromise()
             .then(value => value.ok)
             .catch(() => false);
     }

@@ -1,7 +1,9 @@
 import {Injectable, Injector, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
 import {User} from '../entity/user';
+import {RegistrationService} from './registration.service';
+import {ErrorResponse} from '../error/error-response';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +20,7 @@ export class SecurityService {
 
     constructor(
         private readonly httpClient: HttpClient,
-        private readonly injector: Injector
+        private readonly registrationService: RegistrationService
     ) {
         this._userObservable = new Subject<User>();
         this._userObservable.subscribe(user => this._currentUser = user);
@@ -39,16 +41,36 @@ export class SecurityService {
 
     tryToRestoreToken(): Promise<boolean> {
 
-        //TODO
         let token = localStorage.getItem(SecurityService.LOCAL_STORAGE_TOKEN);
 
-        if (token) {
-            this.internalAuthenticate(null, token);
-            return Promise.resolve(true)
+        if (!token) {
+            return Promise.resolve(false);
         }
 
-        //let registrationService = this.injector.get(RegistrationService);
-        return Promise.resolve(false)
+        return new Promise(resolve => {
+
+            this.registrationService.authenticateByToken(token)
+                .then(value => {
+                    this.internalAuthenticate(value.user, value.token);
+                    resolve(true);
+                })
+                .catch(reason => {
+
+                    let error = reason as ErrorResponse;
+
+                    if (error.errorCode != RegistrationService.ERROR_EXPIRED_TOKEN) {
+                        resolve(false);
+                        return;
+                    }
+
+                    this.registrationService.refreshToken(token)
+                        .then(value => {
+                            this.internalAuthenticate(value.user, value.token);
+                            resolve(true);
+                        })
+                        .catch(() => resolve(false))
+                });
+        })
     }
 
     authenticate(user: User, token: string) {
@@ -89,6 +111,13 @@ export class SecurityService {
         }).toPromise() as Promise<HttpResponse<T>>;
     }
 
+    postUnauthorizedRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
+
+        return this.httpClient.post(url, body, {
+            observe: 'response'
+        }).toPromise() as Promise<HttpResponse<T>>;
+    }
+
     getRequest<T>(url: string): Promise<HttpResponse<T>> {
 
         const headers = new HttpHeaders();
@@ -99,6 +128,14 @@ export class SecurityService {
 
         return this.httpClient.get(url, {
             headers: headers,
+            observe: 'response'
+        }).toPromise() as Promise<HttpResponse<T>>;
+    }
+
+    getUnauthorizedRequest<T>(url: string, params?: HttpParams): Promise<HttpResponse<T>> {
+
+        return this.httpClient.get(url, {
+            params: params,
             observe: 'response'
         }).toPromise() as Promise<HttpResponse<T>>;
     }

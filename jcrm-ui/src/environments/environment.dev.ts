@@ -1,7 +1,7 @@
 export const environment = {
     production: true,
-    dictionaryUrl: 'http://185.186.208.229:8090/dictionary',
-    registrationUrl: 'http://185.186.208.229:8090/registration',
+    dictionaryUrl: 'https://crm.codehunters.ru/dictionary',
+    registrationUrl: 'https://crm.codehunters.ru/registration',
 
     // validation
     orgNameMinLength: 2,

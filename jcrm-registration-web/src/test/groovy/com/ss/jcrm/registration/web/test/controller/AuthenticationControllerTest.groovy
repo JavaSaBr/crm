@@ -75,10 +75,7 @@ class AuthenticationControllerTest extends RegistrationSpecification {
             def token = unsafeTokenService.generateNewToken(user)
         when:
             def response = client.get()
-                .url({ it.path("/registration/authenticate")
-                    .queryParam("token", token)
-                    .build()
-                })
+                .url("/registration/authenticate/$token")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -101,10 +98,7 @@ class AuthenticationControllerTest extends RegistrationSpecification {
             )
         when:
             def response = client.get()
-                .url({ it.path("/registration/token/refresh")
-                    .queryParam("token", token)
-                    .build()
-                })
+                .url("/registration/token/refresh/$token")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -127,10 +121,7 @@ class AuthenticationControllerTest extends RegistrationSpecification {
             )
         when:
             def response = client.get()
-                .url({ it.path("/registration/token/refresh")
-                    .queryParam("token", token)
-                    .build()
-                })
+                .url("/registration/token/refresh/$token")
                 .exchange()
         then:
             response.expectStatus().isUnauthorized()
@@ -144,10 +135,7 @@ class AuthenticationControllerTest extends RegistrationSpecification {
                 0
             )
             response = client.get()
-                .url({ it.path("/registration/token/refresh")
-                    .queryParam("token", token)
-                    .build()
-                })
+                .url("/registration/token/refresh/$token")
                 .exchange()
         then:
             response.expectStatus().isUnauthorized()
@@ -161,10 +149,14 @@ class AuthenticationControllerTest extends RegistrationSpecification {
                 100
             )
             response = client.get()
-                .url({ it.path("/registration/token/refresh")
-                    .queryParam("token", token)
-                    .build()
-                })
+                .url("/registration/token/refresh/$token")
+                .exchange()
+        then:
+            response.expectStatus().isUnauthorized()
+                .verifyErrorResponse(INVALID_TOKEN, INVALID_TOKEN_MESSAGE)
+        when:
+            response = client.get()
+                .url("/registration/token/refresh/invalidtoken")
                 .exchange()
         then:
             response.expectStatus().isUnauthorized()
@@ -184,10 +176,7 @@ class AuthenticationControllerTest extends RegistrationSpecification {
             )
         when:
             def response = client.get()
-                .url({ it.path("/registration/authenticate")
-                    .queryParam("token", token)
-                    .build()
-                })
+                .url("/registration/authenticate/$token")
                 .exchange()
         then:
             response.expectStatus().isUnauthorized()
@@ -201,20 +190,14 @@ class AuthenticationControllerTest extends RegistrationSpecification {
                 0
             )
             response = client.get()
-                .url({ it.path("/registration/authenticate")
-                    .queryParam("token", token)
-                    .build()
-                })
+                .url("/registration/authenticate/$token")
                 .exchange()
         then:
             response.expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_TOKEN, INVALID_TOKEN_MESSAGE)
         when:
             response = client.get()
-                .url({ it.path("/registration/authenticate")
-                    .queryParam("token", "wefewfewfewf")
-                    .build()
-                })
+                .url("/registration/authenticate/wefewfewfewf")
                 .exchange()
         then:
             response.expectStatus().isUnauthorized()
