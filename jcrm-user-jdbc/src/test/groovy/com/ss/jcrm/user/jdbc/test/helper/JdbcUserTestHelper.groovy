@@ -210,7 +210,7 @@ class JdbcUserTestHelper implements UserTestHelper {
     @Override
     String nextEmail() {
         return ThreadLocalRandom.current()
-            .nextInt(100) + "-" + Thread.currentThread().id + "@test.com"
+            .nextInt(9) + "-" + (Thread.currentThread().id % 10) + "@ttt.com"
     }
     
     @Override
