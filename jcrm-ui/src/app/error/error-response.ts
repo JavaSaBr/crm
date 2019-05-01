@@ -6,7 +6,7 @@ export class ErrorResponse {
     public static convertToErrorOrNull(resp: HttpErrorResponse, translateService: TranslateService): ErrorResponse | null {
         if (resp.ok) {
             return null;
-        } else if (resp.status == 400) {
+        } else if (resp.status >= 400 && resp.status < 500) {
 
             let error = resp.error as ErrorResponse;
             let errorMessage = translateService.instant('SERVER.ERROR.' + error.errorCode) as string;

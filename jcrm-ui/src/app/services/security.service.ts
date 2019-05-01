@@ -1,4 +1,4 @@
-import {Injectable, Injector, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
 import {User} from '../entity/user';
@@ -51,7 +51,7 @@ export class SecurityService {
 
             this.registrationService.authenticateByToken(token)
                 .then(value => {
-                    this.internalAuthenticate(value.user, value.token);
+                    this.authenticate(value.user, value.token);
                     resolve(true);
                 })
                 .catch(reason => {
@@ -59,22 +59,26 @@ export class SecurityService {
                     let error = reason as ErrorResponse;
 
                     if (error.errorCode != RegistrationService.ERROR_EXPIRED_TOKEN) {
+                        this.logout();
                         resolve(false);
                         return;
                     }
 
                     this.registrationService.refreshToken(token)
                         .then(value => {
-                            this.internalAuthenticate(value.user, value.token);
+                            this.authenticate(value.user, value.token);
                             resolve(true);
                         })
-                        .catch(() => resolve(false))
+                        .catch(() => {
+                            this.logout();
+                            resolve(false);
+                        });
                 });
-        })
+        });
     }
 
     authenticate(user: User, token: string) {
-        this.internalAuthenticate(user, token)
+        this.internalAuthenticate(user, token);
 
         if (token) {
             localStorage.setItem(SecurityService.LOCAL_STORAGE_TOKEN, token);

@@ -8,15 +8,14 @@
     </div>
   </button>
   <span class="space-filler"></span>
-  <div>
-    <mat-icon class="search-icon">search</mat-icon>
-    <mat-form-field class="search-field">
-      <input matInput type="text" placeholder="Search" [(ngModel)]="searchValue">
-      <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchValue=''">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
+  <mat-form-field appearance="standard" class="search-field">
+    <mat-label>Search</mat-label>
+    <input matInput type="text" placeholder="Search" [(ngModel)]="searchValue">
+    <button class="search-field-clear-button" *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchValue=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <mat-icon matSuffix class="search-icon">search</mat-icon>
   <span class="space-filler"></span>
   <button mat-icon-button>
     <mat-icon>notifications</mat-icon>
