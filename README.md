@@ -15,29 +15,6 @@ sudo apt install openjdk-11-jdk
 ```bash
 // TODO
 ```
-### node 10+ and npm 6+
-#### Ubuntu
-```bash
-curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
-sudo apt install -y nodejs
-```
-#### Windows
-```bash
-// TODO
-```
-#### MacOS
-```bash
-// TODO
-```
-### Angular CLI 7+
-#### Ubuntu and MacOS
-```bash
-sudo npm install -g @angular/cli
-```
-#### Windows
-```bash
-npm install -g @angular/cli
-```
 ### Docker
 #### Ubuntu
 https://docs.docker.com/install/linux/docker-ce/ubuntu/

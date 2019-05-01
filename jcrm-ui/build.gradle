@@ -1,19 +1,18 @@
 
+task pullAngularCliImage(type: Exec) {
+    commandLine 'docker', 'pull', 'trion/ng-cli'
+}
+
 task installNodeModules(type: Exec) {
-    commandLine 'npm', 'install'
+    commandLine 'docker', 'run', '--rm', '-v', getDockerMappingFolder(), 'trion/ng-cli', 'npm', 'install'
 }
 
-task buildAngular(type: Exec) {
-    commandLine 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
+task buildAngular(type: Exec, group: 'Build') {
+    commandLine 'docker', 'run', '--rm', '-v', getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
 }
 
-task debug(type: Exec) {
-    commandLine 'ng', 'serve'
-}
-
-configure(debug) {
-    group = 'Application'
-    description = 'Debug front-end'
+task debug(type: Exec, group: 'Application', description: 'Debug front-end') {
+    commandLine 'docker', 'run', '--rm', '-p', '4200:4200', '-v', getDockerMappingFolder(), 'trion/ng-cli',  'ng', 'serve'
 }
 
 sourceSets {
@@ -24,5 +23,10 @@ sourceSets {
     }
 }
 
+tasks.installNodeModules.dependsOn pullAngularCliImage
 tasks.buildAngular.dependsOn installNodeModules
 tasks.classes.dependsOn buildAngular
+
+def getDockerMappingFolder() {
+    return project.projectDir.path + ":/app"
+}
