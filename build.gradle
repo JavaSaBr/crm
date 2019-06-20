@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.19"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE"
     }
 }
@@ -28,13 +28,13 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven { url "https://dl.bintray.com/javasabr/maven" }
+        maven { url "https://dl.bintray.com/jasync-sql/jasync-sql" }
     }
 
     ext {
         annotationVersion = "16.0.3"
-        rlibVersion = "9.1.1"
+        rlibVersion = "9.2.0"
         lombokVersion = '1.18.4'
-        lombokGradlePluginVersion = '0.19'
         nettyBoringsslVersion = "2.0.25.Final"
         springbootVersion = '2.1.4.RELEASE'
         springVersion = '5.1.6.RELEASE'
@@ -50,6 +50,7 @@ allprojects {
         jsonwebtokenVersion = "0.10.5"
         hamcrestVersion = "1.3"
         jsonpathVersion = "2.4.0"
+        jasyncVersion = "1.0.0"
     }
 
     dependencies {
@@ -147,6 +148,6 @@ task buildSingleArtifactWithoutTests(type: GradleBuild) {
 }
 
 wrapper {
-    gradleVersion = '5.3.1'
+    gradleVersion = '5.4.1'
     distributionType = Wrapper.DistributionType.ALL
 }

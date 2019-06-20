@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {SecurityService} from '../../services/security.service';
 
 @Component({
@@ -11,12 +11,20 @@ import {SecurityService} from '../../services/security.service';
 export class WorkspaceComponent implements OnInit {
 
     ready: boolean;
+    activatedSubPages: boolean;
 
     constructor(
         private readonly router: Router,
         private readonly securityService: SecurityService
     ) {
         this.ready = false;
+        this.activatedSubPages = false;
+        this.router.events.subscribe(value => {
+            if (value instanceof NavigationEnd) {
+                //FIXME how it can be done better?
+                this.activatedSubPages = value.url.startsWith('/workspace/sub/');
+            }
+        });
     }
 
     ngOnInit() {

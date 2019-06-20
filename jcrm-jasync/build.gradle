@@ -1,0 +1,12 @@
+
+ext {
+    lombok = "true"
+}
+
+dependencies {
+    compile project(":jcrm-base")
+    compile project(":jcrm-dao")
+    
+    compile "com.github.jasync-sql:jasync-common:$jasyncVersion"
+    compile "com.github.jasync-sql:jasync-postgresql:$jasyncVersion"
+}

@@ -1,3 +1,7 @@
+ext {
+    lombok = "true"
+}
+
 dependencies {
     compile project(":jcrm-dao")
     testCompile project(":jcrm-integration-test")

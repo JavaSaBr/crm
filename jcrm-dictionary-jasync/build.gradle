@@ -1,0 +1,13 @@
+
+ext {
+    lombok = "true"
+}
+
+dependencies {
+    compile project(":jcrm-dictionary-api")
+    compile project(":jcrm-base-spring")
+    compile project(":jcrm-jasync")
+    
+    testCompile project(path: ":jcrm-dictionary-api", configuration: "testArtifacts")
+   // testCompile project(":jcrm-integration-test-db")
+}

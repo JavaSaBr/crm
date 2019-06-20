@@ -1,6 +1,5 @@
 import {TestBed} from '@angular/core/testing';
 
-import {UserService} from './user.service';
 import {ErrorService} from "./error.service";
 
 describe('Error Service', () => {
