@@ -1,24 +1,25 @@
 package com.ss.jcrm.jasync.dao;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static com.ss.rlib.common.util.array.ArrayCollectors.toArray;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.Entity;
-import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
+import com.ss.jcrm.jasync.function.JAsyncBiConverter;
+import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.rlib.common.util.ObjectUtils;
+import com.ss.rlib.common.util.array.Array;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
@@ -32,8 +33,14 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
 
     @Override
     public @NotNull T requireById(long id) {
-        return ObjectUtils.notNull(findById(id), id,
-            value -> new ObjectNotFoundDaoException("Can't find an entity with the id " + value));
+        return requireByIdAsync(id).join();
+    }
+
+    @Override
+    public @NotNull CompletableFuture<@NotNull T> requireByIdAsync(long id) {
+        return findByIdAsync(id)
+            .thenApply(entity -> ObjectUtils.notNull(entity, id,
+                value -> new ObjectNotFoundDaoException("Can't find an entity with the id " + value)));
     }
 
     protected @NotNull CompletableFuture<Boolean> existBy(@NotNull String query, @NotNull Object value) {
@@ -41,181 +48,119 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
             .thenApply(queryResult -> !queryResult.getRows().isEmpty());
     }
 
-    protected boolean deleteByLong(@NotNull String query, long id) {
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(query)
-        ) {
-
-            statement.setLong(1, id);
-            return statement.executeUpdate() == 1;
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
+    protected @NotNull CompletableFuture<Boolean> deleteBy(@NotNull String query, @NotNull Object value) {
+        return connectionPool.sendPreparedStatement(query, List.of(value))
+            .thenApply(queryResult -> queryResult.getRows().size() == 1);
     }
 
-    protected <D extends Dao<T>> @Nullable T findByStringString(
+    protected <D extends Dao<T>> @NotNull CompletableFuture<@Nullable T> findBy(
         @NotNull String query,
-        @NotNull String firstValue,
-        @NotNull String secondValue,
-        @NotNull JdbcConverter<D, T> converter
+        @NotNull Object firstValue,
+        @NotNull Object secondValue,
+        @NotNull JAsyncConverter<D, T> converter
     ) {
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(query)
-        ) {
+        return connectionPool.sendPreparedStatement(query, List.of(firstValue, secondValue))
+            .thenApply(queryResult -> {
 
-            statement.setString(1, firstValue);
-            statement.setString(2, secondValue);
+                var rset = queryResult.getRows();
 
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return converter.convert((D) this, rs);
+                if (rset.isEmpty()) {
+                    return null;
+                } else {
+                    return converter.convert((D) this, rset.get(0));
                 }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return null;
+            });
     }
 
-    protected <D extends Dao<T>> @Nullable T findByString(
+    protected <D extends Dao<T>> @NotNull CompletableFuture<@Nullable T> findBy(
         @NotNull String query,
-        @NotNull String value,
-        @NotNull JdbcConverter<D, T> converter
+        @NotNull Object value,
+        @NotNull JAsyncConverter<D, T> converter
     ) {
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(query)
-        ) {
+        return connectionPool.sendPreparedStatement(query, List.of(value))
+            .thenApply(queryResult -> {
 
-            statement.setString(1, value);
+                var rset = queryResult.getRows();
 
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return converter.convert((D) this, rs);
+                if (rset.isEmpty()) {
+                    return null;
+                } else {
+                    return converter.convert((D) this, rset.get(0));
                 }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return null;
+            });
     }
 
-    protected <D extends Dao<T>> @Nullable T findByLong(
+    protected <D extends Dao<T>> @NotNull CompletableFuture<@NotNull Array<T>> findAll(
+        @NotNull Class<T> type,
         @NotNull String query,
-        long id,
-        @NotNull JdbcConverter<D, T> converter
+        @NotNull JAsyncConverter<D, T> converter
     ) {
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(query)
-        ) {
+        return connectionPool.sendQuery(query)
+            .thenApply(queryResult -> {
 
-            statement.setLong(1, id);
+                var rset = queryResult.getRows();
 
-            try (var rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return converter.convert((D) this, rs);
+                if (rset.isEmpty()) {
+                    return Array.empty();
                 }
-            }
 
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return null;
+                return rset.stream()
+                    .map(data -> converter.convert((D) this, data))
+                    .collect(toArray(type));
+            });
     }
 
-    protected <D extends Dao<T>> @NotNull List<T> findAll(
-        @NotNull String query,
-        @NotNull JdbcConverter<D, T> converter
-    ) {
-
-        var result = new ArrayList<T>();
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(query)
-        ) {
-
-            try (var rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(converter.convert((D) this, rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return result;
-    }
-
-    protected <D extends Dao<T>, A> @NotNull List<T> findAll(
+    protected <D extends Dao<T>, A> @NotNull CompletableFuture<@NotNull List<T>> findAll(
         @NotNull String query,
         @NotNull A attachment,
-        @NotNull JdbcBiConverter<D, A, T> converter
+        @NotNull JAsyncBiConverter<D, A, T> converter
     ) {
 
-        var result = new ArrayList<T>();
+        return connectionPool.sendQuery(query)
+            .thenApply(queryResult -> {
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(query)
-        ) {
+                var rset = queryResult.getRows();
 
-            try (var rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(converter.convert((D) this, attachment, rs));
+                if (rset.isEmpty()) {
+                    return List.of();
                 }
-            }
 
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return result;
+                return rset.stream()
+                    .map(data -> converter.convert((D) this, attachment, data))
+                    .collect(Collectors.toList());
+            });
     }
 
-    protected <D extends Dao<T>> @NotNull List<T> findAllByLong(
+    protected <D extends Dao<T>> @NotNull CompletableFuture<@NotNull List<T>> findAllByLong(
         @NotNull String query,
-        long value,
-        @NotNull JdbcConverter<D, T> converter
+        @NotNull Object value,
+        @NotNull JAsyncConverter<D, T> converter
     ) {
-        return findAllByLong(query, value, converter, ArrayList::new);
+        return findAllBy(query, value, converter, ArrayList::new);
     }
 
-    protected <D extends Dao<T>, C extends Collection<T>> @NotNull C findAllByLong(
+    protected <D extends Dao<T>, C extends Collection<T>> @NotNull CompletableFuture<@NotNull C> findAllBy(
         @NotNull String query,
-        long value,
-        @NotNull JdbcConverter<D, T> converter,
+        @NotNull Object value,
+        @NotNull JAsyncConverter<D, T> converter,
         @NotNull Supplier<C> collectionFactory
     ) {
 
-        var result = collectionFactory.get();
+        return connectionPool.sendPreparedStatement(query, List.of(value))
+            .thenApply(queryResult -> {
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(query)
-        ) {
+                var rset = queryResult.getRows();
 
-            statement.setLong(1, value);
-
-            try (var rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(converter.convert((D) this, rs));
+                if (rset.isEmpty()) {
+                    return collectionFactory.get();
                 }
-            }
 
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-
-        return result;
+                return rset.stream()
+                    .map(data -> converter.convert((D) this, data))
+                    .collect(Collectors.toCollection(collectionFactory));
+            });
     }
-
-
 }

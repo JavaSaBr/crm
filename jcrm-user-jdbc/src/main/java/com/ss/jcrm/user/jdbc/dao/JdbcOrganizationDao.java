@@ -12,6 +12,7 @@ import com.ss.jcrm.jdbc.util.JdbcUtils;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.jdbc.JdbcOrganization;
+import com.ss.rlib.common.util.array.Array;
 import lombok.extern.log4j.Log4j2;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +22,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -113,12 +113,12 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
     }
 
     @Override
-    public @NotNull List<Organization> getAll() {
-        return findAll(Q_SELECT_ALL, JdbcOrganizationDao::toOrganization);
+    public @NotNull Array<Organization> getAll() {
+        return findAll(Organization.class, Q_SELECT_ALL, JdbcOrganizationDao::toOrganization);
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull List<Organization>> getAllAsync() {
+    public @NotNull CompletableFuture<@NotNull Array<Organization>> getAllAsync() {
         return supplyAsync(this::getAll, slowDbTaskExecutor);
     }
 

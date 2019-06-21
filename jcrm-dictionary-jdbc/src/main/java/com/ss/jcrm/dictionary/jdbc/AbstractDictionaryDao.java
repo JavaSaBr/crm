@@ -4,12 +4,12 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import com.ss.jcrm.dao.NamedEntity;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
 import com.ss.jcrm.jdbc.dao.AbstractNamedObjectJdbcDao;
+import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import org.jetbrains.annotations.NotNull;
 
 import javax.sql.DataSource;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -25,7 +25,7 @@ public abstract class AbstractDictionaryDao<T extends NamedEntity> extends Abstr
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull List<T>> findAllAsync() {
+    public @NotNull CompletableFuture<@NotNull Array<T>> findAllAsync() {
         return supplyAsync(this::findAll, slowDbTaskExecutor);
     }
 

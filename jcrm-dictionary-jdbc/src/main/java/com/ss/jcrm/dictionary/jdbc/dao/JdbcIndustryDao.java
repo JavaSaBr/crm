@@ -4,9 +4,10 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import com.ss.jcrm.dao.exception.GenerateIdDaoException;
 import com.ss.jcrm.dictionary.api.Industry;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
+import com.ss.jcrm.dictionary.api.impl.DefaultIndustry;
 import com.ss.jcrm.dictionary.jdbc.AbstractDictionaryDao;
-import com.ss.jcrm.dictionary.jdbc.JdbcIndustry;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
+import com.ss.rlib.common.util.array.Array;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -53,7 +53,7 @@ public class JdbcIndustryDao extends AbstractDictionaryDao<Industry> implements 
 
             try (var rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    return new JdbcIndustry(name, rs.getLong(1));
+                    return new DefaultIndustry(name, rs.getLong(1));
                 } else {
                     throw new GenerateIdDaoException("Can't receive generated id for the new industry entity.");
                 }
@@ -70,8 +70,8 @@ public class JdbcIndustryDao extends AbstractDictionaryDao<Industry> implements 
     }
 
     @Override
-    public @NotNull List<Industry> findAll() {
-        return findAll(Q_SELECT_ALL, JdbcIndustryDao::toIndustry);
+    public @NotNull Array<Industry> findAll() {
+        return findAll(Industry.class, Q_SELECT_ALL, JdbcIndustryDao::toIndustry);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class JdbcIndustryDao extends AbstractDictionaryDao<Industry> implements 
         return findByString(Q_SELECT_BY_NAME, name, JdbcIndustryDao::toIndustry);
     }
 
-    private @NotNull JdbcIndustry toIndustry(@NotNull ResultSet rs) throws SQLException {
-        return new JdbcIndustry(rs.getString(2), rs.getLong(1));
+    private @NotNull DefaultIndustry toIndustry(@NotNull ResultSet rs) throws SQLException {
+        return new DefaultIndustry(rs.getString(2), rs.getLong(1));
     }
 }

@@ -6,9 +6,10 @@ import com.ss.jcrm.dictionary.api.City;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CityDao;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
+import com.ss.jcrm.dictionary.api.impl.DefaultCity;
 import com.ss.jcrm.dictionary.jdbc.AbstractDictionaryDao;
-import com.ss.jcrm.dictionary.jdbc.JdbcCity;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
+import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import lombok.extern.log4j.Log4j2;
 import org.intellij.lang.annotations.Language;
@@ -19,7 +20,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -64,7 +64,7 @@ public class JdbcCityDao extends AbstractDictionaryDao<City> implements CityDao 
 
             try (var rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    return new JdbcCity(
+                    return new DefaultCity(
                         name,
                         country,
                         rs.getLong(1)
@@ -85,8 +85,8 @@ public class JdbcCityDao extends AbstractDictionaryDao<City> implements CityDao 
     }
 
     @Override
-    public @NotNull List<City> findAll() {
-        return findAll(Q_SELECT_ALL, countryDao.findAllAsMap(), JdbcCityDao::toCities);
+    public @NotNull Array<City> findAll() {
+        return findAll(City.class, Q_SELECT_ALL, countryDao.findAllAsMap(), JdbcCityDao::toCities);
     }
 
     @Override
@@ -119,6 +119,6 @@ public class JdbcCityDao extends AbstractDictionaryDao<City> implements CityDao 
             return null;
         }
 
-        return new JdbcCity(name, country, rs.getLong(1));
+        return new DefaultCity(name, country, rs.getLong(1));
     }
 }

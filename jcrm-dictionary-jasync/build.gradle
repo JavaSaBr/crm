@@ -7,6 +7,7 @@ dependencies {
     compile project(":jcrm-dictionary-api")
     compile project(":jcrm-base-spring")
     compile project(":jcrm-jasync")
+    compile "com.github.jasync-sql:jasync-postgresql:$jasyncVersion"
     
     testCompile project(path: ":jcrm-dictionary-api", configuration: "testArtifacts")
    // testCompile project(":jcrm-integration-test-db")

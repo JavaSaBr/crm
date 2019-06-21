@@ -1,27 +1,21 @@
 package com.ss.jcrm.jasync.dao;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
+import com.github.jasync.sql.db.ConcreteConnection;
+import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.NamedEntity;
 import com.ss.jcrm.dao.NamedObjectDao;
 import org.jetbrains.annotations.NotNull;
-
-import javax.sql.DataSource;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractNamedObjectJAsyncDao<T extends NamedEntity> extends AbstractJAsyncDao<T> implements
     NamedObjectDao<T> {
 
-    public AbstractNamedObjectJAsyncDao(
-        @NotNull DataSource dataSource,
-        @NotNull Executor fastDbTaskExecutor,
-        @NotNull Executor slowDbTaskExecutor
-    ) {
-        super(dataSource, fastDbTaskExecutor, slowDbTaskExecutor);
+    public AbstractNamedObjectJAsyncDao(@NotNull ConnectionPool<? extends ConcreteConnection> connectionPool) {
+        super(connectionPool);
     }
 
     @Override
-    public @NotNull CompletableFuture<T> findByNameAsync(@NotNull String name) {
-        return supplyAsync(() -> findByName(name), fastDbTaskExecutor);
+    public @Nullable T findByName(@NotNull String name) {
+        return findByNameAsync(name).join();
     }
 }

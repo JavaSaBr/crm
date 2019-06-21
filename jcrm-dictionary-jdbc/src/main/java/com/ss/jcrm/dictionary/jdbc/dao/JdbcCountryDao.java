@@ -4,9 +4,10 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import com.ss.jcrm.dao.exception.GenerateIdDaoException;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
+import com.ss.jcrm.dictionary.api.impl.DefaultCountry;
 import com.ss.jcrm.dictionary.jdbc.AbstractDictionaryDao;
-import com.ss.jcrm.dictionary.jdbc.JdbcCountry;
 import com.ss.jcrm.jdbc.util.JdbcUtils;
+import com.ss.rlib.common.util.array.Array;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -59,7 +59,7 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
 
             try (var rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    return new JdbcCountry(
+                    return new DefaultCountry(
                         name,
                         flagCode,
                         phoneCode,
@@ -85,8 +85,8 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
     }
 
     @Override
-    public @NotNull List<Country> findAll() {
-        return findAll(Q_SELECT_ALL, JdbcCountryDao::toCountry);
+    public @NotNull Array<Country> findAll() {
+        return findAll(Country.class, Q_SELECT_ALL, JdbcCountryDao::toCountry);
     }
 
     @Override
@@ -99,8 +99,8 @@ public class JdbcCountryDao extends AbstractDictionaryDao<Country> implements Co
         return findByString(Q_SELECT_BY_NAME, name, JdbcCountryDao::toCountry);
     }
 
-    private @NotNull JdbcCountry toCountry(@NotNull ResultSet rs) throws SQLException {
-        return new JdbcCountry(
+    private @NotNull DefaultCountry toCountry(@NotNull ResultSet rs) throws SQLException {
+        return new DefaultCountry(
             rs.getString(2),
             rs.getString(3),
             rs.getString(4),

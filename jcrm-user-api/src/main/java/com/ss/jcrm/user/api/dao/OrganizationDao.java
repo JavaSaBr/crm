@@ -4,9 +4,9 @@ import com.ss.jcrm.dao.NamedObjectDao;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.user.api.Organization;
+import com.ss.rlib.common.util.array.Array;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface OrganizationDao extends NamedObjectDao<Organization> {
@@ -21,9 +21,9 @@ public interface OrganizationDao extends NamedObjectDao<Organization> {
      */
     @NotNull CompletableFuture<@NotNull Organization> createAsync(@NotNull String name, @NotNull Country country);
 
-    @NotNull List<Organization> getAll();
+    @NotNull Array<Organization> getAll();
 
-    @NotNull CompletableFuture<@NotNull List<Organization>> getAllAsync();
+    @NotNull CompletableFuture<@NotNull Array<Organization>> getAllAsync();
 
     boolean existByName(@NotNull String name);
 

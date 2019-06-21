@@ -4,6 +4,7 @@ import com.ss.jcrm.base.utils.Reloadable;
 import com.ss.jcrm.dao.NamedEntity;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
+import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import com.ss.rlib.common.util.dictionary.ObjectDictionary;
@@ -59,7 +60,7 @@ public class DefaultCachedDictionaryService<T extends NamedEntity, R, C> impleme
             .thenAcceptAsync(this::reload);
     }
 
-    private void reload(@NotNull List<T> entities) {
+    private void reload(@NotNull Array<T> entities) {
 
         var idToResource = DictionaryFactory.<R>newLongDictionary();
         var nameToResource = DictionaryFactory.<String, R>newObjectDictionary();

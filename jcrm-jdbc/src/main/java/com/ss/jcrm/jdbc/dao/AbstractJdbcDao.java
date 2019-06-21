@@ -8,6 +8,8 @@ import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.jdbc.function.JdbcBiConverter;
 import com.ss.jcrm.jdbc.function.JdbcConverter;
 import com.ss.rlib.common.util.ObjectUtils;
+import com.ss.rlib.common.util.array.Array;
+import com.ss.rlib.common.util.array.ArrayFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -164,12 +166,13 @@ public abstract class AbstractJdbcDao<T extends Entity> implements Dao<T> {
         return null;
     }
 
-    protected <D extends Dao<T>> @NotNull List<T> findAll(
+    protected <D extends Dao<T>> @NotNull Array<T> findAll(
+        @NotNull Class<T> type,
         @NotNull String query,
         @NotNull JdbcConverter<D, T> converter
     ) {
 
-        var result = new ArrayList<T>();
+        var result = ArrayFactory.newArray(type);
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(query)
@@ -188,13 +191,14 @@ public abstract class AbstractJdbcDao<T extends Entity> implements Dao<T> {
         return result;
     }
 
-    protected <D extends Dao<T>, A> @NotNull List<T> findAll(
+    protected <D extends Dao<T>, A> @NotNull Array<T> findAll(
+        @NotNull Class<T> type,
         @NotNull String query,
         @NotNull A attachment,
         @NotNull JdbcBiConverter<D, A, T> converter
     ) {
 
-        var result = new ArrayList<T>();
+        var result = ArrayFactory.newArray(type);
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(query)

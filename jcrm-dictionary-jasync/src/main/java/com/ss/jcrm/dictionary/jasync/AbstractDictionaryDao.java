@@ -1,48 +1,42 @@
 package com.ss.jcrm.dictionary.jasync;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
+import com.github.jasync.sql.db.ConcreteConnection;
+import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.NamedEntity;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
-import com.ss.jcrm.jdbc.dao.AbstractNamedObjectJdbcDao;
+import com.ss.jcrm.jasync.dao.AbstractNamedObjectJAsyncDao;
+import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import org.jetbrains.annotations.NotNull;
 
-import javax.sql.DataSource;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
-public abstract class AbstractDictionaryDao<T extends NamedEntity> extends AbstractNamedObjectJdbcDao<T> implements
+public abstract class AbstractDictionaryDao<T extends NamedEntity> extends AbstractNamedObjectJAsyncDao<T> implements
     DictionaryDao<T> {
 
-    public AbstractDictionaryDao(
-        @NotNull DataSource dataSource,
-        @NotNull Executor fastDbTaskExecutor,
-        @NotNull Executor slowDbTaskExecutor
-    ) {
-        super(dataSource, fastDbTaskExecutor, slowDbTaskExecutor);
+    public AbstractDictionaryDao(@NotNull ConnectionPool<? extends ConcreteConnection> connectionPool) {
+        super(connectionPool);
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull List<T>> findAllAsync() {
-        return supplyAsync(this::findAll, slowDbTaskExecutor);
+    public @NotNull Array<T> findAll() {
+        return findAllAsync().join();
     }
 
     @Override
     public @NotNull LongDictionary<T> findAllAsMap() {
-
-        var result = DictionaryFactory.<T>newLongDictionary();
-
-        for (var entity : findAll()) {
-            result.put(entity.getId(), entity);
-        }
-
-        return result;
+        return findAllAsMapAsync().join();
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull LongDictionary<T>> findAllAsMapAsync() {
-        return supplyAsync(this::findAllAsMap, slowDbTaskExecutor);
+        return findAllAsync()
+            .thenApply(array -> {
+                //TODO use another constructor
+                var result = DictionaryFactory.<T>newLongDictionary();
+                array.forEach(result, (element, dictionary) -> dictionary.put(element.getId(), element));
+                return result;
+            });
     }
 }

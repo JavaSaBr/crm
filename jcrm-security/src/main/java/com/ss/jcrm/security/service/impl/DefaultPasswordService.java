@@ -20,7 +20,7 @@ public class DefaultPasswordService implements PasswordService {
 
     private static final ThreadLocal<Random> LOCAL_RANDOM = ThreadLocal.withInitial(SecureRandom::new);
     private static final ThreadLocal<SecretKeyFactory> LOCAL_SECRET_KEY_FACTORY =
-        ThreadLocal.withInitial(() -> Utils.get("PBKDF2WithHmacSHA1", SecretKeyFactory::getInstance));
+        ThreadLocal.withInitial(() -> Utils.uncheckedGet("PBKDF2WithHmacSHA1", SecretKeyFactory::getInstance));
 
     private final int keyIterations;
     private final int keyLength;
