@@ -1,7 +1,6 @@
-package com.ss.jcrm.integration.test.db
+package com.ss.jcrm.integration.test.db.config
 
-import com.ss.jcrm.integration.test.DefaultSpecificationConfig
-import org.flywaydb.core.Flyway
+import com.ss.jcrm.integration.test.config.DefaultSpecificationConfig
 import org.jetbrains.annotations.NotNull
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -34,7 +33,7 @@ class DbSpecificationConfig {
     
         def mappedPort = container.getMappedPort(POSTGRESQL_PORT)
         
-        System.setProperty("db.test.url", "jdbc:postgresql://${container.getContainerIpAddress()}:${ mappedPort}/$DB_NAME")
+        System.setProperty("db.test.url", "jdbc:postgresql://${container.getContainerIpAddress()}:${mappedPort}/$DB_NAME")
         System.setProperty("db.test.username", USER)
         System.setProperty("db.test.password", PWD)
 

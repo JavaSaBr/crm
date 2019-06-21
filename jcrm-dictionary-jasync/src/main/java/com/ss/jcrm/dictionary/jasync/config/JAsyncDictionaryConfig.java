@@ -37,7 +37,7 @@ public class JAsyncDictionaryConfig {
     private ExecutorService dbExecutor;
 
     @Bean
-    @DependsOn("dictionaryDataSource")
+    @DependsOn("dictionaryConnectionPool")
     @NotNull Flyway dictionaryFlyway() {
 
         var flyway = Flyway.configure()
@@ -94,7 +94,10 @@ public class JAsyncDictionaryConfig {
 
     @Bean
     @NotNull IndustryDao industryDao() {
-        return new JAsyncIndustryDao(dictionaryConnectionPool());
+        return new JAsyncIndustryDao(
+            dictionaryConnectionPool(),
+            env.getRequiredProperty("jdbc.dictionary.db.schema")
+        );
     }
 }
 

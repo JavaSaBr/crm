@@ -1,0 +1,4 @@
+dependencies {
+    compile project(":jcrm-jdbc")
+    compile project(":jcrm-integration-test-db")
+}

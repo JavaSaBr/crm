@@ -33,8 +33,7 @@ public abstract class AbstractDictionaryDao<T extends NamedEntity> extends Abstr
     public @NotNull CompletableFuture<@NotNull LongDictionary<T>> findAllAsMapAsync() {
         return findAllAsync()
             .thenApply(array -> {
-                //TODO use another constructor
-                var result = DictionaryFactory.<T>newLongDictionary();
+                var result = DictionaryFactory.<T>newLongDictionary(array.size());
                 array.forEach(result, (element, dictionary) -> dictionary.put(element.getId(), element));
                 return result;
             });

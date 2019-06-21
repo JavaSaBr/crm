@@ -9,5 +9,5 @@ dependencies {
     compile project(":jcrm-jdbc")
 
     testCompile project(path: ":jcrm-dictionary-api", configuration: "testArtifacts")
-    testCompile project(":jcrm-integration-test-db")
+    testCompile project(":jcrm-integration-test-db-jdbc")
 }

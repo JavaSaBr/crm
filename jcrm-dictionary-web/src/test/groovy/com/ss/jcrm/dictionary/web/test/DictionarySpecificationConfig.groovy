@@ -2,7 +2,7 @@ package com.ss.jcrm.dictionary.web.test
 
 import com.ss.jcrm.dictionary.jdbc.test.JdbcDictionarySpecificationConfig
 import com.ss.jcrm.dictionary.web.config.DictionaryWebConfig
-import com.ss.jcrm.integration.test.db.DbSpecificationConfig
+import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
 import com.ss.jcrm.integration.test.web.WebSpecificationConfig
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired

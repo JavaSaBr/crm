@@ -1,5 +1,6 @@
 package com.ss.jcrm.integration.test
 
+import com.ss.jcrm.integration.test.config.DefaultSpecificationConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 

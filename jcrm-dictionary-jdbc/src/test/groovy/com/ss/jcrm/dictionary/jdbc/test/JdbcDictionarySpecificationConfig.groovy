@@ -4,8 +4,8 @@ import com.ss.jcrm.dictionary.api.dao.CountryDao
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig
 import com.ss.jcrm.dictionary.jdbc.test.helper.JdbcDictionaryTestHelper
-import com.ss.jcrm.integration.test.db.DbSpecificationConfig
-import com.ss.jcrm.integration.test.db.DbSpecificationUtils
+import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
+import com.ss.jcrm.integration.test.db.jdbc.util.DbSpecificationUtils
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

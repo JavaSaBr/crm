@@ -1,0 +1,4 @@
+dependencies {
+    compile project(":jcrm-jasync")
+    compile project(":jcrm-integration-test-db")
+}

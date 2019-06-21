@@ -2,14 +2,13 @@ package com.ss.jcrm.dictionary.jdbc.test
 
 import com.ss.jcrm.dictionary.jdbc.test.helper.JdbcDictionaryTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
+import com.ss.jcrm.integration.test.db.jdbc.util.DbSpecificationUtils
 import org.flywaydb.core.Flyway
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
 import javax.sql.DataSource
-
-import static com.ss.jcrm.integration.test.db.DbSpecificationUtils.clearTable
 
 @ContextConfiguration(classes = JdbcDictionarySpecificationConfig)
 class JdbcDictionarySpecification extends DefaultSpecification {
@@ -19,7 +18,7 @@ class JdbcDictionarySpecification extends DefaultSpecification {
     static final String TABLE_INDUSTRY = "industry"
 
     def static clearAllTables(@NotNull DataSource dictionaryDataSource) {
-        clearTable(dictionaryDataSource, TABLE_CITY, TABLE_COUNTRY, TABLE_INDUSTRY)
+        DbSpecificationUtils.clearTable(dictionaryDataSource, TABLE_CITY, TABLE_COUNTRY, TABLE_INDUSTRY)
     }
 
     @Autowired

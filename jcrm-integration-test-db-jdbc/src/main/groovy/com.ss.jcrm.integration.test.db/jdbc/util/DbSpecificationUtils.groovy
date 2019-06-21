@@ -1,5 +1,6 @@
-package com.ss.jcrm.integration.test.db
+package com.ss.jcrm.integration.test.db.jdbc.util
 
+import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
 import com.ss.jcrm.jdbc.ConnectionPoolFactory
 import org.jetbrains.annotations.NotNull
 import org.testcontainers.containers.PostgreSQLContainer
