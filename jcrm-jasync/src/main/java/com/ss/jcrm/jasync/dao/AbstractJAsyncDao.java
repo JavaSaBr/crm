@@ -8,6 +8,7 @@ import com.ss.jcrm.dao.Entity;
 import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.jasync.function.JAsyncBiConverter;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
+import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.array.Array;
 import lombok.AllArgsConstructor;
@@ -28,12 +29,12 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
 
     @Override
     public @Nullable T findById(long id) {
-        return findByIdAsync(id).join();
+        return JAsyncUtils.unwrapJoin(findByIdAsync(id));
     }
 
     @Override
     public @NotNull T requireById(long id) {
-        return requireByIdAsync(id).join();
+        return JAsyncUtils.unwrapJoin(requireByIdAsync(id));
     }
 
     @Override
@@ -61,6 +62,7 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
     ) {
 
         return connectionPool.sendPreparedStatement(query, List.of(firstValue, secondValue))
+            .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
                 var rset = queryResult.getRows();
@@ -80,6 +82,7 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
     ) {
 
         return connectionPool.sendPreparedStatement(query, List.of(value))
+            .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
                 var rset = queryResult.getRows();
@@ -99,6 +102,7 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
     ) {
 
         return connectionPool.sendQuery(query)
+            .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
                 var rset = queryResult.getRows();
@@ -120,6 +124,7 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
     ) {
 
         return connectionPool.sendQuery(query)
+            .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
                 var rset = queryResult.getRows();
@@ -150,6 +155,7 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
     ) {
 
         return connectionPool.sendPreparedStatement(query, List.of(value))
+            .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
                 var rset = queryResult.getRows();

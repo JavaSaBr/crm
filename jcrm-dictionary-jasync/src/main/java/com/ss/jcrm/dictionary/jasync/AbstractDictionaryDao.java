@@ -5,6 +5,7 @@ import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.NamedEntity;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
 import com.ss.jcrm.jasync.dao.AbstractNamedObjectJAsyncDao;
+import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
@@ -21,12 +22,12 @@ public abstract class AbstractDictionaryDao<T extends NamedEntity> extends Abstr
 
     @Override
     public @NotNull Array<T> findAll() {
-        return findAllAsync().join();
+        return JAsyncUtils.unwrapJoin(findAllAsync());
     }
 
     @Override
     public @NotNull LongDictionary<T> findAllAsMap() {
-        return findAllAsMapAsync().join();
+        return JAsyncUtils.unwrapJoin(findAllAsMapAsync());
     }
 
     @Override

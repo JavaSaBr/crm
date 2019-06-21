@@ -4,6 +4,7 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.NamedEntity;
 import com.ss.jcrm.dao.NamedObjectDao;
+import com.ss.jcrm.jasync.util.JAsyncUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,6 @@ public abstract class AbstractNamedObjectJAsyncDao<T extends NamedEntity> extend
 
     @Override
     public @Nullable T findByName(@NotNull String name) {
-        return findByNameAsync(name).join();
+        return JAsyncUtils.unwrapJoin(findByNameAsync(name));
     }
 }

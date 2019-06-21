@@ -7,6 +7,7 @@ import com.ss.jcrm.dictionary.api.Industry;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultIndustry;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
+import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.array.Array;
 import org.intellij.lang.annotations.Language;
@@ -48,13 +49,14 @@ public class JAsyncIndustryDao extends AbstractDictionaryDao<Industry> implement
 
     @Override
     public @NotNull Industry create(@NotNull String name) {
-        return createAsync(name).join();
+        return JAsyncUtils.unwrapJoin(createAsync(name));
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Industry> createAsync(@NotNull String name) {
 
         return connectionPool.sendPreparedStatement(queryInsert, List.of(name))
+            .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
                 var rset = queryResult.getRows();
@@ -80,6 +82,6 @@ public class JAsyncIndustryDao extends AbstractDictionaryDao<Industry> implement
     }
 
     private @NotNull DefaultIndustry toIndustry(@NotNull RowData data) {
-        return new DefaultIndustry(data.getString(2), ObjectUtils.notNull(data.getLong(1)));
+        return new DefaultIndustry(data.getString(1), ObjectUtils.notNull(data.getLong(0)));
     }
 }
