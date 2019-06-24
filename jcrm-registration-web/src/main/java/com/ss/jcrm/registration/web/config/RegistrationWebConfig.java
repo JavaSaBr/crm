@@ -8,7 +8,7 @@ import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
-import com.ss.jcrm.web.exception.handler.WebExceptionHandler;
+import com.ss.jcrm.web.exception.handler.BaseWebExceptionHandler;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +52,8 @@ public class RegistrationWebConfig {
     }
 
     @Bean
-    @NotNull WebExceptionHandler webExceptionHandler() {
-        return new WebExceptionHandler();
+    @NotNull BaseWebExceptionHandler webExceptionHandler() {
+        return new BaseWebExceptionHandler();
     }
 
     @Bean

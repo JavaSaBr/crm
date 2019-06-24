@@ -2,7 +2,7 @@ package com.ss.jcrm.registration.web.exception.handler;
 
 import com.ss.jcrm.registration.web.exception.RegistrationErrors;
 import com.ss.jcrm.security.web.exception.*;
-import com.ss.jcrm.web.exception.handler.WebExceptionHandler;
+import com.ss.jcrm.web.exception.handler.BaseWebExceptionHandler;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class RegistrationExceptionHandler {
 
-    private final WebExceptionHandler handler;
+    private final BaseWebExceptionHandler handler;
 
     @ExceptionHandler(ExpiredTokenException.class)
     @NotNull ResponseEntity<?> expiredTokenException() {

@@ -2,6 +2,7 @@ package com.ss.jcrm.web.config;
 
 import com.ss.jcrm.web.converter.JsoniterHttpMessageConverter;
 import com.ss.jcrm.web.customizer.NettyWebServerFactorySslCustomizer;
+import com.ss.jcrm.web.exception.handler.BaseReactiveWebExceptionHandler;
 import com.ss.rlib.common.concurrent.GroupThreadFactory;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,8 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.server.WebExceptionHandler;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -67,5 +67,10 @@ public class BaseWebConfig {
             env.getRequiredProperty("web.server.ssl.keystore.password"),
             env.getRequiredProperty("web.server.ssl.key.alias")
         );
+    }
+
+    @Bean
+    @NotNull WebExceptionHandler baseWebExceptionHandler() {
+        return new BaseReactiveWebExceptionHandler();
     }
 }
