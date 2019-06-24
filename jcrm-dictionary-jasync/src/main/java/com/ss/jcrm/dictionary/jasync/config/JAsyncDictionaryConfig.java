@@ -4,7 +4,11 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.pool.PostgreSQLConnectionFactory;
+import com.ss.jcrm.dictionary.api.dao.CityDao;
+import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
+import com.ss.jcrm.dictionary.jasync.dao.JAsyncCityDao;
+import com.ss.jcrm.dictionary.jasync.dao.JAsyncCountryDao;
 import com.ss.jcrm.dictionary.jasync.dao.JAsyncIndustryDao;
 import com.ss.jcrm.jasync.config.JAsyncConfig;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
@@ -82,15 +86,22 @@ public class JAsyncDictionaryConfig {
         );
     }
 
-  /*  @Bean
+    @Bean
     @NotNull CountryDao countryDao() {
-        //return new JdbcCountryDao(dictionaryDataSource(), fastDbTaskExecutor, slowDbTaskExecutor);
+        return new JAsyncCountryDao(
+            dictionaryConnectionPool(),
+            env.getRequiredProperty("jdbc.dictionary.db.schema")
+        );
     }
 
     @Bean
     @NotNull CityDao cityDao() {
-        //return new JdbcCityDao(dictionaryDataSource(), countryDao(), fastDbTaskExecutor, slowDbTaskExecutor);
-    }*/
+        return new JAsyncCityDao(
+            dictionaryConnectionPool(),
+            env.getRequiredProperty("jdbc.dictionary.db.schema"),
+            countryDao()
+        );
+    }
 
     @Bean
     @NotNull IndustryDao industryDao() {

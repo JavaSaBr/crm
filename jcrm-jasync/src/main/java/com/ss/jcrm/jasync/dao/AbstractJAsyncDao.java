@@ -7,6 +7,7 @@ import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.Entity;
 import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.jasync.function.JAsyncBiConverter;
+import com.ss.jcrm.jasync.function.JAsyncComposeConverter;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.rlib.common.util.ObjectUtils;
@@ -95,6 +96,26 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
             });
     }
 
+    protected <D extends Dao<T>> @NotNull CompletableFuture<@Nullable T> findByAndCompose(
+        @NotNull String query,
+        @NotNull Object value,
+        @NotNull JAsyncComposeConverter<D, T> converter
+    ) {
+
+        return connectionPool.sendPreparedStatement(query, List.of(value))
+            .handle(JAsyncUtils.handleException())
+            .thenCompose(queryResult -> {
+
+                var rset = queryResult.getRows();
+
+                if (rset.isEmpty()) {
+                    return CompletableFuture.completedFuture(null);
+                } else {
+                    return converter.convert((D) this, rset.get(0));
+                }
+            });
+    }
+
     protected <D extends Dao<T>> @NotNull CompletableFuture<@NotNull Array<T>> findAll(
         @NotNull Class<T> type,
         @NotNull String query,
@@ -117,7 +138,8 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
             });
     }
 
-    protected <D extends Dao<T>, A> @NotNull CompletableFuture<@NotNull List<T>> findAll(
+    protected <D extends Dao<T>, A> @NotNull CompletableFuture<@NotNull Array<T>> findAll(
+        @NotNull Class<T> type,
         @NotNull String query,
         @NotNull A attachment,
         @NotNull JAsyncBiConverter<D, A, T> converter
@@ -130,12 +152,12 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
                 var rset = queryResult.getRows();
 
                 if (rset.isEmpty()) {
-                    return List.of();
+                    return Array.empty();
                 }
 
                 return rset.stream()
                     .map(data -> converter.convert((D) this, attachment, data))
-                    .collect(Collectors.toList());
+                    .collect(toArray(type));
             });
     }
 
