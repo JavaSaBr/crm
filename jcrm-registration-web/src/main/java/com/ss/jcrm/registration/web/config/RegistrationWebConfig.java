@@ -2,18 +2,19 @@ package com.ss.jcrm.registration.web.config;
 
 import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig;
 import com.ss.jcrm.mail.MailConfig;
+import com.ss.jcrm.registration.web.exception.handler.RegistrationWebExceptionHandler;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
-import com.ss.jcrm.web.exception.handler.BaseWebExceptionHandler;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.web.server.WebExceptionHandler;
 
 import java.util.List;
 
@@ -52,12 +53,12 @@ public class RegistrationWebConfig {
     }
 
     @Bean
-    @NotNull BaseWebExceptionHandler webExceptionHandler() {
-        return new BaseWebExceptionHandler();
+    @NotNull ApiEndpointServer registrationApiEndpointServer() {
+        return new ApiEndpointServer("/registration");
     }
 
     @Bean
-    @NotNull ApiEndpointServer registrationApiEndpointServer() {
-        return new ApiEndpointServer("/registration");
+    @NotNull WebExceptionHandler registrationWebExceptionHandler() {
+        return new RegistrationWebExceptionHandler();
     }
 }

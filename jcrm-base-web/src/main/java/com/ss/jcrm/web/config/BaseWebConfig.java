@@ -2,7 +2,7 @@ package com.ss.jcrm.web.config;
 
 import com.ss.jcrm.web.converter.JsoniterHttpMessageConverter;
 import com.ss.jcrm.web.customizer.NettyWebServerFactorySslCustomizer;
-import com.ss.jcrm.web.exception.handler.BaseReactiveWebExceptionHandler;
+import com.ss.jcrm.web.exception.handler.DefaultWebExceptionHandler;
 import com.ss.rlib.common.concurrent.GroupThreadFactory;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.server.WebExceptionHandler;
 
 import java.util.concurrent.Executor;
@@ -25,6 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
     HttpHandlerAutoConfiguration.class,
     ReactiveWebServerFactoryAutoConfiguration.class,
 })
+@EnableWebFlux
 @Configuration
 @PropertySource("classpath:com/ss/jcrm/web/base-web.properties")
 public class BaseWebConfig {
@@ -70,7 +72,7 @@ public class BaseWebConfig {
     }
 
     @Bean
-    @NotNull WebExceptionHandler baseWebExceptionHandler() {
-        return new BaseReactiveWebExceptionHandler();
+    @NotNull WebExceptionHandler defaultWebExceptionHandler() {
+        return new DefaultWebExceptionHandler();
     }
 }

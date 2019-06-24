@@ -201,22 +201,33 @@ class JdbcUserTestHelper implements UserTestHelper {
     void clearAllData() {
         JdbcUserSpecification.clearAllTables(userDataSource)
     }
-
+    
     @Override
     String nextUId() {
         return System.nanoTime() + "-" + Thread.currentThread().id
     }
     
+    String nextCode() {
+    
+        def code = String.valueOf(System.nanoTime())
+    
+        if (code.length() > 14) {
+            return code.substring(0, 14);
+        }
+    
+        return code
+    }
+    
     @Override
     String nextEmail() {
         return ThreadLocalRandom.current()
-            .nextInt(9) + "-" + (Thread.currentThread().id % 10) + "@ttt.com"
+            .nextInt(9) + "-" + (Thread.currentThread().id % 10) + "@tt.co"
     }
     
     @Override
     EmailConfirmation newEmailConfirmation() {
         return emailConfirmationDao.create(
-            String.valueOf(System.nanoTime()),
+            nextCode(),
             nextEmail(),
             Instant.now() + 60
         )

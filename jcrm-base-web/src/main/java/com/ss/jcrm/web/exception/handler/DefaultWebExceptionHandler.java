@@ -3,6 +3,7 @@ package com.ss.jcrm.web.exception.handler;
 import com.ss.jcrm.web.exception.WebException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,29 +16,56 @@ import org.springframework.web.server.WebExceptionHandler;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.concurrent.CompletionException;
 
-public class BaseReactiveWebExceptionHandler implements WebExceptionHandler {
+public class DefaultWebExceptionHandler implements WebExceptionHandler, Ordered {
 
-    private final ServerResponse.Context responseContext;
+    public static final int ORDER = -100;
 
-    public BaseReactiveWebExceptionHandler() {
+    protected final ServerResponse.Context responseContext;
+
+    public DefaultWebExceptionHandler() {
         this.responseContext = new HandlerStrategiesResponseContext(HandlerStrategies.withDefaults());
     }
 
     @Override
-    public Mono<Void> handle(@NotNull ServerWebExchange exchange, @NotNull Throwable ex) {
+    public int getOrder() {
+        return ORDER;
+    }
+
+    @Override
+    public @NotNull Mono<Void> handle(@NotNull ServerWebExchange exchange, @NotNull Throwable ex) {
         return buildError(ex)
-            .flatMap(serverResponse -> serverResponse.writeTo(exchange, responseContext))
+            .switchIfEmpty(Mono.error(ex))
+            .flatMap(response -> response.writeTo(exchange, responseContext))
             .flatMap(aVoid -> Mono.empty());
     }
 
     protected @NotNull Mono<ServerResponse> buildError(@NotNull Throwable throwable) {
-        if (throwable instanceof WebException) {
-            var webException = (WebException) throwable;
-            return buildError(webException.getStatus(), webException.getErrorCode(), webException.getMessage());
-        } else {
+
+        if (throwable instanceof CompletionException) {
+            throwable = throwable.getCause();
+        }
+
+        if (!(throwable instanceof WebException)) {
             return Mono.empty();
         }
+
+        var webException = (WebException) throwable;
+
+        return buildError(
+            webException.getStatus(),
+            webException.getErrorCode(),
+            webException.getMessage()
+        );
+    }
+
+    public @NotNull Mono<ServerResponse> buildError(
+        @NotNull HttpStatus status,
+        int errorCode,
+        @NotNull String message
+    ) {
+        return buildError(status.value(), errorCode, message);
     }
 
     public @NotNull Mono<ServerResponse> buildError(int status, int errorCode, @NotNull String message) {

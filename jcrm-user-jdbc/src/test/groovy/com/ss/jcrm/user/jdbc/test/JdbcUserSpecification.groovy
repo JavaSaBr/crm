@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration
 
 import javax.sql.DataSource
 
-import static com.ss.jcrm.integration.test.db.DbSpecificationUtils.clearTable
+import static com.ss.jcrm.integration.test.db.jdbc.util.DbSpecificationUtils.clearTable
 
 @ContextConfiguration(classes = JdbcUserSpecificationConfig)
 class JdbcUserSpecification extends DefaultSpecification {

@@ -3,7 +3,7 @@ package com.ss.jcrm.user.jdbc.test
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.dictionary.jdbc.test.JdbcDictionarySpecificationConfig
 import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
-
+import com.ss.jcrm.integration.test.db.jdbc.util.DbSpecificationUtils
 import com.ss.jcrm.security.config.SecurityConfig
 import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao
