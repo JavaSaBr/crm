@@ -26,7 +26,6 @@ import java.util.concurrent.ScheduledExecutorService;
     HttpHandlerAutoConfiguration.class,
     ReactiveWebServerFactoryAutoConfiguration.class,
 })
-@EnableWebFlux
 @Configuration
 @PropertySource("classpath:com/ss/jcrm/web/base-web.properties")
 public class BaseWebConfig {

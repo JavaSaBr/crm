@@ -2,6 +2,7 @@ package com.ss.jcrm.dictionary.web.config;
 
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig;
+import com.ss.jcrm.dictionary.web.handler.CountryHandler;
 import com.ss.jcrm.dictionary.web.resource.AllCountriesOutResource;
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
@@ -14,6 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
@@ -67,5 +71,27 @@ public class DictionaryWebConfig {
     @Bean
     @NotNull ApiEndpointServer dictionaryApiEndpointServer() {
         return new ApiEndpointServer("/dictionary");
+    }
+
+    @Bean
+    @NotNull CountryHandler countryHandler() {
+        return new CountryHandler(countryDictionaryService());
+    }
+
+    @Bean
+    @NotNull RouterFunction<ServerResponse> dictionaryStatusRouterFunction() {
+        return RouterFunctions.route()
+            .GET("/dictionary/status", request -> ServerResponse.ok()
+                .build())
+            .build();
+    }
+
+    @Bean
+    @NotNull RouterFunction<ServerResponse> countryRouterFunction(@NotNull CountryHandler countryHandler) {
+        return RouterFunctions.route()
+            .GET("/dictionary/countries", countryHandler::getAll)
+            .GET("/dictionary/country/{id}", countryHandler::getById)
+            .GET("/dictionary/name/{name}", countryHandler::getByName)
+            .build();
     }
 }

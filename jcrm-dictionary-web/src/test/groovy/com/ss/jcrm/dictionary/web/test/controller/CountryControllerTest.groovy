@@ -5,9 +5,12 @@ import com.ss.jcrm.dictionary.web.resource.AllCountriesOutResource
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService
 import com.ss.jcrm.dictionary.web.test.DictionarySpecification
+import com.ss.jcrm.web.exception.CommonErrors
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
+import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED
+import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
 
@@ -27,13 +30,10 @@ class CountryControllerTest extends DictionarySpecification {
             (countryDictionaryService as Reloadable).reload()
 
         when:
-
             def response = client.get()
                 .url("/dictionary/countries")
                 .exchange()
-
         then:
-
             response.expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
@@ -43,8 +43,40 @@ class CountryControllerTest extends DictionarySpecification {
                         .value(containsInAnyOrder(
                             country1.name,
                             country2.name,
-                            country3.name)
-                        )
+                            country3.name))
+    }
+    
+    def "should not get not exists country"() {
+        
+        given:
+            (countryDictionaryService as Reloadable).reload()
+        when:
+            def response = client.get()
+                .url("/dictionary/country/1")
+                .exchange()
+        then:
+            response.expectStatus()
+                .isNotFound()
+        when:
+            response = client.get()
+                .url("/dictionary/country/name/notexist")
+                .exchange()
+        then:
+            response.expectStatus()
+                .isNotFound()
+    }
+    
+    def "should get bad request with wrong id format"() {
+        
+        given:
+            (countryDictionaryService as Reloadable).reload()
+        when:
+            def response = client.get()
+                .url("/dictionary/country/incorrectid")
+                .exchange()
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(ID_NOT_PRESENTED, ID_NOT_PRESENTED_MESSAGE)
     }
 
     def "should get all countries with CORS headers"() {
@@ -58,14 +90,11 @@ class CountryControllerTest extends DictionarySpecification {
             (countryDictionaryService as Reloadable).reload()
 
         when:
-
             def response = client.get()
                 .url("/dictionary/countries")
                 .headerValue("Origin", "http://localhost")
                 .exchange()
-
         then:
-
             response.expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectHeader().exists("Access-Control-Allow-Origin")
@@ -76,7 +105,6 @@ class CountryControllerTest extends DictionarySpecification {
                         .value(containsInAnyOrder(
                             country1.name,
                             country2.name,
-                            country3.name)
-                        )
+                            country3.name))
     }
 }
