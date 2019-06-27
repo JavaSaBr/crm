@@ -1,4 +1,4 @@
-package com.ss.jcrm.registration.web.test.controller
+package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
@@ -21,7 +21,7 @@ import static com.ss.jcrm.registration.web.exception.RegistrationErrors.MAX_REFR
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.MAX_REFRESHED_TOKEN_MESSAGE
 import static org.hamcrest.Matchers.is
 
-class AuthenticationControllerTest extends RegistrationSpecification {
+class AuthenticationHandlerTest extends RegistrationSpecification {
     
     @Autowired
     UnsafeTokenService unsafeTokenService

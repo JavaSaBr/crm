@@ -8,6 +8,7 @@ import com.ss.jcrm.web.exception.NameNotPresentedWebException;
 import com.ss.rlib.common.util.Utils;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -19,6 +20,7 @@ public class CountryHandler {
 
     public @NotNull Mono<ServerResponse> getAll(@NotNull ServerRequest request) {
         return ServerResponse.ok()
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
             .syncBody(countryDictionaryService.getAll());
     }
 
@@ -29,6 +31,7 @@ public class CountryHandler {
             .switchIfEmpty(Mono.error(IdNotPresentedWebException::new))
             .flatMap(id -> Mono.justOrEmpty(countryDictionaryService.getById(id)))
             .flatMap(country -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .syncBody(country))
             .switchIfEmpty(ServerResponse.notFound()
                 .build());
@@ -40,6 +43,7 @@ public class CountryHandler {
             .switchIfEmpty(Mono.error(NameNotPresentedWebException::new))
             .flatMap(name -> Mono.justOrEmpty(countryDictionaryService.getByName(name)))
             .flatMap(country -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .syncBody(country))
             .switchIfEmpty(ServerResponse.notFound()
                 .build());

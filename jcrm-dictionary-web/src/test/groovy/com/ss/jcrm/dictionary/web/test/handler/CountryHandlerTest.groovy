@@ -1,11 +1,10 @@
-package com.ss.jcrm.dictionary.web.test.controller
+package com.ss.jcrm.dictionary.web.test.handler
 
 import com.ss.jcrm.base.utils.Reloadable
 import com.ss.jcrm.dictionary.web.resource.AllCountriesOutResource
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService
 import com.ss.jcrm.dictionary.web.test.DictionarySpecification
-import com.ss.jcrm.web.exception.CommonErrors
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
@@ -14,7 +13,7 @@ import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
 
-class CountryControllerTest extends DictionarySpecification {
+class CountryHandlerTest extends DictionarySpecification {
 
     @Autowired
     private CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService

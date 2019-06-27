@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-@RestController
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class OrganizationController {
 

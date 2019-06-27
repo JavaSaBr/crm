@@ -2,23 +2,30 @@ package com.ss.jcrm.registration.web.config;
 
 import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig;
 import com.ss.jcrm.mail.MailConfig;
+import com.ss.jcrm.mail.service.MailService;
 import com.ss.jcrm.registration.web.exception.handler.RegistrationWebExceptionHandler;
+import com.ss.jcrm.registration.web.handler.AuthenticationHandler;
+import com.ss.jcrm.registration.web.handler.EmailConfirmationHandler;
+import com.ss.jcrm.registration.web.handler.OrganizationHandler;
 import com.ss.jcrm.registration.web.handler.UserHandler;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
+import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
+import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
+import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
+import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.WebExceptionHandler;
 
 import java.util.List;
@@ -39,10 +46,14 @@ import java.util.List;
         ignoreResourceNotFound = true
     )
 })
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class RegistrationWebConfig {
 
+    private static final RequestPredicate APP_JSON =
+        RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8);
+
     @Autowired
-    private Environment env;
+    private final Environment env;
 
     @Autowired
     private List<? extends Flyway> flyways;
@@ -73,6 +84,46 @@ public class RegistrationWebConfig {
     }
 
     @Bean
+    @NotNull EmailConfirmationHandler emailConfirmationHandler(
+        @NotNull EmailConfirmationDao emailConfirmationDao,
+        @NotNull TokenService tokenService,
+        @NotNull ResourceValidator resourceValidator,
+        @NotNull TemplateRegistry emailConfirmationTemplate,
+        @NotNull MailService mailService
+    ) {
+
+        return new EmailConfirmationHandler(
+            emailConfirmationDao,
+            tokenService,
+            resourceValidator,
+            emailConfirmationTemplate,
+            mailService,
+            env.getRequiredProperty("registration.web.email.confirmation.email.subject"),
+            env.getRequiredProperty("registration.web.email.confirmation.activate.code.length", int.class),
+            env.getRequiredProperty("registration.web.email.confirmation.expiration", int.class)
+        );
+    }
+
+    @Bean
+    @NotNull AuthenticationHandler authenticationHandler(
+        @NotNull TokenService tokenService,
+        @NotNull UserDao userDao,
+        @NotNull PasswordService passwordService,
+        @NotNull ResourceValidator resourceValidator
+    ) {
+        return new AuthenticationHandler(tokenService, userDao, passwordService, resourceValidator);
+    }
+
+    @Bean
+    @NotNull OrganizationHandler organizationHandler(
+        @NotNull UserDao userDao,
+    ) {
+        return new OrganizationHandler(
+            userDao
+        );
+    }
+
+    @Bean
     @NotNull RouterFunction<ServerResponse> registrationStatusRouterFunction() {
         return RouterFunctions.route()
             .GET("/registration/status", request -> ServerResponse.ok()
@@ -84,6 +135,26 @@ public class RegistrationWebConfig {
     @NotNull RouterFunction<ServerResponse> userRouterFunction(@NotNull UserHandler userHandler) {
         return RouterFunctions.route()
             .GET("/registration/exist/user/email/{email}", userHandler::existByEmail)
+            .build();
+    }
+
+    @Bean
+    @NotNull RouterFunction<ServerResponse> emailConfirmationRouterFunction(
+        @NotNull EmailConfirmationHandler emailConfirmationHandler
+    ) {
+        return RouterFunctions.route()
+            .GET("/registration/email/confirmation/{email}", emailConfirmationHandler::emailConfirmation)
+            .build();
+    }
+
+    @Bean
+    @NotNull RouterFunction<ServerResponse> authenticationRouterFunction(
+        @NotNull AuthenticationHandler authenticationHandler
+    ) {
+        return RouterFunctions.route()
+            .POST("/registration/authenticate", APP_JSON, authenticationHandler::authenticate)
+            .GET("/registration/authenticate/{token}", authenticationHandler::authenticateByToken)
+            .GET("/registration/token/refresh/{token}", authenticationHandler::refreshToken)
             .build();
     }
 }

@@ -1,4 +1,4 @@
-package com.ss.jcrm.registration.web.test.controller
+package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import static org.hamcrest.Matchers.is;
 
-class OrganizationControllerTest extends RegistrationSpecification {
+class OrganizationHandlerTest extends RegistrationSpecification {
     
     @Autowired
     EmailConfirmationDao emailConfirmationDao

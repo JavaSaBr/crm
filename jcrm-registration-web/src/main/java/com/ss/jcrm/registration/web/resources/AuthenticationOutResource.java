@@ -20,4 +20,8 @@ public class AuthenticationOutResource implements RestResource {
     public AuthenticationOutResource(@NotNull User user, @NotNull String token) {
         this(new UserOutResource(user), token);
     }
+
+    public AuthenticationOutResource(@NotNull String token, @NotNull User user) {
+        this(new UserOutResource(user), token);
+    }
 }

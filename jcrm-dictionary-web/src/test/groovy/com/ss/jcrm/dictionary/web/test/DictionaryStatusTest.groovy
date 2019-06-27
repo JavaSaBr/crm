@@ -1,8 +1,6 @@
-package com.ss.jcrm.dictionary.web.test.controller
+package com.ss.jcrm.dictionary.web.test
 
-import com.ss.jcrm.dictionary.web.test.DictionarySpecification
-
-class DictionaryStatusControllerTest extends DictionarySpecification {
+class DictionaryStatusTest extends DictionarySpecification {
 
     def "should return status ok"() {
 

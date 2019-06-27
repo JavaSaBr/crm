@@ -1,11 +1,11 @@
-package com.ss.jcrm.registration.web.test.controller
+package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
 
-class EmailConfirmationControllerTest extends RegistrationSpecification {
+class EmailConfirmationHandlerTest extends RegistrationSpecification {
 
     def "should send email confirmation request successfully"() {
 

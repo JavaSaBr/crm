@@ -34,6 +34,13 @@ public class ExceptionUtils {
     }
 
     public static <T> @NotNull T unauthorized(
+        int errorCode,
+        @NotNull String message
+    ) {
+        throw new UnauthorizedWebException(message, errorCode);
+    }
+
+    public static <T> @NotNull T unauthorized(
         @NotNull Throwable throwable,
         @NotNull Predicate<Throwable> expected,
         int errorCode,
@@ -45,4 +52,6 @@ public class ExceptionUtils {
             throw new CompletionException(throwable);
         }
     }
+
+
 }

@@ -10,6 +10,7 @@ import com.ss.jcrm.dictionary.web.service.impl.DefaultCachedDictionaryService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
+import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,6 @@ import java.util.concurrent.TimeUnit;
     BaseWebConfig.class
 })
 @Configuration
-@ComponentScan("com.ss.jcrm.dictionary.web")
 @PropertySources({
     @PropertySource("classpath:com/ss/jcrm/dictionary/web/dictionary-web.properties"),
     @PropertySource(
@@ -37,22 +37,20 @@ import java.util.concurrent.TimeUnit;
         ignoreResourceNotFound = true
     )
 })
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class DictionaryWebConfig {
 
     @Autowired
-    private CountryDao countryDao;
-
-    @Autowired
-    private ScheduledExecutorService reloadScheduler;
-
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
     @Autowired
     private List<? extends Flyway> flyways;
 
     @Bean
-    @NotNull CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService() {
+    @NotNull CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService(
+        @NotNull CountryDao countryDao,
+        @NotNull ScheduledExecutorService reloadScheduler
+    ) {
 
         var service = new DefaultCachedDictionaryService<>(
             countryDao,
@@ -61,7 +59,7 @@ public class DictionaryWebConfig {
         );
         service.reload();
 
-        int interval = env.getProperty("dictionary.web.cache.reload.interval", Integer.class, 600);
+        int interval = env.getProperty("dictionary.web.cache.reload.interval", int.class, 600);
 
         reloadScheduler.scheduleAtFixedRate(service::reloadAsync, interval, interval, TimeUnit.SECONDS);
 
@@ -74,8 +72,10 @@ public class DictionaryWebConfig {
     }
 
     @Bean
-    @NotNull CountryHandler countryHandler() {
-        return new CountryHandler(countryDictionaryService());
+    @NotNull CountryHandler countryHandler(
+        @NotNull CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService
+    ) {
+        return new CountryHandler(countryDictionaryService);
     }
 
     @Bean
