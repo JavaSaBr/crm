@@ -35,7 +35,6 @@ allprojects {
         annotationVersion = "16.0.3"
         rlibVersion = "9.2.1"
         lombokVersion = '1.18.4'
-        nettyBoringsslVersion = "2.0.25.Final"
         springbootVersion = '2.1.4.RELEASE'
         springVersion = '5.1.6.RELEASE'
         junitJupiterVersion = "5.2.0"

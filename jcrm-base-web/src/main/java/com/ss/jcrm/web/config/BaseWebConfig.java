@@ -14,10 +14,8 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.server.WebExceptionHandler;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -36,17 +34,6 @@ public class BaseWebConfig {
     @Bean
     @NotNull HttpMessageConverter<?> jsoniterHttpMessageConverter() {
         return new JsoniterHttpMessageConverter();
-    }
-
-    @Bean
-    @NotNull Executor controllerExecutor() {
-
-        var cores = Runtime.getRuntime().availableProcessors() * 2;
-
-        return Executors.newFixedThreadPool(
-            env.getProperty("controller.executor.threads", Integer.class, cores),
-            new GroupThreadFactory("ControllerThread")
-        );
     }
 
     @Bean

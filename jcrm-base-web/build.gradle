@@ -9,5 +9,4 @@ dependencies {
     compile "com.jsoniter:jsoniter:$jsointerVersion"
     compile "org.javassist:javassist:$javassistVersion"
     compile "org.springframework.boot:spring-boot-starter-webflux:$springbootVersion"
-    //compile "io.netty:netty-tcnative-boringssl-static:$nettyBoringsslVersion"
 }

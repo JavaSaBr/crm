@@ -40,7 +40,6 @@ import java.util.List;
     MailConfig.class
 })
 @Configuration
-@ComponentScan("com.ss.jcrm.registration.web")
 @PropertySources({
     @PropertySource("classpath:com/ss/jcrm/registration/web/registration-web.properties"),
     @PropertySource(
