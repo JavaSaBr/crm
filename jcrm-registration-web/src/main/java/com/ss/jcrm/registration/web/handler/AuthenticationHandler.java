@@ -74,16 +74,21 @@ public class AuthenticationHandler {
         return new AuthenticationOutResource(tokenService.refresh(user, token), user);
     }
 
-    private @Nullable AuthenticationOutResource authenticate(
+    private @NotNull AuthenticationOutResource authenticate(
         @NotNull AuthenticationInResource resource,
         @NotNull User user
     ) {
 
         var password = resource.getPassword();
         try {
+
             if (!passwordService.isCorrect(password, user.getSalt(), user.getPassword())) {
-                return null;
+               throw new UnauthorizedWebException(
+                    INVALID_CREDENTIALS_MESSAGE,
+                    INVALID_CREDENTIALS
+                );
             }
+
         } finally {
             Arrays.fill(password, ' ');
         }

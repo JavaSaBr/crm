@@ -45,19 +45,20 @@ public class OrganizationHandler {
     private final EmailConfirmationDao emailConfirmationDao;
     private final TokenService tokenService;
 
-    @NotNull Mono<ServerResponse> register(@NotNull ServerRequest request) {
+    public @NotNull Mono<ServerResponse> register(@NotNull ServerRequest request) {
         return request.bodyToMono(OrganizationRegisterInResource.class)
             .doOnNext(resourceValidator::validate)
             .zipWhen(this::findEmailConfirmation, this::validateConfirmation)
             .switchIfEmpty(Mono.error(() -> new BadRequestWebException(INVALID_ACTIVATION_CODE_MESSAGE, INVALID_ACTIVATION_CODE)))
             .zipWhen(this::findCountry, this::createOrganization)
+            .flatMap(Function.identity())
             .switchIfEmpty(Mono.error(() -> new BadRequestWebException(COUNTRY_NOT_FOUND_MESSAGE, COUNTRY_NOT_FOUND)))
             .flatMap(resource -> ServerResponse.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .syncBody(resource));
     }
 
-    @NotNull Mono<ServerResponse> existByName(@NotNull ServerRequest request) {
+    public @NotNull Mono<ServerResponse> existByName(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("name"))
             .map(organizationDao::existByNameAsync)
             .flatMap(Mono::fromFuture)
@@ -117,7 +118,7 @@ public class OrganizationHandler {
                     return CompletableFuture.completedFuture(user);
                 } else {
                     return organizationDao.deleteAsync(organization.getId())
-                        .thenApply(aBoolean -> ExceptionUtils.<User>badRequest(
+                        .thenApply(wasDeleted -> ExceptionUtils.<User>badRequest(
                             throwable,
                             DuplicateObjectDaoException.class::isInstance,
                             EMAIL_ALREADY_EXIST,

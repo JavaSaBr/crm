@@ -1,5 +1,6 @@
 package com.ss.jcrm.registration.web.config;
 
+import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig;
 import com.ss.jcrm.mail.MailConfig;
 import com.ss.jcrm.mail.service.MailService;
@@ -14,6 +15,7 @@ import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
+import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
@@ -117,9 +119,21 @@ public class RegistrationWebConfig {
     @Bean
     @NotNull OrganizationHandler organizationHandler(
         @NotNull UserDao userDao,
+        @NotNull OrganizationDao organizationDao,
+        @NotNull CountryDao countryDao,
+        @NotNull PasswordService passwordService,
+        @NotNull ResourceValidator resourceValidator,
+        @NotNull EmailConfirmationDao emailConfirmationDao,
+        @NotNull TokenService tokenService
     ) {
         return new OrganizationHandler(
-            userDao
+            userDao,
+            organizationDao,
+            countryDao,
+            passwordService,
+            resourceValidator,
+            emailConfirmationDao,
+            tokenService
         );
     }
 
@@ -155,6 +169,16 @@ public class RegistrationWebConfig {
             .POST("/registration/authenticate", APP_JSON, authenticationHandler::authenticate)
             .GET("/registration/authenticate/{token}", authenticationHandler::authenticateByToken)
             .GET("/registration/token/refresh/{token}", authenticationHandler::refreshToken)
+            .build();
+    }
+
+    @Bean
+    @NotNull RouterFunction<ServerResponse> organizationRouterFunction(
+        @NotNull OrganizationHandler organizationHandler
+    ) {
+        return RouterFunctions.route()
+            .POST("/registration/register/organization", APP_JSON, organizationHandler::register)
+            .GET("/registration/exist/organization/name/{name}", organizationHandler::existByName)
             .build();
     }
 }
