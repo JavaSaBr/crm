@@ -18,7 +18,7 @@ import {Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {SecurityService} from '../../services/security.service';
 import {UiUtils} from '../../utils/ui-utils';
-import {MatHorizontalStepper, MatInput} from '@angular/material';
+import {MatHorizontalStepper} from '@angular/material';
 
 @Component({
     selector: 'app-register-new-organization',
@@ -42,16 +42,16 @@ export class RegisterNewOrganizationComponent implements OnInit {
     readonly email: FormControl;
     readonly phoneNumber: FormControl;
 
-    @ViewChild(MatHorizontalStepper)
+    @ViewChild(MatHorizontalStepper, {static: true})
     stepper: MatHorizontalStepper;
 
-    @ViewChild('orgNameField')
+    @ViewChild('orgNameField', {static: true})
     orgNameField: ElementRef;
 
-    @ViewChild('emailField')
+    @ViewChild('emailField', {static: true})
     emailField: ElementRef;
 
-    @ViewChild('activationCodeField')
+    @ViewChild('activationCodeField', {static: true})
     activationCodeField: ElementRef;
 
     selectedEmail;

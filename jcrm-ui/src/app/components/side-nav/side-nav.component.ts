@@ -1,5 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatSidenav} from '@angular/material';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {MatHorizontalStepper, MatSidenav} from '@angular/material';
 import {SideMenuService} from '../../services/side-menu.service';
 
 @Component({
@@ -10,7 +10,7 @@ import {SideMenuService} from '../../services/side-menu.service';
 })
 export class SideNavComponent implements OnInit {
 
-    @ViewChild(MatSidenav)
+    @ViewChild(MatSidenav, {static: true})
     matSidenav: MatSidenav;
 
     constructor(private sideMenuService: SideMenuService) {
