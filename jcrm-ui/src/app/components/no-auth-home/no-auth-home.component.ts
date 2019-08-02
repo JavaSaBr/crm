@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {SecurityService} from '../../services/security.service';
 
 @Component({
@@ -16,12 +16,6 @@ export class NoAuthHomeComponent {
         private readonly router: Router,
         private readonly securityService: SecurityService
     ) {
-        this.router.events.subscribe(value => {
-            if (value instanceof NavigationEnd) {
-                //FIXME how it can be done better?
-                this.activatedSubPages = value.url.startsWith('/no-auth/');
-            }
-        });
 
         if (this.securityService.isAuthenticated()) {
             this.router.navigate(['/']);
@@ -34,5 +28,13 @@ export class NoAuthHomeComponent {
                     this.router.navigate(['/']);
                 }
             });
+    }
+
+    onActivateSubPage(componentRef) {
+        this.activatedSubPages = true;
+    }
+
+    onDeactivateSubPage(componentRef) {
+        this.activatedSubPages = false;
     }
 }

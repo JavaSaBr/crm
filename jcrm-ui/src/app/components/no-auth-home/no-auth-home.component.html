@@ -44,4 +44,4 @@
   </div>
 </div>
 
-<router-outlet></router-outlet>
+<router-outlet (activate)="onActivateSubPage($event)" (deactivate)="onDeactivateSubPage($event)"></router-outlet>

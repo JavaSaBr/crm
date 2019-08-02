@@ -1,12 +1,11 @@
 import {TestBed} from '@angular/core/testing';
+import {WorkspaceService} from './workspace.service';
 
-import {NoAuthHomeService} from './no-auth-home.service';
-
-describe('NoAuthHomeService', () => {
+describe('Error Service', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('should be created', () => {
-        const service: NoAuthHomeService = TestBed.get(NoAuthHomeService);
+        const service: WorkspaceService = TestBed.get(WorkspaceService);
         expect(service).toBeTruthy();
     });
 });

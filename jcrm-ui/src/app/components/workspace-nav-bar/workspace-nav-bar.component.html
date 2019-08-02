@@ -1,6 +1,6 @@
-<mat-toolbar class="navigation-bar mat-elevation-z6">
+<mat-toolbar class="navigation-bar mat-elevation-z3">
 
-  <button mat-icon-button (click)="toggleSideMenu()">
+  <button mat-icon-button class="nav-bar-menu-button" (click)="toggleSideMenu()">
     <div class="hamburger hamburger--spin {{additionalHamburgerStyle}}">
       <span class="hamburger-box">
           <span class="hamburger-inner"></span>
@@ -10,12 +10,14 @@
   <span class="space-filler"></span>
   <mat-form-field appearance="standard" class="search-field">
     <mat-label>Search</mat-label>
-    <input matInput type="text" placeholder="Search" [(ngModel)]="searchValue">
-    <button class="search-field-clear-button" *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchValue=''">
-      <mat-icon>close</mat-icon>
-    </button>
+    <input matInput type="search" placeholder="Search" [(ngModel)]="searchValue">
   </mat-form-field>
-  <mat-icon matSuffix class="search-icon">search</mat-icon>
+  <div *ngIf="!searchValue" class="search-icon-wrapper">
+    <mat-icon class="search-icon">search</mat-icon>
+  </div>
+  <button *ngIf="searchValue" mat-icon-button aria-label="Clear" (click)="searchValue=''">
+    <mat-icon>close</mat-icon>
+  </button>
   <span class="space-filler"></span>
   <button mat-icon-button>
     <mat-icon>notifications</mat-icon>

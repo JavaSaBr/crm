@@ -4,10 +4,17 @@ import {NoAuthHomeComponent} from './components/no-auth-home/no-auth-home.compon
 import {WorkspaceComponent} from './components/workspace/workspace.component';
 import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
 import {AuthenticationComponent} from './components/authentication/authentication.component';
+import {ContactsComponent} from './components/contacts/contacts.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/workspace', pathMatch: 'full'},
-    {path: 'workspace', component: WorkspaceComponent},
+    {
+        path: 'workspace',
+        component: WorkspaceComponent,
+        children: [
+            {path: 'clients', component: ContactsComponent},
+        ]
+    },
     {
         path: 'no-auth',
         component: NoAuthHomeComponent,

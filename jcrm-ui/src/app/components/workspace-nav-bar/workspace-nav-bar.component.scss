@@ -30,15 +30,19 @@
     min-width: 20%;
     font-size: medium;
   }
+}
 
-  .search-field-clear-button {
-    max-height: 10px;
-  }
+.search-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navigation-bar {
-  height: 56px;
-  padding-left: 8px;
+  height: 64px;
+  padding-left: 16px;
   padding-right: 8px;
   z-index: 999;
 }
@@ -46,6 +50,10 @@
 .mat-toolbar-row, .mat-toolbar-single-row {
   //padding: 0 0 0 0;
   //height: 60px;
+}
+
+.nav-bar-menu-button {
+  width: 40px;
 }
 
 :host {

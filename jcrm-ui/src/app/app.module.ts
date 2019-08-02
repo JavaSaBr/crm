@@ -4,7 +4,7 @@ import {NgModule} from '@angular/core';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NavBarComponent} from './components/nav-bar/nav-bar.component';
+import {WorkspaceNavBarComponent} from './components/workspace-nav-bar/workspace-nav-bar.component';
 import {
     MatAutocompleteModule,
     MatButtonModule, MatCardModule,
@@ -22,13 +22,12 @@ import {
     MatStepperModule,
     MatToolbarModule
 } from '@angular/material';
-import {SideNavComponent} from './components/side-nav/side-nav.component';
+import {WorkspaceSideNavComponent} from './components/workspace-side-nav/workspace-side-nav.component';
 import {WorkspaceComponent} from './components/workspace/workspace.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SideMenuService} from './services/side-menu.service';
 import {PhoneNumberInput} from './input/phone-number/phone-number-input';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {NoAuthHomeService} from './services/no-auth-home.service';
 import {CountryInput} from './input/country/country-input';
 import {ErrorService} from './services/error.service';
 import {registerLocaleData} from '@angular/common';
@@ -40,6 +39,7 @@ import {RegisterNewOrganizationComponent} from './components/register-new-organi
 import {NoAuthHomeComponent} from './components/no-auth-home/no-auth-home.component';
 import {AuthenticationComponent} from './components/authentication/authentication.component';
 import {AutofocusDirective} from './directives/autofocus.directive';
+import {ContactsComponent} from './components/contacts/contacts.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -51,9 +51,10 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
     declarations: [
         AppComponent,
-        NavBarComponent,
-        SideNavComponent,
+        WorkspaceNavBarComponent,
+        WorkspaceSideNavComponent,
         WorkspaceComponent,
+        ContactsComponent,
         PhoneNumberInput,
         CountryInput,
         RegisterNewOrganizationComponent,
@@ -95,7 +96,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             }
         ),
     ],
-    providers: [SideMenuService, NoAuthHomeService, ErrorService],
+    providers: [SideMenuService, ErrorService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

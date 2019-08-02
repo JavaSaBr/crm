@@ -1,26 +1,25 @@
 <mat-sidenav-container class="flex-column" style="display: flex">
-  <mat-sidenav #sidenav mode="over">
+  <mat-sidenav mode="over">
     <p>WEFWEFEWFWFEFWEFWFEF</p>
   </mat-sidenav>
   <mat-sidenav-content class="flex-column" style="display: flex">
     <div class="flex-row">
       <div class="sidebar flex-center-items">
-        <button mat-icon-button>
+        <button mat-icon-button routerLink=".">
           <mat-icon>contacts</mat-icon>
         </button>
-        <button mat-icon-button>
+        <button mat-icon-button routerLink="./clients">
           <mat-icon>local_offer</mat-icon>
         </button>
-        <button mat-icon-button>
+        <button mat-icon-button routerLink=".">
           <mat-icon>calendar_today</mat-icon>
         </button>
         <span class="space-filler"></span>
-        <button mat-icon-button>
+        <button mat-icon-button routerLink=".">
           <mat-icon>settings</mat-icon>
         </button>
       </div>
       <div class="main-view">
-        <p>WEFWEFEWFWFEFWEFWFEF</p>
         <router-outlet></router-outlet>
       </div>
     </div>

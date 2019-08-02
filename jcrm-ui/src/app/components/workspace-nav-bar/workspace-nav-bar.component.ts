@@ -4,11 +4,11 @@ import {SecurityService} from '../../services/security.service';
 import {Router} from '@angular/router';
 
 @Component({
-    selector: 'app-nav-bar',
-    templateUrl: './nav-bar.component.html',
-    styleUrls: ['./nav-bar.component.scss']
+    selector: 'app-workspace-nav-bar',
+    templateUrl: './workspace-nav-bar.component.html',
+    styleUrls: ['./workspace-nav-bar.component.scss']
 })
-export class NavBarComponent implements OnInit {
+export class WorkspaceNavBarComponent implements OnInit {
 
     searchValue: string;
     additionalHamburgerStyle: string;

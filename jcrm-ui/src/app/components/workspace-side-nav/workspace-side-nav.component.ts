@@ -3,12 +3,12 @@ import {MatHorizontalStepper, MatSidenav} from '@angular/material';
 import {SideMenuService} from '../../services/side-menu.service';
 
 @Component({
-    selector: 'app-side-nav',
-    templateUrl: './side-nav.component.html',
-    styleUrls: ['./side-nav.component.scss'],
+    selector: 'app-workspace-side-nav',
+    templateUrl: './workspace-side-nav.component.html',
+    styleUrls: ['./workspace-side-nav.component.scss'],
     host: {'class': 'flex-column'}
 })
-export class SideNavComponent implements OnInit {
+export class WorkspaceSideNavComponent implements OnInit {
 
     @ViewChild(MatSidenav, {static: true})
     matSidenav: MatSidenav;
