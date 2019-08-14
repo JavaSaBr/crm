@@ -14,12 +14,12 @@ import {
     MatIconModule,
     MatInputModule,
     MatListModule,
-    MatMenuModule,
+    MatMenuModule, MatPaginatorModule,
     MatRadioModule,
     MatSelectModule,
     MatSidenavModule,
     MatSnackBarModule,
-    MatStepperModule,
+    MatStepperModule, MatTableModule,
     MatToolbarModule
 } from '@angular/material';
 import {WorkspaceSideNavComponent} from './components/workspace-side-nav/workspace-side-nav.component';
@@ -40,6 +40,10 @@ import {NoAuthHomeComponent} from './components/no-auth-home/no-auth-home.compon
 import {AuthenticationComponent} from './components/authentication/authentication.component';
 import {AutofocusDirective} from './directives/autofocus.directive';
 import {ContactsComponent} from './components/contacts/contacts.component';
+import {PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import {FabButtonComponent} from './components/fab-button/fab-button.component';
+import {RelativeHeightDirective} from './directives/relative-height.directive';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -47,6 +51,10 @@ registerLocaleData(localeEn);
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
 }
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+    suppressScrollX: true
+};
 
 @NgModule({
     declarations: [
@@ -60,7 +68,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         RegisterNewOrganizationComponent,
         NoAuthHomeComponent,
         AuthenticationComponent,
-        AutofocusDirective
+        FabButtonComponent,
+        AutofocusDirective,
+        RelativeHeightDirective,
     ],
     imports: [
         BrowserModule,
@@ -85,6 +95,10 @@ export function HttpLoaderFactory(http: HttpClient) {
         MatRadioModule,
         MatSnackBarModule,
         MatCardModule,
+        MatTableModule,
+        MatPaginatorModule,
+        PerfectScrollbarModule,
+        FlexLayoutModule,
         TranslateModule.forRoot(
             {
                 useDefaultLang: true,
@@ -96,7 +110,14 @@ export function HttpLoaderFactory(http: HttpClient) {
             }
         ),
     ],
-    providers: [SideMenuService, ErrorService],
+    providers: [
+        SideMenuService,
+        ErrorService,
+        {
+            provide: PERFECT_SCROLLBAR_CONFIG,
+            useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

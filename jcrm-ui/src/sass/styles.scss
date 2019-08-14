@@ -137,3 +137,11 @@ $main-app-theme: mat-light-theme($color-primary, $color-accent, $color-app-warn)
   text-align: center;
   font-weight: normal;
 }
+
+
+.mat-paginator.mat-paginator-left-layout {
+
+  .mat-paginator-container {
+    justify-content: flex-start;
+  }
+}

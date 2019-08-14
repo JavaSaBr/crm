@@ -12,7 +12,7 @@ const routes: Routes = [
         path: 'workspace',
         component: WorkspaceComponent,
         children: [
-            {path: 'clients', component: ContactsComponent},
+            {path: 'contacts', component: ContactsComponent},
         ]
     },
     {
