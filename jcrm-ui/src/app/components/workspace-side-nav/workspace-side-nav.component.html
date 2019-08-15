@@ -1,10 +1,24 @@
-<mat-sidenav-container class="flex-column" style="display: flex">
+<mat-sidenav-container fxLayout="column" fxFlex="100%" style="display: flex">
   <mat-sidenav mode="over">
-    <p>WEFWEFEWFWFEFWEFWFEF</p>
+    <div fxLayout="column" fxFlex="100%" fxLayoutAlign="center center" class="sidebar">
+      <button mat-icon-button routerLink=".">
+        <mat-icon>contacts</mat-icon>
+      </button>
+      <button mat-icon-button routerLink="./contacts">
+        <mat-icon>local_offer</mat-icon>
+      </button>
+      <button mat-icon-button routerLink=".">
+        <mat-icon>calendar_today</mat-icon>
+      </button>
+      <span fxLayout="column" fxFlex="100%"></span>
+      <button mat-icon-button routerLink=".">
+        <mat-icon>settings</mat-icon>
+      </button>
+    </div>
   </mat-sidenav>
-  <mat-sidenav-content class="flex-column" style="display: flex">
-    <div class="flex-row">
-      <div class="sidebar flex-center-items">
+  <mat-sidenav-content fxLayout="column" fxFlex="100%" style="display: flex">
+    <div fxLayout="row" fxFlex="100%" >
+      <div #staticSidePanel class="sidebar flex-center-items">
         <button mat-icon-button routerLink=".">
           <mat-icon>contacts</mat-icon>
         </button>
@@ -14,7 +28,7 @@
         <button mat-icon-button routerLink=".">
           <mat-icon>calendar_today</mat-icon>
         </button>
-        <span class="space-filler"></span>
+        <span fxLayout="column" fxFlex="100%"></span>
         <button mat-icon-button routerLink=".">
           <mat-icon>settings</mat-icon>
         </button>

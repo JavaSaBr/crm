@@ -1,5 +1,5 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {MatHorizontalStepper, MatSidenav} from '@angular/material';
+import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {MatSidenav} from '@angular/material';
 import {SideMenuService} from '../../services/side-menu.service';
 
 @Component({
@@ -8,10 +8,13 @@ import {SideMenuService} from '../../services/side-menu.service';
     styleUrls: ['./workspace-side-nav.component.scss'],
     host: {'class': 'flex-column'}
 })
-export class WorkspaceSideNavComponent implements OnInit {
+export class WorkspaceSideNavComponent implements OnInit, AfterViewInit {
 
     @ViewChild(MatSidenav, {static: true})
     matSidenav: MatSidenav;
+
+    @ViewChild('staticSidePanel', {static: true})
+    staticSidePanel: ElementRef<HTMLElement>;
 
     constructor(private sideMenuService: SideMenuService) {
         this.sideMenuService.requestMenuProperty()
@@ -27,6 +30,18 @@ export class WorkspaceSideNavComponent implements OnInit {
         this.matSidenav.closedStart.subscribe(() => {
             this.sideMenuService.notifyStartClosing();
         });
+    }
+
+    ngAfterViewInit() {
+        this.updateSidePanelVisibility();
+    }
+
+    private updateSidePanelVisibility() {
+
+        this.staticSidePanel
+            .nativeElement
+            .style
+            .display = window.innerWidth < 700 ? 'none' : 'flex';
     }
 
     private toggleMenu(open: boolean) {
@@ -47,5 +62,10 @@ export class WorkspaceSideNavComponent implements OnInit {
 
                 this.sideMenuService.notifyFinishChanging();
             });
+    }
+
+    @HostListener('window:resize')
+    onResize() {
+        this.updateSidePanelVisibility();
     }
 }

@@ -5,6 +5,7 @@ import {WorkspaceComponent} from './components/workspace/workspace.component';
 import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
 import {AuthenticationComponent} from './components/authentication/authentication.component';
 import {ContactsComponent} from './components/contacts/contacts.component';
+import {NewContactComponent} from './components/contact/new-contact.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/workspace', pathMatch: 'full'},
@@ -13,6 +14,7 @@ const routes: Routes = [
         component: WorkspaceComponent,
         children: [
             {path: 'contacts', component: ContactsComponent},
+            {path: 'contact/new', component: NewContactComponent},
         ]
     },
     {

@@ -20,7 +20,7 @@ import {
     MatSidenavModule,
     MatSnackBarModule,
     MatStepperModule, MatTableModule,
-    MatToolbarModule
+    MatToolbarModule, MatTooltipModule
 } from '@angular/material';
 import {WorkspaceSideNavComponent} from './components/workspace-side-nav/workspace-side-nav.component';
 import {WorkspaceComponent} from './components/workspace/workspace.component';
@@ -44,6 +44,7 @@ import {PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScroll
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {FabButtonComponent} from './components/fab-button/fab-button.component';
 import {RelativeHeightDirective} from './directives/relative-height.directive';
+import {NewContactComponent} from './components/contact/new-contact.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -63,14 +64,15 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         WorkspaceSideNavComponent,
         WorkspaceComponent,
         ContactsComponent,
-        PhoneNumberInput,
-        CountryInput,
         RegisterNewOrganizationComponent,
         NoAuthHomeComponent,
         AuthenticationComponent,
         FabButtonComponent,
+        NewContactComponent,
         AutofocusDirective,
         RelativeHeightDirective,
+        PhoneNumberInput,
+        CountryInput,
     ],
     imports: [
         BrowserModule,
@@ -99,6 +101,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatPaginatorModule,
         PerfectScrollbarModule,
         FlexLayoutModule,
+        MatTooltipModule,
         TranslateModule.forRoot(
             {
                 useDefaultLang: true,

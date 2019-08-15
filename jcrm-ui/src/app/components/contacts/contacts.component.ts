@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {PageEvent} from '@angular/material';
+import {FabButtonElement} from '../fab-button/fab-button.component';
 
 export interface PeriodicElement {
     name: string;
@@ -38,6 +39,17 @@ const ELEMENT_DATA: PeriodicElement[] = [
     host: {'class': 'flex-column'}
 })
 export class ContactsComponent {
+
+    fabButtons: FabButtonElement[] = [
+        {
+            routerLink: '/workspace/contact/new',
+            icon: 'perm_identity',
+            tooltip: 'Add new contact',
+            callback: () => {
+                console.log("HELLO")
+            }
+        }
+    ];
 
     displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
     dataSource = ELEMENT_DATA;

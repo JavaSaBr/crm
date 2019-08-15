@@ -1,5 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {fabButtonAnimations} from './fab-button.animations';
+
+export interface FabButtonElement {
+    routerLink: string,
+    icon: string;
+    tooltip: string,
+    callback: Function
+}
 
 @Component({
     selector: 'app-fab-button',
@@ -9,36 +16,23 @@ import {fabButtonAnimations} from './fab-button.animations';
 })
 export class FabButtonComponent {
 
-    fabButtons = [
-        {
-            icon: 'timeline'
-        },
-        {
-            icon: 'view_headline'
-        },
-        {
-            icon: 'room'
-        },
-        {
-            icon: 'lightbulb_outline'
-        },
-        {
-            icon: 'lock'
-        }
-    ];
-    buttons = [];
-    fabTogglerState = 'inactive';
+    @Input('availableButtons')
+    availableButtons: FabButtonElement[];
+
+    buttons: FabButtonElement[];
+    toggleState: string = 'inactive';
 
     constructor() {
+        this.buttons = [];
     }
 
     showItems() {
-        this.fabTogglerState = 'active';
-        this.buttons = this.fabButtons;
+        this.toggleState = 'active';
+        this.buttons = this.availableButtons;
     }
 
     hideItems() {
-        this.fabTogglerState = 'inactive';
+        this.toggleState = 'inactive';
         this.buttons = [];
     }
 
