@@ -18,7 +18,7 @@ const routes: Routes = [
         ]
     },
     {
-        path: 'no-auth',
+        path: NoAuthHomeComponent.COMPONENT_PATH,
         component: NoAuthHomeComponent,
         children: [
             {path: 'register', component: RegisterNewOrganizationComponent},

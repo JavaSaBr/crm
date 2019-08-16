@@ -1,28 +1,28 @@
 <mat-sidenav-container fxLayout="column" fxFlex="100%" style="display: flex">
   <mat-sidenav mode="over">
-    <div fxLayout="column" fxFlex="100%" fxLayoutAlign="center center" class="sidebar">
-      <button mat-icon-button routerLink=".">
+    <div fxLayout="column" fxFlex="100%" fxLayoutAlign="start center" class="expanded-sidebar sidebar">
+      <button mat-button class="expanded-sidebar-item" routerLink="./contacts">
         <mat-icon>contacts</mat-icon>
+        Contacts
       </button>
-      <button mat-icon-button routerLink="./contacts">
-        <mat-icon>local_offer</mat-icon>
-      </button>
-      <button mat-icon-button routerLink=".">
-        <mat-icon>calendar_today</mat-icon>
+      <button mat-button class="expanded-sidebar-item" style="padding-bottom: 4px" routerLink="./contacts">
+        <mat-icon>contacts</mat-icon>
+        Contacts
       </button>
       <span fxLayout="column" fxFlex="100%"></span>
-      <button mat-icon-button routerLink=".">
+      <button mat-button class="expanded-sidebar-item" routerLink=".">
         <mat-icon>settings</mat-icon>
+        Settings
       </button>
     </div>
   </mat-sidenav>
   <mat-sidenav-content fxLayout="column" fxFlex="100%" style="display: flex">
     <div fxLayout="row" fxFlex="100%" >
-      <div #staticSidePanel class="sidebar flex-center-items">
-        <button mat-icon-button routerLink=".">
+      <div *ngIf="showSideMenu" #staticSidePanel class="sidebar flex-center-items">
+        <button mat-icon-button routerLink="./contacts">
           <mat-icon>contacts</mat-icon>
         </button>
-        <button mat-icon-button routerLink="./contacts">
+        <button mat-icon-button routerLink=".">
           <mat-icon>local_offer</mat-icon>
         </button>
         <button mat-icon-button routerLink=".">

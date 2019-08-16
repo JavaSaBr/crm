@@ -1,6 +1,32 @@
-import {Component, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
+import {AfterViewInit, Component, OnInit, Type} from '@angular/core';
+import {Router} from '@angular/router';
 import {SecurityService} from '../../services/security.service';
+import {NoAuthHomeComponent} from '../no-auth-home/no-auth-home.component';
+import {WorkspaceMode, WorkspaceService} from '../../services/workspace.service';
+
+export abstract class BaseWorkspaceComponent implements AfterViewInit {
+
+    protected constructor(protected readonly workspaceService: WorkspaceService) {
+    }
+
+    ngAfterViewInit(): void {
+        this.workspaceService.activate(this.getComponentType());
+        this.workspaceService.switchWorkspaceMode(this.getWorkspaceMode());
+    }
+
+    protected getWorkspaceMode(): WorkspaceMode {
+        return WorkspaceMode.DEFAULT;
+    }
+
+    abstract getComponentType(): Type<BaseWorkspaceComponent>;
+}
+
+export abstract class ObjectCreationWorkspaceComponent extends BaseWorkspaceComponent {
+
+    protected getWorkspaceMode(): WorkspaceMode {
+        return WorkspaceMode.OBJECT_CREATION;
+    }
+}
 
 @Component({
     selector: 'app-workspace',
@@ -11,20 +37,13 @@ import {SecurityService} from '../../services/security.service';
 export class WorkspaceComponent implements OnInit {
 
     ready: boolean;
-    activatedSubPages: boolean;
 
     constructor(
         private readonly router: Router,
-        private readonly securityService: SecurityService
+        private readonly securityService: SecurityService,
+        private readonly workspaceService: WorkspaceService
     ) {
         this.ready = false;
-        this.activatedSubPages = false;
-        this.router.events.subscribe(value => {
-            if (value instanceof NavigationEnd) {
-                //FIXME how it can be done better?
-                this.activatedSubPages = value.url.startsWith('/workspace/sub/');
-            }
-        });
     }
 
     ngOnInit() {
@@ -38,7 +57,7 @@ export class WorkspaceComponent implements OnInit {
         this.securityService.tryToRestoreToken()
             .then(restored => {
                 if (!restored) {
-                    this.router.navigate(['/no-auth']);
+                    this.router.navigate(['/' + NoAuthHomeComponent.COMPONENT_PATH]);
                 } else {
                     this.ready = true;
                 }

@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav} from '@angular/material';
 import {SideMenuService} from '../../services/side-menu.service';
+import {WorkspaceMode, WorkspaceService} from '../../services/workspace.service';
 
 @Component({
     selector: 'app-workspace-side-nav',
@@ -16,11 +17,20 @@ export class WorkspaceSideNavComponent implements OnInit, AfterViewInit {
     @ViewChild('staticSidePanel', {static: true})
     staticSidePanel: ElementRef<HTMLElement>;
 
-    constructor(private sideMenuService: SideMenuService) {
+    showSideMenu: boolean;
+
+    constructor(
+        private readonly sideMenuService: SideMenuService,
+        private readonly workspaceService: WorkspaceService
+    ) {
         this.sideMenuService.requestMenuProperty()
             .subscribe(open => {
                 this.toggleMenu(open);
             });
+        this.showSideMenu = true;
+        this.workspaceService.workspaceMode.subscribe(value => {
+            this.showSideMenu = value == WorkspaceMode.DEFAULT
+        })
     }
 
     ngOnInit() {

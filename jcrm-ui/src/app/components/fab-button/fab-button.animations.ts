@@ -1,7 +1,7 @@
 import {animate, keyframes, query, stagger, state, style, transition, trigger} from '@angular/animations';
 
 export const fabButtonAnimations = [
-    trigger('fabToggler', [
+    trigger('fabButtonToggler', [
         state('inactive', style({
             transform: 'rotate(0deg)'
         })),
@@ -10,7 +10,7 @@ export const fabButtonAnimations = [
         })),
         transition('* <=> *', animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
-    trigger('speedDialStagger', [
+    trigger('fabButtonStagger', [
         transition('* => *', [
 
             query(':enter', style({opacity: 0}), {optional: true}),

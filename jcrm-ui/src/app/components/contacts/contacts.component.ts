@@ -1,6 +1,9 @@
-import {Component} from '@angular/core';
-import {PageEvent} from '@angular/material';
+import {Component, Type} from '@angular/core';
+import {MatDialog, PageEvent} from '@angular/material';
 import {FabButtonElement} from '../fab-button/fab-button.component';
+import {NewContactComponent} from '../contact/new-contact.component';
+import {BaseWorkspaceComponent} from '../workspace/workspace.component';
+import {WorkspaceService} from '../../services/workspace.service';
 
 export interface PeriodicElement {
     name: string;
@@ -38,16 +41,14 @@ const ELEMENT_DATA: PeriodicElement[] = [
     styleUrls: ['./contacts.component.css'],
     host: {'class': 'flex-column'}
 })
-export class ContactsComponent {
+export class ContactsComponent extends BaseWorkspaceComponent {
 
     fabButtons: FabButtonElement[] = [
         {
-            routerLink: '/workspace/contact/new',
+            routerLink: '../contact/new',
             icon: 'perm_identity',
             tooltip: 'Add new contact',
-            callback: () => {
-                console.log("HELLO")
-            }
+            callback: null
         }
     ];
 
@@ -61,7 +62,18 @@ export class ContactsComponent {
     // MatPaginator Output
     pageEvent: PageEvent;
 
+    constructor(
+        protected workspaceService: WorkspaceService,
+        private dialog: MatDialog
+    ) {
+        super(workspaceService);
+    }
+
     setPageSizeOptions(setPageSizeOptionsInput: string) {
         this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
+    }
+
+    getComponentType(): Type<BaseWorkspaceComponent> {
+        return ContactsComponent;
     }
 }

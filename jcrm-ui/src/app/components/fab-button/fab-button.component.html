@@ -7,17 +7,17 @@
 
   <button mat-fab class="fab-button-toggler"
           (click)="onToggleFab()">
-    <i class="material-icons" [@fabToggler]="{value: toggleState}">add</i>
+    <i class="material-icons" [@fabButtonToggler]="{value: toggleState}">add</i>
   </button>
 
-  <div class="fab-button-container-items" [@speedDialStagger]="buttons.length">
+  <div class="fab-button-container-items" [@fabButtonStagger]="buttons.length">
     <button *ngFor="let button of buttons"
             mat-mini-fab
             class="fab-secondary fab-button-container-item"
             color="secondary"
             matTooltip="{{button.tooltip}}"
             routerLink="{{button.routerLink}}"
-            (click)="button.callback()">
+            (click)="onClick(button)">
       <i class="material-icons">{{button.icon}}</i>
     </button>
   </div>

@@ -5,7 +5,7 @@ export interface FabButtonElement {
     routerLink: string,
     icon: string;
     tooltip: string,
-    callback: Function
+    callback: Function | null
 }
 
 @Component({
@@ -38,5 +38,12 @@ export class FabButtonComponent {
 
     onToggleFab() {
         this.buttons.length ? this.hideItems() : this.showItems();
+    }
+
+    onClick(button: FabButtonElement) {
+        if (button.callback != null) {
+            button.callback();
+            this.onToggleFab();
+        }
     }
 }

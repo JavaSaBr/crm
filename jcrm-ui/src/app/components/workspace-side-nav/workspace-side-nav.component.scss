@@ -19,6 +19,16 @@
     padding-top: 16px;
   }
 
+  .expanded-sidebar {
+    width: 200px;
+    min-width: 200px;
+  }
+
+  .expanded-sidebar-item {
+    width: 190px;
+    min-width: 190px;
+  }
+
   .main-view {
     display: flex;
     flex: 100%;

@@ -10,6 +10,8 @@ import {SecurityService} from '../../services/security.service';
 })
 export class NoAuthHomeComponent {
 
+    public static readonly COMPONENT_PATH = 'no-auth';
+
     activatedSubPages = false;
 
     constructor(

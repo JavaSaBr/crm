@@ -7,7 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {WorkspaceNavBarComponent} from './components/workspace-nav-bar/workspace-nav-bar.component';
 import {
     MatAutocompleteModule,
-    MatButtonModule, MatCardModule,
+    MatButtonModule, MatCardModule, MatDialogModule,
     MatDividerModule,
     MatFormFieldModule,
     MatGridListModule,
@@ -102,6 +102,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         PerfectScrollbarModule,
         FlexLayoutModule,
         MatTooltipModule,
+        MatDialogModule,
         TranslateModule.forRoot(
             {
                 useDefaultLang: true,
