@@ -10,8 +10,10 @@ export abstract class BaseWorkspaceComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.workspaceService.activate(this.getComponentType());
-        this.workspaceService.switchWorkspaceMode(this.getWorkspaceMode());
+        setTimeout(() => {
+            this.workspaceService.activate(this.getComponentType());
+            this.workspaceService.switchWorkspaceMode(this.getWorkspaceMode());
+        }, 10);
     }
 
     protected getWorkspaceMode(): WorkspaceMode {
@@ -35,6 +37,8 @@ export abstract class ObjectCreationWorkspaceComponent extends BaseWorkspaceComp
     host: {'class': 'flex-column'}
 })
 export class WorkspaceComponent implements OnInit {
+
+    public static readonly COMPONENT_PATH = 'workspace';
 
     ready: boolean;
 

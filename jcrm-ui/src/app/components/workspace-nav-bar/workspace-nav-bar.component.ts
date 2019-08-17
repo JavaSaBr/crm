@@ -4,7 +4,7 @@ import {SecurityService} from '../../services/security.service';
 import {Router} from '@angular/router';
 import {WorkspaceMode, WorkspaceService} from '../../services/workspace.service';
 import {NoAuthHomeComponent} from '../no-auth-home/no-auth-home.component';
-import {Observable, Subject} from 'rxjs';
+import {Location} from '@angular/common';
 
 @Component({
     selector: 'app-workspace-nav-bar',
@@ -16,24 +16,26 @@ export class WorkspaceNavBarComponent implements OnInit {
     searchValue: string;
     additionalHamburgerStyle: string;
 
-    showMenuButton: Subject<boolean>;
-    showSearchField: Subject<boolean>;
+    showMenuButton: boolean;
+    showBackButton: boolean;
+    showSearchField: boolean;
 
     constructor(
         private readonly securityService: SecurityService,
         private readonly sideMenuService: SideMenuService,
         private readonly router: Router,
-        private readonly workspaceService: WorkspaceService
+        private readonly workspaceService: WorkspaceService,
+        private readonly location: Location
     ) {
         this.additionalHamburgerStyle = '';
-        this.showMenuButton = new Subject();
-        this.showMenuButton.next(this.canShowMenuButton(workspaceService.workspaceMode.value));
-        this.showSearchField = new Subject();
-        this.showSearchField.next(this.canShowSearchField(workspaceService.workspaceMode.value))
+        this.showMenuButton = this.canShowMenuButton(workspaceService.workspaceMode.value);
+        this.showBackButton = this.canShowBackButton(workspaceService.workspaceMode.value);
+        this.showSearchField = this.canShowSearchField(workspaceService.workspaceMode.value);
         this.workspaceService.workspaceMode.subscribe(value => {
-            this.showMenuButton.next(this.canShowMenuButton(value));
-            this.showSearchField.next(this.canShowSearchField(value));
-        })
+            this.showMenuButton = this.canShowMenuButton(value);
+            this.showBackButton = this.canShowBackButton(value);
+            this.showSearchField = this.canShowSearchField(value);
+        });
     }
 
     private canShowSearchField(value) {
@@ -42,6 +44,10 @@ export class WorkspaceNavBarComponent implements OnInit {
 
     private canShowMenuButton(value) {
         return value == WorkspaceMode.DEFAULT;
+    }
+
+    private canShowBackButton(value) {
+        return value == WorkspaceMode.OBJECT_CREATION;
     }
 
     ngOnInit() {
@@ -63,5 +69,9 @@ export class WorkspaceNavBarComponent implements OnInit {
     logout() {
         this.securityService.logout();
         this.router.navigate(['/' + NoAuthHomeComponent.COMPONENT_PATH]);
+    }
+
+    back() {
+        this.location.back();
     }
 }

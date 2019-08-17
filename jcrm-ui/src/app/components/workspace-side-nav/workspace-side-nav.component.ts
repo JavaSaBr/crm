@@ -48,9 +48,14 @@ export class WorkspaceSideNavComponent implements OnInit, AfterViewInit {
 
     private updateSidePanelVisibility() {
 
-        this.staticSidePanel
-            .nativeElement
-            .style
+        const nativeElement = this.staticSidePanel &&
+            this.staticSidePanel.nativeElement;
+
+        if (!nativeElement) {
+            return;
+        }
+
+        nativeElement.style
             .display = window.innerWidth < 700 ? 'none' : 'flex';
     }
 

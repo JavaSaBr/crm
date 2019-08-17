@@ -8,9 +8,9 @@ import {ContactsComponent} from './components/contacts/contacts.component';
 import {NewContactComponent} from './components/contact/new-contact.component';
 
 const routes: Routes = [
-    {path: '', redirectTo: '/workspace', pathMatch: 'full'},
+    {path: '', redirectTo: '/' + WorkspaceComponent.COMPONENT_PATH, pathMatch: 'full'},
     {
-        path: 'workspace',
+        path: WorkspaceComponent.COMPONENT_PATH,
         component: WorkspaceComponent,
         children: [
             {path: 'contacts', component: ContactsComponent},
