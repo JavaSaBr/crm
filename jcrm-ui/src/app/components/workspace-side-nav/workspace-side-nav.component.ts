@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav} from '@angular/material';
 import {SideMenuService} from '../../services/side-menu.service';
 import {WorkspaceMode, WorkspaceService} from '../../services/workspace.service';
@@ -9,13 +9,10 @@ import {WorkspaceMode, WorkspaceService} from '../../services/workspace.service'
     styleUrls: ['./workspace-side-nav.component.scss'],
     host: {'class': 'flex-column'}
 })
-export class WorkspaceSideNavComponent implements OnInit, AfterViewInit {
+export class WorkspaceSideNavComponent implements OnInit {
 
     @ViewChild(MatSidenav, {static: true})
     matSidenav: MatSidenav;
-
-    @ViewChild('staticSidePanel', {static: false})
-    staticSidePanel: ElementRef<HTMLElement>;
 
     @ViewChild('mainView', {static: true})
     mainView: ElementRef<HTMLElement>;
@@ -74,23 +71,6 @@ export class WorkspaceSideNavComponent implements OnInit, AfterViewInit {
             });
     }
 
-    ngAfterViewInit() {
-        this.updateSidePanelVisibility();
-    }
-
-    private updateSidePanelVisibility() {
-
-        const nativeElement = this.staticSidePanel &&
-            this.staticSidePanel.nativeElement;
-
-        if (!nativeElement) {
-            return;
-        }
-
-        nativeElement.style
-            .display = window.innerWidth < 700 ? 'none' : 'flex';
-    }
-
     private toggleMenu(open: boolean) {
 
         if (this.matSidenav.opened === open) {
@@ -109,10 +89,5 @@ export class WorkspaceSideNavComponent implements OnInit, AfterViewInit {
 
                 this.sideMenuService.notifyFinishChanging();
             });
-    }
-
-    @HostListener('window:resize')
-    onResize() {
-        this.updateSidePanelVisibility();
     }
 }

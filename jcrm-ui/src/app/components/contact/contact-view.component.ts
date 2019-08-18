@@ -1,24 +1,33 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {CountryValidator} from '../../input/country/country-validator';
 import {UiUtils} from '../../utils/ui-utils';
-import {OrganizationValidator} from '../../utils/validator/organization-validator';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'app-contact-view',
     templateUrl: './contact-view.component.html',
-    styleUrls: ['./contact-view.component.css'],
+    styleUrls: ['./contact-view.component.scss'],
 })
 export class ContactViewComponent {
 
     readonly rowHeight = UiUtils.FORM_ROW_HEIGHT;
-    readonly rowRadioButtonHeight = UiUtils.FORM_ROW_RADIO_BUTTON_HEIGHT;
     readonly gutterSize = UiUtils.FORM_GUTTER_SIZE;
 
-    readonly orgFormGroup: FormGroup;
+    readonly contactInfoFormGroup: FormGroup;
 
-    readonly orgName: FormControl;
+    readonly assigner: FormControl;
+    readonly curators: FormControl;
+
+    readonly firstName: FormControl;
+    readonly secondName: FormControl;
+    readonly thirdName: FormControl;
+    readonly birthday: FormControl;
+
+    readonly phoneNumber: FormControl;
+    readonly email: FormControl;
+    readonly site: FormControl;
+    readonly messenger: FormControl;
+    readonly company: FormControl;
 
     disabled: boolean;
 
@@ -26,19 +35,25 @@ export class ContactViewComponent {
         formBuilder: FormBuilder,
         private readonly translateService: TranslateService,
     ) {
-        this.orgFormGroup = formBuilder.group({
-            orgName: ['', [
+        this.contactInfoFormGroup = formBuilder.group({
+            assigner: ['', [
                 Validators.required
-            ], []],
-            country: ['', [
-                Validators.required,
-                CountryValidator.instance
-            ]]
+            ]],
+            curators: ['', [
+                Validators.required
+            ]],
+            firstName: ['', [
+                Validators.required
+            ]],
+            secondName: ['', [
+                Validators.required
+            ]],
+            thirdName: ['', [
+                Validators.required
+            ]],
+            birthday: ['', [
+                Validators.required
+            ]],
         });
-        this.orgName = this.orgFormGroup.controls['orgName'] as FormControl;
-    }
-
-    getOrgNameErrorMessage() {
-        return OrganizationValidator.getNameErrorDescription(this.orgName, this.translateService);
     }
 }

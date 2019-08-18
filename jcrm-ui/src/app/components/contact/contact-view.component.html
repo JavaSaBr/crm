@@ -1,41 +1,61 @@
 <mat-tab-group>
   <mat-tab label="Main">
-    <div fxLayout="row" fxFlex="100%">
-      <div fxLayout="column" fxFlex="50%">
-        <div fxLayout="row" fxFlex="100%">
+    <div class="tab-content" fxLayout="row" fxLayout.xs="column" fxLayoutGap="24px" fxLayoutGap.xs="14px">
+      <div fxLayout="column" fxFlex="100%" class="container">
+        <div fxLayout="row" fxFlex="100%" class="contact-info-header">
           <p>ABOUT</p>
           <span fxFlex="100%"></span>
           <button mat-button color="primary">EDIT</button>
         </div>
-        <form [formGroup]="orgFormGroup" (keydown.esc)="cancelButton1._getHostElement().click()">
-          <ng-template matStepLabel><p [innerHTML]="'REGISTER_ORG.STEP_1.HEADER' | translate"></p></ng-template>
-          <h2 class="stepper-step-title">{{ 'REGISTER_ORG.STEP_1.TITLE' | translate }}</h2>
-          <p [innerHTML]="'REGISTER_ORG.STEP_1.DESCRIPTION' | translate"></p>
+        <form [formGroup]="contactInfoFormGroup">
           <mat-grid-list cols="1" [rowHeight]="rowHeight" [gutterSize]="gutterSize">
             <mat-grid-tile>
-              <mat-form-field class="form-field" appearance="outline">
-                <mat-label>{{ 'REGISTER_ORG.STEP_1.ORG_NAME.LABEL' | translate }}</mat-label>
-                <input matInput formControlName="orgName" #orgNameField required>
-                <mat-error *ngIf="orgName.invalid">{{getOrgNameErrorMessage()}}</mat-error>
+              <mat-form-field class="form-field">
+                <mat-label>Assigner</mat-label>
+                <input matInput formControlName="assigner" required>
               </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
-              <mat-form-field class="form-field" appearance="outline">
-                <mat-label>{{ 'REGISTER_ORG.STEP_1.COUNTRY.LABEL' | translate }}</mat-label>
-                <country-input formControlName="country" required></country-input>
-                <mat-error *ngIf="orgName.invalid">{{getOrgNameErrorMessage()}}</mat-error>
+              <mat-form-field class="form-field">
+                <mat-label>Curators</mat-label>
+                <input matInput formControlName="curators" required>
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field class="form-field">
+                <mat-label>First name</mat-label>
+                <input matInput formControlName="firstName" required>
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field class="form-field">
+                <mat-label>Second name</mat-label>
+                <input matInput formControlName="secondName" required>
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field class="form-field">
+                <mat-label>Third name</mat-label>
+                <input matInput formControlName="thirdName" required>
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field class="form-field">
+                <mat-label>Birthday</mat-label>
+                <input matInput formControlName="birthday" required>
               </mat-form-field>
             </mat-grid-tile>
           </mat-grid-list>
-          <div class="flex-row flex-end">
-            <button mat-button routerLink="../" type="button" #cancelButton1
-                    [disabled]="disabled">{{ 'FORMS.BUTTON.CANCEL' | translate }}</button>
-            <button mat-raised-button color="primary" type="submit"
-                    [disabled]="disabled">{{ 'FORMS.BUTTON.NEXT' | translate }}</button>
-          </div>
         </form>
       </div>
-      <div fxFlex="50%">
+      <div fxFlex="100%" class="container">
+        Notes
+        Notes
+        Notes
+        Notes
+        Notes
+        Notes
+        Notes
         Notes
       </div>
     </div>

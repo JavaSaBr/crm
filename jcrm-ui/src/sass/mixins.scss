@@ -2,6 +2,7 @@
 @import "../app/components/workspace-side-nav/workspace-side-nav.component";
 @import "../app/components/no-auth-home/no-auth-home.component";
 @import "../app/app.component";
+@import "../app/components/contact/contact-view.component";
 
 @mixin additional-components($theme) {
 
@@ -15,9 +16,10 @@
 }
 
 @mixin custom-components-theme($theme) {
-  @include nav-bar-theme($theme);
-  @include side-nav-theme($theme);
+  @include workspace-nav-bar-theme($theme);
+  @include workspace-side-nav-theme($theme);
   @include app-root-theme($theme);
   @include no-auth-home($theme);
-  @include additional-components($theme)
+  @include additional-components($theme);
+  @include contact-view($theme);
 }

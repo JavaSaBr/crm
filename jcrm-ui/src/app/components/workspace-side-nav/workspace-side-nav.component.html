@@ -1,4 +1,4 @@
-<mat-sidenav-container fxLayout="column" fxFlex="100%" style="display: flex">
+<mat-sidenav-container fxLayout="column" fxFlex="100%">
   <mat-sidenav mode="over">
     <div fxLayout="column" fxFlex="100%" fxLayoutAlign="start center" class="expanded-sidebar sidebar">
       <button mat-button class="expanded-sidebar-item" routerLink="./contacts">
@@ -16,9 +16,9 @@
       </button>
     </div>
   </mat-sidenav>
-  <mat-sidenav-content fxLayout="column" fxFlex="100%" style="display: flex">
+  <mat-sidenav-content fxLayout="column" fxFlex="100%">
     <div fxLayout="row" fxFlex="100%" >
-      <div *ngIf="showSideMenu" #staticSidePanel class="sidebar flex-center-items">
+      <div fxHide.xs="true" *ngIf="showSideMenu" class="sidebar flex-center-items">
         <button mat-icon-button routerLink="./contacts">
           <mat-icon>contacts</mat-icon>
         </button>
