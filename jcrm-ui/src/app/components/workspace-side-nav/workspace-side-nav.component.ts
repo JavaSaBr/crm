@@ -14,8 +14,11 @@ export class WorkspaceSideNavComponent implements OnInit, AfterViewInit {
     @ViewChild(MatSidenav, {static: true})
     matSidenav: MatSidenav;
 
-    @ViewChild('staticSidePanel', {static: true})
+    @ViewChild('staticSidePanel', {static: false})
     staticSidePanel: ElementRef<HTMLElement>;
+
+    @ViewChild('mainView', {static: true})
+    mainView: ElementRef<HTMLElement>;
 
     showSideMenu: boolean;
 
@@ -23,23 +26,52 @@ export class WorkspaceSideNavComponent implements OnInit, AfterViewInit {
         private readonly sideMenuService: SideMenuService,
         private readonly workspaceService: WorkspaceService
     ) {
-        this.sideMenuService.requestMenuProperty()
+        sideMenuService.requestMenuProperty()
             .subscribe(open => {
                 this.toggleMenu(open);
             });
-        this.showSideMenu = true;
-        this.workspaceService.workspaceMode.subscribe(value => {
-            this.showSideMenu = value == WorkspaceMode.DEFAULT
-        })
+        workspaceService.workspaceMode
+            .subscribe(value => {
+                this.showSideMenu = this.canShowSideMenu(value);
+                this.updateMainViewStyle(value);
+            });
+
+        this.showSideMenu = this.canShowSideMenu(workspaceService.workspaceMode.value);
+        this.updateMainViewStyle(workspaceService.workspaceMode.value);
+    }
+
+    private canShowSideMenu(value: WorkspaceMode): boolean {
+        return value == WorkspaceMode.DEFAULT;
+    }
+
+    private updateMainViewStyle(value: WorkspaceMode) {
+
+        const nativeElement = this.mainView &&
+            this.mainView.nativeElement;
+
+        if (!nativeElement) {
+            return;
+        }
+
+        nativeElement.classList.remove('main-view-padding');
+
+        switch (value) {
+            case WorkspaceMode.OBJECT_CREATION: {
+                nativeElement.classList.add('main-view-padding');
+                return;
+            }
+        }
     }
 
     ngOnInit() {
-        this.matSidenav.openedStart.subscribe(() => {
-            this.sideMenuService.notifyStartOpening();
-        });
-        this.matSidenav.closedStart.subscribe(() => {
-            this.sideMenuService.notifyStartClosing();
-        });
+        this.matSidenav.openedStart
+            .subscribe(() => {
+                this.sideMenuService.notifyStartOpening();
+            });
+        this.matSidenav.closedStart
+            .subscribe(() => {
+                this.sideMenuService.notifyStartClosing();
+            });
     }
 
     ngAfterViewInit() {

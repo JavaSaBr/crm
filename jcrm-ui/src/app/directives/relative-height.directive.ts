@@ -8,7 +8,7 @@ export class RelativeHeightDirective implements AfterViewInit {
     @Input()
     relativeHeightOffset: any;
 
-    lastWindowResizedTime: number = -1;
+    lastWindowResizeTime: number = -1;
 
     constructor(private elementRef: ElementRef) {
     }
@@ -60,11 +60,11 @@ export class RelativeHeightDirective implements AfterViewInit {
     onResize() {
 
         let currentTime = Date.now();
-        if (currentTime - this.lastWindowResizedTime < 50) {
+        if (currentTime - this.lastWindowResizeTime < 50) {
             return;
         }
 
-        this.lastWindowResizedTime = currentTime;
+        this.lastWindowResizeTime = currentTime;
 
         let htmlElement: HTMLElement = this.elementRef.nativeElement;
         htmlElement.hidden = true;
