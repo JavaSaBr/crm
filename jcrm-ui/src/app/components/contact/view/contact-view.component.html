@@ -2,23 +2,28 @@
   <mat-tab label="Main">
     <div class="tab-content" fxLayout="row" fxLayout.xs="column" fxLayoutGap="24px" fxLayoutGap.xs="14px">
       <div fxLayout="column" fxFlex="100%" class="container">
-        <div fxLayout="row" fxFlex="100%" class="contact-info-header">
+        <div fxLayout="row" fxFlex="100%" fxLayoutAlign="space-between" class="contact-info-header">
           <p>ABOUT</p>
-          <span fxFlex="100%"></span>
-          <button mat-button color="primary">EDIT</button>
+          <button *ngIf="!editContactInfo" class="contact-info-button" mat-button color="primary">EDIT</button>
+          <button *ngIf="editContactInfo && contact.id" [disabled]="!contactInfoFormGroup.valid"
+                  class="contact-info-button" mat-button color="primary">SAVE
+          </button>
+          <button *ngIf="editContactInfo && !contact.id" [disabled]="!contactInfoFormGroup.valid"
+                  class="contact-info-button" mat-button color="primary">CREATE
+          </button>
         </div>
         <form [formGroup]="contactInfoFormGroup">
           <mat-grid-list cols="1" [rowHeight]="rowHeight" [gutterSize]="gutterSize">
             <mat-grid-tile>
               <mat-form-field class="form-field">
                 <mat-label>Assigner</mat-label>
-                <input matInput formControlName="assigner" required>
+                <input matInput formControlName="assigner">
               </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
               <mat-form-field class="form-field">
                 <mat-label>Curators</mat-label>
-                <input matInput formControlName="curators" required>
+                <input matInput formControlName="curators">
               </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -42,7 +47,7 @@
             <mat-grid-tile>
               <mat-form-field class="form-field">
                 <mat-label>Birthday</mat-label>
-                <input matInput formControlName="birthday" required>
+                <input matInput formControlName="birthday">
               </mat-form-field>
             </mat-grid-tile>
           </mat-grid-list>

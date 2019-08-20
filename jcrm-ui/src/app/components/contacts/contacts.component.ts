@@ -1,7 +1,7 @@
 import {Component, Type} from '@angular/core';
 import {MatDialog, PageEvent} from '@angular/material';
 import {FabButtonElement} from '../fab-button/fab-button.component';
-import {NewContactComponent} from '../contact/new-contact.component';
+import {NewContactComponent} from '../contact/new/new-contact.component';
 import {BaseWorkspaceComponent} from '../workspace/workspace.component';
 import {WorkspaceService} from '../../services/workspace.service';
 
@@ -60,7 +60,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
     pageSizeOptions: number[] = [5, 10, 25, 100];
 
     // MatPaginator Output
-    pageEvent: PageEvent;
+    //pageEvent: PageEvent;
 
     constructor(
         protected workspaceService: WorkspaceService,

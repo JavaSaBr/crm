@@ -1,5 +1,5 @@
 import {TestBed} from '@angular/core/testing';
-import {SecurityService} from './security.service';
+import {SecurityService} from '@app/service/security.service';
 
 describe('SecurityService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));

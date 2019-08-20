@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {SecurityService} from './services/security.service';
+import {SecurityService} from '@app/service/security.service';
 
 @Component({
     selector: 'app-root',
@@ -15,6 +15,8 @@ export class AppComponent {
         private readonly securityService: SecurityService,
         private readonly translateService: TranslateService
     ) {
+        this.authenticated = false;
+
         translateService.addLangs(['en', 'ru']);
         translateService.setDefaultLang('en');
 

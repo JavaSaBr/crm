@@ -1,23 +1,23 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {PhoneNumberValidator} from '../../input/phone-number/phone-number-validator';
-import {PasswordValidator} from '../../utils/validator/password-validator';
-import {RegistrationService} from '../../services/registration.service';
-import {CountryValidator} from '../../input/country/country-validator';
-import {Country} from '../../entity/country';
-import {PhoneNumber} from '../../input/phone-number/phone-number';
-import {OrganizationValidator} from '../../utils/validator/organization-validator';
-import {OtherUserNameValidator} from '../../utils/validator/other-user-name-validator';
-import {UserValidator} from '../../utils/validator/user-validator';
-import {ErrorService} from '../../services/error.service';
+import {PhoneNumberValidator} from '@app/input/phone-number/phone-number-validator';
+import {PasswordValidator} from '@app/util/validator/password-validator';
+import {RegistrationService} from '@app/service/registration.service';
+import {CountryValidator} from '@app/input/country/country-validator';
+import {Country} from '@app/entity/country';
+import {PhoneNumber} from '@app/input/phone-number/phone-number';
+import {OrganizationValidator} from '@app/util/validator/organization-validator';
+import {OtherUserNameValidator} from '@app/util/validator/other-user-name-validator';
+import {UserValidator} from '@app/util/validator/user-validator';
+import {ErrorService} from '@app/service/error.service';
 import {TranslateService} from '@ngx-translate/core';
-import {ErrorResponse} from '../../error/error-response';
-import {CountryRepository} from '../../repositories/country/country.repository';
-import {AuthenticationInResource} from '../../resources/authentication-in-resource';
+import {ErrorResponse} from '@app/error/error-response';
+import {CountryRepository} from '@app/repository/country/country.repository';
+import {AuthenticationInResource} from '@app/resource/authentication-in-resource';
 import {Router} from '@angular/router';
-import {environment} from '../../../environments/environment';
-import {SecurityService} from '../../services/security.service';
-import {UiUtils} from '../../utils/ui-utils';
+import {environment} from '@app/env/environment';
+import {SecurityService} from '@app/service/security.service';
+import {UiUtils} from '@app/util/ui-utils';
 import {MatHorizontalStepper} from '@angular/material';
 
 @Component({
@@ -54,7 +54,7 @@ export class RegisterNewOrganizationComponent implements OnInit {
     @ViewChild('activationCodeField', {static: true})
     activationCodeField: ElementRef;
 
-    selectedEmail;
+    selectedEmail = {value: ''};
     disabled: boolean;
     canEditSteps: boolean;
 

@@ -24,6 +24,7 @@ export class FabButtonComponent {
 
     constructor() {
         this.buttons = [];
+        this.availableButtons = [];
     }
 
     showItems() {

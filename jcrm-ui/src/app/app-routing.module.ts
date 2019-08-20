@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {NoAuthHomeComponent} from './components/no-auth-home/no-auth-home.component';
-import {WorkspaceComponent} from './components/workspace/workspace.component';
-import {RegisterNewOrganizationComponent} from './components/register-new-organization/register-new-organization.component';
-import {AuthenticationComponent} from './components/authentication/authentication.component';
-import {ContactsComponent} from './components/contacts/contacts.component';
-import {NewContactComponent} from './components/contact/new-contact.component';
+import {NoAuthHomeComponent} from '@app/component/no-auth-home/no-auth-home.component';
+import {WorkspaceComponent} from '@app/component/workspace/workspace.component';
+import {RegisterNewOrganizationComponent} from '@app/component/register-new-organization/register-new-organization.component';
+import {AuthenticationComponent} from '@app/component/authentication/authentication.component';
+import {ContactsComponent} from '@app/component/contacts/contacts.component';
+import {NewContactComponent} from '@app/component/contact/new/new-contact.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/' + WorkspaceComponent.COMPONENT_PATH, pathMatch: 'full'},

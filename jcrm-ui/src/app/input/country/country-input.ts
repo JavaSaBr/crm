@@ -1,12 +1,12 @@
 import {BaseInput} from '../base-input';
-import {Country} from '../../entity/country';
+import {Country} from '@app/entity/country';
 import {Component, ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {MatFormFieldControl} from '@angular/material';
 import {AbstractControl, FormBuilder, FormGroup, NgControl} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
-import {CountryRepository} from '../../repositories/country/country.repository';
+import {CountryRepository} from '@app/repository/country/country.repository';
 import {Observable} from 'rxjs';
-import {CountryAutocompleter} from '../../utils/country-autocompleter';
+import {CountryAutocompleter} from '@app/util/country-autocompleter';
 
 @Component({
     selector: 'country-input',
@@ -21,6 +21,8 @@ import {CountryAutocompleter} from '../../utils/country-autocompleter';
     }
 })
 export class CountryInput extends BaseInput<Country> implements OnInit {
+
+    private static readonly EMPTY_OBSERVABLE = new Observable<Country[]>();
 
     public readonly formGroup: FormGroup;
     private readonly countryControl: AbstractControl;
@@ -37,6 +39,9 @@ export class CountryInput extends BaseInput<Country> implements OnInit {
         private countryRepository: CountryRepository
     ) {
         super(ngControl, focusMonitor, elementRef);
+
+        this.filteredCountries = CountryInput.EMPTY_OBSERVABLE;
+        this._selectedCountry = null;
 
         this.formGroup = formBuilder.group({country: ''});
 
@@ -78,12 +83,12 @@ export class CountryInput extends BaseInput<Country> implements OnInit {
         this.stateChanges.next();
     }
 
-    private changeFromSubControls() {
+    private changeFromSubControls(): void {
         this.stateChanges.next();
         this.onChange(this.value);
     }
 
-    private extractCountry(value: any) {
+    private extractCountry(value: any): void {
 
         const countryValue = value as Country;
 
@@ -98,10 +103,10 @@ export class CountryInput extends BaseInput<Country> implements OnInit {
 
     public ngOnInit(): void {
         this.filteredCountries = new CountryAutocompleter(this.countryRepository, this.countryControl)
-            .getFilteredCountries();
+            .filteredCountries;
     }
 
     displayCountry(country?: Country): string {
-        return country ? country.name : '';
+        return country && country.name ? country.name : '';
     }
 }

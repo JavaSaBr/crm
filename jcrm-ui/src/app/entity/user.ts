@@ -1,9 +1,9 @@
+import {Entity} from '@app/entity/entity';
 
-export class User {
+export class User extends Entity {
 
-    id: number;
-    email: string;
-    firstName: string;
-    secondName: string;
-    phoneNumber: string;
+    email: string | null;
+    firstName: string | null;
+    secondName: string | null;
+    phoneNumber: string | null;
 }

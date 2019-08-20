@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
-import {Observable, Subject} from 'rxjs';
-import {User} from '../entity/user';
-import {RegistrationService} from './registration.service';
-import {ErrorResponse} from '../error/error-response';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {User} from '@app/entity/user';
+import {RegistrationService} from '@app/service/registration.service';
+import {ErrorResponse} from '@app/error/error-response';
 
 @Injectable({
     providedIn: 'root'
@@ -12,23 +12,21 @@ export class SecurityService {
 
     private static readonly LOCAL_STORAGE_TOKEN = 'jcrm:auth:token';
 
-    private readonly _authenticated: Subject<boolean>;
-    private readonly _userObservable: Subject<User>;
+    private readonly _authenticated: BehaviorSubject<boolean>;
+    private readonly _userObservable: BehaviorSubject<User | null>;
 
-    private _accessToken: string;
-    private _currentUser: User;
+    private _accessToken: string | null;
 
     constructor(
         private readonly httpClient: HttpClient,
         private readonly registrationService: RegistrationService
     ) {
-        this._userObservable = new Subject<User>();
-        this._userObservable.subscribe(user => this._currentUser = user);
-        this._authenticated = new Subject<boolean>();
-        this._authenticated.next(false);
+        this._accessToken = '';
+        this._userObservable = new BehaviorSubject<User | null>(null);
+        this._authenticated = new BehaviorSubject<boolean>(false);
     }
 
-    private internalAuthenticate(user: User, token: string) {
+    private internalAuthenticate(user: User | null, token: string | null) {
         this._accessToken = token;
         this._userObservable.next(user);
         this._authenticated.next(this.isAuthenticated());
@@ -85,16 +83,16 @@ export class SecurityService {
         }
     }
 
-    get userObservable(): Observable<User> {
+    get userObservable(): Observable<User | null> {
         return this._userObservable;
     }
 
     get currentUser(): User | null {
-        return this._currentUser;
+        return this._userObservable.value;
     }
 
-    isAuthenticated() {
-        return this._accessToken != null && this._accessToken.length > 0;
+    isAuthenticated(): boolean {
+        return this._accessToken && this._accessToken.length > 0;
     }
 
     get authenticated(): Observable<boolean> {

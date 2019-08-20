@@ -1,7 +1,7 @@
-import {Entity} from './entity';
+import {Entity} from '@app/entity/entity';
 
 export class NamedEntity extends Entity {
 
-    name: string;
-    nameInLowerCase: string;
+    name: string | null;
+    nameInLowerCase: string | null;
 }

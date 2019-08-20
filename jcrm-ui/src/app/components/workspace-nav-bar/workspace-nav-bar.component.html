@@ -10,6 +10,7 @@
   <button *ngIf="showBackButton" mat-icon-button aria-label="Back" (click)="back()">
     <mat-icon>close</mat-icon>
   </button>
+  <p *ngIf="title">{{title}}</p>
   <span class="space-filler"></span>
   <mat-form-field *ngIf="showSearchField" appearance="standard" class="search-field">
     <mat-label>Search</mat-label>

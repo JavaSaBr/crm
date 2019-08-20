@@ -1,7 +1,7 @@
-import {User} from '../entity/user';
+import {User} from '@app/entity/user';
 
 export class AuthenticationInResource {
 
-    user: User;
-    token: string;
+    user: User | null;
+    token: string | null;
 }

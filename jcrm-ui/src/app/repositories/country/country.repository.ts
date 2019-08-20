@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Country} from '../../entity/country';
-import {environment} from '../../../environments/environment';
-import {CachedRepository} from '../cached.repository';
+import {Country} from '@app/entity/country';
+import {environment} from '@app/env/environment';
+import {CachedRepository} from '@app/repository//cached.repository';
 
 @Injectable({
     providedIn: 'root'

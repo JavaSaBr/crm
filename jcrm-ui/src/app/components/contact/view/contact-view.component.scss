@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '../../../../../node_modules/@angular/material/theming';
 
 @mixin contact-view($theme) {
 
@@ -20,6 +20,10 @@
     border-width: 1px;
     padding-top: 10px;
     margin-bottom: 20px;
+  }
+
+  .contact-info-button {
+    min-width: 150px;
   }
 
   @media only screen and (max-width: 700px) {

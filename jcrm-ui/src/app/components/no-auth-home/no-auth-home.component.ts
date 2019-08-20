@@ -32,11 +32,11 @@ export class NoAuthHomeComponent {
             });
     }
 
-    onActivateSubPage(componentRef) {
+    onActivateSubPage(event: Event) {
         this.activatedSubPages = true;
     }
 
-    onDeactivateSubPage(componentRef) {
+    onDeactivateSubPage(event: Event) {
         this.activatedSubPages = false;
     }
 }

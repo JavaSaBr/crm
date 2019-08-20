@@ -1,7 +1,7 @@
 import {FormControl, ValidationErrors} from '@angular/forms';
-import {RegistrationService} from '../../services/registration.service';
-import {environment} from '../../../environments/environment';
-import {BaseLazyAsyncValidator} from "./base-lazy-async-validator";
+import {RegistrationService} from '@app/service/registration.service';
+import {environment} from '@app/env/environment';
+import {BaseLazyAsyncValidator} from '@app/util/validator/base-lazy-async-validator';
 import {TranslateService} from '@ngx-translate/core';
 
 export class OrganizationValidator extends BaseLazyAsyncValidator<boolean> {
@@ -22,15 +22,15 @@ export class OrganizationValidator extends BaseLazyAsyncValidator<boolean> {
     }
 
     static isTooShort(control: FormControl) {
-        return control.hasError('tooShort')
+        return control.hasError('tooShort');
     }
 
     static isTooLong(control: FormControl) {
-        return control.hasError('tooLong')
+        return control.hasError('tooLong');
     }
 
     static isAlreadyExist(control: FormControl) {
-        return control.hasError('alreadyExists')
+        return control.hasError('alreadyExists');
     }
 
     constructor(private readonly registrationService: RegistrationService) {

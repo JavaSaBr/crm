@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
-import {ErrorService} from "./error.service";
+import {ErrorService} from '@app/service/error.service';
 
 describe('Error Service', () => {
     beforeEach(() => TestBed.configureTestingModule({}));

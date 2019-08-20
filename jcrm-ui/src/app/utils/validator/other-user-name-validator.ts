@@ -1,5 +1,5 @@
 import {AbstractControl, ValidationErrors, Validator} from '@angular/forms';
-import {environment} from '../../../environments/environment';
+import {environment} from '@app/env/environment';
 
 export class OtherUserNameValidator implements Validator {
 

@@ -1,14 +1,14 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {environment} from '../../../environments/environment';
+import {environment} from '@app/env/environment';
 import {TranslateService} from '@ngx-translate/core';
-import {RegistrationService} from '../../services/registration.service';
-import {ErrorService} from '../../services/error.service';
-import {ErrorResponse} from '../../error/error-response';
-import {AuthenticationInResource} from '../../resources/authentication-in-resource';
+import {RegistrationService} from '@app/service/registration.service';
+import {ErrorService} from '@app/service/error.service';
+import {ErrorResponse} from '@app/error/error-response';
+import {AuthenticationInResource} from '@app/resource/authentication-in-resource';
 import {Router} from '@angular/router';
-import {SecurityService} from '../../services/security.service';
-import {UiUtils} from '../../utils/ui-utils';
+import {SecurityService} from '@app/service/security.service';
+import {UiUtils} from '@app/util/ui-utils';
 
 @Component({
     selector: 'app-authentication',
@@ -34,6 +34,7 @@ export class AuthenticationComponent {
         private readonly securityService: SecurityService,
         private readonly router: Router
     ) {
+        this.disabled = false;
         this.authFormGroup = formBuilder.group({
             login: ['', [
                 Validators.required,

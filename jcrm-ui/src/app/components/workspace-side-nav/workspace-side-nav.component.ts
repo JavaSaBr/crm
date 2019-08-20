@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav} from '@angular/material';
-import {SideMenuService} from '../../services/side-menu.service';
+import {WorkspaceSideMenuService} from '@app/service/workspace-side-menu.service';
 import {WorkspaceMode, WorkspaceService} from '../../services/workspace.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class WorkspaceSideNavComponent implements OnInit {
     showSideMenu: boolean;
 
     constructor(
-        private readonly sideMenuService: SideMenuService,
+        private readonly sideMenuService: WorkspaceSideMenuService,
         private readonly workspaceService: WorkspaceService
     ) {
         sideMenuService.requestMenuProperty()

@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { SideMenuService } from './side-menu.service';
+import {WorkspaceSideMenuService} from '@app/service/workspace-side-menu.service';
 
-describe('SideMenuService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+describe('WorkspaceSideMenuService', () => {
+    beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: SideMenuService = TestBed.get(SideMenuService);
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        const service: WorkspaceSideMenuService = TestBed.get(WorkspaceSideMenuService);
+        expect(service).toBeTruthy();
+    });
 });

@@ -47,7 +47,8 @@ export class RegistrationService {
         );
 
         return new Promise<AuthenticationInResource>((resolve, reject) => {
-            this.httpClient.post<AuthenticationInResource>(environment.registrationUrl + '/register/organization', body, {observe: 'response'})
+            const url = environment.registrationUrl + '/register/organization';
+            this.httpClient.post<AuthenticationInResource>(url, body, {observe: 'response'})
                 .toPromise()
                 .then(resp => resolve(resp.body))
                 .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
@@ -62,7 +63,8 @@ export class RegistrationService {
         let body = new AuthenticationOutResource(login, password);
 
         return new Promise<AuthenticationInResource>((resolve, reject) => {
-            this.httpClient.post<AuthenticationInResource>(environment.registrationUrl + '/authenticate', body, {observe: 'response'})
+            const url = environment.registrationUrl + '/authenticate';
+            this.httpClient.post<AuthenticationInResource>(url, body, {observe: 'response'})
                 .toPromise()
                 .then(resp => resolve(resp.body))
                 .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
@@ -70,9 +72,9 @@ export class RegistrationService {
     }
 
     authenticateByToken(token: string): Promise<AuthenticationInResource> {
-
         return new Promise<AuthenticationInResource>((resolve, reject) => {
-            this.httpClient.get<AuthenticationInResource>(environment.registrationUrl + '/authenticate/' + token, {observe: 'response'})
+            const url = environment.registrationUrl + '/authenticate/' + token;
+            this.httpClient.get<AuthenticationInResource>(url, {observe: 'response'})
                 .toPromise()
                 .then(resp => resolve(resp.body))
                 .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
@@ -80,9 +82,9 @@ export class RegistrationService {
     }
 
     refreshToken(token: string): Promise<AuthenticationInResource> {
-
         return new Promise<AuthenticationInResource>((resolve, reject) => {
-            this.httpClient.get<AuthenticationInResource>(environment.registrationUrl + '/token/refresh/' + token, {observe: 'response'})
+            const url = environment.registrationUrl + '/token/refresh/' + token;
+            this.httpClient.get<AuthenticationInResource>(url, {observe: 'response'})
                 .toPromise()
                 .then(resp => resolve(resp.body))
                 .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
@@ -90,22 +92,24 @@ export class RegistrationService {
     }
 
     confirmEmail(email: string): Promise<ErrorResponse | null> {
-
-        return this.httpClient.get(environment.registrationUrl + '/email/confirmation/' + email, {observe: 'response'})
+        const url = environment.registrationUrl + '/email/confirmation/' + email;
+        return this.httpClient.get(url, {observe: 'response'})
             .toPromise()
             .then(() => null)
             .catch(resp => ErrorResponse.convertToErrorOrNull(resp, this.translateService));
     }
 
     orgExistByName(orgName: string): Promise<boolean> {
-        return this.httpClient.get<{}>(environment.registrationUrl + '/exist/organization/name/' + orgName, {observe: 'response'})
+        const url = environment.registrationUrl + '/exist/organization/name/' + orgName;
+        return this.httpClient.get<{}>(url, {observe: 'response'})
             .toPromise()
             .then(value => value.ok)
             .catch(() => false);
     }
 
     userExistByName(name: string): Promise<boolean> {
-        return this.httpClient.get<{}>(environment.registrationUrl + '/exist/user/name/' + name, {observe: 'response'})
+        const url = environment.registrationUrl + '/exist/user/name/' + name;
+        return this.httpClient.get<{}>(url, {observe: 'response'})
             .toPromise()
             .then(value => value.ok)
             .catch(() => false);

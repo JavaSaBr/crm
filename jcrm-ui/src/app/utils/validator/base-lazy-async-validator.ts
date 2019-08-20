@@ -2,7 +2,7 @@ import {AbstractControl, AsyncValidator, ValidationErrors} from '@angular/forms'
 
 export class BaseLazyAsyncValidator<T> implements AsyncValidator {
 
-    protected lastValue;
+    protected lastValue: T | null;
 
     validate(control: AbstractControl): Promise<ValidationErrors | null> {
 

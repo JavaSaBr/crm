@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {SideMenuService} from '../../services/side-menu.service';
-import {SecurityService} from '../../services/security.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {WorkspaceSideMenuService} from '@app/service/workspace-side-menu.service';
+import {SecurityService} from '@app/service/security.service';
 import {Router} from '@angular/router';
-import {WorkspaceMode, WorkspaceService} from '../../services/workspace.service';
-import {NoAuthHomeComponent} from '../no-auth-home/no-auth-home.component';
+import {WorkspaceMode, WorkspaceService} from '@app/service/workspace.service';
+import {NoAuthHomeComponent} from '@app/component/no-auth-home/no-auth-home.component';
 import {Location} from '@angular/common';
 
 @Component({
@@ -12,6 +12,9 @@ import {Location} from '@angular/common';
     styleUrls: ['./workspace-nav-bar.component.scss']
 })
 export class WorkspaceNavBarComponent implements OnInit {
+
+    @Input("title")
+    title: string;
 
     searchValue: string;
     additionalHamburgerStyle: string;
@@ -22,11 +25,12 @@ export class WorkspaceNavBarComponent implements OnInit {
 
     constructor(
         private readonly securityService: SecurityService,
-        private readonly sideMenuService: SideMenuService,
+        private readonly sideMenuService: WorkspaceSideMenuService,
         private readonly router: Router,
         private readonly workspaceService: WorkspaceService,
         private readonly location: Location
     ) {
+        this.searchValue = '';
         this.additionalHamburgerStyle = '';
         this.showMenuButton = this.canShowMenuButton(workspaceService.workspaceMode.value);
         this.showBackButton = this.canShowBackButton(workspaceService.workspaceMode.value);
@@ -38,19 +42,19 @@ export class WorkspaceNavBarComponent implements OnInit {
         });
     }
 
-    private canShowSearchField(value) {
+    private canShowSearchField(value: WorkspaceMode): boolean {
         return value == WorkspaceMode.DEFAULT;
     }
 
-    private canShowMenuButton(value) {
+    private canShowMenuButton(value: WorkspaceMode): boolean {
         return value == WorkspaceMode.DEFAULT;
     }
 
-    private canShowBackButton(value) {
+    private canShowBackButton(value: WorkspaceMode): boolean {
         return value == WorkspaceMode.OBJECT_CREATION;
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
 
         this.sideMenuService.startOpeningProperty()
             .subscribe(() => {
@@ -62,16 +66,16 @@ export class WorkspaceNavBarComponent implements OnInit {
             });
     }
 
-    toggleSideMenu() {
+    toggleSideMenu(): void {
         this.sideMenuService.toggleMenu();
     }
 
-    logout() {
+    logout(): void {
         this.securityService.logout();
         this.router.navigate(['/' + NoAuthHomeComponent.COMPONENT_PATH]);
     }
 
-    back() {
+    back(): void {
         this.location.back();
     }
 }

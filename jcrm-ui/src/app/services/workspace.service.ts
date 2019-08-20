@@ -13,15 +13,18 @@ export enum WorkspaceMode {
 export class WorkspaceService {
 
     private readonly _currentComponent: BehaviorSubject<Type<BaseWorkspaceComponent>>;
+    private readonly _currentTitle: BehaviorSubject<string>;
     private readonly _workspaceMode: BehaviorSubject<WorkspaceMode>;
 
     constructor() {
         this._currentComponent = new BehaviorSubject(null);
+        this._currentTitle = new BehaviorSubject(null);
         this._workspaceMode = new BehaviorSubject(WorkspaceMode.DEFAULT);
     }
 
-    activate(type: Type<BaseWorkspaceComponent>) {
+    activate(type: Type<BaseWorkspaceComponent>, title: string | null = null) {
         this._currentComponent.next(type);
+        this._currentTitle.next(title);
     }
 
     switchWorkspaceMode(mode: WorkspaceMode) {
@@ -30,6 +33,10 @@ export class WorkspaceService {
 
     get currentComponent(): BehaviorSubject<Type<BaseWorkspaceComponent>> {
         return this._currentComponent;
+    }
+
+    get currentTitle(): BehaviorSubject<string> {
+        return this._currentTitle;
     }
 
     get workspaceMode(): BehaviorSubject<WorkspaceMode> {

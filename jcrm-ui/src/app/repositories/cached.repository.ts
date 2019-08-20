@@ -1,17 +1,19 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Repository} from './repository';
-import {Entity} from '../entity/entity';
+import {Entity} from '@app/entity/entity';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CachedRepository<T extends Entity> implements Repository<T> {
 
-    protected cache: T[] = null;
-    protected executing: Promise<T[]> = null;
+    protected cache: T[] | null;
+    protected executing: Promise<T[]> | null;
 
     protected constructor(protected httpClient: HttpClient) {
+        this.cache = null;
+        this.executing = null;
     }
 
     public findAll(): Promise<T[]> {
@@ -43,7 +45,10 @@ export class CachedRepository<T extends Entity> implements Repository<T> {
 
     public findById(id: number): Promise<T | null> {
         return this.findAll()
-            .then(values => values.find(value => value.id == id));
+            .then(values => {
+                let result = values.find(value => value.id == id);
+                return result ? result : null;
+            });
     }
 
     protected buildFetchUrl(): string {

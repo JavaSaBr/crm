@@ -13,7 +13,7 @@ export class RelativeHeightDirective implements AfterViewInit {
     constructor(private elementRef: ElementRef) {
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
 
         let htmlElement: HTMLElement = this.elementRef.nativeElement;
         htmlElement.hidden = true;
@@ -23,7 +23,7 @@ export class RelativeHeightDirective implements AfterViewInit {
         }, 100);
     }
 
-    updateHeight(htmlElement: HTMLElement) {
+    updateHeight(htmlElement: HTMLElement): void {
 
         const parentElement = htmlElement && htmlElement.parentElement;
         const htmlCollection = parentElement && parentElement.children;
@@ -57,7 +57,7 @@ export class RelativeHeightDirective implements AfterViewInit {
     }
 
     @HostListener('window:resize')
-    onResize() {
+    onResize(): void {
 
         let currentTime = Date.now();
         if (currentTime - this.lastWindowResizeTime < 50) {

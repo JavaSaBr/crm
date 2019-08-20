@@ -1,12 +1,13 @@
-import {AbstractControl, AsyncValidator, FormControl, ValidationErrors} from '@angular/forms';
-import {RegistrationService} from '../../services/registration.service';
-import {environment} from '../../../environments/environment';
-import {BaseLazyAsyncValidator} from "./base-lazy-async-validator";
+import {FormControl, ValidationErrors} from '@angular/forms';
+import {RegistrationService} from '@app/service/registration.service';
+import {environment} from '@app/env/environment';
+import {BaseLazyAsyncValidator} from './base-lazy-async-validator';
 import {TranslateService} from '@ngx-translate/core';
 
 export class UserValidator extends BaseLazyAsyncValidator<boolean> {
 
-    public static readonly EMAIL_PATTERN = '^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$';
+    public static readonly EMAIL_PATTERN =
+        '^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$';
 
     static getEmailErrorDescription(control: FormControl, translateService: TranslateService): string | null {
 
@@ -26,15 +27,15 @@ export class UserValidator extends BaseLazyAsyncValidator<boolean> {
     }
 
     static isTooShort(control: FormControl) {
-        return control.hasError('tooShort')
+        return control.hasError('tooShort');
     }
 
     static isTooLong(control: FormControl) {
-        return control.hasError('tooLong')
+        return control.hasError('tooLong');
     }
 
     static isAlreadyExist(control: FormControl) {
-        return control.hasError('alreadyExists')
+        return control.hasError('alreadyExists');
     }
 
     constructor(private readonly registrationService: RegistrationService) {
@@ -52,7 +53,8 @@ export class UserValidator extends BaseLazyAsyncValidator<boolean> {
     validateSync(value): ValidationErrors {
         if (value.length < environment.emailMinLength) {
             return {'tooShort': true};
-        } if (value.length > environment.emailMaxLength) {
+        }
+        if (value.length > environment.emailMaxLength) {
             return {'tooLong': true};
         } else {
             return null;

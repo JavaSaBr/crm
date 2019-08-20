@@ -1,12 +1,12 @@
 import {CountryRepository} from '../repositories/country/country.repository';
 import {AbstractControl} from '@angular/forms';
 import {Observable, Subject} from 'rxjs';
-import {Country} from '../entity/country';
-import {Utils} from './utils';
+import {Country} from '@app/entity/country';
+import {Utils} from '@app/util/utils';
 
 export class CountryPhoneCodeAutocompleter {
 
-    private readonly filteredCountries = new Subject<Country[]>();
+    private readonly _filteredCountries = new Subject<Country[]>();
 
     constructor(
         private countryRepository: CountryRepository,
@@ -14,14 +14,14 @@ export class CountryPhoneCodeAutocompleter {
     ) {
         control.valueChanges.subscribe(nameOrPhoneCode => this.filterByNameOrPhoneCode(nameOrPhoneCode));
         countryRepository.findAll()
-            .then(value => this.filteredCountries.next(value));
+            .then(value => this._filteredCountries.next(value));
     }
 
     private filterByNameOrPhoneCode(value: any) {
 
         if (!value) {
             this.countryRepository.findAll()
-                .then(countries => this.filteredCountries.next(countries));
+                .then(countries => this._filteredCountries.next(countries));
             return;
         }
 
@@ -30,7 +30,7 @@ export class CountryPhoneCodeAutocompleter {
         if (countryValue.id) {
             this.countryRepository.findAll()
                 .then(countries => {
-                    this.filteredCountries.next(countries.filter(country => country.id == countryValue.id));
+                    this._filteredCountries.next(countries.filter(country => country.id == countryValue.id));
                 });
         }
 
@@ -40,17 +40,17 @@ export class CountryPhoneCodeAutocompleter {
         if (stringValue.startsWith('+') || Utils.isNumber(stringValue)) {
             this.countryRepository.findAll()
                 .then(countries => {
-                    this.filteredCountries.next(countries.filter(country => country.phoneCode.includes(stringValue)));
+                    this._filteredCountries.next(countries.filter(country => country.phoneCode.includes(stringValue)));
                 });
         } else {
             this.countryRepository.findAll()
                 .then(countries => {
-                    this.filteredCountries.next(countries.filter(country => country.nameInLowerCase.includes(stringValue)));
+                    this._filteredCountries.next(countries.filter(country => country.nameInLowerCase.includes(stringValue)));
                 });
         }
     }
 
-    public getFilteredCountries(): Observable<Country[]> {
-        return this.filteredCountries;
+    get filteredCountries(): Observable<Country[]> {
+        return this._filteredCountries;
     }
 }

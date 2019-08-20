@@ -1,9 +1,10 @@
-import {HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse} from '@angular/common/http';
 import {TranslateService} from '@ngx-translate/core';
 
 export class ErrorResponse {
 
     public static convertToErrorOrNull(resp: HttpErrorResponse, translateService: TranslateService): ErrorResponse | null {
+
         if (resp.ok) {
             return null;
         } else if (resp.status >= 400 && resp.status < 500) {
@@ -23,9 +24,9 @@ export class ErrorResponse {
     }
 
     errorCode: number;
-    errorMessage: string;
+    errorMessage: string | null;
 
-    constructor(errorCode: number = 0, errorMessage: string = null) {
+    constructor(errorCode: number = 0, errorMessage: string | null = null) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }

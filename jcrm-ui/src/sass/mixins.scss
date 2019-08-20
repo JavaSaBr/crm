@@ -1,8 +1,8 @@
 @import "../app/components/workspace-nav-bar/workspace-nav-bar.component";
 @import "../app/components/workspace-side-nav/workspace-side-nav.component";
 @import "../app/components/no-auth-home/no-auth-home.component";
-@import "../app/app.component";
-@import "../app/components/contact/contact-view.component";
+@import "../app/components/app.component";
+@import "../app/components/contact/view/contact-view.component";
 
 @mixin additional-components($theme) {
 

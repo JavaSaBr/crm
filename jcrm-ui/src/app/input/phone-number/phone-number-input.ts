@@ -1,13 +1,13 @@
 import {Component, ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
-import {Country} from '../../entity/country';
+import {Country} from '@app/entity/country';
 import {AbstractControl, FormBuilder, FormGroup, NgControl} from '@angular/forms';
 import {PhoneNumber} from './phone-number';
 import {MatFormFieldControl} from '@angular/material';
 import {Observable} from 'rxjs';
-import {CountryRepository} from '../../repositories/country/country.repository';
+import {CountryRepository} from '@app/repository/country/country.repository';
 import {BaseInput} from '../base-input';
 import {FocusMonitor} from '@angular/cdk/a11y';
-import {CountryPhoneCodeAutocompleter} from '../../utils/country-phone-code-autocompleter';
+import {CountryPhoneCodeAutocompleter} from '@app/util/country-phone-code-autocompleter';
 
 @Component({
     selector: 'phone-number-input',
@@ -22,6 +22,8 @@ import {CountryPhoneCodeAutocompleter} from '../../utils/country-phone-code-auto
     }
 })
 export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements OnInit {
+
+    private static readonly EMPTY_OBSERVABLE = new Observable<Country[]>();
 
     public readonly formGroup: FormGroup;
 
@@ -41,6 +43,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
     ) {
         super(ngControl, focusMonitor, elementRef);
 
+        this.filteredCountries = PhoneNumberInput.EMPTY_OBSERVABLE;
         this._selectedCountry = null;
 
         this.formGroup = formBuilder.group({
@@ -131,7 +134,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
 
     public ngOnInit(): void {
         this.filteredCountries = new CountryPhoneCodeAutocompleter(this.countryRepository, this.countryControl)
-            .getFilteredCountries();
+            .filteredCountries;
     }
 
     displayCountry(country?: Country): string {

@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export class SideMenuService {
+export class WorkspaceSideMenuService {
 
     private readonly startOpening: Subject<void>;
     private readonly startClosing: Subject<void>;

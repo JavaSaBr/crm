@@ -14,7 +14,7 @@ export class BaseInput<T> implements MatFormFieldControl<T>, OnDestroy, ControlV
     }
 
     public readonly id: string;
-    public readonly stateChanges;
+    public readonly stateChanges: Subject<void>;
 
     public describedBy = '';
     public focused = false;
