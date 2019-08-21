@@ -1,4 +1,5 @@
 
 dependencies {
     compile project(":jcrm-base")
+    compile "io.projectreactor:reactor-core:$projectReactorVersion"
 }

@@ -8,7 +8,6 @@ import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig
 import com.ss.jcrm.dictionary.jasync.test.helper.JAsyncDictionaryTestHelper
 import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
-import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.*
 import org.springframework.core.env.Environment
@@ -32,7 +31,7 @@ class JAsyncDictionarySpecificationConfig {
     CountryDao countryDao
     
     @Bean
-    @NotNull ConnectionPool<? extends ConcreteConnection> dictionaryConnectionPool() {
+    ConnectionPool<? extends ConcreteConnection> dictionaryConnectionPool() {
     
         System.setProperty("jdbc.dictionary.db.url", System.getProperty("db.test.url"))
         System.setProperty("jdbc.dictionary.db.username", System.getProperty("db.test.username"))
@@ -45,7 +44,7 @@ class JAsyncDictionarySpecificationConfig {
     }
     
     @Bean
-    @NotNull DictionaryTestHelper dictionaryTestHelper() {
+    DictionaryTestHelper dictionaryTestHelper() {
         return new JAsyncDictionaryTestHelper(
             dictionaryConnectionPool(),
             countryDao,

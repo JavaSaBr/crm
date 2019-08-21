@@ -51,6 +51,7 @@ allprojects {
         jsonpathVersion = "2.4.0"
         jasyncVersion = "1.0.0"
         nettyVersion = "4.1.36.Final"
+        projectReactorVersion = "3.2.11.RELEASE"
     }
 
     dependencies {

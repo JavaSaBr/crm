@@ -1,0 +1,14 @@
+
+ext {
+    lombok = "true"
+}
+
+dependencies {
+    compile project(":jcrm-base-spring")
+    compile project(":jcrm-jasync")
+    compile project(":jcrm-task-api")
+    
+    testCompile project(":jcrm-integration-test-db-jasync")
+    testCompile project(path: ":jcrm-user-jdbc", configuration: "testArtifacts")
+    testCompile project(path: ":jcrm-task-api", configuration: "testArtifacts")
+}

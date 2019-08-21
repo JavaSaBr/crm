@@ -1,0 +1,10 @@
+ext {
+    lombok = "true"
+}
+
+dependencies {
+    compile project(":jcrm-dictionary-api")
+    compile project(":jcrm-user-api")
+    
+    testCompile project(":jcrm-integration-test")
+}
