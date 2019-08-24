@@ -6,4 +6,5 @@ ext {
 dependencies {
     compile "com.spaceshift:rlib.common:$rlibVersion"
     compile "com.spaceshift:rlib.logger.slf4j:$rlibVersion"
+    compile "io.projectreactor:reactor-core:$projectReactorVersion"
 }

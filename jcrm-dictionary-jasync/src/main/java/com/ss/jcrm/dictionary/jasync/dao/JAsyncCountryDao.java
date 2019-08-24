@@ -8,29 +8,23 @@ import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultCountry;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
-import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.rlib.common.util.array.Array;
-import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class JAsyncCountryDao extends AbstractDictionaryDao<Country> implements CountryDao {
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
         " from \"${schema}\".\"country\" where \"name\" = ?";
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
         " from \"${schema}\".\"country\" where \"id\" = ?";
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
         " from \"${schema}\".\"country\"";
 
-    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"${schema}\".\"country\" (\"name\", \"flag_code\"," +
         " \"phone_code\") values (?, ?, ?) RETURNING id";
 
@@ -51,41 +45,31 @@ public class JAsyncCountryDao extends AbstractDictionaryDao<Country> implements 
     }
 
     @Override
-    public @NotNull Country create(@NotNull String name, @NotNull String flagCode, @NotNull String phoneCode) {
-        return JAsyncUtils.unwrapJoin(createAsync(name, flagCode, phoneCode));
-    }
-
-    @Override
-    public @NotNull CompletableFuture<@NotNull Country> createAsync(
+    public @NotNull Mono<@NotNull Country> create(
         @NotNull String name,
         @NotNull String flagCode,
         @NotNull String phoneCode
     ) {
-
-        return connectionPool.sendPreparedStatement(queryInsert, List.of(name, flagCode, phoneCode))
-            .handle(JAsyncUtils.handleException())
-            .thenApply(queryResult -> {
-
-                var rset = queryResult.getRows();
-                var id = notNull(rset.get(0).getLong(0));
-
-                return new DefaultCountry(name, flagCode, phoneCode, id);
-            });
+        return insert(
+            queryInsert,
+            List.of(name, flagCode, phoneCode),
+            id -> new DefaultCountry(name, flagCode, phoneCode, id)
+        );
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Array<Country>> findAllAsync() {
-        return findAll(Country.class, querySelectAll, JAsyncCountryDao::toCountry);
+    public @NotNull Mono<@NotNull Array<Country>> findAll() {
+        return selectAll(Country.class, querySelectAll, JAsyncCountryDao::toCountry);
     }
 
     @Override
-    public @NotNull CompletableFuture<Country> findByIdAsync(long id) {
-        return findBy(querySelectById, id, JAsyncCountryDao::toCountry);
+    public @NotNull Mono<Country> findById(long id) {
+        return select(querySelectById, List.of(id), JAsyncCountryDao::toCountry);
     }
 
     @Override
-    public @NotNull CompletableFuture<Country> findByNameAsync(@NotNull String name) {
-        return findBy(querySelectByName, name, JAsyncCountryDao::toCountry);
+    public @NotNull Mono<Country> findByName(@NotNull String name) {
+        return select(querySelectByName, List.of(name), JAsyncCountryDao::toCountry);
     }
 
     private @NotNull DefaultCountry toCountry(@NotNull RowData data) {

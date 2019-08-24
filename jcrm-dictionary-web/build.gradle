@@ -5,7 +5,7 @@ ext {
 }
 
 dependencies {
-    compile project(":jcrm-dictionary-jdbc")
+    compile project(":jcrm-dictionary-jasync")
     compile project(":jcrm-security-web")
     testCompile project(path: ":jcrm-dictionary-jasync", configuration: "testArtifacts")
     testCompile project(":jcrm-integration-test-db")

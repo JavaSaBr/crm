@@ -1,24 +1,38 @@
 package com.ss.jcrm.jasync.util;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import com.github.jasync.sql.db.Configuration;
 import com.github.jasync.sql.db.ConnectionPoolConfiguration;
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.exceptions.GenericDatabaseException;
 import com.github.jasync.sql.db.util.ExecutorServiceUtils;
 import com.github.jasync.sql.db.util.NettyUtils;
+import com.jsoniter.JsonIterator;
+import com.jsoniter.output.JsonStream;
+import com.ss.jcrm.base.utils.HasId;
 import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
+import com.ss.rlib.common.function.ObjectLongFunction;
 import com.ss.rlib.common.util.ObjectUtils;
+import com.ss.rlib.common.util.StringUtils;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.EventLoopGroup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
+import java.util.function.LongFunction;
+import java.util.stream.LongStream;
 
 public class JAsyncUtils {
 
@@ -101,6 +115,82 @@ public class JAsyncUtils {
             emptyList(),
             dbPoolConfiguration.getMaxObjectTtl()
         );
+    }
+
+    public static <T> @NotNull Set<T> fromJsonArray(
+        @Nullable String json,
+        @NotNull LongFunction<T> function
+    ) {
+
+        if (StringUtils.isEmpty(json)) {
+            return Set.of();
+        }
+
+        var deserialize = JsonIterator.deserialize(json, long[].class);
+
+        if (deserialize == null || deserialize.length < 1) {
+            return Set.of();
+        }
+
+        return LongStream.of(deserialize)
+            .mapToObj(function)
+            .collect(toUnmodifiableSet());
+    }
+
+    public static <T> @NotNull Mono<@NotNull Set<T>> fromJsonArrayAsync(
+        @Nullable String json,
+        @NotNull LongFunction<Mono<T>> function
+    ) {
+
+        if (StringUtils.isEmpty(json)) {
+            return Mono.just(Set.of());
+        }
+
+        var deserialize = JsonIterator.deserialize(json, long[].class);
+
+        if (deserialize == null || deserialize.length < 1) {
+            return Mono.just(Set.of());
+        }
+
+        return Flux.concat(LongStream.of(deserialize)
+            .mapToObj(function)
+            .collect(toList()))
+            .collect(() -> new HashSet<T>(), Set::add)
+            .map(Collections::unmodifiableSet);
+    }
+
+    public static <T, A> @NotNull Mono<@NotNull Set<T>> fromJsonArrayAsync(
+        @Nullable String json,
+        @NotNull A argument,
+        @NotNull ObjectLongFunction<A, Mono<T>> function
+    ) {
+
+        if (StringUtils.isEmpty(json)) {
+            return Mono.just(Set.of());
+        }
+
+        var deserialize = JsonIterator.deserialize(json, long[].class);
+
+        if (deserialize == null || deserialize.length < 1) {
+            return Mono.just(Set.of());
+        }
+
+        return Flux.concat(LongStream.of(deserialize)
+            .mapToObj(value -> function.apply(argument, value))
+            .collect(toList()))
+            .collect(() -> new HashSet<T>(), Set::add)
+            .map(Collections::unmodifiableSet);
+    }
+
+    public static <T extends HasId> @Nullable String toJsonArray(@NotNull Set<T> entities) {
+
+        if (entities.isEmpty()) {
+            return null;
+        }
+
+        return JsonStream.serialize(entities.stream()
+            .mapToLong(HasId::getId)
+            .toArray());
     }
 
     public static @NotNull ConnectionPoolConfiguration buildPoolConfig(

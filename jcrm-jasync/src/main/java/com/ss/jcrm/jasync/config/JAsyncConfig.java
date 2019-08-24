@@ -19,8 +19,6 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class JAsyncConfig {
 
-    private final Environment env;
-
     @Bean
     @NotNull PoolConfiguration dbPoolConfiguration() {
         return new PoolConfiguration(

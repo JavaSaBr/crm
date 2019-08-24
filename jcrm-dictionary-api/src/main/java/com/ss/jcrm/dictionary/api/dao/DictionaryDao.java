@@ -5,16 +5,11 @@ import com.ss.jcrm.dao.NamedObjectDao;
 import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.CompletableFuture;
+import reactor.core.publisher.Mono;
 
 public interface DictionaryDao<T extends NamedEntity> extends NamedObjectDao<T> {
 
-    @NotNull Array<T> findAll();
+    @NotNull Mono<@NotNull Array<T>> findAll();
 
-    @NotNull LongDictionary<T> findAllAsMap();
-
-    @NotNull CompletableFuture<@NotNull Array<T>> findAllAsync();
-
-    @NotNull CompletableFuture<@NotNull LongDictionary<T>> findAllAsMapAsync();
+    @NotNull Mono<@NotNull LongDictionary<T>> findAllAsMap();
 }

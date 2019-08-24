@@ -113,13 +113,13 @@ public class JdbcOrganizationDao extends AbstractNamedObjectJdbcDao<Organization
     }
 
     @Override
-    public @NotNull Array<Organization> getAll() {
+    public @NotNull Array<Organization> findAll() {
         return findAll(Organization.class, Q_SELECT_ALL, JdbcOrganizationDao::toOrganization);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Array<Organization>> getAllAsync() {
-        return supplyAsync(this::getAll, slowDbTaskExecutor);
+        return supplyAsync(this::findAll, slowDbTaskExecutor);
     }
 
     @Override

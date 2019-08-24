@@ -45,7 +45,7 @@ class JAsyncDictionaryTestHelper implements DictionaryTestHelper {
 
     @Override
     Country newCountry(String name, String flagCode, String phoneCode) {
-        return countryDao.create(name, flagCode, phoneCode)
+        return countryDao.create(name, flagCode, phoneCode).block()
     }
 
     @Override

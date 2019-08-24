@@ -8,27 +8,20 @@ import com.ss.jcrm.dictionary.api.Industry;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultIndustry;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
-import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.rlib.common.util.array.Array;
-import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class JAsyncIndustryDao extends AbstractDictionaryDao<Industry> implements IndustryDao {
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\" from \"${schema}\".\"industry\" where \"name\" = ?";
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"name\" from \"${schema}\".\"industry\" where \"id\" = ?";
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_ALL = "select \"id\", \"name\" from \"${schema}\".\"industry\"";
 
-    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"${schema}\".\"industry\" (\"name\") values (?) RETURNING id";
 
     private final String querySelectByName;
@@ -48,36 +41,27 @@ public class JAsyncIndustryDao extends AbstractDictionaryDao<Industry> implement
     }
 
     @Override
-    public @NotNull Industry create(@NotNull String name) {
-        return JAsyncUtils.unwrapJoin(createAsync(name));
+    public @NotNull Mono<@NotNull Industry> create(@NotNull String name) {
+        return insert(
+            queryInsert,
+            List.of(name),
+            id -> new DefaultIndustry(name, id)
+        );
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Industry> createAsync(@NotNull String name) {
-        return connectionPool.sendPreparedStatement(queryInsert, List.of(name))
-            .handle(JAsyncUtils.handleException())
-            .thenApply(queryResult -> {
-
-                var rset = queryResult.getRows();
-                var id = notNull(rset.get(0).getLong(0));
-
-                return new DefaultIndustry(name, id);
-            });
+    public @NotNull Mono<@NotNull Array<Industry>> findAll() {
+        return selectAll(Industry.class, querySelectAll, JAsyncIndustryDao::toIndustry);
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Array<Industry>> findAllAsync() {
-        return findAll(Industry.class, querySelectAll, JAsyncIndustryDao::toIndustry);
+    public @NotNull Mono<Industry> findById(long id) {
+        return select(querySelectById, List.of(id), JAsyncIndustryDao::toIndustry);
     }
 
     @Override
-    public @NotNull CompletableFuture<@Nullable Industry> findByIdAsync(long id) {
-        return findBy(querySelectById, id, JAsyncIndustryDao::toIndustry);
-    }
-
-    @Override
-    public @NotNull CompletableFuture<@Nullable Industry> findByNameAsync(@NotNull String name) {
-        return findBy(querySelectByName, name, JAsyncIndustryDao::toIndustry);
+    public @NotNull Mono<Industry> findByName(@NotNull String name) {
+        return select(querySelectByName, List.of(name), JAsyncIndustryDao::toIndustry);
     }
 
     private @NotNull DefaultIndustry toIndustry(@NotNull RowData data) {

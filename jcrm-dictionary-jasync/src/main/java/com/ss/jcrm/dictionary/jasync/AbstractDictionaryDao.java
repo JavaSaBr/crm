@@ -10,6 +10,7 @@ import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import org.jetbrains.annotations.NotNull;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -21,19 +22,9 @@ public abstract class AbstractDictionaryDao<T extends NamedEntity> extends Abstr
     }
 
     @Override
-    public @NotNull Array<T> findAll() {
-        return JAsyncUtils.unwrapJoin(findAllAsync());
-    }
-
-    @Override
-    public @NotNull LongDictionary<T> findAllAsMap() {
-        return JAsyncUtils.unwrapJoin(findAllAsMapAsync());
-    }
-
-    @Override
-    public @NotNull CompletableFuture<@NotNull LongDictionary<T>> findAllAsMapAsync() {
-        return findAllAsync()
-            .thenApply(array -> {
+    public @NotNull Mono<@NotNull LongDictionary<T>> findAllAsMap() {
+        return findAll()
+            .map(array -> {
                 var result = DictionaryFactory.<T>newLongDictionary(array.size());
                 array.forEach(result, (element, dictionary) -> dictionary.put(element.getId(), element));
                 return result;

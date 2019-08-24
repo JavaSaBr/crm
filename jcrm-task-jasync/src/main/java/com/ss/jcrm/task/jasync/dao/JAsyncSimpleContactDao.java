@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> implements SimpleContactDao {
 
@@ -54,6 +53,11 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     }
 
     @Override
+    public @NotNull Mono<SimpleContact> findById(long id) {
+        return Mono.fromFuture(findBy(querySelectById, id, JAsyncSimpleContactDao::toContact));
+    }
+
+    @Override
     public @NotNull Mono<@NotNull SimpleContact> create(
         @NotNull Organization organization,
         @Nullable String firstName,
@@ -70,7 +74,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     @Override
     public @NotNull Mono<Void> update(@NotNull SimpleContact contact) {
         return Mono.fromFuture(update(
-            queryInsert,
+            queryUpdate,
             Arrays.asList(
                 contact.getFirstName(),
                 contact.getSecondName(),
@@ -84,17 +88,12 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
     @Override
     public @NotNull Mono<Array<SimpleContact>> findByOrg(@NotNull Organization organization) {
-        return Mono.fromFuture(findAll(
+        return Mono.fromFuture(selectAll(
             SimpleContact.class,
             querySelectByOrgId,
             List.of(organization.getId()),
             JAsyncSimpleContactDao::toContact
         ));
-    }
-
-    @Override
-    public @NotNull CompletableFuture<SimpleContact> findByIdAsync(long id) {
-        return findBy(querySelectById, id, JAsyncSimpleContactDao::toContact);
     }
 
     private @NotNull SimpleContact toContact(@NotNull RowData data) {

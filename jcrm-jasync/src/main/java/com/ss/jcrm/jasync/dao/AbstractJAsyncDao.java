@@ -9,20 +9,21 @@ import com.ss.jcrm.dao.Entity;
 import com.ss.jcrm.dao.VersionedEntity;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
 import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
-import com.ss.jcrm.jasync.function.*;
+import com.ss.jcrm.jasync.function.JAsyncBiConverter;
+import com.ss.jcrm.jasync.function.JAsyncConverter;
+import com.ss.jcrm.jasync.function.JAsyncCreationCallback;
+import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
-import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.array.Array;
+import com.ss.rlib.common.util.array.ArrayFactory;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
@@ -30,56 +31,38 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
     protected final ConnectionPool<? extends ConcreteConnection> connectionPool;
 
     @Override
-    public @Nullable T findById(long id) {
-        return JAsyncUtils.unwrapJoin(findByIdAsync(id));
+    public @NotNull Mono<@NotNull T> requireById(long id) {
+        return findById(id)
+            .switchIfEmpty(Mono.error(() -> new ObjectNotFoundDaoException("Can't find an entity with the id " + id)));
     }
 
-    @Override
-    public @NotNull T requireById(long id) {
-        return JAsyncUtils.unwrapJoin(requireByIdAsync(id));
+    protected @NotNull Mono<Boolean> exist(@NotNull String query, @NotNull List<?> args) {
+        return Mono.fromFuture(connectionPool.sendPreparedStatement(query, args)
+            .thenApply(queryResult -> !queryResult.getRows().isEmpty()));
     }
 
-    @Override
-    public @NotNull CompletableFuture<@NotNull T> requireByIdAsync(long id) {
-        return findByIdAsync(id)
-            .thenApply(entity -> ObjectUtils.notNull(entity, id,
-                value -> new ObjectNotFoundDaoException("Can't find an entity with the id " + value)));
-    }
-
-    protected @NotNull CompletableFuture<Boolean> existBy(@NotNull String query, @NotNull Object value) {
-        return connectionPool.sendPreparedStatement(query, List.of(value))
-            .thenApply(queryResult -> !queryResult.getRows().isEmpty());
-    }
-
-    protected @NotNull CompletableFuture<Boolean> deleteBy(@NotNull String query, @NotNull Object value) {
-        return connectionPool.sendPreparedStatement(query, List.of(value))
-            .thenApply(queryResult -> queryResult.getRows().size() == 1);
-    }
-
-    protected <D extends Dao<T>> @NotNull CompletableFuture<@NotNull T> insert(
+    protected @NotNull Mono<@NotNull T> insert(
         @NotNull String query,
         @NotNull List<?> args,
-        @NotNull JAsyncCreationCallback<D, T> callback
+        @NotNull JAsyncCreationCallback<T> callback
     ) {
-
-        return connectionPool.sendPreparedStatement(query, args)
+        return Mono.fromFuture(connectionPool.sendPreparedStatement(query, args)
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
                 var rset = queryResult.getRows();
                 var id = notNull(rset.get(0).getLong(0));
 
-                return callback.handle((D) this, id);
-            });
+                return callback.handle(id);
+            }));
     }
 
-    protected @NotNull CompletableFuture<Void> update(
+    protected @NotNull Mono<Void> update(
         @NotNull String query,
         @NotNull List<?> args,
         @NotNull T entity
     ) {
-
-        return connectionPool.sendPreparedStatement(query, args)
+        return Mono.fromFuture(connectionPool.sendPreparedStatement(query, args)
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
@@ -96,17 +79,15 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
                 }
 
                 return null;
-            });
+            }));
     }
 
-    protected <D extends Dao<T>> @NotNull CompletableFuture<@Nullable T> findBy(
+    protected <D extends Dao<T>> @NotNull Mono<@Nullable T> select(
         @NotNull String query,
-        @NotNull Object firstValue,
-        @NotNull Object secondValue,
+        @NotNull List<?> args,
         @NotNull JAsyncConverter<D, T> converter
     ) {
-
-        return connectionPool.sendPreparedStatement(query, List.of(firstValue, secondValue))
+        return Mono.fromFuture(connectionPool.sendPreparedStatement(query, args)
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
@@ -117,16 +98,15 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
                 } else {
                     return converter.convert((D) this, rset.get(0));
                 }
-            });
+            }));
     }
 
-    protected <D extends Dao<T>> @NotNull CompletableFuture<@Nullable T> findBy(
+    protected <D extends Dao<T>> @NotNull Mono<@Nullable T> selectAsync(
         @NotNull String query,
-        @NotNull Object value,
-        @NotNull JAsyncConverter<D, T> converter
+        @NotNull List<?> args,
+        @NotNull JAsyncLazyConverter<D, T> converter
     ) {
-
-        return connectionPool.sendPreparedStatement(query, List.of(value))
+        return Mono.fromFuture(connectionPool.sendPreparedStatement(query, args)
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
@@ -135,38 +115,27 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
                 if (rset.isEmpty()) {
                     return null;
                 } else {
-                    return converter.convert((D) this, rset.get(0));
+                    return rset.get(0);
                 }
-            });
+            }))
+            .flatMap(data -> converter.convert((D) this, data));
     }
 
-    protected <D extends Dao<T>> @NotNull CompletableFuture<@Nullable T> findByAndCompose(
+    protected @NotNull Mono<Boolean> delete(
         @NotNull String query,
-        @NotNull Object value,
-        @NotNull JAsyncComposeConverter<D, T> converter
+        @NotNull List<?> args
     ) {
-
-        return connectionPool.sendPreparedStatement(query, List.of(value))
+        return Mono.fromFuture(connectionPool.sendPreparedStatement(query, args)
             .handle(JAsyncUtils.handleException())
-            .thenCompose(queryResult -> {
-
-                var rset = queryResult.getRows();
-
-                if (rset.isEmpty()) {
-                    return CompletableFuture.completedFuture(null);
-                } else {
-                    return converter.convert((D) this, rset.get(0));
-                }
-            });
+            .thenApply(queryResult -> queryResult.getRowsAffected() > 0));
     }
 
-    protected <D extends Dao<T>> @NotNull CompletableFuture<@NotNull Array<T>> findAll(
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAll(
         @NotNull Class<T> type,
         @NotNull String query,
         @NotNull JAsyncConverter<D, T> converter
     ) {
-
-        return connectionPool.sendQuery(query)
+        return Mono.fromFuture(connectionPool.sendQuery(query)
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
@@ -179,17 +148,16 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
                 return rset.stream()
                     .map(data -> converter.convert((D) this, data))
                     .collect(toArray(type));
-            });
+            }));
     }
 
-    protected <D extends Dao<T>> @NotNull CompletableFuture<@NotNull Array<T>> findAll(
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAll(
         @NotNull Class<T> type,
         @NotNull String query,
         @NotNull List<?> args,
         @NotNull JAsyncConverter<D, T> converter
     ) {
-
-        return connectionPool.sendPreparedStatement(query, args)
+        return Mono.fromFuture(connectionPool.sendPreparedStatement(query, args)
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
@@ -202,17 +170,16 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
                 return rset.stream()
                     .map(data -> converter.convert((D) this, data))
                     .collect(toArray(type));
-            });
+            }));
     }
 
-    protected <D extends Dao<T>, A> @NotNull CompletableFuture<@NotNull Array<T>> findAll(
+    protected <D extends Dao<T>, A> @NotNull Mono<@NotNull Array<T>> selectAll(
         @NotNull Class<T> type,
         @NotNull String query,
         @NotNull A attachment,
         @NotNull JAsyncBiConverter<D, A, T> converter
     ) {
-
-        return connectionPool.sendQuery(query)
+        return Mono.fromFuture(connectionPool.sendQuery(query)
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
@@ -225,37 +192,53 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
                 return rset.stream()
                     .map(data -> converter.convert((D) this, attachment, data))
                     .collect(toArray(type));
-            });
+            }));
     }
 
-    protected <D extends Dao<T>> @NotNull CompletableFuture<@NotNull List<T>> findAllByLong(
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAllAsync(
+        @NotNull Class<T> type,
         @NotNull String query,
-        @NotNull Object value,
-        @NotNull JAsyncConverter<D, T> converter
+        @NotNull JAsyncLazyConverter<D, T> converter
     ) {
-        return findAllBy(query, value, converter, ArrayList::new);
-    }
-
-    protected <D extends Dao<T>, C extends Collection<T>> @NotNull CompletableFuture<@NotNull C> findAllBy(
-        @NotNull String query,
-        @NotNull Object value,
-        @NotNull JAsyncConverter<D, T> converter,
-        @NotNull Supplier<C> collectionFactory
-    ) {
-
-        return connectionPool.sendPreparedStatement(query, List.of(value))
+        return Mono.<Array<Mono<T>>>fromFuture(connectionPool.sendQuery(query)
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
                 var rset = queryResult.getRows();
 
                 if (rset.isEmpty()) {
-                    return collectionFactory.get();
+                    return Array.empty();
                 }
 
                 return rset.stream()
                     .map(data -> converter.convert((D) this, data))
-                    .collect(Collectors.toCollection(collectionFactory));
-            });
+                    .collect(toArray(Mono.class));
+            }))
+            .flatMapMany(Flux::concat)
+            .collect(() -> ArrayFactory.newArray(type), Collection::add);
+    }
+
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAllAsync(
+        @NotNull Class<T> type,
+        @NotNull String query,
+        @NotNull List<?> args,
+        @NotNull JAsyncLazyConverter<D, T> converter
+    ) {
+        return Mono.<Array<Mono<T>>>fromFuture(connectionPool.sendPreparedStatement(query, args)
+            .handle(JAsyncUtils.handleException())
+            .thenApply(queryResult -> {
+
+                var rset = queryResult.getRows();
+
+                if (rset.isEmpty()) {
+                    return Array.empty();
+                }
+
+                return rset.stream()
+                    .map(data -> converter.convert((D) this, data))
+                    .collect(toArray(Mono.class));
+            }))
+            .flatMapMany(Flux::concat)
+            .collect(() -> ArrayFactory.newArray(type), Collection::add);
     }
 }

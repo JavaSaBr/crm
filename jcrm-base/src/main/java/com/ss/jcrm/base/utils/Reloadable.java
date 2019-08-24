@@ -1,12 +1,11 @@
 package com.ss.jcrm.base.utils;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.CompletableFuture;
+import reactor.core.publisher.Mono;
 
 public interface Reloadable {
 
     void reload();
 
-    @NotNull CompletableFuture<Void> reloadAsync();
+    @NotNull Mono<Void> reloadAsync();
 }

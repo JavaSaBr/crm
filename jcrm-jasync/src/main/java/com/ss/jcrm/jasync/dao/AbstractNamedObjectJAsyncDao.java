@@ -14,9 +14,4 @@ public abstract class AbstractNamedObjectJAsyncDao<T extends NamedEntity> extend
     public AbstractNamedObjectJAsyncDao(@NotNull ConnectionPool<? extends ConcreteConnection> connectionPool) {
         super(connectionPool);
     }
-
-    @Override
-    public @Nullable T findByName(@NotNull String name) {
-        return JAsyncUtils.unwrapJoin(findByNameAsync(name));
-    }
 }

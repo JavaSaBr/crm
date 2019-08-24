@@ -10,34 +10,28 @@ import com.ss.jcrm.dictionary.api.dao.CityDao;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultCity;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
-import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import lombok.extern.log4j.Log4j2;
-import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Log4j2
 public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDao {
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"country_id\" " +
         " from \"${schema}\".\"city\" where \"name\" = ?";
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"country_id\" " +
         " from \"${schema}\".\"city\" where \"id\" = ?";
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"country_id\" from \"${schema}\".\"city\"";
 
-    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"${schema}\".\"city\" (\"name\", \"country_id\") " +
-        "values (?, ?)  RETURNING id";
+        "values (?, ?) RETURNING id";
 
     private final String querySelectByName;
     private final String querySelectById;
@@ -60,41 +54,28 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
     }
 
     @Override
-    public @NotNull City create(@NotNull String name, @NotNull Country country) {
-        return JAsyncUtils.unwrapJoin(createAsync(name, country));
+    public @NotNull Mono<@NotNull City> create(@NotNull String name, @NotNull Country country) {
+        return insert(
+            queryInsert,
+            List.of(name, country.getId()),
+            id -> new DefaultCity(name, country, id)
+        );
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull City> createAsync(@NotNull String name, @NotNull Country country) {
-        return connectionPool.sendPreparedStatement(queryInsert, List.of(name, country.getId()))
-            .handle(JAsyncUtils.handleException())
-            .thenApply(queryResult -> {
-
-                var rset = queryResult.getRows();
-                var id = notNull(rset.get(0).getLong(0));
-
-                return new DefaultCity(name, country, id);
-            });
+    public @NotNull Mono<@NotNull Array<City>> findAll() {
+        return countryDao.findAllAsMap()
+            .flatMap(countries -> selectAll(City.class, querySelectAll, countries, JAsyncCityDao::toCities));
     }
 
     @Override
-    public @NotNull Array<City> findAll() {
-        return JAsyncUtils.unwrapJoin(findAllAsync());
+    public @NotNull Mono<City> findById(long id) {
+        return selectAsync(querySelectById, List.of(id), JAsyncCityDao::toCity);
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Array<City>> findAllAsync() {
-        return findAll(City.class, querySelectAll, countryDao.findAllAsMap(), JAsyncCityDao::toCities);
-    }
-
-    @Override
-    public @NotNull CompletableFuture<City> findByIdAsync(long id) {
-        return findByAndCompose(querySelectById, id, JAsyncCityDao::toCity);
-    }
-
-    @Override
-    public @NotNull CompletableFuture<City> findByNameAsync(@NotNull String name) {
-        return findByAndCompose(querySelectByName, name, JAsyncCityDao::toCity);
+    public @NotNull Mono<City> findByName(@NotNull String name) {
+        return selectAsync(querySelectByName, List.of(name), JAsyncCityDao::toCity);
     }
 
     private @Nullable City toCities(@NotNull LongDictionary<Country> countries, @NotNull RowData data) {
@@ -115,13 +96,13 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
         return new DefaultCity(name, country, notNull(data.getLong(0)));
     }
 
-    private @NotNull CompletableFuture<@Nullable City> toCity(@NotNull RowData data) {
+    private @NotNull Mono<@Nullable City> toCity(@NotNull RowData data) {
 
         var name = notNull(data.getString(1));
         var countryId = notNull(data.getLong(2));
 
-        return countryDao.findByIdAsync(countryId)
-            .thenApply(country -> {
+        return countryDao.findById(countryId)
+            .map(country -> {
 
                 if (country == null) {
                     log.warn(

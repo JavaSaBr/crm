@@ -11,10 +11,10 @@ import com.ss.rlib.common.util.dictionary.ObjectDictionary;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
@@ -51,13 +51,13 @@ public class DefaultCachedDictionaryService<T extends NamedEntity, R, C> impleme
 
     @Override
     public void reload() {
-        reloadAsync().join();
+        reloadAsync().block();
     }
 
     @Override
-    public @NotNull CompletableFuture<Void> reloadAsync() {
-        return dictionaryDao.findAllAsync()
-            .thenAcceptAsync(this::reload);
+    public @NotNull Mono<Void> reloadAsync() {
+        return dictionaryDao.findAll()
+            .map(ts -> null);
     }
 
     private void reload(@NotNull Array<T> entities) {

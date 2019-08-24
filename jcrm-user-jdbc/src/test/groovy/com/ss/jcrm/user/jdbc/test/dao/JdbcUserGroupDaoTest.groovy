@@ -75,7 +75,7 @@ class JdbcUserGroupDaoTest extends JdbcUserSpecification {
             }
 
         when:
-            def loaded = userGroupDao.getAll(org)
+            def loaded = userGroupDao.findAll(org)
         then:
             loaded != null
             loaded.size() == groupNames.size()

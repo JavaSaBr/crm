@@ -90,7 +90,7 @@ public class JdbcUserGroupDao extends AbstractJdbcDao<UserGroup> implements User
     }
 
     @Override
-    public @NotNull Set<UserGroup> getAll(@NotNull Organization organization) {
+    public @NotNull Set<UserGroup> findAll(@NotNull Organization organization) {
 
         var result = findAllByLong(
             Q_SELECT_ALL_BY_ORG_ID,
@@ -104,14 +104,14 @@ public class JdbcUserGroupDao extends AbstractJdbcDao<UserGroup> implements User
 
     @Override
     public @NotNull CompletableFuture<@NotNull Set<UserGroup>> getAllAsync(@NotNull Organization organization) {
-        return supplyAsync(() -> getAll(organization), slowDbTaskExecutor);
+        return supplyAsync(() -> findAll(organization), slowDbTaskExecutor);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull LongDictionary<UserGroup>> getAllAsMapAsync(
         @NotNull Organization organization
     ) {
-        return supplyAsync(() -> getAllAsMap(organization), slowDbTaskExecutor);
+        return supplyAsync(() -> findAllAsMap(organization), slowDbTaskExecutor);
     }
 
     private @NotNull UserGroup toUserGroup(@NotNull ResultSet rs) throws SQLException {

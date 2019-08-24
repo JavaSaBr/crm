@@ -80,7 +80,7 @@ class JdbcOrganizationDaoTest extends JdbcUserSpecification {
             }
 
         when:
-            def loaded = organizationDao.getAll()
+            def loaded = organizationDao.findAll()
         then:
             loaded != null
             loaded.size() == orgNames.size()
