@@ -31,6 +31,12 @@ public class DefaultCachedDictionaryService<T extends NamedEntity, R, C> impleme
         private final C allResources;
         private final LongDictionary<R> idToResource;
         private final ObjectDictionary<String, R> nameToResource;
+
+        public State(@NotNull Function<List<R>, C> collectionFunction) {
+            this.allResources = collectionFunction.apply(List.of());
+            this.idToResource = LongDictionary.empty();
+            this.nameToResource = ObjectDictionary.empty();
+        }
     }
 
     private final DictionaryDao<T> dictionaryDao;
@@ -44,6 +50,7 @@ public class DefaultCachedDictionaryService<T extends NamedEntity, R, C> impleme
         @NotNull Function<T, R> resourceFunction,
         @NotNull Function<List<R>, C> collectionFunction
     ) {
+        this.state = new State<>(collectionFunction);
         this.dictionaryDao = dictionaryDao;
         this.resourceFunction = resourceFunction;
         this.collectionFunction = collectionFunction;
@@ -55,9 +62,9 @@ public class DefaultCachedDictionaryService<T extends NamedEntity, R, C> impleme
     }
 
     @Override
-    public @NotNull Mono<Void> reloadAsync() {
+    public @NotNull Mono<?> reloadAsync() {
         return dictionaryDao.findAll()
-            .map(ts -> null);
+            .doOnNext(this::reload);
     }
 
     private void reload(@NotNull Array<T> entities) {

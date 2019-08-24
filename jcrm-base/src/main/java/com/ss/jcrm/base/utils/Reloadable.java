@@ -7,5 +7,5 @@ public interface Reloadable {
 
     void reload();
 
-    @NotNull Mono<Void> reloadAsync();
+    @NotNull Mono<?> reloadAsync();
 }

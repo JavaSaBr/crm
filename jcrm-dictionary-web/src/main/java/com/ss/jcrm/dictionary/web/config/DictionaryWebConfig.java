@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.web.config;
 
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
-import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig;
+import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig;
 import com.ss.jcrm.dictionary.web.handler.CountryHandler;
 import com.ss.jcrm.dictionary.web.resource.AllCountriesOutResource;
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
@@ -25,7 +25,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Import({
-    JdbcDictionaryConfig.class,
+    JAsyncDictionaryConfig.class,
     WebSecurityConfig.class,
     BaseWebConfig.class
 })
