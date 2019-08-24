@@ -46,8 +46,7 @@ public class AuthenticationHandler {
 
     public @NotNull Mono<ServerResponse> authenticateByToken(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("token"))
-            .zipWhen(token -> Mono.fromFuture(tokenService.findUserIfNotExpiredAsync(token)
-                .exceptionally(AsyncUtils::skip)), AuthenticationOutResource::new)
+            .zipWhen(tokenService::findUserIfNotExpired, AuthenticationOutResource::new)
             .switchIfEmpty(Mono.error(() -> new UnauthorizedWebException(
                 RegistrationErrors.INVALID_TOKEN_MESSAGE,
                 RegistrationErrors.INVALID_TOKEN
@@ -59,8 +58,7 @@ public class AuthenticationHandler {
 
     public @NotNull Mono<ServerResponse> refreshToken(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("token"))
-            .zipWhen(token -> Mono.fromFuture(tokenService.findUserAsync(token)
-                .exceptionally(AsyncUtils::skip)), this::refreshToken)
+            .zipWhen(tokenService::findUser, this::refreshToken)
             .switchIfEmpty(Mono.error(() -> new UnauthorizedWebException(
                 RegistrationErrors.INVALID_TOKEN_MESSAGE,
                 RegistrationErrors.INVALID_TOKEN
@@ -97,11 +95,8 @@ public class AuthenticationHandler {
     }
 
     private @NotNull Mono<? extends @Nullable User> loadUserByLogin(@NotNull AuthenticationInResource resource) {
-
         var login = resource.getLogin();
-        var asyncUser = StringUtils.isEmail(login) ?
-            userDao.findByEmailAsync(login) : userDao.findByPhoneNumberAsync(login);
-
-        return Mono.fromFuture(asyncUser);
+        return StringUtils.isEmail(login) ?
+            userDao.findByEmail(login) : userDao.findByPhoneNumber(login);
     }
 }

@@ -15,7 +15,7 @@ class JavaxMailServiceTest extends MailSpecification {
             def subject = "Integration test of Javax Mail Service"
             def content = "Integration test of Javax Mail Service"
         when:
-            mailService.send("email@email.com", subject, content)
+            mailService.send("email@email.com", subject, content).block()
         then:
             noExceptionThrown()
         when:
@@ -23,7 +23,7 @@ class JavaxMailServiceTest extends MailSpecification {
         then:
             count == 1
         when:
-            mailService.send("email@email.com", subject, content)
+            mailService.send("email@email.com", subject, content).block()
             count = smtpTestContainer.getEmailCountFrom('test@test.test')
         then:
             count == 2

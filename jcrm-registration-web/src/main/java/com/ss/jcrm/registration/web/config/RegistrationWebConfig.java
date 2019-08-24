@@ -1,7 +1,7 @@
 package com.ss.jcrm.registration.web.config;
 
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
-import com.ss.jcrm.dictionary.jdbc.config.JdbcDictionaryConfig;
+import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig;
 import com.ss.jcrm.mail.MailConfig;
 import com.ss.jcrm.mail.service.MailService;
 import com.ss.jcrm.registration.web.exception.handler.RegistrationWebExceptionHandler;
@@ -17,7 +17,7 @@ import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.jdbc.config.JdbcUserConfig;
+import com.ss.jcrm.user.jasync.config.JAsyncUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +34,8 @@ import java.util.List;
 
 @Import({
     BaseWebConfig.class,
-    JdbcUserConfig.class,
-    JdbcDictionaryConfig.class,
+    JAsyncUserConfig.class,
+    JAsyncDictionaryConfig.class,
     WebSecurityConfig.class,
     MailConfig.class
 })

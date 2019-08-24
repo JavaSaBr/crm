@@ -1,7 +1,6 @@
 package com.ss.jcrm.web.exception;
 
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.HttpStatus;
 
 import java.util.concurrent.CompletionException;
 import java.util.function.Predicate;
@@ -30,6 +29,19 @@ public class ExceptionUtils {
             throw new BadRequestWebException(message, errorCode);
         } else {
             throw new CompletionException(throwable);
+        }
+    }
+
+    public static @NotNull RuntimeException toBadRequest(
+        @NotNull Throwable throwable,
+        @NotNull Predicate<Throwable> expected,
+        int errorCode,
+        @NotNull String message
+    ) {
+        if (expected.test(throwable)) {
+            return new BadRequestWebException(message, errorCode);
+        } else {
+            return new CompletionException(throwable);
         }
     }
 

@@ -11,6 +11,7 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
+import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import java.nio.ByteBuffer;
@@ -19,7 +20,6 @@ import java.security.SecureRandom;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 @Log4j2
 @AllArgsConstructor
@@ -105,27 +105,15 @@ public class JjwtTokenService implements UnsafeTokenService {
     }
 
     @Override
-    public @NotNull User findUser(@NotNull String token) {
+    public @NotNull Mono<@NotNull User> findUser(@NotNull String token) {
         var claims = getPossibleExpiredClaims(token);
         return userDao.requireById(Long.parseLong(claims.getSubject()));
     }
 
     @Override
-    public @NotNull User findUserIfNotExpired(@NotNull String token) {
+    public @NotNull Mono<@NotNull User> findUserIfNotExpired(@NotNull String token) {
         var claims = getClaims(token);
         return userDao.requireById(Long.parseLong(claims.getSubject()));
-    }
-
-    @Override
-    public @NotNull CompletableFuture<@NotNull User> findUserAsync(@NotNull String token) {
-        var claims = getPossibleExpiredClaims(token);
-        return userDao.requireByIdAsync(Long.parseLong(claims.getSubject()));
-    }
-
-    @Override
-    public @NotNull CompletableFuture<@NotNull User> findUserIfNotExpiredAsync(@NotNull String token) {
-        var claims = getClaims(token);
-        return userDao.requireByIdAsync(Long.parseLong(claims.getSubject()));
     }
 
     @Override

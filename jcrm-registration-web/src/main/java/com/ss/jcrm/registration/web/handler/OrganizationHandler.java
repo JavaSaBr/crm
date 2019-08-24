@@ -18,7 +18,6 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.exception.ExceptionUtils;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +30,6 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
@@ -49,10 +47,16 @@ public class OrganizationHandler {
         return request.bodyToMono(OrganizationRegisterInResource.class)
             .doOnNext(resourceValidator::validate)
             .zipWhen(this::findEmailConfirmation, this::validateConfirmation)
-            .switchIfEmpty(Mono.error(() -> new BadRequestWebException(INVALID_ACTIVATION_CODE_MESSAGE, INVALID_ACTIVATION_CODE)))
+            .switchIfEmpty(Mono.error(() -> new BadRequestWebException(
+                INVALID_ACTIVATION_CODE_MESSAGE,
+                INVALID_ACTIVATION_CODE))
+            )
             .zipWhen(this::findCountry, this::createOrganization)
             .flatMap(Function.identity())
-            .switchIfEmpty(Mono.error(() -> new BadRequestWebException(COUNTRY_NOT_FOUND_MESSAGE, COUNTRY_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(() -> new BadRequestWebException(
+                COUNTRY_NOT_FOUND_MESSAGE,
+                COUNTRY_NOT_FOUND))
+            )
             .flatMap(resource -> ServerResponse.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .syncBody(resource));
@@ -60,8 +64,7 @@ public class OrganizationHandler {
 
     public @NotNull Mono<ServerResponse> existByName(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("name"))
-            .map(organizationDao::existByNameAsync)
-            .flatMap(Mono::fromFuture)
+            .flatMap(organizationDao::existByName)
             .switchIfEmpty(Mono.just(false))
             .map(exist -> exist ? HttpStatus.OK : HttpStatus.NOT_FOUND)
             .flatMap(status -> ServerResponse.status(status)
@@ -70,10 +73,10 @@ public class OrganizationHandler {
     }
 
     private @NotNull Mono<EmailConfirmation> findEmailConfirmation(@NotNull OrganizationRegisterInResource resource) {
-        return Mono.fromFuture(emailConfirmationDao.findByEmailAndCodeAsync(
+        return emailConfirmationDao.findByEmailAndCode(
             resource.getEmail(),
             resource.getActivationCode()
-        ));
+        );
     }
 
     private <T> @Nullable T validateConfirmation(@NotNull T resource, @NotNull EmailConfirmation confirmation) {
@@ -85,23 +88,23 @@ public class OrganizationHandler {
     }
 
     private @NotNull Mono<@Nullable Country> findCountry(@NotNull OrganizationRegisterInResource resource) {
-        return Mono.fromFuture(countryDao.findByIdAsync(resource.getCountryId()));
+        return countryDao.findById(resource.getCountryId());
     }
 
     private @NotNull Mono<AuthenticationOutResource> createOrganization(
         @NotNull OrganizationRegisterInResource resource,
         @NotNull Country country
     ) {
-        return Mono.fromFuture(organizationDao.createAsync(resource.getOrgName(), country)
-            .exceptionally(throwable -> ExceptionUtils.badRequest(throwable,
+        return organizationDao.create(resource.getOrgName(), country)
+            .onErrorResume(throwable -> Mono.error(ExceptionUtils.toBadRequest(throwable,
                 DuplicateObjectDaoException.class::isInstance,
                 ORG_ALREADY_EXIST,
                 ORG_ALREADY_EXIST_MESSAGE
-            ))
-            .thenCompose(organization -> createOrgAdmin(resource, organization)));
+            )))
+            .flatMap(organization -> createOrgAdmin(resource, organization));
     }
 
-    private @NotNull CompletableFuture<AuthenticationOutResource> createOrgAdmin(
+    private @NotNull Mono<AuthenticationOutResource> createOrgAdmin(
         @NotNull OrganizationRegisterInResource resource,
         @NotNull Organization organization
     ) {
@@ -112,32 +115,23 @@ public class OrganizationHandler {
         Arrays.fill(resource.getPassword(), ' ');
 
         return createOrgAdmin(resource, organization, salt, hash)
-            .handle((user, throwable) -> {
-
-                if (user != null) {
-                    return CompletableFuture.completedFuture(user);
-                } else {
-                    return organizationDao.deleteAsync(organization.getId())
-                        .thenApply(wasDeleted -> ExceptionUtils.<User>badRequest(
-                            throwable,
-                            DuplicateObjectDaoException.class::isInstance,
-                            EMAIL_ALREADY_EXIST,
-                            EMAIL_ALREADY_EXIST_MESSAGE
-                        ));
-                }
-
-            })
-            .thenCompose(Function.identity())
-            .thenApply(user -> new AuthenticationOutResource(user, tokenService.generateNewToken(user)));
+            .onErrorResume(throwable -> organizationDao.delete(organization.getId())
+                .flatMap(aBoolean -> Mono.error(ExceptionUtils.toBadRequest(
+                    throwable,
+                    DuplicateObjectDaoException.class::isInstance,
+                    EMAIL_ALREADY_EXIST,
+                    EMAIL_ALREADY_EXIST_MESSAGE
+                ))))
+            .map(user -> new AuthenticationOutResource(user, tokenService.generateNewToken(user)));
     }
 
-    private @NotNull CompletableFuture<@NotNull User> createOrgAdmin(
+    private @NotNull Mono<@NotNull User> createOrgAdmin(
         @NotNull OrganizationRegisterInResource resource,
         @NotNull Organization organization,
         @NotNull byte[] salt,
         @NotNull byte[] hash
     ) {
-        return userDao.createAsync(
+        return userDao.create(
             resource.getEmail(),
             hash,
             salt,

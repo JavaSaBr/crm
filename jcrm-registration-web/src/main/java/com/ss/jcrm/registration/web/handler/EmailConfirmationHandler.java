@@ -45,7 +45,7 @@ public class EmailConfirmationHandler {
         var expiration = Instant.now()
             .plus(emailConfirmationExpiration, ChronoUnit.MINUTES);
 
-        return Mono.fromFuture(emailConfirmationDao.createAsync(activateCode, email, expiration));
+        return emailConfirmationDao.create(activateCode, email, expiration);
     }
 
     private @NotNull Mono<Void> sendEmail(@NotNull EmailConfirmation emailConfirmation) {
@@ -56,10 +56,10 @@ public class EmailConfirmationHandler {
             "{code}", emailConfirmation.getCode()
         );
 
-        return Mono.fromFuture(mailService.sendAsync(
+        return mailService.send(
             emailConfirmation.getEmail(),
             emailConfirmationSubject,
             template
-        ));
+        );
     }
 }

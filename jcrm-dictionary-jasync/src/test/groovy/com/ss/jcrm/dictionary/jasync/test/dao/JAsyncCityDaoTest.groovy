@@ -6,8 +6,6 @@ import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.core.publisher.Flux
 
-import java.util.concurrent.CompletionException
-
 class JAsyncCityDaoTest extends JAsyncDictionarySpecification {
 
     @Autowired
@@ -35,8 +33,7 @@ class JAsyncCityDaoTest extends JAsyncDictionarySpecification {
         when:
             cityDao.create("testcity", country).block()
         then:
-            def e = thrown(CompletionException)
-            e.getCause() instanceof DuplicateObjectDaoException
+            thrown DuplicateObjectDaoException
     }
 
     def "should load correctly created cities"() {

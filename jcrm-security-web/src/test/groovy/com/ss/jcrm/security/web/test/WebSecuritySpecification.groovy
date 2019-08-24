@@ -1,7 +1,7 @@
 package com.ss.jcrm.security.web.test
 
 import com.ss.jcrm.integration.test.DefaultSpecification
-import com.ss.jcrm.user.jdbc.test.helper.JdbcUserTestHelper
+import com.ss.jcrm.user.api.test.UserTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
@@ -9,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration
 class WebSecuritySpecification extends DefaultSpecification {
 
     @Autowired
-    JdbcUserTestHelper userTestHelper
+    UserTestHelper userTestHelper
 
     def setup() {
         userTestHelper.clearAllData()

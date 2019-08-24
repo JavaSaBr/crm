@@ -8,6 +8,7 @@ import com.ss.rlib.mail.sender.exception.UncheckedMessagingException;
 import com.ss.rlib.mail.sender.impl.JavaxMailSender;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.*;
 
@@ -28,20 +29,9 @@ public class JavaxMailService implements MailService {
     }
 
     @Override
-    public void send(@NotNull String email, @NotNull String subject, @NotNull String content) {
-        try {
-            mailSender.send(email, subject, content);
-        } catch (UncheckedMessagingException e) {
-            throw new MailException(e.getCause());
-        }
-    }
-
-    @Override
-    public @NotNull CompletableFuture<Void> sendAsync(
-        @NotNull String email,
-        @NotNull String subject,
-        @NotNull String content
-    ) {
-        return mailSender.sendAsync(email, subject, content);
+    public @NotNull Mono<Void> send(@NotNull String email, @NotNull String subject, @NotNull String content) {
+        return Mono.fromFuture(mailSender.sendAsync(email, subject, content))
+            .onErrorResume(CompletionException.class::isInstance, ex -> Mono.error(ex.getCause()))
+            .onErrorResume(UncheckedMessagingException.class::isInstance, ex -> Mono.error(new MailException(ex.getCause())));
     }
 }

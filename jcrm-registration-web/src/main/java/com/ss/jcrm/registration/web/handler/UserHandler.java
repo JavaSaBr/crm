@@ -18,8 +18,7 @@ public class UserHandler {
     public @NotNull Mono<ServerResponse> existByEmail(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("email"))
             .doOnNext(resourceValidator::validateEmail)
-            .map(userDao::existByEmailAsync)
-            .flatMap(Mono::fromFuture)
+            .flatMap(userDao::existByEmail)
             .map(exist -> exist? HttpStatus.OK : HttpStatus.NOT_FOUND)
             .flatMap(exist -> ServerResponse.status(exist)
                 .build());

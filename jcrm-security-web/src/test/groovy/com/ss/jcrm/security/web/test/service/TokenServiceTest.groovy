@@ -42,7 +42,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             def user = userTestHelper.newUser("User1")
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def foundUser = unsafeTokenService.findUserIfNotExpired(token)
+            def foundUser = unsafeTokenService.findUserIfNotExpired(token).block()
         then:
             foundUser != null
             foundUser.getId() == user.getId()
@@ -71,7 +71,7 @@ class TokenServiceTest extends WebSecuritySpecification {
                 0
             )
         when:
-            def foundUser = unsafeTokenService.findUser(token)
+            def foundUser = unsafeTokenService.findUser(token).block()
         then:
             foundUser != null
             foundUser.getId() == user.getId()
@@ -106,19 +106,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             newToken != null
             newToken != token
     }
-
-    def "should thrown ObjectNotFoundDaoException when user isn't exist"() {
-
-        given:
-            def user = userTestHelper.newUser("User1")
-            def token = unsafeTokenService.generateNewToken(user)
-        when:
-            userTestHelper.clearAllData()
-            unsafeTokenService.findUserIfNotExpired(token)
-        then:
-            thrown ObjectNotFoundDaoException
-    }
-
+    
     def "should thrown InvalidTokenException when a token isn't valid"() {
 
         given:
@@ -201,34 +189,16 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown InvalidTokenException
     }
 
-    def "should thrown TokenExpiredException when a token is expired async"() {
-
-        given:
-            def user = userTestHelper.newUser("User1")
-            def token = unsafeTokenService.generateNewToken(
-                user.id,
-                ZonedDateTime.now().minusDays(300),
-                ZonedDateTime.now().minusDays(350),
-                0,
-                0
-            )
-        when:
-            unsafeTokenService.findUserIfNotExpiredAsync(token).join()
-        then:
-            thrown ExpiredTokenException
-    }
-
-    def "should thrown ExecutionException -> ObjectNotFoundDaoException when a token is expired async"() {
+    def "should thrown CompletionException -> ObjectNotFoundDaoException when user is not exist"() {
 
         given:
             def user = userTestHelper.newUser("User1")
             def token = unsafeTokenService.generateNewToken(user)
         when:
             userTestHelper.clearAllData()
-            unsafeTokenService.findUserIfNotExpiredAsync(token).join()
+            unsafeTokenService.findUserIfNotExpired(token).block()
         then:
-            def ex = thrown(CompletionException)
-            ex.getCause() instanceof ObjectNotFoundDaoException
+            thrown ObjectNotFoundDaoException
     }
 
     def "should generate an activation code"(int length) {

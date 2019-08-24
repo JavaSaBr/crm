@@ -6,8 +6,6 @@ import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.core.publisher.Flux
 
-import java.util.concurrent.CompletionException
-
 class JAsyncIndustryDaoTest extends JAsyncDictionarySpecification {
 
     @Autowired
@@ -30,8 +28,7 @@ class JAsyncIndustryDaoTest extends JAsyncDictionarySpecification {
         when:
             industryDao.create("testindustry").block()
         then:
-            def ex = thrown(CompletionException)
-            ex.getCause() instanceof DuplicateObjectDaoException
+            thrown DuplicateObjectDaoException
     }
     
 

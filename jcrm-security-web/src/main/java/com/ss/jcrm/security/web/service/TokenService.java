@@ -7,8 +7,8 @@ import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException;
 import com.ss.jcrm.security.web.exception.PrematureTokenException;
 import com.ss.jcrm.user.api.User;
 import org.jetbrains.annotations.NotNull;
+import reactor.core.publisher.Mono;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 public interface TokenService {
@@ -23,16 +23,9 @@ public interface TokenService {
     /**
      * @throws PrematureTokenException if the token is from future.
      * @throws InvalidTokenException if the token isn't valid.
-     * @throws ObjectNotFoundDaoException if the token's user cannot be found.
-     */
-    @NotNull User findUser(@NotNull String token);
-
-    /**
-     * @throws PrematureTokenException if the token is from future.
-     * @throws InvalidTokenException if the token isn't valid.
      * @throws CompletionException -> ObjectNotFoundDaoException if the token's user cannot be found.
      */
-    @NotNull CompletableFuture<@NotNull User> findUserAsync(@NotNull String token);
+    @NotNull Mono<@NotNull User> findUser(@NotNull String token);
 
     /**
      * @throws ExpiredTokenException if the token is expired.
@@ -40,15 +33,7 @@ public interface TokenService {
      * @throws InvalidTokenException if the token isn't valid.
      * @throws ObjectNotFoundDaoException if the token's user cannot be found.
      */
-    @NotNull User findUserIfNotExpired(@NotNull String token);
-
-    /**
-     * @throws ExpiredTokenException if the token is expired.
-     * @throws PrematureTokenException if the token is from future.
-     * @throws InvalidTokenException if the token isn't valid.
-     * @throws CompletionException -> ObjectNotFoundDaoException if the token's user cannot be found.
-     */
-    @NotNull CompletableFuture<@NotNull User> findUserIfNotExpiredAsync(@NotNull String token);
+    @NotNull Mono<@NotNull User> findUserIfNotExpired(@NotNull String token);
 
     /**
      * @throws MaxRefreshedTokenException if the token reached max count of revokes.

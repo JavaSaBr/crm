@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 
 @AllArgsConstructor
 public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
@@ -54,7 +55,11 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
                 var id = notNull(rset.get(0).getLong(0));
 
                 return callback.handle(id);
-            }));
+            }))
+            .onErrorResume(
+                CompletionException.class::isInstance,
+                throwable -> Mono.error(throwable.getCause())
+            );
     }
 
     protected @NotNull Mono<Void> update(
