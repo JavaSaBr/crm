@@ -69,7 +69,7 @@ public class DefaultPasswordService implements PasswordService {
         for (int i = 0; i < length; i++) {
             var c = random.nextInt(62);
             if (c <= 9) {
-                builder.append(String.valueOf(c));
+                builder.append(c);
             } else if (c < 36) {
                 builder.append((char) ('a' + c - 10));
             } else {

@@ -6,12 +6,11 @@ import com.ss.jcrm.integration.test.DefaultSpecification
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
 import com.ss.jcrm.task.api.test.TaskTestHelper
 import com.ss.jcrm.user.api.test.UserTestHelper
-import com.ss.jcrm.user.jdbc.test.JdbcUserSpecificationConfig
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
-@ContextConfiguration(classes = JdbcUserSpecificationConfig)
+@ContextConfiguration(classes = JAsyncTaskSpecificationConfig)
 class JAsyncTaskSpecification extends DefaultSpecification {
     
     static final String TABLE_CONTACT = "contact"

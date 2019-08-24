@@ -20,20 +20,15 @@ import java.util.List;
 
 public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> implements SimpleContactDao {
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ID = "select \"id\", \"org_id\", \"first_name\", \"second_name\", " +
         " \"third_name\", \"version\" from \"${schema}\".\"contact\" where \"id\" = ?";
 
-    @Language("PostgreSQL")
     private static final String Q_SELECT_BY_ORG_ID = "select \"id\", \"org_id\", \"first_name\", \"second_name\", " +
         " \"third_name\", \"version\" from \"${schema}\".\"contact\" where \"org_id\" = ?";
 
-    @Language("PostgreSQL")
     private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"org_id\", \"first_name\", \"second_name\", " +
-        "\"third_name\")" +
-        " values (?,?,?,?)";
+        "\"third_name\") values (?,?,?,?) returning id";
 
-    @Language("PostgreSQL")
     private static final String Q_UPDATE = "update \"${schema}\".\"contact\" set \"first_name\" = ?, \"second_name\" = ?," +
         " \"third_name\" = ? where \"id\" = ? and \"version\" = ?";
 
@@ -43,7 +38,8 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     private final String queryUpdate;
 
     public JAsyncSimpleContactDao(
-        @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool, @NotNull String schema
+        @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
+        @NotNull String schema
     ) {
         super(connectionPool);
         this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
@@ -54,7 +50,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
     @Override
     public @NotNull Mono<SimpleContact> findById(long id) {
-        return Mono.fromFuture(findBy(querySelectById, id, JAsyncSimpleContactDao::toContact));
+        return select(querySelectById, List.of(id), JAsyncSimpleContactDao::toContact);
     }
 
     @Override
@@ -64,16 +60,16 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         @Nullable String secondName,
         @Nullable String thirdName
     ) {
-        return Mono.fromFuture(insert(
+        return insert(
             queryInsert,
             Arrays.asList(organization.getId(), firstName, secondName, thirdName),
-            (dao, id) -> new DefaultSimpleContact(id, organization.getId(), firstName, secondName, thirdName, 0)
-        ));
+            id -> new DefaultSimpleContact(id, organization.getId(), firstName, secondName, thirdName, 0)
+        );
     }
 
     @Override
     public @NotNull Mono<Void> update(@NotNull SimpleContact contact) {
-        return Mono.fromFuture(update(
+        return update(
             queryUpdate,
             Arrays.asList(
                 contact.getFirstName(),
@@ -83,17 +79,17 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
                 contact.getVersion()
             ),
             contact
-        ));
+        );
     }
 
     @Override
     public @NotNull Mono<Array<SimpleContact>> findByOrg(@NotNull Organization organization) {
-        return Mono.fromFuture(selectAll(
+        return selectAll(
             SimpleContact.class,
             querySelectByOrgId,
             List.of(organization.getId()),
             JAsyncSimpleContactDao::toContact
-        ));
+        );
     }
 
     private @NotNull SimpleContact toContact(@NotNull RowData data) {

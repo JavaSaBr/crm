@@ -9,7 +9,7 @@ import com.ss.jcrm.task.api.test.TaskTestHelper
 import com.ss.jcrm.task.jasync.config.JAsyncTaskConfig
 import com.ss.jcrm.task.jasync.test.helper.JAsyncTaskTestHelper
 import com.ss.jcrm.user.api.test.UserTestHelper
-import com.ss.jcrm.user.jdbc.test.JdbcUserSpecificationConfig
+import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecificationConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,7 +22,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 @Configuration
 @Import([
     JAsyncTaskConfig,
-    JdbcUserSpecificationConfig,
+    JAsyncUserSpecificationConfig,
 ])
 @PropertySource("classpath:com/ss/jcrm/task/jasync/test/task-jasync-test.properties")
 class JAsyncTaskSpecificationConfig {

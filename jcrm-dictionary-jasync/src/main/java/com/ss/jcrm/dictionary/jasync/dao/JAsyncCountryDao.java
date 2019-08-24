@@ -26,7 +26,7 @@ public class JAsyncCountryDao extends AbstractDictionaryDao<Country> implements 
         " from \"${schema}\".\"country\"";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"country\" (\"name\", \"flag_code\"," +
-        " \"phone_code\") values (?, ?, ?) RETURNING id";
+        " \"phone_code\") values (?, ?, ?) returning id";
 
     private final String querySelectByName;
     private final String querySelectById;

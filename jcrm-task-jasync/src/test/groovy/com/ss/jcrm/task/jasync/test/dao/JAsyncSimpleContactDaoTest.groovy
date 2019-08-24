@@ -34,7 +34,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncTaskSpecification {
         given:
             def contact = taskTestHelper.newSimpleContact()
         when:
-            def loaded = simpleContactDao.findByIdAsync(contact.id).join()
+            def loaded = simpleContactDao.findById(contact.id).block()
         then:
             loaded != null
             loaded.id == contact.id

@@ -31,7 +31,7 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
     private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"country_id\" from \"${schema}\".\"city\"";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"city\" (\"name\", \"country_id\") " +
-        "values (?, ?) RETURNING id";
+        "values (?, ?) returning id";
 
     private final String querySelectByName;
     private final String querySelectById;

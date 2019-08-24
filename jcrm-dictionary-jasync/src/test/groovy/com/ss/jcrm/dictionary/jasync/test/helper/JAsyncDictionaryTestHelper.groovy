@@ -7,6 +7,8 @@ import com.ss.jcrm.dictionary.api.Country
 import com.ss.jcrm.dictionary.api.dao.CountryDao
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 
+import java.util.concurrent.CompletionException
+
 import static com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification.clearAllTables
 
 class JAsyncDictionaryTestHelper implements DictionaryTestHelper {
@@ -27,11 +29,14 @@ class JAsyncDictionaryTestHelper implements DictionaryTestHelper {
     
     @Override
     Country newCountry() {
-        
-        for (def i = 0; i <3; i++) {
+    
+        for (def i = 0; i < 3; i++) {
             try {
                 return newCountry(nextUID(), "none", "none")
-            } catch (DuplicateObjectDaoException e) {
+            } catch (CompletionException e) {
+                if (!e.getCause() instanceof DuplicateObjectDaoException) {
+                    throw e
+                }
             }
         }
     

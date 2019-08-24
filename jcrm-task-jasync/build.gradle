@@ -9,6 +9,6 @@ dependencies {
     compile project(":jcrm-task-api")
     
     testCompile project(":jcrm-integration-test-db-jasync")
-    testCompile project(path: ":jcrm-user-jdbc", configuration: "testArtifacts")
+    testCompile project(path: ":jcrm-user-jasync", configuration: "testArtifacts")
     testCompile project(path: ":jcrm-task-api", configuration: "testArtifacts")
 }

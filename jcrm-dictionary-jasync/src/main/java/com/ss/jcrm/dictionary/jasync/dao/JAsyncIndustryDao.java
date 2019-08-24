@@ -22,7 +22,7 @@ public class JAsyncIndustryDao extends AbstractDictionaryDao<Industry> implement
 
     private static final String Q_SELECT_ALL = "select \"id\", \"name\" from \"${schema}\".\"industry\"";
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"industry\" (\"name\") values (?) RETURNING id";
+    private static final String Q_INSERT = "insert into \"${schema}\".\"industry\" (\"name\") values (?) returning id";
 
     private final String querySelectByName;
     private final String querySelectById;
