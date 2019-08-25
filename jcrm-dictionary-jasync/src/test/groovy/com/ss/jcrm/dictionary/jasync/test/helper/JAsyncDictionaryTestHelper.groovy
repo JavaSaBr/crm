@@ -33,10 +33,7 @@ class JAsyncDictionaryTestHelper implements DictionaryTestHelper {
         for (def i = 0; i < 3; i++) {
             try {
                 return newCountry(nextUID(), "none", "none")
-            } catch (CompletionException e) {
-                if (!e.getCause() instanceof DuplicateObjectDaoException) {
-                    throw e
-                }
+            } catch (DuplicateObjectDaoException e) {
             }
         }
     
