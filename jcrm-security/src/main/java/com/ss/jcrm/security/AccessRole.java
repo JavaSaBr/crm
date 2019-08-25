@@ -14,7 +14,8 @@ import java.util.stream.Stream;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum AccessRole implements HasId {
     SUPER_ADMIN(1, "Super administrator"),
-    ORG_ADMIN(2, "Organization administrator");
+    ORG_ADMIN(2, "Organization administrator"),
+    CURATOR(3, "Curator");
 
     private static final AccessRole[] ID_TO_ROLE;
 

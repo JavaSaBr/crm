@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class TokenException extends RuntimeException {
 
+    public TokenException() {}
+
     public TokenException(@NotNull String message) {
         super(message);
     }

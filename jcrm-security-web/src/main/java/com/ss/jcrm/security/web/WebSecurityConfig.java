@@ -1,14 +1,16 @@
 package com.ss.jcrm.security.web;
 
 import com.ss.jcrm.security.config.SecurityConfig;
+import com.ss.jcrm.security.web.exception.handler.SecurityWebExceptionHandler;
 import com.ss.jcrm.security.web.service.TokenService;
+import com.ss.jcrm.security.web.service.WebRequestSecurityService;
+import com.ss.jcrm.security.web.service.impl.DefaultWebRequestSecurityService;
 import com.ss.jcrm.security.web.service.impl.JjwtTokenService;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -17,6 +19,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.cors.reactive.CorsUtils;
+import org.springframework.web.server.WebExceptionHandler;
 import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
 
@@ -32,12 +35,9 @@ public class WebSecurityConfig {
     @Autowired
     private Environment env;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
     @Lazy
     @Bean
-    @NotNull TokenService tokenGenerator() throws IOException {
+    @NotNull TokenService tokenService(@NotNull UserDao userDao) throws IOException {
 
         byte[] secretKey = null;
 
@@ -64,7 +64,7 @@ public class WebSecurityConfig {
         }
 
         return new JjwtTokenService(
-            applicationContext.getBean(UserDao.class),
+            userDao,
             secretKey,
             env.getProperty("token.expiration.time", int.class, 30),
             env.getProperty("token.max.refreshes", int.class, 60)
@@ -104,5 +104,15 @@ public class WebSecurityConfig {
 
             return chain.filter(exchange);
         };
+    }
+
+    @Bean
+    @NotNull WebExceptionHandler securityWebExceptionHandler() {
+        return new SecurityWebExceptionHandler();
+    }
+
+    @Bean
+    @NotNull WebRequestSecurityService webRequestSecurityService(@NotNull TokenService tokenService) {
+        return new DefaultWebRequestSecurityService(tokenService);
     }
 }

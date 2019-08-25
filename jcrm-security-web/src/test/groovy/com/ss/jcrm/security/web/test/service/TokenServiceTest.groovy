@@ -15,10 +15,7 @@ import java.time.ZonedDateTime
 import java.util.concurrent.CompletionException
 
 class TokenServiceTest extends WebSecuritySpecification {
-
-    @Autowired
-    UnsafeTokenService unsafeTokenService
-
+    
     @Value('${token.max.refreshes}')
     Integer maxRefreshes
     

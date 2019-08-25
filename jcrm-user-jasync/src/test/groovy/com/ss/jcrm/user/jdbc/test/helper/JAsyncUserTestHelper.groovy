@@ -108,6 +108,17 @@ class JAsyncUserTestHelper implements UserTestHelper {
     }
     
     @Override
+    User newUser(String name, AccessRole... roles) {
+        return newUser(
+            name,
+            passwordService.nextPassword(24),
+            passwordService.nextSalt,
+            Set.of(roles),
+            getOrCreateDefaultOrg()
+        )
+    }
+    
+    @Override
     User newUser(String name, String phoneNumber) {
         return newUser(
             name,
@@ -145,6 +156,20 @@ class JAsyncUserTestHelper implements UserTestHelper {
             salt,
             organization,
             onlyOrgAdminRole(),
+            null,
+            null,
+            null,
+            null
+        ).block()
+    }
+    
+    def newUser(String name, String password, byte[] salt, Set<AccessRole> accessRoles, Organization organization) {
+        return userDao.create(
+            name,
+            passwordService.hash(password, salt),
+            salt,
+            organization,
+            accessRoles,
             null,
             null,
             null,

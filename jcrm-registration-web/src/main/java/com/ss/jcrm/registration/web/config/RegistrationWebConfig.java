@@ -47,7 +47,7 @@ import java.util.List;
         ignoreResourceNotFound = true
     )
 })
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class RegistrationWebConfig {
 
     private static final RequestPredicate APP_JSON =
@@ -137,47 +137,60 @@ public class RegistrationWebConfig {
     }
 
     @Bean
-    @NotNull RouterFunction<ServerResponse> registrationStatusRouterFunction() {
+    @NotNull RouterFunction<ServerResponse> registrationStatusRouterFunction(
+        @NotNull ApiEndpointServer registrationApiEndpointServer
+    ) {
+        var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
-            .GET("/registration/status", request -> ServerResponse.ok()
+            .GET(contextPath + "/status", request -> ServerResponse.ok()
                 .build())
             .build();
     }
 
     @Bean
-    @NotNull RouterFunction<ServerResponse> userRouterFunction(@NotNull UserHandler userHandler) {
+    @NotNull RouterFunction<ServerResponse> userRouterFunction(
+        @NotNull ApiEndpointServer registrationApiEndpointServer,
+        @NotNull UserHandler userHandler
+    ) {
+        var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
-            .GET("/registration/exist/user/email/{email}", userHandler::existByEmail)
+            .GET(contextPath + "/exist/user/email/{email}", userHandler::existByEmail)
             .build();
     }
 
     @Bean
     @NotNull RouterFunction<ServerResponse> emailConfirmationRouterFunction(
+        @NotNull ApiEndpointServer registrationApiEndpointServer,
         @NotNull EmailConfirmationHandler emailConfirmationHandler
     ) {
+        var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
-            .GET("/registration/email/confirmation/{email}", emailConfirmationHandler::emailConfirmation)
+            .GET(contextPath + "/email/confirmation/{email}", emailConfirmationHandler::emailConfirmation)
             .build();
     }
 
     @Bean
     @NotNull RouterFunction<ServerResponse> authenticationRouterFunction(
+        @NotNull ApiEndpointServer registrationApiEndpointServer,
         @NotNull AuthenticationHandler authenticationHandler
     ) {
+        var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
-            .POST("/registration/authenticate", APP_JSON, authenticationHandler::authenticate)
-            .GET("/registration/authenticate/{token}", authenticationHandler::authenticateByToken)
-            .GET("/registration/token/refresh/{token}", authenticationHandler::refreshToken)
+            .POST(contextPath + "/authenticate", APP_JSON, authenticationHandler::authenticate)
+            .GET(contextPath + "/authenticate/{token}", authenticationHandler::authenticateByToken)
+            .GET(contextPath + "/token/refresh/{token}", authenticationHandler::refreshToken)
             .build();
     }
 
     @Bean
     @NotNull RouterFunction<ServerResponse> organizationRouterFunction(
+        @NotNull ApiEndpointServer registrationApiEndpointServer,
         @NotNull OrganizationHandler organizationHandler
     ) {
+        var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
-            .POST("/registration/register/organization", APP_JSON, organizationHandler::register)
-            .GET("/registration/exist/organization/name/{name}", organizationHandler::existByName)
+            .POST(contextPath + "/register/organization", APP_JSON, organizationHandler::register)
+            .GET(contextPath + "/exist/organization/name/{name}", organizationHandler::existByName)
             .build();
     }
 }

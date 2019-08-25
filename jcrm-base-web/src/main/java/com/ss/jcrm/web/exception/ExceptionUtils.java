@@ -52,6 +52,13 @@ public class ExceptionUtils {
         throw new UnauthorizedWebException(message, errorCode);
     }
 
+    public static @NotNull UnauthorizedWebException toUnauthorized(
+        int errorCode,
+        @NotNull String message
+    ) {
+        return new UnauthorizedWebException(message, errorCode);
+    }
+
     public static <T> @NotNull T unauthorized(
         @NotNull Throwable throwable,
         @NotNull Predicate<Throwable> expected,
@@ -65,5 +72,17 @@ public class ExceptionUtils {
         }
     }
 
+    public static <T> @NotNull T forbidden(
+        int errorCode,
+        @NotNull String message
+    ) {
+        throw new ForbiddenWebException(message, errorCode);
+    }
 
+    public static @NotNull ForbiddenWebException toForbidden(
+        int errorCode,
+        @NotNull String message
+    ) {
+        return new ForbiddenWebException(message, errorCode);
+    }
 }

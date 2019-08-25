@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
         ignoreResourceNotFound = true
     )
 })
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class DictionaryWebConfig {
 
     @Autowired
@@ -79,19 +79,26 @@ public class DictionaryWebConfig {
     }
 
     @Bean
-    @NotNull RouterFunction<ServerResponse> dictionaryStatusRouterFunction() {
+    @NotNull RouterFunction<ServerResponse> dictionaryStatusRouterFunction(
+        @NotNull ApiEndpointServer dictionaryApiEndpointServer
+    ) {
+        var contextPath = dictionaryApiEndpointServer.getContextPath();
         return RouterFunctions.route()
-            .GET("/dictionary/status", request -> ServerResponse.ok()
+            .GET(contextPath + "/status", request -> ServerResponse.ok()
                 .build())
             .build();
     }
 
     @Bean
-    @NotNull RouterFunction<ServerResponse> countryRouterFunction(@NotNull CountryHandler countryHandler) {
+    @NotNull RouterFunction<ServerResponse> countryRouterFunction(
+        @NotNull ApiEndpointServer dictionaryApiEndpointServer,
+        @NotNull CountryHandler countryHandler
+    ) {
+        var contextPath = dictionaryApiEndpointServer.getContextPath();
         return RouterFunctions.route()
-            .GET("/dictionary/countries", countryHandler::getAll)
-            .GET("/dictionary/country/{id}", countryHandler::getById)
-            .GET("/dictionary/name/{name}", countryHandler::getByName)
+            .GET(contextPath + "/countries", countryHandler::getAll)
+            .GET(contextPath + "/country/{id}", countryHandler::getById)
+            .GET(contextPath + "/name/{name}", countryHandler::getByName)
             .build();
     }
 }
