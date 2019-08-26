@@ -1,6 +1,11 @@
 package con.ss.jcrm.client.web.handler;
 
-import com.ss.jcrm.web.exception.UnauthorizedWebException;
+import com.ss.jcrm.client.api.SimpleContact;
+import com.ss.jcrm.client.api.dao.SimpleContactDao;
+import com.ss.jcrm.security.AccessRole;
+import com.ss.jcrm.security.web.resource.AuthorizedResource;
+import com.ss.jcrm.security.web.service.WebRequestSecurityService;
+import con.ss.jcrm.client.web.resource.ContactOutResource;
 import con.ss.jcrm.client.web.resource.CreateContactInResource;
 import con.ss.jcrm.client.web.validator.ResourceValidator;
 import lombok.AllArgsConstructor;
@@ -14,17 +19,33 @@ import reactor.core.publisher.Mono;
 public class ClientHandler {
 
     private final ResourceValidator resourceValidator;
+    private final WebRequestSecurityService webRequestSecurityService;
+    private final SimpleContactDao simpleContactDao;
 
     public @NotNull Mono<ServerResponse> authenticate(@NotNull ServerRequest request) {
-        return request.bodyToMono(CreateContactInResource.class)
-            .doOnNext(resourceValidator::validate)
-            .zipWhen(this::loadUserByLogin, this::authenticate)
-            .switchIfEmpty(Mono.error(() -> new UnauthorizedWebException(
-                INVALID_CREDENTIALS_MESSAGE,
-                INVALID_CREDENTIALS
-            )))
-            .flatMap(resource -> ServerResponse.ok()
+        return webRequestSecurityService.isAuthorized(request, AccessRole.ORG_ADMIN)
+            .zipWith(request.bodyToMono(CreateContactInResource.class), AuthorizedResource::new)
+            .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
+            .flatMap(this::createContact)
+            .map(ContactOutResource::new)
+            .flatMap(contact -> ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .syncBody(resource));
+                .syncBody(contact));
+    }
+
+
+    private @NotNull Mono<? extends @NotNull SimpleContact> createContact(
+        @NotNull AuthorizedResource<CreateContactInResource> authorized
+    ) {
+
+        var user = authorized.getUser();
+        var resource = authorized.getResource();
+
+        return simpleContactDao.create(
+            user.getOrganization(),
+            resource.getFirstName(),
+            resource.getSecondName(),
+            resource.getThirdName()
+        );
     }
 }
