@@ -42,8 +42,16 @@ class WebSecuritySpecificationConfig {
     @Bean
     RouterFunction<ServerResponse> testWebSecurityServiceEndpoints() {
         return RouterFunctions.route()
+            .GET("/web/security/test/authorized", { request ->
+                return webRequestSecurityService.isAuthorized(request)
+                    .flatMap({ ServerResponse.ok().build() })
+            })
             .GET("/web/security/test/required/access/role/curator", { request ->
                 return webRequestSecurityService.isAuthorized(request, AccessRole.CURATOR)
+                    .flatMap({ ServerResponse.ok().build() })
+            })
+            .GET("/web/security/test/required/access/role/curator/or/org_admin", { request ->
+                return webRequestSecurityService.isAuthorized(request, AccessRole.ORG_ADMIN, AccessRole.CURATOR)
                     .flatMap({ ServerResponse.ok().build() })
             })
             .build()

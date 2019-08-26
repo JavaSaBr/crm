@@ -11,4 +11,8 @@ public interface WebRequestSecurityService {
     String HEADER_TOKEN = "jcrm:access-token";
 
     @NotNull Mono<@NotNull User> isAuthorized(@NotNull ServerRequest request, @NotNull AccessRole accessRole);
+
+    @NotNull Mono<@NotNull User> isAuthorized(@NotNull ServerRequest request, @NotNull AccessRole[] accessRoles);
+
+    @NotNull Mono<@NotNull User> isAuthorized(@NotNull ServerRequest request);
 }

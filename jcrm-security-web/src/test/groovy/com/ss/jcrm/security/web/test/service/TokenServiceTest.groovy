@@ -186,7 +186,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown InvalidTokenException
     }
 
-    def "should thrown CompletionException -> ObjectNotFoundDaoException when user is not exist"() {
+    def "should thrown ObjectNotFoundDaoException when user is not exist"() {
 
         given:
             def user = userTestHelper.newUser("User1")
