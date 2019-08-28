@@ -1,6 +1,6 @@
 package com.ss.jcrm.web.config;
 
-import com.ss.jcrm.web.converter.JsoniterHttpMessageConverter;
+import com.ss.jcrm.web.converter.JsoniterHttpMessageEncoder;
 import com.ss.jcrm.web.customizer.NettyWebServerFactorySslCustomizer;
 import com.ss.jcrm.web.exception.handler.DefaultWebExceptionHandler;
 import com.ss.rlib.common.concurrent.GroupThreadFactory;
@@ -13,7 +13,8 @@ import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.server.WebExceptionHandler;
 
 import java.util.concurrent.Executors;
@@ -32,8 +33,14 @@ public class BaseWebConfig {
     private Environment env;
 
     @Bean
-    @NotNull HttpMessageConverter<?> jsoniterHttpMessageConverter() {
-        return new JsoniterHttpMessageConverter();
+    @NotNull WebFluxConfigurer webFluxConfigurer() {
+        return new WebFluxConfigurer() {
+
+            @Override
+            public void configureHttpMessageCodecs(@NotNull ServerCodecConfigurer configurer) {
+                configurer.defaultCodecs().jackson2JsonEncoder(new JsoniterHttpMessageEncoder());
+            }
+        };
     }
 
     @Bean
@@ -42,8 +49,8 @@ public class BaseWebConfig {
         var cores = Runtime.getRuntime().availableProcessors() * 2;
 
         return Executors.newScheduledThreadPool(
-            env.getProperty("reloading.executor.threads", Integer.class, cores),
-            new GroupThreadFactory("ReloadingThread")
+            env.getProperty("reloading.executor.threads", int.class, cores),
+            new GroupThreadFactory("reloading-thread")
         );
     }
 

@@ -4,5 +4,5 @@ ext {
 
 dependencies {
     compile project(":jcrm-dao")
-    testCompile project(":jcrm-integration-test")
+    testCompile project(":jcrm-integration-test-db")
 }

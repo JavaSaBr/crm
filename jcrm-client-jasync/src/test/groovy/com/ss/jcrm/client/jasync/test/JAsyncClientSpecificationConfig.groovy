@@ -54,6 +54,11 @@ class JAsyncClientSpecificationConfig {
     
     @Bean
     ClientTestHelper taskTestHelper() {
-        return new JAsyncClientTestHelper(userTestHelper, simpleContactDao)
+        return new JAsyncClientTestHelper(
+            clientConnectionPool(),
+            env.getRequiredProperty("jdbc.client.db.schema"),
+            userTestHelper,
+            simpleContactDao
+        )
     }
 }

@@ -2,11 +2,12 @@ package com.ss.jcrm.registration.web.handler;
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_CREDENTIALS;
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_CREDENTIALS_MESSAGE;
-import com.ss.jcrm.registration.web.exception.RegistrationErrors;
+import static com.ss.jcrm.web.exception.ExceptionUtils.toUnauthorized;
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.AuthenticationOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.service.PasswordService;
+import com.ss.jcrm.security.web.exception.SecurityErrors;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.dao.UserDao;
@@ -34,9 +35,9 @@ public class AuthenticationHandler {
         return request.bodyToMono(AuthenticationInResource.class)
             .doOnNext(resourceValidator::validate)
             .zipWhen(this::loadUserByLogin, this::authenticate)
-            .switchIfEmpty(Mono.error(() -> new UnauthorizedWebException(
-                INVALID_CREDENTIALS_MESSAGE,
-                INVALID_CREDENTIALS
+            .switchIfEmpty(Mono.error(() -> toUnauthorized(
+                INVALID_CREDENTIALS,
+                INVALID_CREDENTIALS_MESSAGE
             )))
             .flatMap(resource -> ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -46,9 +47,9 @@ public class AuthenticationHandler {
     public @NotNull Mono<ServerResponse> authenticateByToken(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("token"))
             .zipWhen(tokenService::findUserIfNotExpired, AuthenticationOutResource::new)
-            .switchIfEmpty(Mono.error(() -> new UnauthorizedWebException(
-                RegistrationErrors.INVALID_TOKEN_MESSAGE,
-                RegistrationErrors.INVALID_TOKEN
+            .switchIfEmpty(Mono.error(() -> toUnauthorized(
+                SecurityErrors.INVALID_TOKEN,
+                SecurityErrors.INVALID_TOKEN_MESSAGE
             )))
             .flatMap(resource -> ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -58,10 +59,9 @@ public class AuthenticationHandler {
     public @NotNull Mono<ServerResponse> refreshToken(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("token"))
             .zipWhen(tokenService::findUser, this::refreshToken)
-            .switchIfEmpty(Mono.error(() -> new UnauthorizedWebException(
-                RegistrationErrors.INVALID_TOKEN_MESSAGE,
-                RegistrationErrors.INVALID_TOKEN
-            )))
+            .switchIfEmpty(Mono.error(() -> toUnauthorized(
+                SecurityErrors.INVALID_TOKEN,
+                SecurityErrors.INVALID_TOKEN_MESSAGE)))
             .flatMap(resource -> ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .syncBody(resource));

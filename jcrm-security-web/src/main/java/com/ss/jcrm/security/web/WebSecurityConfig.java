@@ -11,10 +11,10 @@ import com.ss.rlib.common.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -35,8 +35,8 @@ public class WebSecurityConfig {
     @Autowired
     private Environment env;
 
-    @Lazy
     @Bean
+    @ConditionalOnBean(UserDao.class)
     @NotNull TokenService tokenService(@NotNull UserDao userDao) throws IOException {
 
         byte[] secretKey = null;
@@ -112,6 +112,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    @ConditionalOnBean(UserDao.class)
     @NotNull WebRequestSecurityService webRequestSecurityService(@NotNull TokenService tokenService) {
         return new DefaultWebRequestSecurityService(tokenService);
     }

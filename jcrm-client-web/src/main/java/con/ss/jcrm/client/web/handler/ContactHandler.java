@@ -6,6 +6,7 @@ import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import con.ss.jcrm.client.web.resource.ContactOutResource;
+import con.ss.jcrm.client.web.resource.ContactsOutResource;
 import con.ss.jcrm.client.web.resource.CreateContactInResource;
 import con.ss.jcrm.client.web.validator.ResourceValidator;
 import lombok.AllArgsConstructor;
@@ -16,13 +17,13 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @AllArgsConstructor
-public class ClientHandler {
+public class ContactHandler {
 
     private final ResourceValidator resourceValidator;
     private final WebRequestSecurityService webRequestSecurityService;
     private final SimpleContactDao simpleContactDao;
 
-    public @NotNull Mono<ServerResponse> authenticate(@NotNull ServerRequest request) {
+    public @NotNull Mono<ServerResponse> create(@NotNull ServerRequest request) {
         return webRequestSecurityService.isAuthorized(request, AccessRole.ORG_ADMIN)
             .zipWith(request.bodyToMono(CreateContactInResource.class), AuthorizedResource::new)
             .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
@@ -33,6 +34,14 @@ public class ClientHandler {
                 .syncBody(contact));
     }
 
+    public @NotNull Mono<ServerResponse> list(@NotNull ServerRequest request) {
+        return webRequestSecurityService.isAuthorized(request, AccessRole.ORG_ADMIN)
+            .flatMap(user -> simpleContactDao.findByOrg(user.getOrganization()))
+            .map(ContactsOutResource::new)
+            .flatMap(contact -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .syncBody(contact));
+    }
 
     private @NotNull Mono<? extends @NotNull SimpleContact> createContact(
         @NotNull AuthorizedResource<CreateContactInResource> authorized

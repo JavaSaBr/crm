@@ -27,7 +27,7 @@ public class CountryHandler {
     public @NotNull Mono<ServerResponse> getById(@NotNull ServerRequest request) {
 
         return Mono.fromSupplier(() -> request.pathVariable("id"))
-            .flatMap(param -> Mono.justOrEmpty(Utils.<String, Long>safeGet(param, Long::valueOf)))
+            .flatMap(param -> Mono.justOrEmpty(Utils.<String, Long>safeGetOpt(param, Long::valueOf)))
             .switchIfEmpty(Mono.error(IdNotPresentedWebException::new))
             .flatMap(id -> Mono.justOrEmpty(countryDictionaryService.getById(id)))
             .flatMap(country -> ServerResponse.ok()

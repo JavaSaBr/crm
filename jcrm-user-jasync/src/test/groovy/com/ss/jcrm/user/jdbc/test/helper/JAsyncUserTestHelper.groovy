@@ -3,6 +3,7 @@ package com.ss.jcrm.user.jdbc.test.helper
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
+import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.service.PasswordService
 import com.ss.jcrm.user.api.EmailConfirmation
@@ -19,10 +20,8 @@ import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import java.time.Instant
 import java.util.concurrent.ThreadLocalRandom
 
-class JAsyncUserTestHelper implements UserTestHelper {
-    
-    private final ConnectionPool<? extends ConcreteConnection> connectionPool
-    private final String schema
+class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
+
     private final UserDao userDao
     private final UserGroupDao userGroupDao
     private final OrganizationDao organizationDao
@@ -40,8 +39,7 @@ class JAsyncUserTestHelper implements UserTestHelper {
         DictionaryTestHelper dictionaryTestHelper,
         EmailConfirmationDao emailConfirmationDao
     ) {
-        this.connectionPool = connectionPool
-        this.schema = schema
+        super(connectionPool, schema);
         this.userDao = userDao
         this.userGroupDao = userGroupDao
         this.organizationDao = organizationDao
