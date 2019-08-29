@@ -84,7 +84,7 @@ public class JAsyncUserConfig {
             env.getRequiredProperty("jdbc.user.db.password"),
             env.getRequiredProperty("jdbc.user.db.host"),
             env.getRequiredProperty("jdbc.user.db.port", int.class),
-            env.getRequiredProperty("jdbc.user.db.schema")
+            env.getRequiredProperty("jdbc.user.db.database")
         );
 
         var connectionPoolConfiguration = JAsyncUtils.buildPoolConfig(

@@ -1,4 +1,4 @@
-create table "jcrm-task-db".contact
+create table "jcrm-client-db".contact
 (
     id          bigserial         not null
         constraint contact_pk

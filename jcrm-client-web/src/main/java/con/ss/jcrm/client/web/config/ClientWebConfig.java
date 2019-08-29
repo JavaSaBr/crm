@@ -49,7 +49,7 @@ public class ClientWebConfig {
     }
 
     @Bean
-    @NotNull ResourceValidator resourceValidator() {
+    @NotNull ResourceValidator clientResourceValidator() {
         return new ResourceValidator();
     }
 

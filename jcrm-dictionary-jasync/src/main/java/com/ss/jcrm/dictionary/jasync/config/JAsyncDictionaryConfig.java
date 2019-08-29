@@ -70,7 +70,7 @@ public class JAsyncDictionaryConfig {
             env.getRequiredProperty("jdbc.dictionary.db.password"),
             env.getRequiredProperty("jdbc.dictionary.db.host"),
             env.getRequiredProperty("jdbc.dictionary.db.port", int.class),
-            env.getRequiredProperty("jdbc.dictionary.db.schema")
+            env.getRequiredProperty("jdbc.dictionary.db.database")
         );
 
         var connectionPoolConfiguration = JAsyncUtils.buildPoolConfig(

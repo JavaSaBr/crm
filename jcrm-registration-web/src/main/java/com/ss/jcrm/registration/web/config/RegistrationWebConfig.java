@@ -60,7 +60,7 @@ public class RegistrationWebConfig {
     private List<? extends Flyway> flyways;
 
     @Bean
-    @NotNull ResourceValidator resourceValidator() {
+    @NotNull ResourceValidator registrationResourceValidator() {
         return new ResourceValidator(env);
     }
 

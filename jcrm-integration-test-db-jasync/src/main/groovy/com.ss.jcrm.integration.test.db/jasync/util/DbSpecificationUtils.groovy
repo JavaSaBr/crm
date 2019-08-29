@@ -28,7 +28,7 @@ class DbSpecificationUtils {
         connectionPool.sendQuery(query).join()
     }
 
-    def static newConnectionPool(@NotNull PostgreSQLContainer container, @NotNull String schema) {
+    def static newConnectionPool(@NotNull PostgreSQLContainer container, @NotNull String database) {
     
         def address = container.getContainerIpAddress()
         def port = container.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
@@ -38,7 +38,7 @@ class DbSpecificationUtils {
             DbSpecificationConfig.PWD,
             address,
             port,
-            schema,
+            database,
         )
     
         def connectionPoolConfiguration = JAsyncUtils.buildPoolConfig(

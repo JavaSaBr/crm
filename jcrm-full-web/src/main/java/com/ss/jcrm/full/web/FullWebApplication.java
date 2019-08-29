@@ -5,10 +5,14 @@ import com.ss.jcrm.registration.web.config.RegistrationWebConfig;
 import com.ss.jcrm.ui.server.config.UiServerConfig;
 import com.ss.jcrm.web.BaseWebApplication;
 import con.ss.jcrm.client.web.config.ClientWebConfig;
+import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.util.List;
 
 @Import({
     RegistrationWebConfig.class,
@@ -27,4 +31,7 @@ public class FullWebApplication extends BaseWebApplication {
 
         SpringApplication.run(FullWebApplication.class, args);
     }
+
+    @Autowired
+    private List<? extends Flyway> flyways;
 }

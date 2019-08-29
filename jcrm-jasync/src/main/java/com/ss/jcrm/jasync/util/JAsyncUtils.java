@@ -205,14 +205,14 @@ public class JAsyncUtils {
         @NotNull String password,
         @NotNull String host,
         int port,
-        @NotNull String schema
+        @NotNull String database
     ) {
         return new Configuration(
             username,
             host,
             port,
             password,
-            schema
+            database
         );
     }
 }
