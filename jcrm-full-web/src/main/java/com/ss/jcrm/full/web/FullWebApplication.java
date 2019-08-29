@@ -4,16 +4,16 @@ import com.ss.jcrm.dictionary.web.config.DictionaryWebConfig;
 import com.ss.jcrm.registration.web.config.RegistrationWebConfig;
 import com.ss.jcrm.ui.server.config.UiServerConfig;
 import com.ss.jcrm.web.BaseWebApplication;
+import con.ss.jcrm.client.web.config.ClientWebConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import java.util.Arrays;
-
 @Import({
     RegistrationWebConfig.class,
     DictionaryWebConfig.class,
+    ClientWebConfig.class,
     UiServerConfig.class
 })
 @Configuration

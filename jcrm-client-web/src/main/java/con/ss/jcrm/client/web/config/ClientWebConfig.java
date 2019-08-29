@@ -4,6 +4,7 @@ import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.client.jasync.config.JAsyncClientConfig;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
+import com.ss.jcrm.user.jasync.config.JAsyncUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import con.ss.jcrm.client.web.handler.ContactHandler;
@@ -22,8 +23,8 @@ import java.util.List;
 
 @Import({
     JAsyncClientConfig.class,
+    JAsyncUserConfig.class,
     WebSecurityConfig.class,
-    BaseWebConfig.class
 })
 @Configuration
 @PropertySources({

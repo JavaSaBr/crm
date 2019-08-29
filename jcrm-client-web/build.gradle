@@ -5,6 +5,7 @@ ext {
 
 dependencies {
     compile project(":jcrm-client-jasync")
+    compile project(":jcrm-user-jasync")
     compile project(":jcrm-security-web")
     testCompile project(path: ":jcrm-client-jasync", configuration: "testArtifacts")
     testCompile project(":jcrm-integration-test-web")

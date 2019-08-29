@@ -2,7 +2,6 @@ package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
-import com.ss.jcrm.security.web.exception.SecurityErrors
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -12,14 +11,8 @@ import java.time.ZonedDateTime
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.EMPTY_LOGIN
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.EMPTY_LOGIN_MESSAGE
-import static com.ss.jcrm.registration.web.exception.RegistrationErrors.EXPIRED_TOKEN
-import static com.ss.jcrm.registration.web.exception.RegistrationErrors.EXPIRED_TOKEN_MESSAGE
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_CREDENTIALS
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_CREDENTIALS_MESSAGE
-import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_TOKEN
-import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_TOKEN_MESSAGE
-import static com.ss.jcrm.registration.web.exception.RegistrationErrors.MAX_REFRESHED_TOKEN
-import static com.ss.jcrm.registration.web.exception.RegistrationErrors.MAX_REFRESHED_TOKEN_MESSAGE
 import static com.ss.jcrm.security.web.exception.SecurityErrors.EXPIRED_TOKEN
 import static com.ss.jcrm.security.web.exception.SecurityErrors.EXPIRED_TOKEN_MESSAGE
 import static com.ss.jcrm.security.web.exception.SecurityErrors.INVALID_TOKEN
