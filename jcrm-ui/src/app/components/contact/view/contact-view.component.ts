@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UiUtils} from '@app/util/ui-utils';
 import {TranslateService} from '@ngx-translate/core';
 import {Contact} from '@app/entity/contact';
+import {ContactService} from '@app/service/contact.service';
 
 @Component({
     selector: 'app-contact-view',
@@ -41,6 +42,7 @@ export class ContactViewComponent implements AfterViewInit {
     constructor(
         formBuilder: FormBuilder,
         private readonly translateService: TranslateService,
+        private readonly contactService: ContactService
     ) {
         this.contact = null;
         this.startEditableState = false;
@@ -94,9 +96,17 @@ export class ContactViewComponent implements AfterViewInit {
         }
     }
 
-    createContact(): void {
+    create(): void {
 
+        const firstName = this.firstName.value;
+        const secondName = this.secondName.value;
+        const thirdName = this.thirdName.value;
 
+        const asyncResult = this.contactService.create(
+            firstName,
+            secondName,
+            thirdName
+        );
     }
 
     updateContactInfo(): void {

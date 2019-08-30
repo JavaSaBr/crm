@@ -2,6 +2,7 @@ export const environment = {
     production: true,
     dictionaryUrl: 'http://185.186.208.229:8090/dictionary',
     registrationUrl: 'http://185.186.208.229:8090/registration',
+    clientUrl: 'http://185.186.208.229:8090/client',
 
     // validation
     orgNameMinLength: 2,

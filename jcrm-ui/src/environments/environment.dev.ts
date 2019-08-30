@@ -2,6 +2,7 @@ export const environment = {
     production: true,
     dictionaryUrl: 'https://crm.codehunters.ru/dictionary',
     registrationUrl: 'https://crm.codehunters.ru/registration',
+    clientUrl: 'https://crm.codehunters.ru/client',
 
     // validation
     orgNameMinLength: 2,

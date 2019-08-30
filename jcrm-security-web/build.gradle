@@ -11,5 +11,6 @@ dependencies {
     runtime "io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion"
     runtime "io.jsonwebtoken:jjwt-jackson:$jsonwebtokenVersion"
     testCompile project(":jcrm-integration-test-web")
+    testCompile project(path: ":jcrm-security", configuration: "testArtifacts")
     testCompile project(path: ":jcrm-user-jasync", configuration: "testArtifacts")
 }

@@ -2,6 +2,7 @@ package com.ss.jcrm.security.web.test
 
 import com.ss.jcrm.integration.test.DefaultSpecification
 import com.ss.jcrm.security.AccessRole
+import com.ss.jcrm.security.test.SecuritySpecificationConfig
 import com.ss.jcrm.security.web.WebSecurityConfig
 import com.ss.jcrm.security.web.service.TokenService
 import com.ss.jcrm.security.web.service.UnsafeTokenService
@@ -21,6 +22,7 @@ import org.springframework.web.reactive.function.server.ServerResponse
 @Configuration
 @Import([
     JAsyncUserSpecificationConfig,
+    SecuritySpecificationConfig,
     WebSecurityConfig,
     BaseWebConfig,
     DefaultSpecification

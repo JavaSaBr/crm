@@ -2,6 +2,7 @@ export const environment = {
     production: false,
     dictionaryUrl: 'http://localhost:8090/dictionary',
     registrationUrl: 'http://localhost:8090/registration',
+    clientUrl: 'http://localhost:8090/client',
 
     // validation
     orgNameMinLength: 2,

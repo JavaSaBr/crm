@@ -60,8 +60,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         when:
             userTestHelper.newUser("User1")
         then:
-            def ex = thrown(CompletionException)
-            ex.getCause() instanceof DuplicateObjectDaoException
+            thrown DuplicateObjectDaoException
     }
 
     def "should load a changed user with correct version"() {

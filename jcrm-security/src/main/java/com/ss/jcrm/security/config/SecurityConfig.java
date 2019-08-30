@@ -6,8 +6,17 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 
+@PropertySources({
+    @PropertySource("classpath:com/ss/jcrm/security/security.properties"),
+    @PropertySource(
+        value = "classpath:com/ss/jcrm/security/security-${spring.profiles.active:default}.properties",
+        ignoreResourceNotFound = true
+    )
+})
 @Configuration
 public class SecurityConfig {
 

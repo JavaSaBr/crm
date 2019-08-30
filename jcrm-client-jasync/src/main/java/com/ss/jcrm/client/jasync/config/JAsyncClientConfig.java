@@ -12,15 +12,19 @@ import io.netty.channel.EventLoopGroup;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 import java.util.concurrent.ExecutorService;
 
 @Configuration
+@PropertySources({
+    @PropertySource("classpath:com/ss/jcrm/client/jasync/client-jasync.properties"),
+    @PropertySource(
+        value = "classpath:com/ss/jcrm/client/jasync/client-jasync-${spring.profiles.active:default}.properties",
+        ignoreResourceNotFound = true
+    )
+})
 @Import(JAsyncConfig.class)
 public class JAsyncClientConfig {
 

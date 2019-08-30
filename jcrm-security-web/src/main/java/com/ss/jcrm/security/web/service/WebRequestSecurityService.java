@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 public interface WebRequestSecurityService {
 
-    String HEADER_TOKEN = "jcrm:access-token";
+    String HEADER_TOKEN = "JCRM-Access-Token";
 
     @NotNull Mono<@NotNull User> isAuthorized(@NotNull ServerRequest request, @NotNull AccessRole accessRole);
 

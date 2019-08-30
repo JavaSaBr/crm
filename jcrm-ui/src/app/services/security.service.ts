@@ -11,6 +11,7 @@ import {ErrorResponse} from '@app/error/error-response';
 export class SecurityService {
 
     private static readonly LOCAL_STORAGE_TOKEN = 'jcrm:auth:token';
+    private static readonly HEADER_TOKEN = 'JCRM-Access-Token';
 
     private readonly _authenticated: BehaviorSubject<boolean>;
     private readonly _userObservable: BehaviorSubject<User | null>;
@@ -101,10 +102,10 @@ export class SecurityService {
 
     postRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
 
-        const headers = new HttpHeaders();
+        let headers = new HttpHeaders();
 
         if (this._accessToken) {
-            headers.append('token', this._accessToken);
+            headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
         }
 
         return this.httpClient.post(url, body, {
@@ -122,10 +123,10 @@ export class SecurityService {
 
     getRequest<T>(url: string): Promise<HttpResponse<T>> {
 
-        const headers = new HttpHeaders();
+        let headers = new HttpHeaders();
 
         if (this._accessToken) {
-            headers.append('token', this._accessToken);
+            headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
         }
 
         return this.httpClient.get(url, {

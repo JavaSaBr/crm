@@ -12,9 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -28,8 +26,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @Log4j2
-@Configuration
+@PropertySources({
+    @PropertySource("classpath:com/ss/jcrm/security/web/security-web.properties"),
+    @PropertySource(
+        value = "classpath:com/ss/jcrm/security/web/security-web-${spring.profiles.active:default}.properties",
+        ignoreResourceNotFound = true
+    )
+})
 @Import(SecurityConfig.class)
+@Configuration
 public class WebSecurityConfig {
 
     @Autowired

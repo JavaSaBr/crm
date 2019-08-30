@@ -9,7 +9,7 @@
                   class="contact-info-button" mat-button color="primary">SAVE
           </button>
           <button *ngIf="editContactInfo && !contact.id" [disabled]="!contactInfoFormGroup.valid"
-                  class="contact-info-button" mat-button color="primary">CREATE
+                  class="contact-info-button" mat-button color="primary" (click)="create()">CREATE
           </button>
         </div>
         <form [formGroup]="contactInfoFormGroup">
