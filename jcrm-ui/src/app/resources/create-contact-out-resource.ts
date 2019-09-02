@@ -1,11 +1,11 @@
 export class CreateContactOutResource {
 
-    fistName: string;
+    firstName: string;
     secondName: string;
     thirdName: string;
 
     constructor(fistName: string, secondName: string, thirdName: string) {
-        this.fistName = fistName;
+        this.firstName = fistName;
         this.secondName = secondName;
         this.thirdName = thirdName;
     }

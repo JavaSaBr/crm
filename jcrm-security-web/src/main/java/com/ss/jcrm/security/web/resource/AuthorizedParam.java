@@ -7,8 +7,12 @@ import org.jetbrains.annotations.NotNull;
 
 @Getter
 @AllArgsConstructor
-public class AuthorizedResource<R> {
+public class AuthorizedParam<R> {
 
+    private final R param;
     private final User user;
-    private final R resource;
+
+    public long getOrgId() {
+        return user.getOrganization().getId();
+    }
 }

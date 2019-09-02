@@ -5,10 +5,11 @@
         <div fxLayout="row" fxFlex="100%" fxLayoutAlign="space-between" class="contact-info-header">
           <p>ABOUT</p>
           <button *ngIf="!editContactInfo" class="contact-info-button" mat-button color="primary">EDIT</button>
-          <button *ngIf="editContactInfo && contact.id" [disabled]="!contactInfoFormGroup.valid"
+          <button *ngIf="editContactInfo && contact.id"
+                  [disabled]="disabled || !contactInfoFormGroup.valid || !hastChangesInContactInfo"
                   class="contact-info-button" mat-button color="primary">SAVE
           </button>
-          <button *ngIf="editContactInfo && !contact.id" [disabled]="!contactInfoFormGroup.valid"
+          <button *ngIf="editContactInfo && !contact.id" [disabled]="disabled || !contactInfoFormGroup.valid"
                   class="contact-info-button" mat-button color="primary" (click)="create()">CREATE
           </button>
         </div>

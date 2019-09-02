@@ -1,10 +1,15 @@
 package con.ss.jcrm.client.web.handler;
 
+import static com.ss.rlib.common.util.NumberUtils.safeToLong;
 import com.ss.jcrm.client.api.SimpleContact;
 import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.security.AccessRole;
+import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
+import com.ss.jcrm.web.util.ResponseUtils;
+import com.ss.rlib.common.util.NumberUtils;
+import com.ss.rlib.common.util.Utils;
 import con.ss.jcrm.client.web.resource.ContactOutResource;
 import con.ss.jcrm.client.web.resource.ContactsOutResource;
 import con.ss.jcrm.client.web.resource.CreateContactInResource;
@@ -25,22 +30,27 @@ public class ContactHandler {
 
     public @NotNull Mono<ServerResponse> create(@NotNull ServerRequest request) {
         return webRequestSecurityService.isAuthorized(request, AccessRole.ORG_ADMIN)
-            .zipWith(request.bodyToMono(CreateContactInResource.class), AuthorizedResource::new)
+            .zipWhen(user -> request.bodyToMono(CreateContactInResource.class), AuthorizedResource::new)
             .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
             .flatMap(this::createContact)
             .map(ContactOutResource::new)
-            .flatMap(contact -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .syncBody(contact));
+            .flatMap(ResponseUtils::created);
     }
 
     public @NotNull Mono<ServerResponse> list(@NotNull ServerRequest request) {
-        return webRequestSecurityService.isAuthorized(request, AccessRole.ORG_ADMIN)
+        return webRequestSecurityService.isAuthorized(request)
             .flatMap(user -> simpleContactDao.findByOrg(user.getOrganization()))
             .map(ContactsOutResource::new)
-            .flatMap(contact -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .syncBody(contact));
+            .flatMap(ResponseUtils::ok);
+    }
+
+    public @NotNull Mono<ServerResponse> byId(@NotNull ServerRequest request) {
+        return Mono.fromSupplier(() -> safeToLong(request.pathVariable("id")))
+            .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
+            .flatMap(res -> simpleContactDao.findByIdAndOrg(res.getParam(), res.getOrgId()))
+            .map(ContactOutResource::new)
+            .flatMap(ResponseUtils::ok)
+            .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
 
     private @NotNull Mono<? extends @NotNull SimpleContact> createContact(

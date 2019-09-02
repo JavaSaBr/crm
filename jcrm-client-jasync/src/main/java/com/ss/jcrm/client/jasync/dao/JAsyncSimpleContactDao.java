@@ -25,6 +25,9 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     private static final String Q_SELECT_BY_ORG_ID = "select \"id\", \"org_id\", \"first_name\", \"second_name\", " +
         " \"third_name\", \"version\" from \"${schema}\".\"contact\" where \"org_id\" = ?";
 
+    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select \"id\", \"org_id\", \"first_name\", \"second_name\", " +
+        " \"third_name\", \"version\" from \"${schema}\".\"contact\" where \"id\" = ? AND \"org_id\" = ?";
+
     private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"org_id\", \"first_name\", \"second_name\", " +
         "\"third_name\") values (?,?,?,?) returning id";
 
@@ -32,6 +35,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         " \"third_name\" = ? where \"id\" = ? and \"version\" = ?";
 
     private final String querySelectById;
+    private final String querySelectByIdAndOrgId;
     private final String querySelectByOrgId;
     private final String queryInsert;
     private final String queryUpdate;
@@ -42,13 +46,14 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     ) {
         super(connectionPool);
         this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
+        this.querySelectByIdAndOrgId = Q_SELECT_BY_ID_AND_ORG_ID.replace("${schema}", schema);
         this.querySelectByOrgId = Q_SELECT_BY_ORG_ID.replace("${schema}", schema);
         this.queryInsert = Q_INSERT.replace("${schema}", schema);
         this.queryUpdate = Q_UPDATE.replace("${schema}", schema);
     }
 
     @Override
-    public @NotNull Mono<SimpleContact> findById(long id) {
+    public @NotNull Mono<@Nullable SimpleContact> findById(long id) {
         return select(querySelectById, List.of(id), JAsyncSimpleContactDao::toContact);
     }
 
@@ -82,11 +87,20 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     }
 
     @Override
-    public @NotNull Mono<Array<SimpleContact>> findByOrg(@NotNull Organization organization) {
+    public @NotNull Mono<@NotNull Array<SimpleContact>> findByOrg(long orgId) {
         return selectAll(
             SimpleContact.class,
             querySelectByOrgId,
-            List.of(organization.getId()),
+            List.of(orgId),
+            JAsyncSimpleContactDao::toContact
+        );
+    }
+
+    @Override
+    public @NotNull Mono<@Nullable SimpleContact> findByIdAndOrg(long id, long orgId) {
+        return select(
+            querySelectByIdAndOrgId,
+            List.of(id, orgId),
             JAsyncSimpleContactDao::toContact
         );
     }

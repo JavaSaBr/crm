@@ -43,4 +43,23 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             loaded.secondName == loaded.secondName
             loaded.thirdName == loaded.thirdName
     }
+    
+    def "should load a simple contact only under its organization"() {
+        
+        given:
+            def contact = clientTestHelper.newSimpleContact()
+        when:
+            def loaded = simpleContactDao.findByIdAndOrg(contact.id, contact.organizationId).block()
+        then:
+            loaded != null
+            loaded.id == contact.id
+            loaded.organizationId == contact.id
+            loaded.firstName == contact.firstName
+            loaded.secondName == loaded.secondName
+            loaded.thirdName == loaded.thirdName
+        when:
+            loaded = simpleContactDao.findByIdAndOrg(contact.id, contact.organizationId + 1).block()
+        then:
+            loaded == null
+    }
 }

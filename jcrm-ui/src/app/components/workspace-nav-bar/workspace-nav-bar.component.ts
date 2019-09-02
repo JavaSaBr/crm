@@ -51,7 +51,7 @@ export class WorkspaceNavBarComponent implements OnInit {
     }
 
     private canShowBackButton(value: WorkspaceMode): boolean {
-        return value == WorkspaceMode.OBJECT_CREATION;
+        return value == WorkspaceMode.OBJECT_EDITING;
     }
 
     ngOnInit(): void {

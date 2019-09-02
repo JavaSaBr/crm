@@ -24,12 +24,12 @@ class ContactHandlerTest extends ClientSpecification {
             def token = unsafeTokenService.generateNewToken(user)
         when:
             def response = client.post()
-                .header(WebRequestSecurityService.HEADER_TOKEN, token)
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(new CreateContactInResource("First", "Second", "Third"))
                 .url("/client/contact/create")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response.expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
@@ -48,8 +48,8 @@ class ContactHandlerTest extends ClientSpecification {
             def contact3 = clientTestHelper.newSimpleContact(user)
         when:
             def response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/client/contacts")
-                .header(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -67,5 +67,26 @@ class ContactHandlerTest extends ClientSpecification {
                         contact1.firstName,
                         contact2.firstName,
                         contact3.firstName))
+    }
+    
+    def "should load created contact"() {
+        
+        given:
+            def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
+            def token = unsafeTokenService.generateNewToken(user)
+            def contact = clientTestHelper.newSimpleContact(user)
+        when:
+            def response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/client/contact/" + contact.getId())
+                .exchange()
+        then:
+            response.expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectBody()
+                .jsonPath('$.id').isNotEmpty()
+                .jsonPath('$.firstName').value(is(contact.firstName))
+                .jsonPath('$.secondName').value(is(contact.secondName))
+                .jsonPath('$.thirdName').value(is(contact.thirdName))
     }
 }

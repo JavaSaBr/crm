@@ -4,7 +4,7 @@ import {BaseWorkspaceComponent} from '../components/workspace/workspace.componen
 
 export enum WorkspaceMode {
     DEFAULT = 'default',
-    OBJECT_CREATION = 'object_creation'
+    OBJECT_EDITING = 'object_editing'
 }
 
 @Injectable({

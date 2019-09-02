@@ -27,10 +27,10 @@ export abstract class BaseWorkspaceComponent implements AfterViewInit {
     abstract getComponentType(): Type<BaseWorkspaceComponent>;
 }
 
-export abstract class ObjectCreationWorkspaceComponent extends BaseWorkspaceComponent {
+export abstract class ObjectEditingWorkspaceComponent extends BaseWorkspaceComponent {
 
     protected getWorkspaceMode(): WorkspaceMode {
-        return WorkspaceMode.OBJECT_CREATION;
+        return WorkspaceMode.OBJECT_EDITING;
     }
 }
 
@@ -42,7 +42,7 @@ export abstract class ObjectCreationWorkspaceComponent extends BaseWorkspaceComp
 })
 export class WorkspaceComponent implements OnInit {
 
-    public static readonly COMPONENT_PATH = 'workspace';
+    public static readonly COMPONENT_NAME = 'workspace';
 
     currentTitle: string;
     ready: boolean;

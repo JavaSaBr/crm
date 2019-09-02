@@ -21,13 +21,13 @@ export class ContactService {
     }
 
     create(
-        fistName: string,
+        firstName: string,
         secondName: string,
         thirdName: string
     ): Promise<Contact> {
 
         let body = new CreateContactOutResource(
-            fistName,
+            firstName,
             secondName,
             thirdName
         );
@@ -45,6 +45,15 @@ export class ContactService {
             const url = environment.clientUrl + '/contacts';
             this.securityService.getRequest<ContactsInResource>(url)
                 .then(resp => resolve(resp.body.contacts))
+                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
+        });
+    }
+
+    findById(id: number): Promise<Contact | null> {
+        return new Promise<Contact | null>((resolve, reject) => {
+            const url = environment.clientUrl + '/contact/' + id;
+            this.securityService.getRequest<Contact>(url)
+                .then(resp => resolve(resp.body))
                 .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
         });
     }

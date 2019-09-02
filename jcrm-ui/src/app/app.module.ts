@@ -50,7 +50,7 @@ import {PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScroll
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {FabButtonComponent} from '@app/component/fab-button/fab-button.component';
 import {RelativeHeightDirective} from '@app/directive/relative-height.directive';
-import {NewContactComponent} from '@app/component/contact/new/new-contact.component';
+import {ContactWorkspaceComponent} from '@app/component/contact/workspace-component/contact-workspace.component';
 import {ContactViewComponent} from '@app/component/contact/view/contact-view.component';
 
 registerLocaleData(localeRu);
@@ -75,7 +75,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         NoAuthHomeComponent,
         AuthenticationComponent,
         FabButtonComponent,
-        NewContactComponent,
+        ContactWorkspaceComponent,
         ContactViewComponent,
         AutofocusDirective,
         RelativeHeightDirective,

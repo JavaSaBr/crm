@@ -53,7 +53,7 @@ export class WorkspaceSideNavComponent implements OnInit {
         nativeElement.classList.remove('main-view-padding');
 
         switch (value) {
-            case WorkspaceMode.OBJECT_CREATION: {
+            case WorkspaceMode.OBJECT_EDITING: {
                 nativeElement.classList.add('main-view-padding');
                 return;
             }

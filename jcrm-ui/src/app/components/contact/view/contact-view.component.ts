@@ -39,11 +39,16 @@ export class ContactViewComponent implements AfterViewInit {
 
     editContactInfo: boolean;
 
+    disabled: boolean;
+    hastChangesInContactInfo: boolean;
+
     constructor(
         formBuilder: FormBuilder,
         private readonly translateService: TranslateService,
         private readonly contactService: ContactService
     ) {
+        this.disabled = false;
+        this.hastChangesInContactInfo = false;
         this.contact = null;
         this.startEditableState = false;
         this.editContactInfo = !this.startEditableState;
@@ -61,10 +66,21 @@ export class ContactViewComponent implements AfterViewInit {
             ]],
             birthday: ['', ],
         });
+        this.contactInfoFormGroup.valueChanges.subscribe(() => {
+            this.hastChangesInContactInfo = true;
+        });
 
         this.firstName = this.contactInfoFormGroup.controls['firstName'] as FormControl;
         this.secondName = this.contactInfoFormGroup.controls['secondName'] as FormControl;
         this.thirdName = this.contactInfoFormGroup.controls['thirdName'] as FormControl;
+    }
+
+    reload(contact: Contact): void {
+        this.contact = contact;
+        this.firstName.setValue(contact.firstName);
+        this.secondName.setValue(contact.secondName);
+        this.thirdName.setValue(contact.thirdName);
+        this.hastChangesInContactInfo = false;
     }
 
     ngAfterViewInit(): void {
@@ -74,9 +90,7 @@ export class ContactViewComponent implements AfterViewInit {
                 this.switchEditContactInfo(false);
             }
 
-            this.firstName.setValue(this.contact.firstName);
-            this.secondName.setValue(this.contact.secondName);
-            this.thirdName.setValue(this.contact.thirdName);
+            this.reload(this.contact)
         });
     }
 
@@ -98,18 +112,25 @@ export class ContactViewComponent implements AfterViewInit {
 
     create(): void {
 
+        this.disabled = true;
+
         const firstName = this.firstName.value;
         const secondName = this.secondName.value;
         const thirdName = this.thirdName.value;
 
-        const asyncResult = this.contactService.create(
+        this.contactService.create(
             firstName,
             secondName,
             thirdName
-        );
+        )
+            .then(contact => {
+                this.reload(contact);
+                this.disabled = false;
+            })
+            .catch(() => this.disabled = false);
     }
 
-    updateContactInfo(): void {
+    saveContactInfo(): void {
 
     }
 }

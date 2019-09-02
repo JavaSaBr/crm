@@ -1,46 +1,53 @@
 package com.ss.jcrm.integration.test.web
 
 import com.ss.jcrm.web.exception.BadRequestWebException
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriBuilder
 
 import java.util.function.Function
 
-class WebSpecificationExtensions {
+import static org.springframework.test.web.reactive.server.WebTestClient.*
 
-    static WebTestClient.RequestHeadersSpec url(WebTestClient.RequestHeadersUriSpec self, String uri) {
+class WebSpecificationExtensions {
+    
+    static RequestHeadersSpec url(RequestHeadersUriSpec self, String uri) {
         return self.uri(uri)
     }
     
-    static WebTestClient.RequestHeadersSpec url(
-        WebTestClient.RequestHeadersUriSpec self,
-        Function<UriBuilder, URI> uriFunction
-    ) {
+    static RequestHeadersSpec url(RequestHeadersSpec self, String uri) {
+        
+        if (self instanceof UriSpec) {
+            return self.uri(uri)
+        } else {
+            throw new IllegalStateException("The " + self + " isn't UriSpec")
+        }
+    }
+    
+    static RequestHeadersSpec url(RequestHeadersUriSpec self, Function<UriBuilder, URI> uriFunction) {
         return self.uri(uriFunction)
     }
     
-    static WebTestClient.RequestHeadersSpec param(WebTestClient.RequestHeadersSpec self, String name, String value) {
+    static RequestHeadersSpec param(RequestHeadersSpec self, String name, String value) {
         return self.attribute(name, value)
     }
     
-    static WebTestClient.RequestHeadersUriSpec body(WebTestClient.RequestBodyUriSpec self, Object body) {
-        return self.syncBody(body) as WebTestClient.RequestHeadersUriSpec
+    static RequestHeadersUriSpec body(RequestBodyUriSpec self, Object body) {
+        return self.syncBody(body) as RequestHeadersUriSpec
     }
     
-    static WebTestClient.RequestHeadersUriSpec body(WebTestClient.RequestHeadersSpec self, Object body) {
-        return self.body(body) as WebTestClient.RequestHeadersUriSpec
+    static RequestHeadersUriSpec body(RequestHeadersSpec self, Object body) {
+        return self.body(body) as RequestHeadersUriSpec
     }
 
-    static WebTestClient.RequestHeadersSpec headerValue(
-        WebTestClient.RequestHeadersSpec self,
+    static RequestHeadersSpec headerValue(
+        RequestHeadersSpec self,
         String headerName,
         String headerValue
     ) {
         return self.header(headerName, headerValue)
     }
     
-    static WebTestClient.BodyContentSpec verifyErrorResponse(
-        WebTestClient.ResponseSpec spec,
+    static BodyContentSpec verifyErrorResponse(
+        ResponseSpec spec,
         int errorCode,
         String errorMessage
     ) {
