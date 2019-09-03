@@ -13,6 +13,7 @@ import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.TokenService;
+import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
@@ -80,8 +81,12 @@ public class RegistrationWebConfig {
     }
 
     @Bean
-    @NotNull UserHandler userHandler(@NotNull UserDao userDao, @NotNull ResourceValidator resourceValidator) {
-        return new UserHandler(userDao, resourceValidator);
+    @NotNull UserHandler userHandler(
+        @NotNull UserDao userDao,
+        @NotNull ResourceValidator resourceValidator,
+        @NotNull WebRequestSecurityService webRequestSecurityService
+    ) {
+        return new UserHandler(userDao, resourceValidator, webRequestSecurityService);
     }
 
     @Bean
@@ -155,6 +160,7 @@ public class RegistrationWebConfig {
         var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
             .GET(contextPath + "/exist/user/email/{email}", userHandler::existByEmail)
+            .GET(contextPath + "/search/user/name/{name}", userHandler::searchByName)
             .build();
     }
 
@@ -165,7 +171,7 @@ public class RegistrationWebConfig {
     ) {
         var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
-            .GET(contextPath + "/email/confirmation/{email}", emailConfirmationHandler::emailConfirmation)
+            .GET(contextPath + "/email-confirmation/{email}", emailConfirmationHandler::emailConfirmation)
             .build();
     }
 

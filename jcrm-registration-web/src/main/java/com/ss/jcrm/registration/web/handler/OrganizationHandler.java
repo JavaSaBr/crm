@@ -18,11 +18,10 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.exception.ExceptionUtils;
+import com.ss.jcrm.web.util.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -57,19 +56,14 @@ public class OrganizationHandler {
                 COUNTRY_NOT_FOUND_MESSAGE,
                 COUNTRY_NOT_FOUND))
             )
-            .flatMap(resource -> ServerResponse.status(HttpStatus.CREATED)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .syncBody(resource));
+            .flatMap(ResponseUtils::created);
     }
 
     public @NotNull Mono<ServerResponse> existByName(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("name"))
             .flatMap(organizationDao::existByName)
             .switchIfEmpty(Mono.just(false))
-            .map(exist -> exist ? HttpStatus.OK : HttpStatus.NOT_FOUND)
-            .flatMap(status -> ServerResponse.status(status)
-                .build());
-
+            .flatMap(ResponseUtils::exist);
     }
 
     private @NotNull Mono<EmailConfirmation> findEmailConfirmation(@NotNull OrganizationRegisterInResource resource) {

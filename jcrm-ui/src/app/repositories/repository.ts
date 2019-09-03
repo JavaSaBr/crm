@@ -1,4 +1,4 @@
-import {Entity} from '../entity/entity';
+import {Entity} from '@app/entity/entity';
 
 export interface Repository<T extends Entity> {
 

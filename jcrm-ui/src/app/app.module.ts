@@ -52,6 +52,7 @@ import {FabButtonComponent} from '@app/component/fab-button/fab-button.component
 import {RelativeHeightDirective} from '@app/directive/relative-height.directive';
 import {ContactWorkspaceComponent} from '@app/component/contact/workspace-component/contact-workspace.component';
 import {ContactViewComponent} from '@app/component/contact/view/contact-view.component';
+import {UserInput} from '@app/input/user/user-input';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -81,6 +82,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         RelativeHeightDirective,
         PhoneNumberInput,
         CountryInput,
+        UserInput,
     ],
     imports: [
         BrowserModule,

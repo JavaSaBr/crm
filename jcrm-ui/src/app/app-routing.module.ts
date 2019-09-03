@@ -15,11 +15,11 @@ const routes: Routes = [
         children: [
             {path: ContactsComponent.COMPONENT_NAME, component: ContactsComponent},
             {
-                path: ContactWorkspaceComponent.COMPONENT_NAME + '/' + ContactWorkspaceComponent.NEW_MODE,
+                path: `${ContactWorkspaceComponent.COMPONENT_NAME}/${ContactWorkspaceComponent.NEW_MODE}`,
                 component: ContactWorkspaceComponent
             },
             {
-                path: ContactWorkspaceComponent.COMPONENT_NAME + '/' + ContactWorkspaceComponent.VIEW_MODE + '/:id',
+                path: `${ContactWorkspaceComponent.COMPONENT_NAME}/${ContactWorkspaceComponent.VIEW_MODE}/:id`,
                 component: ContactWorkspaceComponent
             },
         ]

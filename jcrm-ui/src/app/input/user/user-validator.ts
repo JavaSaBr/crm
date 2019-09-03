@@ -1,10 +1,10 @@
 import {AbstractControl, FormControl, ValidationErrors, Validator} from '@angular/forms';
-import {Country} from '@app/entity/country';
+import {Country} from '../../entity/country';
 import {TranslateService} from '@ngx-translate/core';
 
-export class CountryValidator implements Validator {
+export class UserValidator implements Validator {
 
-    public static readonly instance = new CountryValidator();
+    public static readonly instance = new UserValidator();
 
     static getErrorDescription(control: FormControl, translateService: TranslateService): string | null {
 

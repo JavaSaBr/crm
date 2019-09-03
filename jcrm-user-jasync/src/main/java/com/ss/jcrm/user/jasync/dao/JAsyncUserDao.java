@@ -17,6 +17,7 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.user.api.impl.DefaultUser;
+import com.ss.rlib.common.util.array.Array;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,17 +31,18 @@ import java.util.Set;
 @Log4j2
 public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
-    private static final String Q_SELECT_BY_EMAIL = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
+    private static final String USER_FIELDS = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\", \"password_version\" from \"${schema}\".\"user\" where \"email\" = ?";
+        " \"version\", \"email_confirmed\", \"password_version\"";
 
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
-        " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\", \"password_version\" from \"${schema}\".\"user\" where \"id\" = ?";
+    private static final String Q_SELECT_BY_EMAIL = "select " + USER_FIELDS +
+        " from \"${schema}\".\"user\" where \"email\" = ?";
 
-    private static final String Q_SELECT_BY_PHONE_NUMBER = "select \"id\", \"organization_id\", \"email\", \"first_name\"," +
-        " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\", \"password_version\" from \"${schema}\".\"user\" where \"phone_number\" = ?";
+    private static final String Q_SELECT_BY_ID = "select " + USER_FIELDS +
+        " from \"${schema}\".\"user\" where \"id\" = ?";
+
+    private static final String Q_SELECT_BY_PHONE_NUMBER = "select " + USER_FIELDS +
+        " from \"${schema}\".\"user\" where \"phone_number\" = ?";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"user\" (\"email\", \"password\", \"salt\", " +
         "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\")" +
@@ -52,12 +54,18 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"${schema}\".\"user\" where \"email\" = ?";
 
+    private static final String Q_SEARCH_BY_NAME = "select " + USER_FIELDS +
+        " from \"${schema}\".\"user\" where ((\"first_name\" || ' ' || \"second_name\" || ' ' ||" +
+        " \"third_name\" ilike (?)) OR \"email\" ilike (?)) AND \"organization_id\" = ?";
+
+
     private final String querySelectById;
     private final String querySelectByEmail;
     private final String querySelectByPhoneNumber;
     private final String queryInsert;
     private final String queryUpdate;
     private final String queryExistByEmail;
+    private final String querySearchByName;
 
     private final OrganizationDao organizationDao;
     private final UserGroupDao userGroupDao;
@@ -75,6 +83,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         this.queryInsert = Q_INSERT.replace("${schema}", schema);
         this.queryUpdate = Q_UPDATE.replace("${schema}", schema);
         this.queryExistByEmail = Q_EXIST_BY_EMAIL.replace("${schema}", schema);
+        this.querySearchByName = Q_SEARCH_BY_NAME.replace("${schema}", schema);
         this.organizationDao = organizationDao;
         this.userGroupDao = userGroupDao;
     }
@@ -160,6 +169,17 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     @Override
     public @NotNull Mono<@Nullable User> findByPhoneNumber(@NotNull String phoneNumber) {
         return selectAsync(querySelectByPhoneNumber, List.of(phoneNumber), JAsyncUserDao::toUser);
+    }
+
+    @Override
+    public @NotNull Mono<@NotNull Array<User>> searchByName(@NotNull String name, long orgId) {
+        var pattern = "%" + name + "%";
+        return selectAllAsync(
+            User.class,
+            querySearchByName,
+            List.of(pattern, pattern, orgId),
+            JAsyncUserDao::toUser
+        );
     }
 
     private @NotNull Mono<@NotNull User> toUser(@NotNull RowData data) {

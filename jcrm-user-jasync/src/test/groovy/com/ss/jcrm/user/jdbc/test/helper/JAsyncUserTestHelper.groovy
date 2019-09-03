@@ -146,7 +146,24 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             organization
         )
     }
-
+    
+    @Override
+    User newUser(String email, String firstName, String secondName, String thirdName, Organization organization) {
+        def password = passwordService.nextPassword(24)
+        def salt = passwordService.nextSalt
+        return userDao.create(
+            email,
+            passwordService.hash(password, salt),
+            salt,
+            organization,
+            onlyOrgAdminRole(),
+            firstName,
+            secondName,
+            thirdName,
+            null
+        ).block()
+    }
+    
     def newUser(String name, String password, byte[] salt, Organization organization) {
         return userDao.create(
             name,

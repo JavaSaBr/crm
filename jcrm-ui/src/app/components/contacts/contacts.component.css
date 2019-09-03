@@ -1,3 +1,7 @@
 .table-contacts {
     width: 100%;
 }
+
+tr.contact-row:hover {
+    cursor: pointer;
+}

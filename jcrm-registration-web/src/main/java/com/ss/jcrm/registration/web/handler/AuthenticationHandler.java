@@ -12,11 +12,11 @@ import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.UnauthorizedWebException;
+import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -39,9 +39,7 @@ public class AuthenticationHandler {
                 INVALID_CREDENTIALS,
                 INVALID_CREDENTIALS_MESSAGE
             )))
-            .flatMap(resource -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .syncBody(resource));
+            .flatMap(ResponseUtils::ok);
     }
 
     public @NotNull Mono<ServerResponse> authenticateByToken(@NotNull ServerRequest request) {
@@ -51,9 +49,7 @@ public class AuthenticationHandler {
                 SecurityErrors.INVALID_TOKEN,
                 SecurityErrors.INVALID_TOKEN_MESSAGE
             )))
-            .flatMap(resource -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .syncBody(resource));
+            .flatMap(ResponseUtils::ok);
     }
 
     public @NotNull Mono<ServerResponse> refreshToken(@NotNull ServerRequest request) {
@@ -62,9 +58,7 @@ public class AuthenticationHandler {
             .switchIfEmpty(Mono.error(() -> toUnauthorized(
                 SecurityErrors.INVALID_TOKEN,
                 SecurityErrors.INVALID_TOKEN_MESSAGE)))
-            .flatMap(resource -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .syncBody(resource));
+            .flatMap(ResponseUtils::ok);
     }
 
     private @NotNull AuthenticationOutResource refreshToken(@NotNull String token, @NotNull User user) {

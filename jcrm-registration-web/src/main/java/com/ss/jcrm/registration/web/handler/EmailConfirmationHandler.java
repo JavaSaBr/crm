@@ -6,6 +6,7 @@ import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
 import com.ss.jcrm.user.api.EmailConfirmation;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
+import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -35,8 +36,7 @@ public class EmailConfirmationHandler {
             .doOnNext(resourceValidator::validateEmail)
             .flatMap(this::createEmailConfirmation)
             .flatMap(this::sendEmail)
-            .flatMap(aVoid -> ServerResponse.ok()
-                .build());
+            .flatMap(ResponseUtils::ok);
     }
 
     private @NotNull Mono<@NotNull EmailConfirmation> createEmailConfirmation(@NotNull String email) {

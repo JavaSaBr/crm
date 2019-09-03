@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Country} from '@app/entity/country';
 import {environment} from '@app/env/environment';
-import {CachedRepository} from '@app/repository//cached.repository';
+import {CachedNotAuthorizedRepository} from '@app/repository//cached-not-authorized-repository.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class CountryRepository extends CachedRepository<Country> {
+export class CountryRepository extends CachedNotAuthorizedRepository<Country> {
 
     constructor(protected httpClient: HttpClient) {
         super(httpClient);

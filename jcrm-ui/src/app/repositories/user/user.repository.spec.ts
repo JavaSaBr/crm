@@ -1,11 +1,10 @@
 import {TestBed} from '@angular/core/testing';
+import {UserRepository} from '@app/repository/user/user.repository';
 
-import {CountryRepository} from '@app/repository/country/country.repository';
-
-describe('CountryRepository', () => {
+describe('UserRepository', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
     it('should be created', () => {
-        const service: CountryRepository = TestBed.get(CountryRepository);
+        const service: UserRepository = TestBed.get(UserRepository);
         expect(service).toBeTruthy();
     });
 });

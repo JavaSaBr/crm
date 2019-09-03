@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Repository} from './repository';
+import {Repository} from '@app/repository/repository';
 import {Entity} from '@app/entity/entity';
 
 @Injectable({
     providedIn: 'root'
 })
-export class CachedRepository<T extends Entity> implements Repository<T> {
+export class CachedNotAuthorizedRepository<T extends Entity> implements Repository<T> {
 
     protected cache: T[] | null;
     protected executing: Promise<T[]> | null;

@@ -19,7 +19,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
 
     fabButtons: FabButtonElement[] = [
         {
-            routerLink: '../contact/new',
+            routerLink: `../${ContactWorkspaceComponent.COMPONENT_NAME}/${ContactWorkspaceComponent.NEW_MODE}`,
             icon: 'perm_identity',
             tooltip: 'Add new contact',
             callback: null
@@ -57,7 +57,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
         super.ngAfterViewInit();
         this.contactService.getContacts()
             .then(value => this.dataSource = value)
-            .catch(reason => this.dataSource = []);
+            .catch(() => this.dataSource = []);
     }
 
     openContact(contact: Contact): void {

@@ -1,4 +1,4 @@
-import {BaseInput} from '../base-input';
+import {BaseInput} from '@app/input/base-input';
 import {Country} from '@app/entity/country';
 import {Component, ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {MatFormFieldControl} from '@angular/material';

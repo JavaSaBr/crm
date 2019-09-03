@@ -165,4 +165,44 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         then:
             exist
     }
+    
+    def "should find users by names under the same org"() {
+        
+        given:
+            def org1 = userTestHelper.newOrg()
+            def org2 = userTestHelper.newOrg()
+            userTestHelper.newUser("user1@mail.com", "FiRst1", "Second1", "Third1", org1)
+            userTestHelper.newUser("user2@mail.com", "FIrst2", "Second2", "THird2", org1)
+            userTestHelper.newUser("user3@mail.com", "first3", "Second3", "ThIrd3", org1)
+            userTestHelper.newUser("user11@mail.com", "First1", "Second1", "Third1", org2)
+            userTestHelper.newUser("user12@mail.com", "First2", "Second2", "Third2", org2)
+        when:
+            def users = userDao.searchByName("user", org1.id).block()
+        then:
+            users.size() == 3
+        when:
+            users = userDao.searchByName("First2", org1.id).block()
+        then:
+            users.size() == 1
+        when:
+            users = userDao.searchByName("hird", org1.id).block()
+        then:
+            users.size() == 3
+        when:
+            users = userDao.searchByName("fir", org1.id).block()
+        then:
+            users.size() == 3
+        when:
+            users = userDao.searchByName("@mai", org1.id).block()
+        then:
+            users.size() == 3
+        when:
+            users = userDao.searchByName("First1 Seco", org1.id).block()
+        then:
+            users.size() == 1
+        when:
+            users = userDao.searchByName("second3 Third", org1.id).block()
+        then:
+            users.size() == 1
+    }
 }
