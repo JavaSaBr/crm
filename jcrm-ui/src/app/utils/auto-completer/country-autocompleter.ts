@@ -1,4 +1,4 @@
-import {CountryRepository} from '../repositories/country/country.repository';
+import {CountryRepository} from '@app/repository/country/country.repository';
 import {AbstractControl} from '@angular/forms';
 import {Observable, Subject} from 'rxjs';
 import {Country} from '@app/entity/country';

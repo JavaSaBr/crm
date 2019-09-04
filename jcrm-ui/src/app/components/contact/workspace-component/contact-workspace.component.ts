@@ -4,7 +4,7 @@ import {WorkspaceService} from '@app/service/workspace.service';
 import {Contact} from '@app/entity/contact';
 import {ActivatedRoute} from '@angular/router';
 import {Utils} from '@app/util/utils';
-import {ContactService} from '@app/service/contact.service';
+import {ContactRepository} from '@app/repository/contact/contact.repository';
 
 @Component({
     selector: 'app-new-contact',
@@ -22,7 +22,7 @@ export class ContactWorkspaceComponent extends ObjectEditingWorkspaceComponent i
     constructor(
         protected readonly workspaceService: WorkspaceService,
         private readonly route: ActivatedRoute,
-        private readonly contactService: ContactService
+        private readonly contactService: ContactRepository
     ) {
         super(workspaceService);
         this.contact = null;
@@ -43,7 +43,9 @@ export class ContactWorkspaceComponent extends ObjectEditingWorkspaceComponent i
 
             if (id && Utils.isNumber(id)) {
                 this.contactService.findById(Number.parseInt(id))
-                    .then(loaded => this.contact = loaded);
+                    .then(loaded => {
+                        this.contact = loaded
+                    });
             } else {
                 this.contact = new Contact();
             }

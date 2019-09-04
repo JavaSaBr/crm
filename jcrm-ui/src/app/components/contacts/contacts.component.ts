@@ -3,7 +3,7 @@ import {FabButtonElement} from '@app/component/fab-button/fab-button.component';
 import {BaseWorkspaceComponent, WorkspaceComponent} from '@app/component/workspace/workspace.component';
 import {WorkspaceService} from '@app/service/workspace.service';
 import {Contact} from '@app/entity/contact';
-import {ContactService} from '@app/service/contact.service';
+import {ContactRepository} from '@app/repository/contact/contact.repository';
 import {Router} from '@angular/router';
 import {ContactWorkspaceComponent} from '@app/component/contact/workspace-component/contact-workspace.component';
 
@@ -38,7 +38,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
 
     constructor(
         protected readonly workspaceService: WorkspaceService,
-        private readonly contactService: ContactService,
+        private readonly contactService: ContactRepository,
         private readonly router: Router
     ) {
         super(workspaceService);
@@ -55,9 +55,8 @@ export class ContactsComponent extends BaseWorkspaceComponent {
 
     ngAfterViewInit(): void {
         super.ngAfterViewInit();
-        this.contactService.getContacts()
-            .then(value => this.dataSource = value)
-            .catch(() => this.dataSource = []);
+        this.contactService.findAll()
+            .then(value => this.dataSource = value);
     }
 
     openContact(contact: Contact): void {

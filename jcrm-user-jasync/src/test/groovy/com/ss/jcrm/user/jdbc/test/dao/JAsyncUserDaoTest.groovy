@@ -4,6 +4,7 @@ import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.service.PasswordService
+import com.ss.jcrm.user.api.User
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
@@ -204,5 +205,24 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             users = userDao.searchByName("second3 Third", org1.id).block()
         then:
             users.size() == 1
+    }
+    
+    def "should load user only under the same organization"() {
+        
+        given:
+            def org1 = userTestHelper.newOrg()
+            def org2 = userTestHelper.newOrg()
+            def user = userTestHelper.newUser("user1@mail.com", org1)
+        when:
+            def loaded = userDao.findByIdAndOrgId(user.id, org1.id).block()
+        then:
+            loaded != null
+            loaded.getEmail() == user.email
+            loaded.getId() != 0L
+            loaded.getOrganization() == org1
+        when:
+            loaded = userDao.findByIdAndOrgId(loaded.id, org2.id).block()
+        then:
+            loaded == null
     }
 }

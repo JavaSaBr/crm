@@ -55,7 +55,7 @@ export class CachedNotAuthorizedRepository<T extends Entity> implements Reposito
         throw new Error('Not yet implemented');
     }
 
-    protected extractValue(value): T[] {
+    protected extractValue(value: T[]): T[] {
         throw new Error('Not yet implemented');
     }
 }

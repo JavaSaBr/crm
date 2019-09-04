@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Country} from '@app/entity/country';
 import {environment} from '@app/env/environment';
-import {CachedNotAuthorizedRepository} from '@app/repository//cached-not-authorized-repository.service';
+import {CachedNotAuthorizedRepository} from '@app/repository/cached-not-authorized-repository.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,12 +17,9 @@ export class CountryRepository extends CachedNotAuthorizedRepository<Country> {
         return environment.dictionaryUrl + '/countries';
     }
 
-    protected extractValue(value): Country[] {
-
-        const countries = value.countries as Country[];
-        countries.forEach(country => country.nameInLowerCase = country.name.toLowerCase());
-
-        return countries;
+    protected extractValue(value: Country[]): Country[] {
+        value.forEach(country => country.nameInLowerCase = country.name.toLowerCase());
+        return value;
     }
 
     public findByPhoneCode(phoneCode: string): Promise<Country | null> {

@@ -58,6 +58,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         " from \"${schema}\".\"user\" where ((\"first_name\" || ' ' || \"second_name\" || ' ' ||" +
         " \"third_name\" ilike (?)) OR \"email\" ilike (?)) AND \"organization_id\" = ?";
 
+    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + USER_FIELDS +
+        " from \"${schema}\".\"user\" where \"id\" = ? AND \"organization_id\" = ?";
 
     private final String querySelectById;
     private final String querySelectByEmail;
@@ -66,6 +68,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     private final String queryUpdate;
     private final String queryExistByEmail;
     private final String querySearchByName;
+    private final String querySelectByIdAndOrgId;
 
     private final OrganizationDao organizationDao;
     private final UserGroupDao userGroupDao;
@@ -84,6 +87,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         this.queryUpdate = Q_UPDATE.replace("${schema}", schema);
         this.queryExistByEmail = Q_EXIST_BY_EMAIL.replace("${schema}", schema);
         this.querySearchByName = Q_SEARCH_BY_NAME.replace("${schema}", schema);
+        this.querySelectByIdAndOrgId = Q_SELECT_BY_ID_AND_ORG_ID.replace("${schema}", schema);
         this.organizationDao = organizationDao;
         this.userGroupDao = userGroupDao;
     }
@@ -138,6 +142,11 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     @Override
     public @NotNull Mono<@Nullable User> findById(long id) {
         return selectAsync(querySelectById, List.of(id), JAsyncUserDao::toUser);
+    }
+
+    @Override
+    public @NotNull Mono<@Nullable User> findByIdAndOrgId(long id, long orgId) {
+        return selectAsync(querySelectByIdAndOrgId, List.of(id, orgId), JAsyncUserDao::toUser);
     }
 
     @Override

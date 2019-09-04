@@ -6,7 +6,7 @@ import {AbstractControl, FormBuilder, FormGroup, NgControl} from '@angular/forms
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {Observable} from 'rxjs';
-import {CountryAutocompleter} from '@app/util/country-autocompleter';
+import {CountryAutocompleter} from '@app/util/auto-completer/country-autocompleter';
 
 @Component({
     selector: 'country-input',

@@ -3,7 +3,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UiUtils} from '@app/util/ui-utils';
 import {TranslateService} from '@ngx-translate/core';
 import {Contact} from '@app/entity/contact';
-import {ContactService} from '@app/service/contact.service';
+import {ContactRepository} from '@app/repository/contact/contact.repository';
+import {Utils} from '@app/util/utils';
 
 @Component({
     selector: 'app-contact-view',
@@ -45,7 +46,7 @@ export class ContactViewComponent implements AfterViewInit {
     constructor(
         formBuilder: FormBuilder,
         private readonly translateService: TranslateService,
-        private readonly contactService: ContactService
+        private readonly contactService: ContactRepository
     ) {
         this.disabled = false;
         this.hastChangesInContactInfo = false;
@@ -75,11 +76,11 @@ export class ContactViewComponent implements AfterViewInit {
         this.thirdName = this.contactInfoFormGroup.controls['thirdName'] as FormControl;
     }
 
-    reload(contact: Contact): void {
-        this.contact = contact;
-        this.firstName.setValue(contact.firstName);
-        this.secondName.setValue(contact.secondName);
-        this.thirdName.setValue(contact.thirdName);
+    reload(contact: Contact | null): void {
+        this.contact = contact ? contact : new Contact();
+        this.firstName.setValue(Utils.emptyIfNull(this.contact.firstName));
+        this.secondName.setValue(Utils.emptyIfNull(this.contact.secondName));
+        this.thirdName.setValue(Utils.emptyIfNull(this.contact.thirdName));
         this.hastChangesInContactInfo = false;
     }
 
@@ -118,16 +119,16 @@ export class ContactViewComponent implements AfterViewInit {
         const secondName = this.secondName.value;
         const thirdName = this.thirdName.value;
 
-        this.contactService.create(
-            firstName,
-            secondName,
-            thirdName
-        )
+        const contact = new Contact();
+        contact.firstName = firstName;
+        contact.secondName = secondName;
+        contact.thirdName = thirdName;
+
+        this.contactService.create(contact)
             .then(contact => {
                 this.reload(contact);
                 this.disabled = false;
             })
-            .catch(() => this.disabled = false);
     }
 
     saveContactInfo(): void {

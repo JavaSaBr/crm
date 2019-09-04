@@ -1,13 +1,13 @@
 import {BaseInput} from '@app/input/base-input';
 import {AbstractControl, FormBuilder, FormGroup, NgControl} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {ElementRef, Input, Optional, Self} from '@angular/core';
+import {ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
 
-export abstract class SingleEntityInput<T> extends BaseInput<T> {
+export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnInit {
 
-    private readonly formGroup: FormGroup;
-    private readonly entityControl: AbstractControl;
+    protected readonly formGroup: FormGroup;
+    protected readonly entityControl: AbstractControl;
 
     protected _availableEntities: Observable<T[]>;
     protected _entity: T | null;
@@ -20,14 +20,14 @@ export abstract class SingleEntityInput<T> extends BaseInput<T> {
     ) {
         super(ngControl, focusMonitor, elementRef);
 
-        this._availableEntities = new Observable<T[]>();
         this._entity = null;
-
-        this.formGroup = formBuilder.group({user: ''});
+        this._availableEntities = null;
+        this.formGroup = formBuilder.group({entity: ''});
 
         this.entityControl = this.formGroup.controls['entity'];
         this.entityControl.valueChanges
             .subscribe(value => this.extractEntity(value));
+
     }
 
     set entity(entity: T | null) {
@@ -68,7 +68,13 @@ export abstract class SingleEntityInput<T> extends BaseInput<T> {
         this.onChange(this.value);
     }
 
+    protected abstract installAutoComplete(): Observable<T[]>;
+
     protected abstract extractEntity(value: any): void;
 
     protected abstract displayWith(entity?: T): string;
+
+    ngOnInit(): void {
+        this._availableEntities = this.installAutoComplete();
+    }
 }

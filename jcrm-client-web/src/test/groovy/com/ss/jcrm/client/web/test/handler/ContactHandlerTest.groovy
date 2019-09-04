@@ -8,6 +8,8 @@ import con.ss.jcrm.client.web.resource.CreateContactInResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
+import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED
+import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is
@@ -55,14 +57,14 @@ class ContactHandlerTest extends ClientSpecification {
             response.expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
-                .jsonPath('$.contacts')
+                .jsonPath('$')
                     .value(hasSize(3))
-                .jsonPath('$.contacts[*].id')
+                .jsonPath('$[*].id')
                     .value(containsInAnyOrder(
                         (int) contact1.id,
                         (int) contact2.id,
                         (int) contact3.id))
-                .jsonPath('$.contacts[*].firstName')
+                .jsonPath('$[*].firstName')
                     .value(containsInAnyOrder(
                         contact1.firstName,
                         contact2.firstName,
@@ -88,5 +90,20 @@ class ContactHandlerTest extends ClientSpecification {
                 .jsonPath('$.firstName').value(is(contact.firstName))
                 .jsonPath('$.secondName').value(is(contact.secondName))
                 .jsonPath('$.thirdName').value(is(contact.thirdName))
+    }
+    
+    def "should failed when id not presented"() {
+        
+        given:
+            def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
+            def token = unsafeTokenService.generateNewToken(user)
+        when:
+            def response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/client/contact/invallid")
+                .exchange()
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(ID_NOT_PRESENTED, ID_NOT_PRESENTED_MESSAGE)
     }
 }

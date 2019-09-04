@@ -1,8 +1,8 @@
-<div [formGroup]="formGroup" class="container">
-  <input matInput placeholder="User" formControlName="user" [matAutocomplete]="auto" required>
+<div [formGroup]="formGroup" class="user-input-container">
+  <input matInput formControlName="entity" [matAutocomplete]="auto" required>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith">
     <mat-option *ngFor="let entity of availableEntities | async" [value]="entity">
-      {{entity.firstName}}
+      {{displayWith(entity)}}
     </mat-option>
   </mat-autocomplete>
 </div>

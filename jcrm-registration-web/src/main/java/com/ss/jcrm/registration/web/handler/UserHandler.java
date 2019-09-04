@@ -1,10 +1,12 @@
 package com.ss.jcrm.registration.web.handler;
 
-import com.ss.jcrm.registration.web.resources.UsersOutResource;
+import static com.ss.rlib.common.util.NumberUtils.toOptionalLong;
+import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.dao.UserDao;
+import com.ss.jcrm.web.exception.IdNotPresentedWebException;
 import com.ss.jcrm.web.util.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -26,11 +28,23 @@ public class UserHandler {
             .flatMap(ResponseUtils::exist);
     }
 
+    public @NotNull Mono<ServerResponse> findById(@NotNull ServerRequest request) {
+        return Mono.fromSupplier(() -> toOptionalLong(request.pathVariable("id")))
+            .map(optional -> optional.orElseThrow(IdNotPresentedWebException::new))
+            .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
+            .flatMap(param -> userDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
+            .map(UserOutResource::new)
+            .flatMap(ResponseUtils::ok)
+            .switchIfEmpty(ResponseUtils.lazyNotFound());
+    }
+
     public @NotNull Mono<ServerResponse> searchByName(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("name"))
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(res -> userDao.searchByName(res.getParam(), res.getOrgId()))
-            .map(UsersOutResource::new)
+            .map(users -> users.stream()
+                .map(UserOutResource::new)
+                .toArray(UserOutResource[]::new))
             .flatMap(ResponseUtils::ok);
     }
 }

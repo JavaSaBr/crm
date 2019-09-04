@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 public class ResponseUtils {
@@ -42,5 +43,11 @@ public class ResponseUtils {
     public static @NotNull Mono<ServerResponse> exist(boolean exist) {
         return ServerResponse.status(exist ? HttpStatus.OK : HttpStatus.NOT_FOUND)
             .build();
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static <R> @NotNull Mono<ServerResponse> optionalResource(@NotNull Optional<R> resource) {
+        return resource.map(ResponseUtils::ok)
+            .orElseGet(ResponseUtils::lazyNotFound);
     }
 }

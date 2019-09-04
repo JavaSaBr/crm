@@ -45,4 +45,10 @@ public interface UserDao extends Dao<User> {
     default @NotNull Mono<@NotNull Array<User>> searchByName(@NotNull String name, @NotNull Organization organization) {
         return searchByName(name, organization.getId());
     }
+
+    @NotNull Mono<@Nullable User> findByIdAndOrgId(long id, long orgId);
+
+    default @NotNull Mono<@Nullable User> findByIdAndOrgId(long id, @NotNull Organization organization) {
+        return findByIdAndOrgId(id, organization.getId());
+    }
 }

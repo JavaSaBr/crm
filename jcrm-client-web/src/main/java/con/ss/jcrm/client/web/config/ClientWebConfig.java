@@ -22,9 +22,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import java.util.List;
 
 @Import({
+    BaseWebConfig.class,
     JAsyncClientConfig.class,
     JAsyncUserConfig.class,
-    WebSecurityConfig.class,
+    WebSecurityConfig.class
 })
 @Configuration
 @PropertySources({
@@ -73,7 +74,7 @@ public class ClientWebConfig {
                 .build())
             .GET(contextPath + "/contacts", contactHandler::list)
             .POST(contextPath + "/contact/create", contactHandler::create)
-            .GET(contextPath + "/contact/{id}", contactHandler::byId)
+            .GET(contextPath + "/contact/{id}", contactHandler::findById)
             .build();
     }
 }

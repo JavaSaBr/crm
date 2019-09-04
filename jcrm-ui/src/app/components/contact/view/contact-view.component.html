@@ -5,11 +5,11 @@
         <div fxLayout="row" fxFlex="100%" fxLayoutAlign="space-between" class="contact-info-header">
           <p>ABOUT</p>
           <button *ngIf="!editContactInfo" class="contact-info-button" mat-button color="primary">EDIT</button>
-          <button *ngIf="editContactInfo && contact.id"
+          <button *ngIf="editContactInfo && contact != null && contact.id"
                   [disabled]="disabled || !contactInfoFormGroup.valid || !hastChangesInContactInfo"
                   class="contact-info-button" mat-button color="primary">SAVE
           </button>
-          <button *ngIf="editContactInfo && !contact.id" [disabled]="disabled || !contactInfoFormGroup.valid"
+          <button *ngIf="editContactInfo && contact != null && !contact.id" [disabled]="disabled || !contactInfoFormGroup.valid"
                   class="contact-info-button" mat-button color="primary" (click)="create()">CREATE
           </button>
         </div>
@@ -18,7 +18,7 @@
             <mat-grid-tile>
               <mat-form-field class="form-field">
                 <mat-label>Assigner</mat-label>
-                <input matInput formControlName="assigner">
+                <user-input formControlName="assigner" required></user-input>
               </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>

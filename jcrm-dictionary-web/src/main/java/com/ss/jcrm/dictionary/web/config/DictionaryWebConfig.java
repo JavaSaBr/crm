@@ -3,7 +3,6 @@ package com.ss.jcrm.dictionary.web.config;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig;
 import com.ss.jcrm.dictionary.web.handler.CountryHandler;
-import com.ss.jcrm.dictionary.web.resource.AllCountriesOutResource;
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import com.ss.jcrm.dictionary.web.service.impl.DefaultCachedDictionaryService;
@@ -47,7 +46,7 @@ public class DictionaryWebConfig {
     private List<? extends Flyway> flyways;
 
     @Bean
-    @NotNull CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService(
+    @NotNull CachedDictionaryService<CountryOutResource, CountryOutResource[]> countryDictionaryService(
         @NotNull CountryDao countryDao,
         @NotNull ScheduledExecutorService reloadScheduler
     ) {
@@ -55,7 +54,7 @@ public class DictionaryWebConfig {
         var service = new DefaultCachedDictionaryService<>(
             countryDao,
             CountryOutResource::new,
-            AllCountriesOutResource::new
+            objects -> objects.toArray(CountryOutResource[]::new)
         );
         service.reload();
 
@@ -73,7 +72,7 @@ public class DictionaryWebConfig {
 
     @Bean
     @NotNull CountryHandler countryHandler(
-        @NotNull CachedDictionaryService<CountryOutResource, AllCountriesOutResource> countryDictionaryService
+        @NotNull CachedDictionaryService<CountryOutResource, CountryOutResource[]> countryDictionaryService
     ) {
         return new CountryHandler(countryDictionaryService);
     }
@@ -97,8 +96,8 @@ public class DictionaryWebConfig {
         var contextPath = dictionaryApiEndpointServer.getContextPath();
         return RouterFunctions.route()
             .GET(contextPath + "/countries", countryHandler::getAll)
-            .GET(contextPath + "/country/{id}", countryHandler::getById)
-            .GET(contextPath + "/name/{name}", countryHandler::getByName)
+            .GET(contextPath + "/country/id/{id}", countryHandler::getById)
+            .GET(contextPath + "/country/name/{name}", countryHandler::getByName)
             .build();
     }
 }

@@ -7,7 +7,7 @@ import {Observable} from 'rxjs';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {BaseInput} from '../base-input';
 import {FocusMonitor} from '@angular/cdk/a11y';
-import {CountryPhoneCodeAutocompleter} from '@app/util/country-phone-code-autocompleter';
+import {CountryPhoneCodeAutocompleter} from '@app/util/auto-completer/country-phone-code-autocompleter';
 
 @Component({
     selector: 'phone-number-input',
