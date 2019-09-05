@@ -2,9 +2,9 @@ import {AbstractControl, FormControl, ValidationErrors, Validator} from '@angula
 import {TranslateService} from '@ngx-translate/core';
 import {User} from '@app/entity/user';
 
-export class UserValidator implements Validator {
+export class UsersValidator implements Validator {
 
-    public static readonly INSTANCE = new UserValidator();
+    public static readonly INSTANCE = new UsersValidator();
 
     static getErrorDescription(
         control: FormControl,
@@ -26,7 +26,7 @@ export class UserValidator implements Validator {
         if (!value) {
             return null;
         } else if (!(value instanceof User)) {
-            return {'noUser': true};
+            return {'noUsers': true};
         }
 
         return null;

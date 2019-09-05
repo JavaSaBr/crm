@@ -1,33 +1,26 @@
 import {BaseInput} from '@app/input/base-input';
-import {AbstractControl, FormBuilder, FormGroup, NgControl} from '@angular/forms';
+import {FormControl, NgControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
+import {MatAutocompleteSelectedEvent} from '@angular/material';
 
 export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnInit {
 
-    protected readonly formGroup: FormGroup;
-    protected readonly entityControl: AbstractControl;
+    protected readonly entityControl: FormControl;
 
     protected _availableEntities: Observable<T[]>;
     protected _entity: T | null;
 
     protected constructor(
-        formBuilder: FormBuilder,
         @Optional() @Self() ngControl: NgControl,
         focusMonitor: FocusMonitor,
         elementRef: ElementRef<HTMLElement>
     ) {
         super(ngControl, focusMonitor, elementRef);
-
         this._entity = null;
         this._availableEntities = null;
-        this.formGroup = formBuilder.group({entity: ''});
-
-        this.entityControl = this.formGroup.controls['entity'];
-        this.entityControl.valueChanges
-            .subscribe(value => this.extractEntity(value));
-
+        this.entityControl = new FormControl();
     }
 
     set entity(entity: T | null) {
@@ -63,14 +56,16 @@ export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnIni
         this.stateChanges.next();
     }
 
+    selected(event: MatAutocompleteSelectedEvent): void {
+        this.entity = event.option.value as T;
+    }
+
     private changeFromSubControls(): void {
         this.stateChanges.next();
         this.onChange(this.value);
     }
 
     protected abstract installAutoComplete(): Observable<T[]>;
-
-    protected abstract extractEntity(value: any): void;
 
     protected abstract displayWith(entity?: T): string;
 

@@ -1,6 +1,6 @@
-<div [formGroup]="formGroup" class="user-input-container">
-  <input matInput formControlName="entity" [matAutocomplete]="auto" required>
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith">
+<div class="user-input-container">
+  <input [formControl]="entityControl" matInput [matAutocomplete]="auto" required>
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="selected($event)">
     <mat-option *ngFor="let entity of availableEntities | async" [value]="entity">
       {{displayWith(entity)}}
     </mat-option>

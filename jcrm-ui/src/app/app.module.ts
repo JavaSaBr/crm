@@ -9,6 +9,7 @@ import {
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatChipsModule,
     MatDialogModule,
     MatDividerModule,
     MatFormFieldModule,
@@ -53,6 +54,7 @@ import {RelativeHeightDirective} from '@app/directive/relative-height.directive'
 import {ContactWorkspaceComponent} from '@app/component/contact/workspace-component/contact-workspace.component';
 import {ContactViewComponent} from '@app/component/contact/view/contact-view.component';
 import {UserInput} from '@app/input/user/user-input';
+import {UsersInput} from '@app/input/users/users-input';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -83,6 +85,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         PhoneNumberInput,
         CountryInput,
         UserInput,
+        UsersInput,
     ],
     imports: [
         BrowserModule,
@@ -114,6 +117,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatTooltipModule,
         MatDialogModule,
         MatTabsModule,
+        MatChipsModule,
         TranslateModule.forRoot(
             {
                 useDefaultLang: true,

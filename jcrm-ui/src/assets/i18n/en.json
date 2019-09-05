@@ -11,7 +11,13 @@
       "1007": "Invalid name",
       "1008": "Invalid activation code",
       "1009": "No authorization data",
-      "1010": "Invalid password or the user not found"
+      "1010": "Invalid password or the user not found",
+
+      "2000": "Session is expired",
+      "2001": "Session is expired",
+      "2002": "",
+      "2003": "",
+      "2004": "No permissions to perform the action"
     }
   },
   "FORMS": {

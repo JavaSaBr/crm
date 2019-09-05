@@ -1,0 +1,24 @@
+<div class="users-input-container">
+  <mat-chip-list #chipList>
+    <mat-chip
+        *ngFor="let entity of entities"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(entity)">
+      {{displayWith(entity)}}
+      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    </mat-chip>
+    <input #entityInput
+           [formControl]="entityControl"
+           [matAutocomplete]="auto"
+           [matChipInputFor]="chipList"
+           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+           [matChipInputAddOnBlur]="addOnBlur"
+           (matChipInputTokenEnd)="add($event)">
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    <mat-option *ngFor="let entity of availableEntities | async" [value]="entity">
+      {{displayWith(entity)}}
+    </mat-option>
+  </mat-autocomplete>
+</div>
