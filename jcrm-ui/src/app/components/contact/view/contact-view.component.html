@@ -14,44 +14,32 @@
           </button>
         </div>
         <form [formGroup]="contactInfoFormGroup">
-          <mat-grid-list cols="1" [rowHeight]="rowHeight" [gutterSize]="gutterSize">
-            <mat-grid-tile>
-              <mat-form-field class="form-field">
-                <mat-label>Assigner</mat-label>
-                <user-input formControlName="assigner" required></user-input>
-              </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
-              <mat-form-field class="form-field">
-                <mat-label>Curators</mat-label>
-                <users-input formControlName="curators" required></users-input>
-              </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
-              <mat-form-field class="form-field">
-                <mat-label>First name</mat-label>
-                <input matInput formControlName="firstName" required>
-              </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
-              <mat-form-field class="form-field">
-                <mat-label>Second name</mat-label>
-                <input matInput formControlName="secondName" required>
-              </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
-              <mat-form-field class="form-field">
-                <mat-label>Third name</mat-label>
-                <input matInput formControlName="thirdName" required>
-              </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
-              <mat-form-field class="form-field">
-                <mat-label>Birthday</mat-label>
-                <input matInput formControlName="birthday">
-              </mat-form-field>
-            </mat-grid-tile>
-          </mat-grid-list>
+
+          <mat-form-field class="form-field">
+            <mat-label>Assigner</mat-label>
+            <user-input formControlName="assigner" required></user-input>
+          </mat-form-field>
+          <mat-form-field class="form-field">
+            <mat-label>Curators</mat-label>
+            <users-input formControlName="curators" required></users-input>
+          </mat-form-field>
+          <mat-form-field class="form-field">
+            <mat-label>First name</mat-label>
+            <input matInput formControlName="firstName" required>
+          </mat-form-field>
+          <mat-form-field class="form-field">
+            <mat-label>Second name</mat-label>
+            <input matInput formControlName="secondName" required>
+          </mat-form-field>
+          <mat-form-field class="form-field">
+            <mat-label>Third name</mat-label>
+            <input matInput formControlName="thirdName" required>
+          </mat-form-field>
+          <mat-form-field class="form-field">
+            <mat-label>Birthday</mat-label>
+            <input matInput formControlName="birthday">
+          </mat-form-field>
+          <contact-phones-input formControlName="phoneNumbers"></contact-phones-input>
         </form>
       </div>
       <div fxFlex="100%" class="container">

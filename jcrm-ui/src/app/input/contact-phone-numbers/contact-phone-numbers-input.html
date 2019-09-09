@@ -1,0 +1,27 @@
+<div fxLayout="column" fxFlex="100%" fxLayoutAlign="center start">
+  <div fxLayout="row" fxFill fxFlex="100%" fxLayoutAlign="space-between center">
+    <mat-label>Phone number</mat-label>
+    <button mat-icon-button color="primary" aria-label="Add">
+      <mat-icon (click)="addNew()">add_circle_outline</mat-icon>
+    </button>
+  </div>
+  <div fxLayout="row" fxLayoutGap="1px" fxFill fxFlex="100%" fxLayoutAlign="space-between center"
+       *ngFor="let element of entities">
+    <div fxLayout="column">
+      <mat-form-field floatLabel="never">
+        <mat-label>Number</mat-label>
+        <input type="tel" matInput required>
+      </mat-form-field>
+    </div>
+    <div fxLayout="column">
+      <mat-form-field floatLabel="never">
+        <mat-label>Type</mat-label>
+        <input matInput required>
+      </mat-form-field>
+    </div>
+    <button mat-icon-button color="warn" aria-label="Remove">
+      <mat-icon (click)="remove(element)">remove_circle_outline</mat-icon>
+    </button>
+  </div>
+  <span style="padding-bottom: 10px" *ngIf="entities.length < 1"></span>
+</div>

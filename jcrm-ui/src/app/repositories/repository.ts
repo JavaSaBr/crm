@@ -1,6 +1,6 @@
-import {Entity} from '@app/entity/entity';
+import {UniqEntity} from '@app/entity/uniq-entity';
 
-export interface Repository<T extends Entity> {
+export interface Repository<T extends UniqEntity> {
 
     findAll(): Promise<T[]>;
 

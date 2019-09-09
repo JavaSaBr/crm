@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Repository} from '@app/repository/repository';
-import {Entity} from '@app/entity/entity';
+import {UniqEntity} from '@app/entity/uniq-entity';
 import {SecurityService} from '@app/service/security.service';
 import {ErrorResponse} from '@app/error/error-response';
 import {TranslateService} from '@ngx-translate/core';
@@ -8,7 +8,7 @@ import {TranslateService} from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class RemoteRepository<T extends Entity> implements Repository<T> {
+export class RemoteRepository<T extends UniqEntity> implements Repository<T> {
 
     protected constructor(
         protected readonly securityService: SecurityService,

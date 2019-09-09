@@ -1,6 +1,6 @@
-import {Entity} from '@app/entity/entity';
+import {UniqEntity} from '@app/entity/uniq-entity';
 
-export class Contact extends Entity {
+export class Contact extends UniqEntity {
 
     assigner: number | null;
     curators: number[] | null;

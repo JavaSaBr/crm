@@ -1,6 +1,6 @@
-import {Entity} from '@app/entity/entity';
+import {UniqEntity} from '@app/entity/uniq-entity';
 
-export class User extends Entity {
+export class User extends UniqEntity {
 
     email: string | null;
     firstName: string | null;

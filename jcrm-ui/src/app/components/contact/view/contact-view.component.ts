@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, Input} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {UiUtils} from '@app/util/ui-utils';
 import {TranslateService} from '@ngx-translate/core';
 import {Contact} from '@app/entity/contact';
 import {ContactRepository} from '@app/repository/contact/contact.repository';
@@ -12,9 +11,6 @@ import {Utils} from '@app/util/utils';
     styleUrls: ['./contact-view.component.scss'],
 })
 export class ContactViewComponent implements AfterViewInit {
-
-    readonly rowHeight = UiUtils.FORM_ROW_HEIGHT;
-    readonly gutterSize = UiUtils.FORM_GUTTER_SIZE;
 
     readonly contactInfoFormGroup: FormGroup;
 
@@ -66,6 +62,7 @@ export class ContactViewComponent implements AfterViewInit {
                 Validators.required
             ]],
             birthday: ['', ],
+            phoneNumbers: ['', ],
         });
         this.contactInfoFormGroup.valueChanges.subscribe(() => {
             this.hastChangesInContactInfo = true;

@@ -55,6 +55,7 @@ import {ContactWorkspaceComponent} from '@app/component/contact/workspace-compon
 import {ContactViewComponent} from '@app/component/contact/view/contact-view.component';
 import {UserInput} from '@app/input/user/user-input';
 import {UsersInput} from '@app/input/users/users-input';
+import {ContactPhoneNumbersInput} from '@app/input/contact-phone-numbers/contact-phone-numbers-input';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -86,6 +87,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         CountryInput,
         UserInput,
         UsersInput,
+        ContactPhoneNumbersInput
     ],
     imports: [
         BrowserModule,

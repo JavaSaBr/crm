@@ -1,36 +1,19 @@
 import {BaseInput} from '@app/input/base-input';
 import {FormControl, NgControl} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {ElementRef, Input, OnInit, Optional, Self, ViewChild} from '@angular/core';
+import {ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
-import {UniqEntity} from '@app/entity/uniq-entity';
+import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
+import {Entity} from '@app/entity/entity';
 
-export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T[]> implements OnInit {
+export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends BaseInput<T[]> implements OnInit {
 
-    protected static readonly DEFAULT_SEPARATOR_KEYS_CODES: number[] = [ENTER, COMMA];
     protected static readonly EMPTY_ENTITIES: any[] = [];
 
     protected readonly entityControl: FormControl;
 
     protected _availableEntities: Observable<T[]>;
     protected _entities: T[];
-
-    protected separatorKeysCodes: number[];
-
-    @Input("selectable")
-    protected selectable = false;
-    @Input("removable")
-    protected removable = true;
-    @Input("addOnBlur")
-    protected addOnBlur = false;
-
-    @ViewChild('entityInput', {static: false})
-    entityInput: ElementRef<HTMLInputElement>;
-
-    @ViewChild('auto', {static: false})
-    matAutocomplete: MatAutocomplete;
 
     protected constructor(
         @Optional() @Self() ngControl: NgControl,
@@ -39,14 +22,9 @@ export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T
     ) {
         super(ngControl, focusMonitor, elementRef);
 
-        this._entities = MultiEntityInput.EMPTY_ENTITIES as T[];
+        this._entities = MultiFieldsMultiEntityInput.EMPTY_ENTITIES as T[];
         this._availableEntities = null;
-        this.separatorKeysCodes = this.getSeparatorKeysCodes();
         this.entityControl = new FormControl();
-    }
-
-    protected getSeparatorKeysCodes(): number[] {
-        return MultiEntityInput.DEFAULT_SEPARATOR_KEYS_CODES;
     }
 
     remove(entity: T): void {
@@ -58,27 +36,6 @@ export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T
         }
     }
 
-    add(event: MatChipInputEvent): void {
-
-        if (this.matAutocomplete.isOpen) {
-            return;
-        }
-
-        const input = event.input;
-        const entity = this.inputToEntity(event.value);
-
-        if (entity != null) {
-            this.addEntity(entity);
-        }
-
-        // Reset the input value
-        if (input) {
-            input.value = '';
-        }
-
-        this.entityControl.setValue(null);
-    }
-
     selected(event: MatAutocompleteSelectedEvent): void {
 
         const entity = event.option.value as T;
@@ -87,18 +44,10 @@ export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T
             this.addEntity(entity);
         }
 
-        this.entityInput.nativeElement.value = '';
         this.entityControl.setValue(null);
     }
 
-    private addEntity(entity: T) {
-
-        const index = this._entities.findIndex(element => element.id == entity.id);
-
-        if (index >= 0) {
-            return;
-        }
-
+    protected addEntity(entity: T) {
         this._entities.push(entity);
         this.changeFromSubControls();
     }
