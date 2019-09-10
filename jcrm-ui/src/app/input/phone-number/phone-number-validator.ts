@@ -1,12 +1,15 @@
 import {AbstractControl, FormControl, ValidationErrors, Validator} from '@angular/forms';
 import {PhoneNumber} from './phone-number';
-import {Utils} from '../../utils/utils';
-import {environment} from "../../../environments/environment";
+import {Utils} from '@app/util/utils';
+import {environment} from '@app/env/environment';
 import {TranslateService} from '@ngx-translate/core';
 
 export class PhoneNumberValidator implements Validator {
 
-    public static readonly instance = new PhoneNumberValidator();
+    public static readonly INSTANCE = new PhoneNumberValidator();
+    public static readonly FUN = (contorl: AbstractControl) => {
+        return PhoneNumberValidator.INSTANCE.validate(contorl);
+    };
 
     static getErrorDescription(control: FormControl, translateService: TranslateService): string | null {
 
@@ -26,19 +29,19 @@ export class PhoneNumberValidator implements Validator {
     }
 
     static isTooShort(control: FormControl) {
-        return control.hasError('tooShort')
+        return control.hasError('tooShort');
     }
 
     static isTooLong(control: FormControl) {
-        return control.hasError('tooLong')
+        return control.hasError('tooLong');
     }
 
     static isInvalidPhoneNumber(control: FormControl) {
-        return control.hasError('invalidPhoneNumber')
+        return control.hasError('invalidPhoneNumber');
     }
 
     static isNoCountry(control: FormControl) {
-        return control.hasError('noCountry')
+        return control.hasError('noCountry');
     }
 
     validate(control: AbstractControl): ValidationErrors | null {

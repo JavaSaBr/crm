@@ -3,17 +3,18 @@ import {FormControl, NgControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
-import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
 import {Entity} from '@app/entity/entity';
 
 export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends BaseInput<T[]> implements OnInit {
 
     protected static readonly EMPTY_ENTITIES: any[] = [];
+    protected static readonly EMPTY_OBSERVABLE: Observable<any[]> = new Observable();
 
     protected readonly entityControl: FormControl;
 
     protected _availableEntities: Observable<T[]>;
     protected _entities: T[];
+    protected _entityToControl: Map<T, FormControl[]>;
 
     protected constructor(
         @Optional() @Self() ngControl: NgControl,
@@ -23,6 +24,7 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
         super(ngControl, focusMonitor, elementRef);
 
         this._entities = MultiFieldsMultiEntityInput.EMPTY_ENTITIES as T[];
+        this._entityToControl = new Map();
         this._availableEntities = null;
         this.entityControl = new FormControl();
     }
@@ -31,25 +33,28 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
 
         const index = this._entities.indexOf(entity);
 
-        if (index >= 0) {
-            this._entities.splice(index, 1);
-        }
-    }
-
-    selected(event: MatAutocompleteSelectedEvent): void {
-
-        const entity = event.option.value as T;
-
-        if (entity != null) {
-            this.addEntity(entity);
+        if (index < 0) {
+            return;
         }
 
-        this.entityControl.setValue(null);
+        this._entities.splice(index, 1);
+        this._entityToControl.delete(entity);
     }
 
     protected addEntity(entity: T) {
         this._entities.push(entity);
+        this._entityToControl.set(entity, this.createFormControls(entity));
         this.changeFromSubControls();
+    }
+
+    protected createFormControls(entity: T): FormControl[] {
+        return [
+            new FormControl()
+        ];
+    }
+
+    protected findControlsFor(entity: T): FormControl[] {
+        return this._entityToControl.get(entity);
     }
 
     get entities(): T[] {
@@ -80,11 +85,9 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
         this.onChange(this.value);
     }
 
-    protected abstract installAutoComplete(): Observable<T[]>;
-
-    protected abstract inputToEntity(value: any): T | null;
-
-    protected abstract displayWith(entity?: T): string;
+    protected installAutoComplete(): Observable<T[]> {
+        return MultiFieldsMultiEntityInput.EMPTY_OBSERVABLE;
+    };
 
     ngOnInit(): void {
         this._availableEntities = this.installAutoComplete();

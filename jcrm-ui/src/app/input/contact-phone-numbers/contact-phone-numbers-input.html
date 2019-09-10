@@ -10,13 +10,16 @@
     <div fxLayout="column">
       <mat-form-field floatLabel="never">
         <mat-label>Number</mat-label>
-        <input type="tel" matInput required>
+        <phone-number-input [formControl]="findControlsFor(element)[0]" matInput required></phone-number-input>
       </mat-form-field>
     </div>
     <div fxLayout="column">
       <mat-form-field floatLabel="never">
         <mat-label>Type</mat-label>
-        <input matInput required>
+        <mat-select value="{{element.type}}" [formControl]="findControlsFor(element)[1]"
+                    (selectionChange)="changePhoneType(element, $event)">
+          <mat-option *ngFor="let type of availablePhoneTypes" value="{{type}}">{{type}}</mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
     <button mat-icon-button color="warn" aria-label="Remove">

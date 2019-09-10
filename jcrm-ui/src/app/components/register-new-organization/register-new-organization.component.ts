@@ -105,7 +105,7 @@ export class RegisterNewOrganizationComponent implements OnInit {
             ]],
             phoneNumber: ['', [
                 Validators.required,
-                PhoneNumberValidator.instance,
+                PhoneNumberValidator.INSTANCE,
             ]]
         });
         this.subscribeFormGroup = formBuilder.group({
