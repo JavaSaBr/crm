@@ -24,23 +24,19 @@ export class CachedNotAuthorizedRepository<T extends UniqEntity> implements Repo
             return this.executing;
         }
 
-        const executing = new Promise<T[]>((resolve, reject) => {
+        this.executing = this.httpClient.get<T[]>(this.buildFetchUrl())
+            .toPromise()
+            .then(value => {
+                this.cache = this.extractValue(value);
+                this.executing = null;
+                return this.cache;
+            })
+            .catch(() => {
+                this.executing = null;
+                return this.cache;
+            });
 
-            this.httpClient.get<T[]>(this.buildFetchUrl())
-                .subscribe(value => {
-                        this.cache = this.extractValue(value);
-                        this.executing = null;
-                        resolve(this.cache);
-                    },
-                    error => {
-                        this.executing = null;
-                        reject(error);
-                    });
-        });
-
-        this.executing = executing;
-
-        return executing;
+        return this.executing;
     }
 
     public findById(id: number): Promise<T | null> {

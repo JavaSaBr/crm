@@ -18,8 +18,15 @@ export class CountryRepository extends CachedNotAuthorizedRepository<Country> {
     }
 
     protected extractValue(value: Country[]): Country[] {
-        value.forEach(country => country.nameInLowerCase = country.name.toLowerCase());
-        return value;
+        return value.map(json => {
+            return new Country(
+                json.id,
+                json.name,
+                json.name.toLowerCase(),
+                json.flagCode,
+                json.phoneCode
+            )
+        });
     }
 
     public findByPhoneCode(phoneCode: string): Promise<Country | null> {

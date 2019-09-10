@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
-import {PhoneNumber} from '../input/phone-number/phone-number';
+import {PhoneNumber} from '@app/entity/phone-number';
 import {Country} from '../entity/country';
 import {ErrorResponse} from '../error/error-response';
 import {TranslateService} from '@ngx-translate/core';

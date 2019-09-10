@@ -5,7 +5,7 @@ import {PasswordValidator} from '@app/util/validator/password-validator';
 import {RegistrationService} from '@app/service/registration.service';
 import {CountryValidator} from '@app/input/country/country-validator';
 import {Country} from '@app/entity/country';
-import {PhoneNumber} from '@app/input/phone-number/phone-number';
+import {PhoneNumber} from '@app/entity/phone-number';
 import {OrganizationValidator} from '@app/util/validator/organization-validator';
 import {OtherUserNameValidator} from '@app/util/validator/other-user-name-validator';
 import {UserValidator} from '@app/util/validator/user-validator';

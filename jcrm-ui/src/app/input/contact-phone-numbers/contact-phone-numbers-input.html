@@ -9,8 +9,7 @@
        *ngFor="let element of entities">
     <div fxLayout="column">
       <mat-form-field floatLabel="never">
-        <mat-label>Number</mat-label>
-        <phone-number-input [formControl]="findControlsFor(element)[0]" matInput required></phone-number-input>
+        <phone-number-input [hidePlaceholderOnFocus]="true" [placeholder]="'Number'" [formControl]="findControlsFor(element)[0]" required></phone-number-input>
       </mat-form-field>
     </div>
     <div fxLayout="column">
@@ -28,3 +27,4 @@
   </div>
   <span style="padding-bottom: 10px" *ngIf="entities.length < 1"></span>
 </div>
+

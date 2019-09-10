@@ -1,13 +1,13 @@
 import {Component, ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {Country} from '@app/entity/country';
 import {AbstractControl, FormBuilder, FormGroup, NgControl} from '@angular/forms';
-import {PhoneNumber} from './phone-number';
+import {PhoneNumber} from '@app/entity/phone-number';
 import {MatFormFieldControl} from '@angular/material';
 import {Observable} from 'rxjs';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {BaseInput} from '../base-input';
 import {FocusMonitor} from '@angular/cdk/a11y';
-import {CountryPhoneCodeAutocompleter} from '@app/util/auto-completer/country-phone-code-autocompleter';
+import {CountryPhoneCodeAutoCompleter} from '@app/util/auto-completer/country-phone-code-auto-completer';
 
 @Component({
     selector: 'phone-number-input',
@@ -30,8 +30,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
     private readonly countryControl: AbstractControl;
     private readonly phoneNumberControl: AbstractControl;
 
-    public filteredCountries: Observable<Country[]>;
-
+    private _filteredCountries: Observable<Country[]>;
     private _selectedCountry: Country | string | null;
 
     constructor(
@@ -39,11 +38,11 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
         @Optional() @Self() ngControl: NgControl,
         focusMonitor: FocusMonitor,
         elementRef: ElementRef<HTMLElement>,
-        private countryRepository: CountryRepository
+        private readonly countryRepository: CountryRepository
     ) {
         super(ngControl, focusMonitor, elementRef);
 
-        this.filteredCountries = PhoneNumberInput.EMPTY_OBSERVABLE;
+        this._filteredCountries = PhoneNumberInput.EMPTY_OBSERVABLE;
         this._selectedCountry = null;
 
         this.formGroup = formBuilder.group({
@@ -58,6 +57,10 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
         this.phoneNumberControl = this.formGroup.controls['phoneNumber'];
         this.phoneNumberControl.valueChanges
             .subscribe(() => this.changeFromSubControls());
+    }
+
+    get filteredCountries(): Observable<Country[]> {
+        return this._filteredCountries;
     }
 
     set selectedCountry(selectedCountry: Country | string | null) {
@@ -84,10 +87,10 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
     @Input()
     get value(): PhoneNumber | string | null {
 
-        const country = this.selectedCountry as Country;
+        const country = this.selectedCountry;
         const phoneNumber = this.phoneNumberControl.value;
 
-        if (country && country.id) {
+        if (country instanceof Country) {
             return new PhoneNumber(country, phoneNumber);
         } else {
             return new PhoneNumber(null, phoneNumber);
@@ -96,10 +99,9 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
 
     set value(value: PhoneNumber | string | null) {
 
-        let phoneNumber = value as PhoneNumber;
-        if (phoneNumber && phoneNumber.country && phoneNumber.phoneNumber) {
-            this.countryControl.setValue(phoneNumber.country);
-            this.phoneNumberControl.setValue(phoneNumber.phoneNumber);
+        if (value instanceof PhoneNumber) {
+            this.countryControl.setValue(value.country);
+            this.phoneNumberControl.setValue(value.phoneNumber);
         } else {
             this.countryControl.setValue(null);
             this.phoneNumberControl.setValue('');
@@ -115,26 +117,29 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
 
     private extractCountry(value: any) {
 
-        const countryValue = value as Country;
+        if (value instanceof Country) {
+            this.selectedCountry = value;
+            return;
+        } else if (!(typeof value === 'string')) {
+            return;
+        }
 
-        if (countryValue && countryValue.id) {
-            this.countryRepository.findById(countryValue.id)
-                .then(selectedCountry => this.selectedCountry = selectedCountry);
+        if (value.length < 1) {
+            this.selectedCountry = null;
         } else {
-            this.countryRepository.findByPhoneCode(countryValue.toString())
+            this.countryRepository.findByPhoneCode(value)
                 .then(selectedCountry => {
                     if (selectedCountry == null) {
-                        this.selectedCountry = countryValue
+                        this.selectedCountry = value;
                     } else {
-                        this.selectedCountry = selectedCountry
+                        this.selectedCountry = selectedCountry;
                     }
                 });
         }
     }
 
     public ngOnInit(): void {
-        this.filteredCountries = new CountryPhoneCodeAutocompleter(this.countryRepository, this.countryControl)
-            .filteredCountries;
+        this._filteredCountries = CountryPhoneCodeAutoCompleter.install(this.countryControl, this.countryRepository);
     }
 
     displayCountry(country?: Country): string {

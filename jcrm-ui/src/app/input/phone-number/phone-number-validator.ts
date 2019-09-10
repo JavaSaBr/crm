@@ -1,5 +1,5 @@
-import {AbstractControl, FormControl, ValidationErrors, Validator} from '@angular/forms';
-import {PhoneNumber} from './phone-number';
+import {AbstractControl, FormControl, ValidationErrors, Validator, ValidatorFn} from '@angular/forms';
+import {PhoneNumber} from '@app/entity/phone-number';
 import {Utils} from '@app/util/utils';
 import {environment} from '@app/env/environment';
 import {TranslateService} from '@ngx-translate/core';
@@ -7,7 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class PhoneNumberValidator implements Validator {
 
     public static readonly INSTANCE = new PhoneNumberValidator();
-    public static readonly FUN = (contorl: AbstractControl) => {
+    public static readonly FUN: ValidatorFn = (contorl: AbstractControl) => {
         return PhoneNumberValidator.INSTANCE.validate(contorl);
     };
 

@@ -7,7 +7,7 @@ export abstract class BaseAutoCompleter<T> {
 
     protected readonly _filteredElements = new Subject<T[]>();
 
-    private lastRequested: Date;
+    private lastRequested: number;
 
     protected constructor(control: AbstractControl) {
         this._filteredElements.next(BaseAutoCompleter.EMPTY_ELEMENTS);
@@ -15,21 +15,38 @@ export abstract class BaseAutoCompleter<T> {
             .subscribe(value => this.searchByValue(value));
     }
 
-    protected searchByValue(value: T | string) {
+    protected searchByValue(value: T | string): void {
         if (typeof value === 'string' && value.length > 0) {
-
-            const newRequestedTime = new Date();
-            this.lastRequested = newRequestedTime;
-
-            setTimeout(() => {
-                if (newRequestedTime == this.lastRequested) {
-                    this.searchByString(value);
-                }
-            }, 500);
-
+            if (this.getSearchTimeout() < 1) {
+                this.searchByString(value);
+            } else {
+                this.lazySearchByString(value);
+            }
         } else {
-            this._filteredElements.next(BaseAutoCompleter.EMPTY_ELEMENTS);
+            this.resetToDefault();
         }
+    }
+
+    protected resetToDefault(): void {
+        this._filteredElements.next(BaseAutoCompleter.EMPTY_ELEMENTS);
+    }
+
+    private lazySearchByString(value: string): void {
+
+        const searchTimeout = this.getSearchTimeout();
+        const newRequestedTime = Date.now();
+
+        this.lastRequested = newRequestedTime;
+
+        setTimeout(() => {
+            if (newRequestedTime == this.lastRequested) {
+                this.searchByString(value);
+            }
+        }, searchTimeout);
+    }
+
+    protected getSearchTimeout(): number {
+        return 500;
     }
 
     protected abstract searchByString(value: string): void;

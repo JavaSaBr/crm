@@ -16,6 +16,9 @@ export class BaseInput<T> implements MatFormFieldControl<T>, OnDestroy, ControlV
     public readonly id: string;
     public readonly stateChanges: Subject<void>;
 
+    @Input('hidePlaceholderOnFocus')
+    public hidePlaceholderOnFocus: boolean = false;
+
     public describedBy = '';
     public focused = false;
     public autofilled = false;
@@ -76,7 +79,11 @@ export class BaseInput<T> implements MatFormFieldControl<T>, OnDestroy, ControlV
 
     @Input()
     get placeholder() {
-        return this._placeholder;
+        if (this.hidePlaceholderOnFocus && this.focused) {
+            return '';
+        } else {
+            return this._placeholder;
+        }
     }
 
     set placeholder(placeholder: string) {
