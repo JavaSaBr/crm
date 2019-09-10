@@ -1,20 +1,17 @@
 
-.phone-number-input-container {
-  display: flex;
-  flex-direction: row;
+.phone-number-input-country-code {
+  max-width: 36px;
+  text-align: center;
 }
 
-.phone-number-input-country-code {
-  max-width: 40px;
+.phone-number-input-region-code {
+  max-width: 28px;
+  text-align: center;
 }
 
 .phone-number-input-code-wrapper {
   opacity: 0;
   transition: opacity 200ms;
-}
-
-.phone-number-input-spacer {
-  min-width: 3px;
 }
 
 :host.phone-number-input-floating .phone-number-input-code-wrapper {

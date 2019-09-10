@@ -1,15 +1,15 @@
-<div [formGroup]="formGroup" fxLayout="row">
-    <span class="phone-number-input-code-wrapper">(</span>
-    <input matInput formControlName="country" [matAutocomplete]="auto"
-           class="phone-number-input-country-code"
-           required>
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCountry" panelWidth="200px">
-        <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
-            <span class="flag-icon flag-icon-{{country.flagCode.toLowerCase()}} flag-icon-squared"></span>
-            {{country.name}}({{country.phoneCode}})
-        </mat-option>
-    </mat-autocomplete>
-    <span class="phone-number-input-code-wrapper">)</span>
-    <span class="phone-number-input-spacer"></span>
-    <input matInput formControlName="phoneNumber" required>
+<div [formGroup]="formGroup" fxLayout="row" fxLayoutGap="2px" fxLayoutAlign="start center">
+  <input matInput formControlName="country" [matAutocomplete]="auto"
+         class="phone-number-input-country-code"
+         maxlength="4" required>
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCountry" panelWidth="200px">
+    <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
+      <span class="flag-icon flag-icon-{{country.flagCode.toLowerCase()}} flag-icon-squared"></span>
+      {{country.name}}({{country.phoneCode}})
+    </mat-option>
+  </mat-autocomplete>
+  <span class="phone-number-input-code-wrapper">(</span>
+  <input matInput formControlName="phoneRegion" class="phone-number-input-region-code" maxlength="3" required>
+  <span class="phone-number-input-code-wrapper">)</span>
+  <input matInput formControlName="phoneNumber" maxlength="7" required>
 </div>

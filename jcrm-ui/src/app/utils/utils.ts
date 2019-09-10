@@ -7,4 +7,8 @@ export class Utils {
     static emptyIfNull(value: string) {
         return value == null ? '' : value;
     }
+
+    static ifNull<T>(value: T, supplier: () => T) {
+        return value == null ? supplier() : value;
+    }
 }

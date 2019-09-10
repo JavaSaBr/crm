@@ -21,6 +21,7 @@ export class ContactViewComponent implements AfterViewInit {
     readonly secondName: FormControl;
     readonly thirdName: FormControl;
     //readonly birthday: FormControl;
+    readonly phoneNumbers: FormControl;
 
     //readonly phoneNumber: FormControl;
     //readonly email: FormControl;
@@ -71,13 +72,15 @@ export class ContactViewComponent implements AfterViewInit {
         this.firstName = this.contactInfoFormGroup.controls['firstName'] as FormControl;
         this.secondName = this.contactInfoFormGroup.controls['secondName'] as FormControl;
         this.thirdName = this.contactInfoFormGroup.controls['thirdName'] as FormControl;
+        this.phoneNumbers = this.contactInfoFormGroup.controls['phoneNumbers'] as FormControl;
     }
 
     reload(contact: Contact | null): void {
-        this.contact = contact ? contact : new Contact();
+        this.contact = Contact.create(contact);
         this.firstName.setValue(Utils.emptyIfNull(this.contact.firstName));
         this.secondName.setValue(Utils.emptyIfNull(this.contact.secondName));
         this.thirdName.setValue(Utils.emptyIfNull(this.contact.thirdName));
+        this.phoneNumbers.setValue(Utils.ifNull(this.contact.phoneNumbers, () => []));
         this.hastChangesInContactInfo = false;
     }
 
@@ -116,7 +119,7 @@ export class ContactViewComponent implements AfterViewInit {
         const secondName = this.secondName.value;
         const thirdName = this.thirdName.value;
 
-        const contact = new Contact();
+        const contact = Contact.create();
         contact.firstName = firstName;
         contact.secondName = secondName;
         contact.thirdName = thirdName;

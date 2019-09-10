@@ -1,22 +1,32 @@
 import {UniqEntity} from '@app/entity/uniq-entity';
+import {ContactPhoneNumber} from '@app/entity/contact-phone-number';
 
 export class Contact extends UniqEntity {
 
-    assigner: number | null;
-    curators: number[] | null;
+    public static create(contact?: Contact | null): Contact {
 
-    firstName: string | null;
-    secondName: string | null;
-    thirdName: string | null;
-    birthday: Date | null;
+        return new Contact(
+            contact ? contact.id : 0,
+            contact ? contact.assigner : null,
+            contact ? contact.curators : null,
+            contact ? contact.firstName : null,
+            contact ? contact.secondName : null,
+            contact ? contact.thirdName : null,
+            contact ? contact.birthday : null,
+            contact ? contact.phoneNumbers : null,
+        );
+    }
 
-    constructor(contact?: Contact | null) {
-        super(contact ? contact.id : 0);
-        this.assigner = contact ? contact.assigner : null;
-        this.curators = contact ? contact.curators : null;
-        this.firstName = contact ? contact.firstName : null;
-        this.secondName = contact ? contact.secondName : null;
-        this.thirdName = contact ? contact.thirdName : null;
-        this.birthday = contact ? contact.birthday : null;
+    constructor(
+        id: number | null,
+        public assigner: number | null,
+        public curators: number[] | null,
+        public firstName: string | null,
+        public secondName: string | null,
+        public thirdName: string | null,
+        public birthday: Date | null,
+        public phoneNumbers: ContactPhoneNumber[] | null
+    ) {
+        super(id);
     }
 }

@@ -36,7 +36,7 @@ export class ContactRepository extends RemoteRepository<Contact> {
     }
 
     protected convert(contact: Contact): Contact {
-        return new Contact(contact);
+        return Contact.create(contact);
     }
 }
 

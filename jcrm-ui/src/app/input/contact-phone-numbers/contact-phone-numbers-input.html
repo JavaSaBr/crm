@@ -1,18 +1,18 @@
 <div fxLayout="column" fxFlex="100%" fxLayoutAlign="center start">
   <div fxLayout="row" fxFill fxFlex="100%" fxLayoutAlign="space-between center">
-    <mat-label>Phone number</mat-label>
+    <mat-label fxFlex="90%">Phone number</mat-label>
     <button mat-icon-button color="primary" aria-label="Add">
       <mat-icon (click)="addNew()">add_circle_outline</mat-icon>
     </button>
   </div>
-  <div fxLayout="row" fxLayoutGap="1px" fxFill fxFlex="100%" fxLayoutAlign="space-between center"
+  <div fxLayout="row" fxFill fxFlex="100%" fxLayoutAlign="space-between center"
        *ngFor="let element of entities">
-    <div fxLayout="column">
+    <div fxLayout="column" fxFlex="40%">
       <mat-form-field floatLabel="never">
         <phone-number-input [hidePlaceholderOnFocus]="true" [placeholder]="'Number'" [formControl]="findControlsFor(element)[0]" required></phone-number-input>
       </mat-form-field>
     </div>
-    <div fxLayout="column">
+    <div fxLayout="column" fxFlex="40%">
       <mat-form-field floatLabel="never">
         <mat-label>Type</mat-label>
         <mat-select value="{{element.type}}" [formControl]="findControlsFor(element)[1]"

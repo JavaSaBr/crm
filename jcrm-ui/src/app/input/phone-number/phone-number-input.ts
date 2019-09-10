@@ -28,6 +28,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
     public readonly formGroup: FormGroup;
 
     private readonly countryControl: AbstractControl;
+    private readonly phoneRegionControl: AbstractControl;
     private readonly phoneNumberControl: AbstractControl;
 
     private _filteredCountries: Observable<Country[]>;
@@ -47,6 +48,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
 
         this.formGroup = formBuilder.group({
             country: '',
+            phoneRegion: '',
             phoneNumber: '',
         });
 
@@ -54,6 +56,9 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
         this.countryControl.valueChanges
             .subscribe(value => this.extractCountry(value));
 
+        this.phoneRegionControl = this.formGroup.controls['phoneRegion'];
+        this.phoneRegionControl.valueChanges
+            .subscribe(() => this.changeFromSubControls());
         this.phoneNumberControl = this.formGroup.controls['phoneNumber'];
         this.phoneNumberControl.valueChanges
             .subscribe(() => this.changeFromSubControls());
@@ -79,21 +84,23 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
     get empty(): boolean {
 
         const country = this.selectedCountry;
+        const phoneRegion = this.phoneRegionControl.value;
         const phoneNumber = this.phoneNumberControl.value;
 
-        return country == null && !phoneNumber;
+        return country == null && !phoneRegion && !phoneNumber;
     }
 
     @Input()
     get value(): PhoneNumber | string | null {
 
         const country = this.selectedCountry;
+        const phoneRegion = this.phoneRegionControl.value;
         const phoneNumber = this.phoneNumberControl.value;
 
         if (country instanceof Country) {
-            return new PhoneNumber(country, phoneNumber);
+            return new PhoneNumber(country, phoneRegion, phoneNumber);
         } else {
-            return new PhoneNumber(null, phoneNumber);
+            return new PhoneNumber(null, phoneRegion, phoneNumber);
         }
     }
 
@@ -101,9 +108,11 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
 
         if (value instanceof PhoneNumber) {
             this.countryControl.setValue(value.country);
+            this.phoneRegionControl.setValue(value.phoneRegion);
             this.phoneNumberControl.setValue(value.phoneNumber);
         } else {
             this.countryControl.setValue(null);
+            this.phoneRegionControl.setValue('');
             this.phoneNumberControl.setValue('');
         }
 

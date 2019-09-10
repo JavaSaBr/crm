@@ -47,7 +47,7 @@ export class ContactWorkspaceComponent extends ObjectEditingWorkspaceComponent i
                         this.contact = loaded
                     });
             } else {
-                this.contact = new Contact();
+                this.contact = Contact.create();
             }
         });
     }
