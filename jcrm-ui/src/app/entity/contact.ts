@@ -1,5 +1,6 @@
 import {UniqEntity} from '@app/entity/uniq-entity';
 import {ContactPhoneNumber} from '@app/entity/contact-phone-number';
+import {ContactEmail} from '@app/entity/contact-email';
 
 export class Contact extends UniqEntity {
 
@@ -14,6 +15,7 @@ export class Contact extends UniqEntity {
             contact ? contact.thirdName : null,
             contact ? contact.birthday : null,
             contact ? contact.phoneNumbers : null,
+            contact ? contact.emails : null,
         );
     }
 
@@ -25,7 +27,8 @@ export class Contact extends UniqEntity {
         public secondName: string | null,
         public thirdName: string | null,
         public birthday: Date | null,
-        public phoneNumbers: ContactPhoneNumber[] | null
+        public phoneNumbers: ContactPhoneNumber[] | null,
+        public emails: ContactEmail[] | null
     ) {
         super(id);
     }

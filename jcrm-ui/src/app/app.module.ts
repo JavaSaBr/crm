@@ -56,6 +56,9 @@ import {ContactViewComponent} from '@app/component/contact/view/contact-view.com
 import {UserInput} from '@app/input/user/user-input';
 import {UsersInput} from '@app/input/users/users-input';
 import {ContactPhoneNumbersInput} from '@app/input/contact-phone-numbers/contact-phone-numbers-input';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {ContactEmailsInput} from '@app/input/contact-emails/contact-emails-input';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -87,7 +90,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         CountryInput,
         UserInput,
         UsersInput,
-        ContactPhoneNumbersInput
+        ContactPhoneNumbersInput,
+        ContactEmailsInput,
     ],
     imports: [
         BrowserModule,
@@ -120,6 +124,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatDialogModule,
         MatTabsModule,
         MatChipsModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
         TranslateModule.forRoot(
             {
                 useDefaultLang: true,

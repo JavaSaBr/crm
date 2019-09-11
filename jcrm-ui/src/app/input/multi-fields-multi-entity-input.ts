@@ -1,18 +1,11 @@
 import {BaseInput} from '@app/input/base-input';
 import {FormControl, NgControl} from '@angular/forms';
-import {Observable} from 'rxjs';
 import {ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {Entity} from '@app/entity/entity';
 
 export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends BaseInput<T[]> implements OnInit {
 
-    protected static readonly EMPTY_ENTITIES: any[] = [];
-    protected static readonly EMPTY_OBSERVABLE: Observable<any[]> = new Observable();
-
-    protected readonly entityControl: FormControl;
-
-    protected _availableEntities: Observable<T[]>;
     protected _entities: T[];
     protected _entityToControl: Map<T, FormControl[]>;
 
@@ -23,10 +16,8 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
     ) {
         super(ngControl, focusMonitor, elementRef);
 
-        this._entities = MultiFieldsMultiEntityInput.EMPTY_ENTITIES as T[];
+        this._entities = [];
         this._entityToControl = new Map();
-        this._availableEntities = null;
-        this.entityControl = new FormControl();
     }
 
     remove(entity: T): void {
@@ -65,10 +56,6 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
         return this._entities.length < 1;
     }
 
-    get availableEntities(): Observable<T[]> {
-        return this._availableEntities;
-    }
-
     @Input()
     get value(): T[] {
         return this._entities;
@@ -76,7 +63,6 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
 
     set value(entities: T[]) {
         this._entities = entities;
-        this.entityControl.setValue(null);
         this.stateChanges.next();
     }
 
@@ -85,11 +71,6 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
         this.onChange(this.value);
     }
 
-    protected installAutoComplete(): Observable<T[]> {
-        return MultiFieldsMultiEntityInput.EMPTY_OBSERVABLE;
-    };
-
     ngOnInit(): void {
-        this._availableEntities = this.installAutoComplete();
     }
 }

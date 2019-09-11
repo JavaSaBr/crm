@@ -20,8 +20,9 @@ export class ContactViewComponent implements AfterViewInit {
     readonly firstName: FormControl;
     readonly secondName: FormControl;
     readonly thirdName: FormControl;
-    //readonly birthday: FormControl;
+    readonly birthday: FormControl;
     readonly phoneNumbers: FormControl;
+    readonly emails: FormControl;
 
     //readonly phoneNumber: FormControl;
     //readonly email: FormControl;
@@ -62,17 +63,22 @@ export class ContactViewComponent implements AfterViewInit {
             thirdName: ['', [
                 Validators.required
             ]],
-            birthday: ['', ],
-            phoneNumbers: ['', ],
+            birthday: [],
+            phoneNumbers: [],
+            emails: [],
         });
         this.contactInfoFormGroup.valueChanges.subscribe(() => {
             this.hastChangesInContactInfo = true;
         });
 
-        this.firstName = this.contactInfoFormGroup.controls['firstName'] as FormControl;
-        this.secondName = this.contactInfoFormGroup.controls['secondName'] as FormControl;
-        this.thirdName = this.contactInfoFormGroup.controls['thirdName'] as FormControl;
-        this.phoneNumbers = this.contactInfoFormGroup.controls['phoneNumbers'] as FormControl;
+        const contactInfoControls = this.contactInfoFormGroup.controls;
+
+        this.firstName = contactInfoControls['firstName'] as FormControl;
+        this.secondName = contactInfoControls['secondName'] as FormControl;
+        this.thirdName = contactInfoControls['thirdName'] as FormControl;
+        this.birthday = contactInfoControls['birthday'] as FormControl;
+        this.phoneNumbers = contactInfoControls['phoneNumbers'] as FormControl;
+        this.emails = contactInfoControls['emails'] as FormControl;
     }
 
     reload(contact: Contact | null): void {
@@ -80,7 +86,9 @@ export class ContactViewComponent implements AfterViewInit {
         this.firstName.setValue(Utils.emptyIfNull(this.contact.firstName));
         this.secondName.setValue(Utils.emptyIfNull(this.contact.secondName));
         this.thirdName.setValue(Utils.emptyIfNull(this.contact.thirdName));
-        this.phoneNumbers.setValue(Utils.ifNull(this.contact.phoneNumbers, () => []));
+        this.birthday.setValue(this.contact.birthday);
+        this.phoneNumbers.setValue(Utils.copyArray(this.contact.phoneNumbers));
+        this.emails.setValue(Utils.copyArray(this.contact.emails));
         this.hastChangesInContactInfo = false;
     }
 

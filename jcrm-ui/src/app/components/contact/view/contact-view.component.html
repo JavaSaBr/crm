@@ -36,9 +36,12 @@
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>Birthday</mat-label>
-            <input matInput formControlName="birthday">
+            <input matInput [matDatepicker]="birthdayDatepicker" formControlName="birthday">
+            <mat-datepicker-toggle matSuffix [for]="birthdayDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #birthdayDatepicker></mat-datepicker>
           </mat-form-field>
           <contact-phones-input formControlName="phoneNumbers"></contact-phones-input>
+          <contact-emails-input formControlName="emails"></contact-emails-input>
         </form>
       </div>
       <div fxFlex="100%" class="container">

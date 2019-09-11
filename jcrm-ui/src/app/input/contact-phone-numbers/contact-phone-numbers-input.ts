@@ -5,6 +5,7 @@ import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
 import {ContactPhoneNumber, PhoneNumberType} from '@app/entity/contact-phone-number';
 import {PhoneNumberValidator} from '../phone-number/phone-number-validator';
+import {PhoneNumber} from '@app/entity/phone-number';
 
 @Component({
     selector: 'contact-phones-input',
@@ -51,7 +52,10 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
     }
 
     addNew() {
-        this.addEntity(new ContactPhoneNumber('123456', PhoneNumberType.MOBILE));
+        this.addEntity(new ContactPhoneNumber(
+            new PhoneNumber(null, '', ''),
+            PhoneNumberType.MOBILE)
+        );
     }
 
     changePhoneType(phoneNumber: ContactPhoneNumber, event: MatSelectChange) {

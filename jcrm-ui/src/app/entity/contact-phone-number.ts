@@ -1,4 +1,5 @@
 import {Entity} from '@app/entity/entity';
+import {PhoneNumber} from '@app/entity/phone-number';
 
 export enum PhoneNumberType {
     WORK = 'work',
@@ -6,7 +7,7 @@ export enum PhoneNumberType {
 }
 
 export class ContactPhoneNumber extends Entity {
-    constructor(public phoneNumber: string | null, public type: PhoneNumberType | null) {
+    constructor(public phoneNumber: PhoneNumber | null, public type: PhoneNumberType | null) {
         super();
     }
 }
