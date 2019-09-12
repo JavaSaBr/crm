@@ -1,6 +1,8 @@
 import {UniqEntity} from '@app/entity/uniq-entity';
 import {ContactPhoneNumber} from '@app/entity/contact-phone-number';
 import {ContactEmail} from '@app/entity/contact-email';
+import {ContactSite} from '@app/entity/contact-site';
+import {ContactMessenger} from '@app/entity/contact-messenger';
 
 export class Contact extends UniqEntity {
 
@@ -16,6 +18,9 @@ export class Contact extends UniqEntity {
             contact ? contact.birthday : null,
             contact ? contact.phoneNumbers : null,
             contact ? contact.emails : null,
+            contact ? contact.sites : null,
+            contact ? contact.messengers : null,
+            contact ? contact.company : null,
         );
     }
 
@@ -28,7 +33,10 @@ export class Contact extends UniqEntity {
         public thirdName: string | null,
         public birthday: Date | null,
         public phoneNumbers: ContactPhoneNumber[] | null,
-        public emails: ContactEmail[] | null
+        public emails: ContactEmail[] | null,
+        public sites: ContactSite[] | null,
+        public messengers: ContactMessenger[] | null,
+        public company: string | null
     ) {
         super(id);
     }

@@ -6,10 +6,11 @@
           <p>ABOUT</p>
           <button *ngIf="!editContactInfo" class="contact-info-button" mat-button color="primary">EDIT</button>
           <button *ngIf="editContactInfo && contact != null && contact.id"
-                  [disabled]="disabled || !contactInfoFormGroup.valid || !hastChangesInContactInfo"
+                  [disabled]="disabled || !contactInfoFormGroup.valid || !hasChangesInContactInfo"
                   class="contact-info-button" mat-button color="primary">SAVE
           </button>
-          <button *ngIf="editContactInfo && contact != null && !contact.id" [disabled]="disabled || !contactInfoFormGroup.valid"
+          <button *ngIf="editContactInfo && contact != null && !contact.id"
+                  [disabled]="disabled || !contactInfoFormGroup.valid"
                   class="contact-info-button" mat-button color="primary" (click)="create()">CREATE
           </button>
         </div>
@@ -20,7 +21,7 @@
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>Curators</mat-label>
-            <users-input formControlName="curators" required></users-input>
+            <users-input formControlName="curators"></users-input>
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>First name</mat-label>
@@ -32,7 +33,7 @@
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>Third name</mat-label>
-            <input matInput formControlName="thirdName" required>
+            <input matInput formControlName="thirdName">
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>Birthday</mat-label>
@@ -42,6 +43,12 @@
           </mat-form-field>
           <contact-phones-input formControlName="phoneNumbers"></contact-phones-input>
           <contact-emails-input formControlName="emails"></contact-emails-input>
+          <contact-sites-input formControlName="sites"></contact-sites-input>
+          <contact-messengers-input formControlName="messengers"></contact-messengers-input>
+          <mat-form-field class="form-field">
+            <mat-label>Company</mat-label>
+            <input matInput formControlName="company">
+          </mat-form-field>
         </form>
       </div>
       <div fxFlex="100%" class="container">

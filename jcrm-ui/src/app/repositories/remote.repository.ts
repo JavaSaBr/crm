@@ -34,6 +34,15 @@ export class RemoteRepository<T extends UniqEntity> implements Repository<T> {
             });
     }
 
+    public findByIds(ids: number[]): Promise<T[]> {
+        return this.securityService.postRequest<T[]>(this.buildFetchUrlByIds(), ids)
+            .then(value => value.body.map(entity => this.convert(entity)))
+            .catch(resp => {
+                ErrorResponse.convertToErrorOrNull(resp, this.translateService);
+                return null;
+            });
+    }
+
     protected convert(entity: T): T {
         throw new Error('Not yet implemented');
     }
@@ -43,6 +52,10 @@ export class RemoteRepository<T extends UniqEntity> implements Repository<T> {
     }
 
     protected buildFetchUrlById(id: number): string {
+        throw new Error('Not yet implemented');
+    }
+
+    protected buildFetchUrlByIds(): string {
         throw new Error('Not yet implemented');
     }
 }

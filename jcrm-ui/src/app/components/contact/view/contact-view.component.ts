@@ -4,6 +4,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {Contact} from '@app/entity/contact';
 import {ContactRepository} from '@app/repository/contact/contact.repository';
 import {Utils} from '@app/util/utils';
+import {UserRepository} from '@app/repository/user/user.repository';
+import {User} from '@app/entity/user';
 
 @Component({
     selector: 'app-contact-view',
@@ -14,21 +16,17 @@ export class ContactViewComponent implements AfterViewInit {
 
     readonly contactInfoFormGroup: FormGroup;
 
-    //readonly assigner: FormControl;
-    //readonly curators: FormControl;
-
+    readonly assigner: FormControl;
+    readonly curators: FormControl;
     readonly firstName: FormControl;
     readonly secondName: FormControl;
     readonly thirdName: FormControl;
     readonly birthday: FormControl;
     readonly phoneNumbers: FormControl;
     readonly emails: FormControl;
-
-    //readonly phoneNumber: FormControl;
-    //readonly email: FormControl;
-    //readonly site: FormControl;
-    //readonly messenger: FormControl;
-    //readonly company: FormControl;
+    readonly sites: FormControl;
+    readonly messengers: FormControl;
+    readonly company: FormControl;
 
     @Input("contact")
     contact: Contact | null;
@@ -39,15 +37,16 @@ export class ContactViewComponent implements AfterViewInit {
     editContactInfo: boolean;
 
     disabled: boolean;
-    hastChangesInContactInfo: boolean;
+    hasChangesInContactInfo: boolean;
 
     constructor(
         formBuilder: FormBuilder,
         private readonly translateService: TranslateService,
-        private readonly contactService: ContactRepository
+        private readonly contactService: ContactRepository,
+        private readonly userRepository: UserRepository
     ) {
         this.disabled = false;
-        this.hastChangesInContactInfo = false;
+        this.hasChangesInContactInfo = false;
         this.contact = null;
         this.startEditableState = false;
         this.editContactInfo = !this.startEditableState;
@@ -66,30 +65,58 @@ export class ContactViewComponent implements AfterViewInit {
             birthday: [],
             phoneNumbers: [],
             emails: [],
+            sites: [],
+            messengers: [],
+            company: [''],
         });
         this.contactInfoFormGroup.valueChanges.subscribe(() => {
-            this.hastChangesInContactInfo = true;
+            this.hasChangesInContactInfo = true;
         });
 
         const contactInfoControls = this.contactInfoFormGroup.controls;
 
+        this.assigner = contactInfoControls['assigner'] as FormControl;
+        this.curators = contactInfoControls['curators'] as FormControl;
         this.firstName = contactInfoControls['firstName'] as FormControl;
         this.secondName = contactInfoControls['secondName'] as FormControl;
         this.thirdName = contactInfoControls['thirdName'] as FormControl;
         this.birthday = contactInfoControls['birthday'] as FormControl;
         this.phoneNumbers = contactInfoControls['phoneNumbers'] as FormControl;
         this.emails = contactInfoControls['emails'] as FormControl;
+        this.sites = contactInfoControls['sites'] as FormControl;
+        this.messengers = contactInfoControls['messengers'] as FormControl;
+        this.company = contactInfoControls['company'] as FormControl;
     }
 
     reload(contact: Contact | null): void {
+
         this.contact = Contact.create(contact);
+        this.assigner.setValue(null);
+        this.curators.setValue([]);
         this.firstName.setValue(Utils.emptyIfNull(this.contact.firstName));
         this.secondName.setValue(Utils.emptyIfNull(this.contact.secondName));
         this.thirdName.setValue(Utils.emptyIfNull(this.contact.thirdName));
         this.birthday.setValue(this.contact.birthday);
         this.phoneNumbers.setValue(Utils.copyArray(this.contact.phoneNumbers));
         this.emails.setValue(Utils.copyArray(this.contact.emails));
-        this.hastChangesInContactInfo = false;
+        this.sites.setValue(Utils.copyArray(this.contact.sites));
+        this.messengers.setValue(Utils.copyArray(this.contact.messengers));
+        this.company.setValue(Utils.emptyIfNull(this.contact.company));
+
+        const assignerId = this.contact.assigner;
+        const curatorIds = this.contact.curators;
+
+        if (assignerId != null) {
+            this.userRepository.findById(assignerId)
+                .then(value => this.assigner.setValue(value));
+        }
+
+        if(curatorIds != null) {
+            this.userRepository.findByIds(curatorIds)
+                .then(value => this.curators.setValue(value));
+        }
+
+        this.hasChangesInContactInfo = false;
     }
 
     ngAfterViewInit(): void {
@@ -120,23 +147,31 @@ export class ContactViewComponent implements AfterViewInit {
     }
 
     create(): void {
-
         this.disabled = true;
-
-        const firstName = this.firstName.value;
-        const secondName = this.secondName.value;
-        const thirdName = this.thirdName.value;
-
-        const contact = Contact.create();
-        contact.firstName = firstName;
-        contact.secondName = secondName;
-        contact.thirdName = thirdName;
-
-        this.contactService.create(contact)
+        this.contactService.create(this.syncContactWithForm(Contact.create()))
             .then(contact => {
                 this.reload(contact);
                 this.disabled = false;
             })
+    }
+
+    syncContactWithForm(contact: Contact): Contact {
+        const assigner = this.assigner.value;
+        const curators = this.curators.value as User[];
+
+        contact.assigner = assigner instanceof User ? assigner.id : null;
+        contact.curators = curators != null && curators.length > 0 ? curators.map(value => value.id) : [];
+        contact.firstName = this.firstName.value;
+        contact.secondName = this.secondName.value;
+        contact.thirdName = this.thirdName.value;
+        contact.birthday = this.birthday.value as Date;
+        contact.phoneNumbers = this.phoneNumbers.value;
+        contact.emails = this.emails.value;
+        contact.sites = this.sites.value;
+        contact.messengers = this.messengers.value;
+        contact.company = this.company.value;
+
+        return contact;
     }
 
     saveContactInfo(): void {
