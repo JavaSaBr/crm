@@ -80,7 +80,7 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
         var version = notNull(data.getInt(4));
         var name = data.getString(1);
         var orgId = notNull(data.getLong(2));
-        var roles = JAsyncUtils.fromJsonArray(
+        var roles = JAsyncUtils.fromJsonIds(
             data.getString(3),
             AccessRole::require
         );

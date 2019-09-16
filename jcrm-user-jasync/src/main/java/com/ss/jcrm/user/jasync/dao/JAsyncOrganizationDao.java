@@ -130,7 +130,7 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
 
         var asyncCountry = countryId > 0 ? countryDao.findById(countryId) : Mono.<Country>empty();
         var asyncCity = cityId > 0 ? cityDao.findById(cityId) : Mono.<City>empty();
-        var asyncIndustries = JAsyncUtils.fromJsonArrayAsync(data.getString(9), industryDao, Dao::requireById);
+        var asyncIndustries = JAsyncUtils.fromJsonIdsAsync(data.getString(9), industryDao, Dao::requireById);
 
         return Flux.concat(asyncCity, asyncCountry, asyncIndustries)
             .last().map(ignore -> new DefaultOrganization(

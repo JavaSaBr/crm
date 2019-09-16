@@ -1,6 +1,6 @@
 package com.ss.jcrm.dao;
 
-public interface VersionedEntity extends Entity {
+public interface VersionedUniqEntity extends UniqEntity {
 
     int getVersion();
 

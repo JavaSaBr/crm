@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.web.service.impl;
 
 import com.ss.jcrm.base.utils.Reloadable;
-import com.ss.jcrm.dao.NamedEntity;
+import com.ss.jcrm.dao.NamedUniqEntity;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import com.ss.rlib.common.util.array.Array;
@@ -22,7 +22,7 @@ import java.util.function.Function;
  * @param <C> the type of collection of all resources.
  * @param <R> the type of entities resource.
  */
-public class DefaultCachedDictionaryService<T extends NamedEntity, R, C> implements
+public class DefaultCachedDictionaryService<T extends NamedUniqEntity, R, C> implements
     CachedDictionaryService<R, C>, Reloadable {
 
     @AllArgsConstructor

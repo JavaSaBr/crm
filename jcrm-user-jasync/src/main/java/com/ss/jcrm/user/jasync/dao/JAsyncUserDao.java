@@ -1,7 +1,6 @@
 package com.ss.jcrm.user.jasync.dao;
 
-import static com.ss.jcrm.jasync.util.JAsyncUtils.fromJsonArrayAsync;
-import static com.ss.jcrm.jasync.util.JAsyncUtils.toJsonArray;
+import static com.ss.jcrm.jasync.util.JAsyncUtils.fromJsonIdsAsync;
 import static com.ss.rlib.common.util.ObjectUtils.ifNull;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
@@ -112,7 +111,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 password,
                 salt,
                 organization.getId(),
-                toJsonArray(roles),
+                JAsyncUtils.idsToJson(roles),
                 firstName,
                 secondName,
                 thirdName,
@@ -158,8 +157,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 user.getSecondName(),
                 user.getThirdName(),
                 user.getPhoneNumber(),
-                toJsonArray(user.getRoles()),
-                toJsonArray(user.getGroups()),
+                JAsyncUtils.idsToJson(user.getRoles()),
+                JAsyncUtils.idsToJson(user.getGroups()),
                 user.getVersion() + 1,
                 user.isEmailConfirmed(),
                 user.getPasswordVersion(),
@@ -208,13 +207,13 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         byte[] password = data.getAs(7);
         byte[] salt = data.getAs(8);
 
-        var roles = JAsyncUtils.fromJsonArray(
+        var roles = JAsyncUtils.fromJsonIds(
             data.getString(9),
             AccessRole::require
         );
 
         var orgAsync = organizationDao.requireById(orgId);
-        var groupsAsync = fromJsonArrayAsync(
+        var groupsAsync = JAsyncUtils.fromJsonIdsAsync(
             data.getString(10),
             userGroupDao,
             Dao::requireById

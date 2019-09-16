@@ -1,38 +1,47 @@
 package com.ss.jcrm.client.jasync.dao;
 
+import static com.ss.jcrm.jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
+import com.ss.jcrm.client.api.*;
+import com.ss.jcrm.client.api.impl.*;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
-import com.ss.jcrm.client.api.SimpleContact;
 import com.ss.jcrm.client.api.dao.SimpleContactDao;
-import com.ss.jcrm.client.api.impl.DefaultSimpleContact;
 import com.ss.jcrm.user.api.Organization;
+import com.ss.jcrm.user.api.User;
 import com.ss.rlib.common.util.array.Array;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> implements SimpleContactDao {
 
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"org_id\", \"first_name\", \"second_name\", " +
-        " \"third_name\", \"version\" from \"${schema}\".\"contact\" where \"id\" = ?";
+    private static final String CONTACT_FIELDS = "\"id\", \"org_id\", \"assigner\", \"curators\", \"first_name\"," +
+        " \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"emails\", \"sites\", \"messengers\"," +
+        " \"company\", \"version\"";
 
-    private static final String Q_SELECT_BY_ORG_ID = "select \"id\", \"org_id\", \"first_name\", \"second_name\", " +
-        " \"third_name\", \"version\" from \"${schema}\".\"contact\" where \"org_id\" = ?";
+    private static final String Q_SELECT_BY_ID = "select " + CONTACT_FIELDS + " from \"${schema}\".\"contact\"" +
+        " where \"id\" = ?";
 
-    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select \"id\", \"org_id\", \"first_name\", \"second_name\", " +
-        " \"third_name\", \"version\" from \"${schema}\".\"contact\" where \"id\" = ? AND \"org_id\" = ?";
+    private static final String Q_SELECT_BY_ORG_ID = "select " + CONTACT_FIELDS + " from \"${schema}\".\"contact\"" +
+        " where \"org_id\" = ?";
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"org_id\", \"first_name\", \"second_name\", " +
-        "\"third_name\") values (?,?,?,?) returning id";
+    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + CONTACT_FIELDS + " from" +
+        " \"${schema}\".\"contact\" where \"id\" = ? AND \"org_id\" = ?";
 
-    private static final String Q_UPDATE = "update \"${schema}\".\"contact\" set \"first_name\" = ?, \"second_name\" = ?," +
-        " \"third_name\" = ? where \"id\" = ? and \"version\" = ?";
+    private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"org_id\", \"assigner\", \"curators\", " +
+        "\"first_name\", \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"emails\", \"sites\", " +
+        "\"messengers\", \"company\") values (?,?,?,?,?,?,?,?,?,?,?,?) returning id";
+
+    private static final String Q_UPDATE = "update \"${schema}\".\"contact\" set \"curators\" = ?, \"first_name\" = ?," +
+        " \"second_name\" = ?, \"third_name\" = ?, \"birthday\" = ?, \"phone_numbers\" = ?, \"emails\" = ?," +
+        " \"sites\" = ?, \"messengers\" = ?, \"company\" = ? where \"id\" = ? and \"version\" = ?";
 
     private final String querySelectById;
     private final String querySelectByIdAndOrgId;
@@ -59,15 +68,51 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
     @Override
     public @NotNull Mono<@NotNull SimpleContact> create(
+        @NotNull User assigner,
+        @Nullable User[] curators,
         @NotNull Organization organization,
-        @Nullable String firstName,
-        @Nullable String secondName,
-        @Nullable String thirdName
+        @NotNull String firstName,
+        @NotNull String secondName,
+        @Nullable String thirdName,
+        @Nullable LocalDate birthday,
+        @Nullable ContactPhoneNumber[] phoneNumbers,
+        @Nullable ContactEmail[] emails,
+        @Nullable ContactSite[] sites,
+        @Nullable ContactMessenger[] messengers,
+        @Nullable String company
     ) {
         return insert(
             queryInsert,
-            Arrays.asList(organization.getId(), firstName, secondName, thirdName),
-            id -> new DefaultSimpleContact(id, organization.getId(), firstName, secondName, thirdName, 0)
+            Arrays.asList(
+                organization.getId(),
+                assigner.getId(),
+                idsToJson(curators),
+                firstName,
+                secondName,
+                thirdName,
+                toDate(birthday),
+                toJson(phoneNumbers),
+                toJson(emails),
+                toJson(sites),
+                toJson(messengers),
+                company
+            ),
+            id -> new DefaultSimpleContact(
+                id,
+                assigner.getId(),
+                toIds(curators),
+                organization.getId(),
+                firstName,
+                secondName,
+                thirdName,
+                company,
+                birthday,
+                phoneNumbers,
+                emails,
+                sites,
+                messengers,
+                0
+            )
         );
     }
 
@@ -76,9 +121,16 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         return update(
             queryUpdate,
             Arrays.asList(
+                contact.getCuratorIds(),
                 contact.getFirstName(),
                 contact.getSecondName(),
                 contact.getThirdName(),
+                toDate(contact.getBirthday()),
+                toJson(contact.getPhoneNumbers()),
+                toJson(contact.getEmails()),
+                toJson(contact.getSites()),
+                toJson(contact.getMessengers()),
+                contact.getCompany(),
                 contact.getId(),
                 contact.getVersion()
             ),
@@ -109,11 +161,37 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
         var id = notNull(data.getLong(0));
         var organizationId = notNull(data.getLong(1));
-        var firstName = data.getString(2);
-        var secondName = data.getString(3);
-        var thirdName = data.getString(4);
-        var version = notNull(data.getInt(5));
+        var assignerId = notNull(data.getLong(2));
+        var curatorIds = jsonToIds(data.getString(3));
 
-        return new DefaultSimpleContact(id, organizationId, firstName, secondName, thirdName, version);
+        var firstName = data.getString(4);
+        var secondName = data.getString(5);
+        var thirdName = data.getString(6);
+        var birthday = toJavaDate(data.getAs(7));
+
+        var phoneNumbers = arrayFromJson(data.getString(8), DefaultContactPhoneNumber[].class);
+        var emails = arrayFromJson(data.getString(9), DefaultContactEmail[].class);
+        var sites = arrayFromJson(data.getString(10), DefaultContactSite[].class);
+        var messengers = arrayFromJson(data.getString(11), DefaultContactMessenger[].class);
+
+        var company = data.getString(12);
+        var version = notNull(data.getInt(13));
+
+        return new DefaultSimpleContact(
+            id,
+            assignerId,
+            curatorIds,
+            organizationId,
+            firstName,
+            secondName,
+            thirdName,
+            company,
+            birthday,
+            phoneNumbers,
+            emails,
+            sites,
+            messengers,
+            version
+        );
     }
 }

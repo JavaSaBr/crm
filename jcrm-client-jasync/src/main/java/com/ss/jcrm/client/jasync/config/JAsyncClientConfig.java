@@ -4,10 +4,20 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.pool.PostgreSQLConnectionFactory;
-import com.ss.jcrm.jasync.config.JAsyncConfig;
-import com.ss.jcrm.jasync.util.JAsyncUtils;
+import com.jsoniter.JsonIterator;
+import com.jsoniter.output.EncodingMode;
+import com.jsoniter.output.JsonStream;
+import com.jsoniter.spi.DecodingMode;
+import com.jsoniter.spi.JsoniterSpi;
+import com.ss.jcrm.base.utils.HasId;
+import com.ss.jcrm.client.api.EmailType;
+import com.ss.jcrm.client.api.MessengerType;
+import com.ss.jcrm.client.api.PhoneNumberType;
+import com.ss.jcrm.client.api.SiteType;
 import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.client.jasync.dao.JAsyncSimpleContactDao;
+import com.ss.jcrm.jasync.config.JAsyncConfig;
+import com.ss.jcrm.jasync.util.JAsyncUtils;
 import io.netty.channel.EventLoopGroup;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +37,28 @@ import java.util.concurrent.ExecutorService;
 })
 @Import(JAsyncConfig.class)
 public class JAsyncClientConfig {
+
+    static {
+        JsonIterator.setMode(DecodingMode.DYNAMIC_MODE_AND_MATCH_FIELD_WITH_HASH);
+        JsonStream.setMode(EncodingMode.DYNAMIC_MODE);
+
+        synchronized (JsoniterSpi.class) {
+
+            JsoniterSpi.registerTypeEncoder(PhoneNumberType.class,
+                (obj, stream) -> stream.writeVal(((HasId) obj).getId()));
+            JsoniterSpi.registerTypeEncoder(EmailType.class,
+                (obj, stream) -> stream.writeVal(((HasId) obj).getId()));
+            JsoniterSpi.registerTypeEncoder(MessengerType.class,
+                (obj, stream) -> stream.writeVal(((HasId) obj).getId()));
+            JsoniterSpi.registerTypeEncoder(SiteType.class,
+                (obj, stream) -> stream.writeVal(((HasId) obj).getId()));
+
+            JsoniterSpi.registerTypeDecoder(PhoneNumberType.class, iter -> PhoneNumberType.of(iter.readInt()));
+            JsoniterSpi.registerTypeDecoder(EmailType.class, iter -> EmailType.of(iter.readInt()));
+            JsoniterSpi.registerTypeDecoder(MessengerType.class, iter -> MessengerType.of(iter.readInt()));
+            JsoniterSpi.registerTypeDecoder(SiteType.class, iter -> SiteType.of(iter.readInt()));
+        }
+    }
 
     @Autowired
     private Environment env;

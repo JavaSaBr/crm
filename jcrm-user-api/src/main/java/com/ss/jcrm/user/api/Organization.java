@@ -1,7 +1,7 @@
 package com.ss.jcrm.user.api;
 
-import com.ss.jcrm.dao.NamedEntity;
-import com.ss.jcrm.dao.VersionedEntity;
+import com.ss.jcrm.dao.NamedUniqEntity;
+import com.ss.jcrm.dao.VersionedUniqEntity;
 import com.ss.jcrm.dictionary.api.City;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.Industry;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public interface Organization extends NamedEntity, VersionedEntity {
+public interface Organization extends NamedUniqEntity, VersionedUniqEntity {
 
     @Nullable String getAddress();
 

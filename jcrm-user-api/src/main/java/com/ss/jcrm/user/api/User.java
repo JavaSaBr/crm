@@ -1,13 +1,13 @@
 package com.ss.jcrm.user.api;
 
-import com.ss.jcrm.dao.VersionedEntity;
+import com.ss.jcrm.dao.VersionedUniqEntity;
 import com.ss.jcrm.security.AccessRole;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public interface User extends VersionedEntity {
+public interface User extends VersionedUniqEntity {
 
     @NotNull String getEmail();
 

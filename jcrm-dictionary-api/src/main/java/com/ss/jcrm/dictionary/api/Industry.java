@@ -1,6 +1,6 @@
 package com.ss.jcrm.dictionary.api;
 
-import com.ss.jcrm.dao.NamedEntity;
+import com.ss.jcrm.dao.NamedUniqEntity;
 
-public interface Industry extends NamedEntity {
+public interface Industry extends NamedUniqEntity {
 }

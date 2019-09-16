@@ -5,10 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-
-public interface Dao<T extends Entity> {
+public interface Dao<T extends UniqEntity> {
 
     @NotNull Mono<@Nullable T> findById(long id);
 

@@ -5,8 +5,8 @@ import static com.ss.rlib.common.util.array.ArrayCollectors.toArray;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.Dao;
-import com.ss.jcrm.dao.Entity;
-import com.ss.jcrm.dao.VersionedEntity;
+import com.ss.jcrm.dao.UniqEntity;
+import com.ss.jcrm.dao.VersionedUniqEntity;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
 import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.jasync.function.JAsyncBiConverter;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.CompletionException;
 
 @AllArgsConstructor
-public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
+public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> {
 
     protected final ConnectionPool<? extends ConcreteConnection> connectionPool;
 
@@ -71,9 +71,9 @@ public abstract class AbstractJAsyncDao<T extends Entity> implements Dao<T> {
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
-                if (entity instanceof VersionedEntity) {
+                if (entity instanceof VersionedUniqEntity) {
 
-                    var versioned = (VersionedEntity) entity;
+                    var versioned = (VersionedUniqEntity) entity;
 
                     if (queryResult.getRowsAffected() < 1) {
                         throw new NotActualObjectDaoException(

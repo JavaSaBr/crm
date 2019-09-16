@@ -1,10 +1,10 @@
 package com.ss.jcrm.jasync.function;
 
-import com.ss.jcrm.dao.Entity;
+import com.ss.jcrm.dao.UniqEntity;
 import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface
-public interface JAsyncCreationCallback<T extends Entity> {
+public interface JAsyncCreationCallback<T extends UniqEntity> {
 
     @Nullable T handle(long id);
 }

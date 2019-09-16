@@ -9,6 +9,7 @@ dependencies {
     compile project(":jcrm-base-spring")
     
     compile "com.jsoniter:jsoniter:$jsointerVersion"
+    compile "org.javassist:javassist:$javassistVersion"
     compile "org.postgresql:postgresql:$postgresqlVersion"
     compile "com.github.jasync-sql:jasync-postgresql:$jasyncVersion"
     compile "com.github.jasync-sql:jasync-common:$jasyncVersion"

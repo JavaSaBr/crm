@@ -15,37 +15,32 @@ import com.ss.jcrm.base.utils.HasId;
 import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.rlib.common.function.ObjectLongFunction;
+import com.ss.rlib.common.util.ArrayUtils;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.EventLoopGroup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 import java.util.function.LongFunction;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 public class JAsyncUtils {
 
-    public static <T> T unwrapJoin(@NotNull CompletableFuture<T> future) {
-        try {
-            return future.join();
-        } catch (CompletionException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            }
-            throw e;
-        }
-    }
+    private static final long[] EMPTY_IDS = new long[0];
 
     public static <T> @NotNull BiFunction<T, Throwable, T> handleException() {
 
@@ -69,7 +64,7 @@ public class JAsyncUtils {
         };
     }
 
-    public static  @NotNull DaoException convert(@NotNull GenericDatabaseException exception) {
+    public static @NotNull DaoException convert(@NotNull GenericDatabaseException exception) {
 
         var errorMessage = exception.getErrorMessage();
         var fields = errorMessage.getFields();
@@ -117,7 +112,46 @@ public class JAsyncUtils {
         );
     }
 
-    public static <T> @NotNull Set<T> fromJsonArray(
+    public static @Nullable LocalDate toDate(@Nullable java.time.LocalDate localDate) {
+        if (localDate == null) {
+            return null;
+        } else {
+            return new LocalDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
+        }
+    }
+
+    public static @NotNull LocalDateTime toDateTime(@NotNull Instant instant) {
+        return new LocalDateTime(instant.toEpochMilli());
+    }
+
+    public static @NotNull Instant toJavaInstant(@NotNull LocalDateTime dateTime) {
+        return dateTime.toDate().toInstant();
+    }
+
+    public static @Nullable java.time.LocalDate toJavaDate(@Nullable LocalDate dateTime) {
+        if (dateTime == null) {
+            return null;
+        } else {
+            return java.time.LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth());
+        }
+    }
+
+    public static <T> @NotNull T[] arrayFromJson(@Nullable String json, @NotNull Class<T[]> type) {
+
+        if (StringUtils.isEmpty(json)) {
+            return ArrayUtils.create(type.getComponentType(), 0);
+        }
+
+        var deserialize = JsonIterator.deserialize(json, type);
+
+        if (deserialize == null) {
+            return ArrayUtils.create(type.getComponentType(), 0);
+        } else {
+            return deserialize;
+        }
+    }
+
+    public static <T> @NotNull Set<T> fromJsonIds(
         @Nullable String json,
         @NotNull LongFunction<T> function
     ) {
@@ -137,12 +171,12 @@ public class JAsyncUtils {
             .collect(toUnmodifiableSet());
     }
 
-    public static <T> @NotNull Mono<@NotNull Set<T>> fromJsonArrayAsync(
+    public static <T> @NotNull Mono<@NotNull Set<T>> fromJsonIdsAsync(
         @Nullable String json,
         @NotNull LongFunction<Mono<T>> function
     ) {
 
-        if (StringUtils.isEmpty(json)) {
+        if (StringUtils.isEmpty(json) || "[]".equals(json)) {
             return Mono.just(Set.of());
         }
 
@@ -159,7 +193,7 @@ public class JAsyncUtils {
             .map(Collections::unmodifiableSet);
     }
 
-    public static <T, A> @NotNull Mono<@NotNull Set<T>> fromJsonArrayAsync(
+    public static <T, A> @NotNull Mono<@NotNull Set<T>> fromJsonIdsAsync(
         @Nullable String json,
         @NotNull A argument,
         @NotNull ObjectLongFunction<A, Mono<T>> function
@@ -182,7 +216,44 @@ public class JAsyncUtils {
             .map(Collections::unmodifiableSet);
     }
 
-    public static <T extends HasId> @Nullable String toJsonArray(@NotNull Set<T> entities) {
+    public static <T extends HasId> long @NotNull [] toIds(@Nullable T[] entities) {
+
+        if (entities == null || entities.length < 1) {
+            return EMPTY_IDS;
+        }
+
+        return Stream.of(entities)
+            .mapToLong(HasId::getId)
+            .toArray();
+    }
+
+    public static long @NotNull [] jsonToIds(@Nullable String json) {
+
+        if (StringUtils.isEmpty(json)) {
+            return EMPTY_IDS;
+        }
+
+        var deserialize = JsonIterator.deserialize(json, long[].class);
+
+        if (deserialize == null || deserialize.length < 1) {
+            return EMPTY_IDS;
+        } else {
+            return deserialize;
+        }
+    }
+
+    public static <T extends HasId> @Nullable String idsToJson(@Nullable T[] entities) {
+
+        if (entities == null || entities.length < 1) {
+            return null;
+        }
+
+        return JsonStream.serialize(Stream.of(entities)
+            .mapToLong(HasId::getId)
+            .toArray());
+    }
+
+    public static <T extends HasId> @Nullable String idsToJson(@NotNull Set<T> entities) {
 
         if (entities.isEmpty()) {
             return null;
@@ -191,6 +262,14 @@ public class JAsyncUtils {
         return JsonStream.serialize(entities.stream()
             .mapToLong(HasId::getId)
             .toArray());
+    }
+
+    public static <T> @Nullable String toJson(@Nullable T[] entities) {
+        if (entities == null || entities.length < 1) {
+            return null;
+        } else {
+            return JsonStream.serialize(entities);
+        }
     }
 
     public static @NotNull ConnectionPoolConfiguration buildPoolConfig(
