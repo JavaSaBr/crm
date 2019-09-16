@@ -15,7 +15,6 @@ import com.ss.jcrm.base.utils.HasId;
 import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.rlib.common.function.ObjectLongFunction;
-import com.ss.rlib.common.util.ArrayUtils;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -136,18 +135,23 @@ public class JAsyncUtils {
         }
     }
 
-    public static <T> @NotNull T[] arrayFromJson(@Nullable String json, @NotNull Class<T[]> type) {
-
+    public static <T> @Nullable T[] arrayFromJson(@Nullable String json, @NotNull Class<T[]> type) {
         if (StringUtils.isEmpty(json)) {
-            return ArrayUtils.create(type.getComponentType(), 0);
-        }
-
-        var deserialize = JsonIterator.deserialize(json, type);
-
-        if (deserialize == null) {
-            return ArrayUtils.create(type.getComponentType(), 0);
+            return null;
         } else {
-            return deserialize;
+            return JsonIterator.deserialize(json, type);
+        }
+    }
+
+    public static <I, T extends I> @Nullable I[] arrayFromJson(
+        @Nullable String json,
+        @NotNull Class<T[]> type,
+        @NotNull I[] def
+    ) {
+        if (StringUtils.isEmpty(json)) {
+            return def;
+        } else {
+            return ObjectUtils.ifNull(JsonIterator.deserialize(json, type), def);
         }
     }
 
@@ -262,6 +266,14 @@ public class JAsyncUtils {
         return JsonStream.serialize(entities.stream()
             .mapToLong(HasId::getId)
             .toArray());
+    }
+
+    public static @Nullable String toJson(@Nullable long[] ids) {
+        if (ids == null || ids.length < 1) {
+            return null;
+        } else {
+            return JsonStream.serialize(ids);
+        }
     }
 
     public static <T> @Nullable String toJson(@Nullable T[] entities) {

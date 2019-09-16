@@ -8,7 +8,7 @@ interface ClientTestHelper extends TestHelper {
     
     SimpleContact newSimpleContact()
     
-    SimpleContact newSimpleContact(User user)
+    SimpleContact newSimpleContact(User assigner)
     
     String nextName();
 }

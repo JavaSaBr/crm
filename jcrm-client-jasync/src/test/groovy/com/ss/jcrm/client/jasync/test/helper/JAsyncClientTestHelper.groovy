@@ -38,10 +38,10 @@ class JAsyncClientTestHelper extends JAsyncTestHelper implements ClientTestHelpe
     }
     
     @Override
-    SimpleContact newSimpleContact(User user) {
+    SimpleContact newSimpleContact(User assigner) {
         return simpleContactDao.create(
-            user,
-            user.organization,
+            assigner,
+            assigner.organization,
             nextName(),
             nextName(),
         ).block()

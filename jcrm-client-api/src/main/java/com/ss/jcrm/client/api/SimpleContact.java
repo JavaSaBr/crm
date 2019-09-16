@@ -39,7 +39,7 @@ public interface SimpleContact extends VersionedUniqEntity {
 
     @Nullable LocalDate getBirthday();
 
-    void setBirthday(@NotNull LocalDate birthday);
+    void setBirthday(@Nullable LocalDate birthday);
 
     @NotNull ContactPhoneNumber[] getPhoneNumbers();
 

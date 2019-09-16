@@ -2,14 +2,13 @@ package com.ss.jcrm.client.api.impl;
 
 import com.ss.jcrm.client.api.*;
 import lombok.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 
+@Getter
 @Setter
 @ToString
 @AllArgsConstructor
-@Getter(onMethod_ = @NotNull)
 @EqualsAndHashCode(of = "id")
 public class DefaultSimpleContact implements SimpleContact {
 

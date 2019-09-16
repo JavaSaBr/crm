@@ -6,9 +6,9 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.client.api.*;
+import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.client.api.impl.*;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
-import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
 import com.ss.rlib.common.util.array.Array;
@@ -121,7 +121,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         return update(
             queryUpdate,
             Arrays.asList(
-                contact.getCuratorIds(),
+                toJson(contact.getCuratorIds()),
                 contact.getFirstName(),
                 contact.getSecondName(),
                 contact.getThirdName(),
@@ -169,10 +169,18 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         var thirdName = data.getString(6);
         var birthday = toJavaDate(data.getAs(7));
 
-        var phoneNumbers = arrayFromJson(data.getString(8), DefaultContactPhoneNumber[].class);
-        var emails = arrayFromJson(data.getString(9), DefaultContactEmail[].class);
-        var sites = arrayFromJson(data.getString(10), DefaultContactSite[].class);
-        var messengers = arrayFromJson(data.getString(11), DefaultContactMessenger[].class);
+        var phoneNumbers = arrayFromJson(
+            data.getString(8),
+            DefaultContactPhoneNumber[].class,
+            SimpleContact.EMPTY_PHONE_NUMBERS
+        );
+        var emails = arrayFromJson(data.getString(9), DefaultContactEmail[].class, SimpleContact.EMPTY_EMAILS);
+        var sites = arrayFromJson(data.getString(10), DefaultContactSite[].class, SimpleContact.EMPTY_SITES);
+        var messengers = arrayFromJson(
+            data.getString(11),
+            DefaultContactMessenger[].class,
+            SimpleContact.EMPTY_MESSENGERS
+        );
 
         var company = data.getString(12);
         var version = notNull(data.getInt(13));
