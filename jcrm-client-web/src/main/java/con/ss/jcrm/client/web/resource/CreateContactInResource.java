@@ -9,7 +9,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateContactInResource {
 
+    private long assignerId;
+    private long[] curators;
+
     private String firstName;
     private String secondName;
     private String thirdName;
+    private String company;
+    private String birthday;
+
+    private ContactPhoneNumberResource[] phoneNumbers;
+    private ContactEmailResource[] emails;
+    private ContactSiteResource[] sites;
+    private ContactMessengerResource[] messengers;
 }

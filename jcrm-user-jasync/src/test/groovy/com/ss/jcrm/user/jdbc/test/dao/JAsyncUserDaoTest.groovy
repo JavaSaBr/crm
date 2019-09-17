@@ -225,4 +225,30 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         then:
             loaded == null
     }
+    
+    def "should load users only under the same organization"() {
+        
+        given:
+            def org1 = userTestHelper.newOrg()
+            def org2 = userTestHelper.newOrg()
+            def user1 = userTestHelper.newUser("user1@mail.com", org1)
+            def user2 = userTestHelper.newUser("user2@mail.com", org1)
+            def user3 = userTestHelper.newUser("user3@mail.com", org1)
+            def user4 = userTestHelper.newUser("user4@mail.com", org2)
+            long[] ids = [user1.id, user2.id, user3.id, user4.id]
+        when:
+            def loaded = userDao.findByIdsAndOrgId(ids, org1.id).block()
+        then:
+            loaded != null
+            loaded.size() == 3
+        when:
+            loaded = userDao.findByIdsAndOrgId(ids, org2.id).block()
+        then:
+            loaded.size() == 1
+        when:
+            ids = [user4.id]
+            loaded = userDao.findByIdsAndOrgId(ids, org2.id).block()
+        then:
+            loaded.size() == 1
+    }
 }

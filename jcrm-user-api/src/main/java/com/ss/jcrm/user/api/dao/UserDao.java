@@ -51,4 +51,13 @@ public interface UserDao extends Dao<User> {
     default @NotNull Mono<@Nullable User> findByIdAndOrgId(long id, @NotNull Organization organization) {
         return findByIdAndOrgId(id, organization.getId());
     }
+
+    @NotNull Mono<@NotNull Array<User>> findByIdsAndOrgId(@NotNull long[] ids, long orgId);
+
+    default @NotNull Mono<@NotNull Array<User>> findByIdsAndOrgId(
+        @NotNull long[] ids,
+        @NotNull Organization organization
+    ) {
+        return findByIdsAndOrgId(ids, organization.getId());
+    }
 }

@@ -51,7 +51,7 @@ public class ClientWebConfig {
 
     @Bean
     @NotNull ResourceValidator clientResourceValidator() {
-        return new ResourceValidator();
+        return new ResourceValidator(env);
     }
 
     @Bean

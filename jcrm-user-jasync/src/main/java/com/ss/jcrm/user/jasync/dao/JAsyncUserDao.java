@@ -1,6 +1,5 @@
 package com.ss.jcrm.user.jasync.dao;
 
-import static com.ss.jcrm.jasync.util.JAsyncUtils.fromJsonIdsAsync;
 import static com.ss.rlib.common.util.ObjectUtils.ifNull;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
@@ -23,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +45,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"user\" (\"email\", \"password\", \"salt\", " +
         "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\")" +
-        " values (?,?,?,?,?,?,?,?,?) RETURNING id";
+        " values (?,?,?,?,?,?,?,?,?) returning id";
 
     private static final String Q_UPDATE = "update \"${schema}\".\"user\" set \"first_name\" = ?, \"second_name\" = ?," +
         " \"third_name\" = ?, \"phone_number\" = ?,  \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
@@ -60,6 +60,9 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + USER_FIELDS +
         " from \"${schema}\".\"user\" where \"id\" = ? AND \"organization_id\" = ?";
 
+    private static final String Q_SELECT_BY_IDS_AND_ORG_ID = "select " + USER_FIELDS +
+        " from \"${schema}\".\"user\" where \"id\" in (${id_list}) AND \"organization_id\" = ?";
+
     private final String querySelectById;
     private final String querySelectByEmail;
     private final String querySelectByPhoneNumber;
@@ -68,6 +71,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     private final String queryExistByEmail;
     private final String querySearchByName;
     private final String querySelectByIdAndOrgId;
+    private final String querySelectByIdsAndOrgId;
 
     private final OrganizationDao organizationDao;
     private final UserGroupDao userGroupDao;
@@ -87,6 +91,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         this.queryExistByEmail = Q_EXIST_BY_EMAIL.replace("${schema}", schema);
         this.querySearchByName = Q_SEARCH_BY_NAME.replace("${schema}", schema);
         this.querySelectByIdAndOrgId = Q_SELECT_BY_ID_AND_ORG_ID.replace("${schema}", schema);
+        this.querySelectByIdsAndOrgId = Q_SELECT_BY_IDS_AND_ORG_ID.replace("${schema}", schema);
         this.organizationDao = organizationDao;
         this.userGroupDao = userGroupDao;
     }
@@ -146,6 +151,31 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     @Override
     public @NotNull Mono<@Nullable User> findByIdAndOrgId(long id, long orgId) {
         return selectAsync(querySelectByIdAndOrgId, List.of(id, orgId), JAsyncUserDao::toUser);
+    }
+
+    @Override
+    public @NotNull Mono<@NotNull Array<User>> findByIdsAndOrgId(@NotNull long[] ids, long orgId) {
+
+        if (ids.length == 1) {
+            return selectAllAsync(User.class, querySelectByIdAndOrgId, List.of(ids[0], orgId), JAsyncUserDao::toUser);
+        }
+
+        var condition = new StringBuilder(ids.length * 2);
+        var args = new ArrayList<>(ids.length + 1);
+
+        for (int i = 0, last = ids.length - 1; i < ids.length; i++) {
+            condition.append('?');
+            if (i != last) {
+                condition.append(',');
+            }
+            args.add(ids[i]);
+        }
+
+        args.add(orgId);
+
+        var query = querySelectByIdsAndOrgId.replace("${id_list}", condition.toString());
+
+        return selectAllAsync(User.class, query, args, JAsyncUserDao::toUser);
     }
 
     @Override
@@ -237,5 +267,4 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 emailConfirmed
             ));
     }
-
 }

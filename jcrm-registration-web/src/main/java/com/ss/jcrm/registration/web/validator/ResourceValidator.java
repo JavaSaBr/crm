@@ -30,16 +30,16 @@ public class ResourceValidator extends BaseResourceValidator {
     private final int otherUserNameMaxLength;
 
     public ResourceValidator(@NotNull Environment env) {
-        this.emailMinLength = env.getProperty("registration.web.email.min.length", Integer.class, 6);
-        this.emailMaxLength = env.getProperty("registration.web.email.max.length", Integer.class, 45);
-        this.orgNameMinLength = env.getProperty("registration.web.organization.name.min.length", Integer.class, 6);
-        this.orgNameMaxLength = env.getProperty("registration.web.organization.name.max.length", Integer.class, 45);
-        this.phoneNumberMinLength = env.getProperty("registration.web.phone.number.min.length", Integer.class, 6);
-        this.phoneNumberMaxLength = env.getProperty("registration.web.phone.number.max.length", Integer.class, 10);
-        this.passwordMinLength = env.getProperty("registration.web.password.min.length", Integer.class, 6);
-        this.passwordMaxLength = env.getProperty("registration.web.password.max.length", Integer.class, 25);
-        this.otherUserNameMinLength = env.getProperty("registration.web.other.user.name.min.length", Integer.class, 2);
-        this.otherUserNameMaxLength = env.getProperty("registration.web.other.user.name.max.length", Integer.class, 45);
+        this.emailMinLength = env.getProperty("registration.web.email.min.length", int.class, 6);
+        this.emailMaxLength = env.getProperty("registration.web.email.max.length", int.class, 45);
+        this.orgNameMinLength = env.getProperty("registration.web.organization.name.min.length", int.class, 6);
+        this.orgNameMaxLength = env.getProperty("registration.web.organization.name.max.length", int.class, 45);
+        this.phoneNumberMinLength = env.getProperty("registration.web.phone.number.min.length", int.class, 6);
+        this.phoneNumberMaxLength = env.getProperty("registration.web.phone.number.max.length", int.class, 10);
+        this.passwordMinLength = env.getProperty("registration.web.password.min.length", int.class, 6);
+        this.passwordMaxLength = env.getProperty("registration.web.password.max.length", int.class, 25);
+        this.otherUserNameMinLength = env.getProperty("registration.web.other.user.name.min.length", int.class, 2);
+        this.otherUserNameMaxLength = env.getProperty("registration.web.other.user.name.max.length", int.class, 45);
 
         log.info("Resource validator settings:");
         log.info("Email min length : {}", emailMinLength);

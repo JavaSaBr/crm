@@ -2,11 +2,14 @@ package com.ss.jcrm.client.api;
 
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.rlib.common.util.ObjectUtils;
+import com.ss.rlib.common.util.StringUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Getter
@@ -19,6 +22,7 @@ public enum PhoneNumberType implements HasId {
     private final String name;
 
     private static final PhoneNumberType[] ID_TO_PHONE_NUMBER_TYPE;
+    private static final Map<String, PhoneNumberType> NAME_TO_PHONE_NUMBER_TYPE;
 
     static {
 
@@ -28,10 +32,16 @@ public enum PhoneNumberType implements HasId {
             .orElse(0);
 
         ID_TO_PHONE_NUMBER_TYPE = new PhoneNumberType[length + 1];
+        NAME_TO_PHONE_NUMBER_TYPE = new HashMap<>();
 
-        for (var accessRole : PhoneNumberType.values()) {
-            ID_TO_PHONE_NUMBER_TYPE[(int) accessRole.id] = accessRole;
+        for (var type : PhoneNumberType.values()) {
+            ID_TO_PHONE_NUMBER_TYPE[(int) type.id] = type;
+            NAME_TO_PHONE_NUMBER_TYPE.put(type.name(), type);
         }
+    }
+
+    public static boolean isValid(@Nullable String name) {
+        return StringUtils.isNotEmpty(name) && NAME_TO_PHONE_NUMBER_TYPE.containsKey(name);
     }
 
     public static @Nullable PhoneNumberType of(int id) {
