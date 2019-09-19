@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateContactInResource {
+public class ContactInResource {
 
     private long assignerId;
     private long[] curators;

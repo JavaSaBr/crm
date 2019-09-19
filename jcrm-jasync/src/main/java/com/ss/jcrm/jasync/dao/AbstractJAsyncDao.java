@@ -87,7 +87,7 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
             }));
     }
 
-    protected <D extends Dao<T>> @NotNull Mono<@Nullable T> select(
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull T> select(
         @NotNull String query,
         @NotNull List<?> args,
         @NotNull JAsyncConverter<D, T> converter
@@ -106,7 +106,7 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
             }));
     }
 
-    protected <D extends Dao<T>> @NotNull Mono<@Nullable T> selectAsync(
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull T> selectAsync(
         @NotNull String query,
         @NotNull List<?> args,
         @NotNull JAsyncLazyConverter<D, T> converter

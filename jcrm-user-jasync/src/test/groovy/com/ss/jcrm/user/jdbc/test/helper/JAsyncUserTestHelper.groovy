@@ -148,6 +148,17 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
     }
     
     @Override
+    User newUser(String name, Organization organization, AccessRole... roles) {
+        return newUser(
+            name,
+            passwordService.nextPassword(24),
+            passwordService.nextSalt,
+            Set.of(roles),
+            organization
+        )
+    }
+    
+    @Override
     User newUser(String email, String firstName, String secondName, String thirdName, Organization organization) {
         def password = passwordService.nextPassword(24)
         def salt = passwordService.nextSalt

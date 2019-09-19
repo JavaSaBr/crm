@@ -2,11 +2,14 @@ package com.ss.jcrm.client.api;
 
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.rlib.common.util.ObjectUtils;
+import com.ss.rlib.common.util.StringUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Getter
@@ -21,6 +24,7 @@ public enum MessengerType implements HasId {
     private final String name;
 
     private static final MessengerType[] ID_TO_MESSENGER_TYPE;
+    private static final Map<String, MessengerType> NAME_TO_MESSENGER_TYPE;
 
     static {
 
@@ -30,9 +34,23 @@ public enum MessengerType implements HasId {
             .orElse(0);
 
         ID_TO_MESSENGER_TYPE = new MessengerType[length + 1];
+        NAME_TO_MESSENGER_TYPE = new HashMap<>();
 
-        for (var accessRole : MessengerType.values()) {
-            ID_TO_MESSENGER_TYPE[(int) accessRole.id] = accessRole;
+        for (var type : MessengerType.values()) {
+            ID_TO_MESSENGER_TYPE[(int) type.id] = type;
+            NAME_TO_MESSENGER_TYPE.put(type.name(), type);
+        }
+    }
+
+    public static boolean isValid(@Nullable String name) {
+        return StringUtils.isNotEmpty(name) && NAME_TO_MESSENGER_TYPE.containsKey(name);
+    }
+
+    public static @NotNull MessengerType of(@Nullable String name) {
+        if (!isValid(name)) {
+            throw new IllegalArgumentException("Unknown type: " + name);
+        } else {
+            return NAME_TO_MESSENGER_TYPE.get(name);
         }
     }
 

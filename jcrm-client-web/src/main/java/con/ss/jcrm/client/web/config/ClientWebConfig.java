@@ -4,6 +4,7 @@ import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.client.jasync.config.JAsyncClientConfig;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
+import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.jasync.config.JAsyncUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
@@ -58,9 +59,10 @@ public class ClientWebConfig {
     @NotNull ContactHandler contactHandler(
         @NotNull ResourceValidator resourceValidator,
         @NotNull WebRequestSecurityService webRequestSecurityService,
-        @NotNull SimpleContactDao simpleContactDao
+        @NotNull SimpleContactDao simpleContactDao,
+        @NotNull UserDao userDao
     ) {
-        return new ContactHandler(resourceValidator, webRequestSecurityService, simpleContactDao);
+        return new ContactHandler(resourceValidator, webRequestSecurityService, simpleContactDao, userDao);
     }
 
     @Bean

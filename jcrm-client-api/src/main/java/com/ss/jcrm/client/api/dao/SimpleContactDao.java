@@ -38,7 +38,7 @@ public interface SimpleContactDao extends Dao<SimpleContact> {
 
     @NotNull Mono<@NotNull SimpleContact> create(
         @NotNull User assigner,
-        @Nullable User[] curators,
+        @Nullable Array<User> curators,
         @NotNull Organization organization,
         @NotNull String firstName,
         @NotNull String secondName,
@@ -62,9 +62,9 @@ public interface SimpleContactDao extends Dao<SimpleContact> {
         return findByOrg(organization.getId());
     }
 
-    @NotNull Mono<@Nullable SimpleContact> findByIdAndOrg(long id, long orgId);
+    @NotNull Mono<@NotNull SimpleContact> findByIdAndOrg(long id, long orgId);
 
-    default @NotNull Mono<@Nullable SimpleContact> findByIdAndOrg(long id, @NotNull Organization organization) {
+    default @NotNull Mono<@NotNull SimpleContact> findByIdAndOrg(long id, @NotNull Organization organization) {
         return findByIdAndOrg(id, organization.getId());
     }
 }

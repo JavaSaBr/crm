@@ -14,6 +14,8 @@ import java.util.concurrent.CompletionException;
 
 public interface UserDao extends Dao<User> {
 
+    User[] EMPTY_USERS = new User[0];
+
     /**
      * @throws CompletionException -> DuplicateObjectDaoException if a user with the same name is already exist.
      */
@@ -36,9 +38,9 @@ public interface UserDao extends Dao<User> {
 
     @NotNull Mono<Boolean> existByEmail(@NotNull String email);
 
-    @NotNull Mono<@Nullable User> findByEmail(@NotNull String email);
+    @NotNull Mono<@NotNull User> findByEmail(@NotNull String email);
 
-    @NotNull Mono<@Nullable User> findByPhoneNumber(@NotNull String phoneNumber);
+    @NotNull Mono<@NotNull User> findByPhoneNumber(@NotNull String phoneNumber);
 
     @NotNull Mono<@NotNull Array<User>> searchByName(@NotNull String name, long orgId);
 
@@ -46,16 +48,16 @@ public interface UserDao extends Dao<User> {
         return searchByName(name, organization.getId());
     }
 
-    @NotNull Mono<@Nullable User> findByIdAndOrgId(long id, long orgId);
+    @NotNull Mono<@NotNull User> findByIdAndOrgId(long id, long orgId);
 
-    default @NotNull Mono<@Nullable User> findByIdAndOrgId(long id, @NotNull Organization organization) {
+    default @NotNull Mono<@NotNull User> findByIdAndOrg(long id, @NotNull Organization organization) {
         return findByIdAndOrgId(id, organization.getId());
     }
 
-    @NotNull Mono<@NotNull Array<User>> findByIdsAndOrgId(@NotNull long[] ids, long orgId);
+    @NotNull Mono<@NotNull Array<User>> findByIdsAndOrgId(@Nullable long[] ids, long orgId);
 
-    default @NotNull Mono<@NotNull Array<User>> findByIdsAndOrgId(
-        @NotNull long[] ids,
+    default @NotNull Mono<@NotNull Array<User>> findByIdsAndOrg(
+        @Nullable long[] ids,
         @NotNull Organization organization
     ) {
         return findByIdsAndOrgId(ids, organization.getId());

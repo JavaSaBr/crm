@@ -17,6 +17,7 @@ import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.rlib.common.function.ObjectLongFunction;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
+import com.ss.rlib.common.util.array.Array;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.EventLoopGroup;
 import org.jetbrains.annotations.NotNull;
@@ -220,6 +221,17 @@ public class JAsyncUtils {
             .map(Collections::unmodifiableSet);
     }
 
+    public static <T extends HasId> long @NotNull [] toIds(@Nullable Array<T> entities) {
+
+        if (entities == null || entities.isEmpty()) {
+            return EMPTY_IDS;
+        }
+
+        return entities.stream()
+            .mapToLong(HasId::getId)
+            .toArray();
+    }
+
     public static <T extends HasId> long @NotNull [] toIds(@Nullable T[] entities) {
 
         if (entities == null || entities.length < 1) {
@@ -253,6 +265,17 @@ public class JAsyncUtils {
         }
 
         return JsonStream.serialize(Stream.of(entities)
+            .mapToLong(HasId::getId)
+            .toArray());
+    }
+
+    public static <T extends HasId> @Nullable String idsToJson(@Nullable Array<T> entities) {
+
+        if (entities == null || entities.isEmpty()) {
+            return null;
+        }
+
+        return JsonStream.serialize(entities.stream()
             .mapToLong(HasId::getId)
             .toArray());
     }

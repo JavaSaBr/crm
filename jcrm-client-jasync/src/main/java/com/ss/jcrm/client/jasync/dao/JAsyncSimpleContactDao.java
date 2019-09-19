@@ -62,14 +62,14 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     }
 
     @Override
-    public @NotNull Mono<@Nullable SimpleContact> findById(long id) {
+    public @NotNull Mono<@NotNull SimpleContact> findById(long id) {
         return select(querySelectById, List.of(id), JAsyncSimpleContactDao::toContact);
     }
 
     @Override
     public @NotNull Mono<@NotNull SimpleContact> create(
         @NotNull User assigner,
-        @Nullable User[] curators,
+        @Nullable Array<User> curators,
         @NotNull Organization organization,
         @NotNull String firstName,
         @NotNull String secondName,
@@ -149,7 +149,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     }
 
     @Override
-    public @NotNull Mono<@Nullable SimpleContact> findByIdAndOrg(long id, long orgId) {
+    public @NotNull Mono<@NotNull SimpleContact> findByIdAndOrg(long id, long orgId) {
         return select(
             querySelectByIdAndOrgId,
             List.of(id, orgId),

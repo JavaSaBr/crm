@@ -139,24 +139,26 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     }
 
     @Override
-    public @NotNull Mono<@Nullable User> findByEmail(@NotNull String email) {
+    public @NotNull Mono<@NotNull User> findByEmail(@NotNull String email) {
         return selectAsync(querySelectByEmail, List.of(email), JAsyncUserDao::toUser);
     }
 
     @Override
-    public @NotNull Mono<@Nullable User> findById(long id) {
+    public @NotNull Mono<@NotNull User> findById(long id) {
         return selectAsync(querySelectById, List.of(id), JAsyncUserDao::toUser);
     }
 
     @Override
-    public @NotNull Mono<@Nullable User> findByIdAndOrgId(long id, long orgId) {
+    public @NotNull Mono<@NotNull User> findByIdAndOrgId(long id, long orgId) {
         return selectAsync(querySelectByIdAndOrgId, List.of(id, orgId), JAsyncUserDao::toUser);
     }
 
     @Override
-    public @NotNull Mono<@NotNull Array<User>> findByIdsAndOrgId(@NotNull long[] ids, long orgId) {
+    public @NotNull Mono<@NotNull Array<User>> findByIdsAndOrgId(@Nullable long[] ids, long orgId) {
 
-        if (ids.length == 1) {
+        if (ids == null || ids.length == 0) {
+            return Mono.just(Array.empty());
+        } else if (ids.length == 1) {
             return selectAllAsync(User.class, querySelectByIdAndOrgId, List.of(ids[0], orgId), JAsyncUserDao::toUser);
         }
 

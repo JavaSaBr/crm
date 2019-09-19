@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 public interface Dao<T extends UniqEntity> {
 
-    @NotNull Mono<@Nullable T> findById(long id);
+    @NotNull Mono<@NotNull T> findById(long id);
 
     /**
      * @throws ObjectNotFoundDaoException if an object with the id isn't exist.

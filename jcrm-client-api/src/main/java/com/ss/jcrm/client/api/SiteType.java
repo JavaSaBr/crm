@@ -2,11 +2,14 @@ package com.ss.jcrm.client.api;
 
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.rlib.common.util.ObjectUtils;
+import com.ss.rlib.common.util.StringUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Getter
@@ -19,6 +22,7 @@ public enum SiteType implements HasId {
     private final String name;
 
     private static final SiteType[] ID_TO_SITE_TYPE;
+    private static final Map<String, SiteType> NAME_TO_SITE_TYPE;
 
     static {
 
@@ -28,9 +32,23 @@ public enum SiteType implements HasId {
             .orElse(0);
 
         ID_TO_SITE_TYPE = new SiteType[length + 1];
+        NAME_TO_SITE_TYPE = new HashMap<>();
 
-        for (var accessRole : SiteType.values()) {
-            ID_TO_SITE_TYPE[(int) accessRole.id] = accessRole;
+        for (var type : SiteType.values()) {
+            ID_TO_SITE_TYPE[(int) type.id] = type;
+            NAME_TO_SITE_TYPE.put(type.name(), type);
+        }
+    }
+
+    public static boolean isValid(@Nullable String name) {
+        return StringUtils.isNotEmpty(name) && NAME_TO_SITE_TYPE.containsKey(name);
+    }
+
+    public static @NotNull SiteType of(@Nullable String name) {
+        if (!isValid(name)) {
+            throw new IllegalArgumentException("Unknown type: " + name);
+        } else {
+            return NAME_TO_SITE_TYPE.get(name);
         }
     }
 

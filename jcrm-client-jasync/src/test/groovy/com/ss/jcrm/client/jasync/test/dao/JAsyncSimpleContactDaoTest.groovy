@@ -9,6 +9,8 @@ import com.ss.jcrm.client.api.impl.DefaultContactSite
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.jasync.util.JAsyncUtils
 import com.ss.jcrm.user.api.User
+import com.ss.rlib.common.util.array.Array
+import com.ss.rlib.common.util.array.ArrayFactory
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.time.LocalDate
@@ -22,10 +24,10 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
         
         given:
             def assigner = userTestHelper.newUser("Test1")
-            User[] curators = [
+            Array<User> curators = ArrayFactory.asArray(
                 userTestHelper.newUser("Curator1"),
                 userTestHelper.newUser("Curator2")
-            ]
+            )
             ContactPhoneNumber[] phoneNumbers = [
                 new DefaultContactPhoneNumber("+7", "123", "456789", PhoneNumberType.WORK),
                 new DefaultContactPhoneNumber("+7", "123", "098765", PhoneNumberType.HOME)

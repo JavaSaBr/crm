@@ -163,6 +163,86 @@ public class BaseResourceValidator {
         }
     }
 
+    protected <T> void validateResultString(
+        T @Nullable [] objects,
+        int minLength,
+        int maxLength,
+        @NotNull Function<@NotNull T, @Nullable String> firstGetter,
+        @NotNull Function<@NotNull T, @Nullable String> secondGetter,
+        @NotNull Function<@NotNull T, @Nullable String> thirdGetter,
+        int code,
+        @NotNull String message
+    ) {
+        if (objects == null || objects.length < 1) {
+            return;
+        }
+
+        for (var object : objects) {
+
+            var first = firstGetter.apply(object);
+            var second = secondGetter.apply(object);
+            var third = thirdGetter.apply(object);
+
+            if (StringUtils.isEmpty(first) || StringUtils.isEmpty(second) || StringUtils.isEmpty(third)) {
+                throw new BadRequestWebException(message, code);
+            }
+
+            var resultLength = first.length() + second.length() + third.length();
+
+            if (resultLength < minLength || resultLength > maxLength) {
+                throw new BadRequestWebException(message, code);
+            }
+        }
+    }
+
+    protected <T> void validateField(
+        T @Nullable [] objects,
+        int minLength,
+        int maxLength,
+        @NotNull Function<@NotNull T, @Nullable String> getter,
+        int code,
+        @NotNull String message
+    ) {
+        if (objects == null || objects.length < 1) {
+            return;
+        }
+
+        for (var object : objects) {
+            var first = getter.apply(object);
+            if (StringUtils.isEmpty(first) || first.length() < minLength || first.length() > maxLength) {
+                throw new BadRequestWebException(message, code);
+            }
+        }
+    }
+
+    protected <T> void validateFields(
+        T @Nullable [] objects,
+        int minLength,
+        int maxLength,
+        @NotNull Function<@NotNull T, @Nullable String> firstGetter,
+        @NotNull Function<@NotNull T, @Nullable String> secondGetter,
+        @NotNull Function<@NotNull T, @Nullable String> thirdGetter,
+        int code,
+        @NotNull String message
+    ) {
+        if (objects == null || objects.length < 1) {
+            return;
+        }
+
+        for (var object : objects) {
+            var first = firstGetter.apply(object);
+            var second = secondGetter.apply(object);
+            var third = thirdGetter.apply(object);
+            if (StringUtils.isEmpty(first) || first.length() < minLength || first.length() > maxLength) {
+                throw new BadRequestWebException(message, code);
+            } else if (StringUtils.isEmpty(second) || second.length() < minLength || second.length() > maxLength) {
+                throw new BadRequestWebException(message, code);
+            } else if (StringUtils.isEmpty(third) || third.length() < minLength || third.length() > maxLength) {
+                throw new BadRequestWebException(message, code);
+            }
+        }
+    }
+
     protected <T, F> void validateField(
         @Nullable T[] objects,
         @NotNull Function<T, F> getter,
@@ -176,6 +256,30 @@ public class BaseResourceValidator {
 
         for (T object : objects) {
             if (!validator.test(getter.apply(object))) {
+                throw new BadRequestWebException(message, code);
+            }
+        }
+    }
+
+    protected <T, F> void validateSameFields(
+        @Nullable T[] objects,
+        @NotNull Function<T, F> firstGetter,
+        @NotNull Function<T, F> secondGetter,
+        @NotNull Function<T, F> thirdGetter,
+        @NotNull Predicate<F> validator,
+        int code,
+        @NotNull String message
+    ) {
+        if (objects == null || objects.length < 1) {
+            return;
+        }
+
+        for (T object : objects) {
+            if (!validator.test(firstGetter.apply(object))) {
+                throw new BadRequestWebException(message, code);
+            } else if (!validator.test(secondGetter.apply(object))) {
+                throw new BadRequestWebException(message, code);
+            } else if (!validator.test(thirdGetter.apply(object))) {
                 throw new BadRequestWebException(message, code);
             }
         }

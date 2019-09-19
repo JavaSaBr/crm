@@ -2,11 +2,14 @@ package com.ss.jcrm.client.api;
 
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.rlib.common.util.ObjectUtils;
+import com.ss.rlib.common.util.StringUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Getter
@@ -19,6 +22,7 @@ public enum EmailType implements HasId {
     private final String name;
 
     private static final EmailType[] ID_TO_EMAIL_TYPE;
+    private static final Map<String, EmailType> NAME_TO_EMAIL_TYPE;
 
     static {
 
@@ -28,9 +32,23 @@ public enum EmailType implements HasId {
             .orElse(0);
 
         ID_TO_EMAIL_TYPE = new EmailType[length + 1];
+        NAME_TO_EMAIL_TYPE = new HashMap<>();
 
-        for (var accessRole : EmailType.values()) {
-            ID_TO_EMAIL_TYPE[(int) accessRole.id] = accessRole;
+        for (var type : EmailType.values()) {
+            ID_TO_EMAIL_TYPE[(int) type.id] = type;
+            NAME_TO_EMAIL_TYPE.put(type.name(), type);
+        }
+    }
+
+    public static boolean isValid(@Nullable String name) {
+        return StringUtils.isNotEmpty(name) && NAME_TO_EMAIL_TYPE.containsKey(name);
+    }
+
+    public static @NotNull EmailType of(@Nullable String name) {
+        if (!isValid(name)) {
+            throw new IllegalArgumentException("Unknown type: " + name);
+        } else {
+            return NAME_TO_EMAIL_TYPE.get(name);
         }
     }
 
