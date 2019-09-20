@@ -126,17 +126,17 @@ public class ResourceValidator extends BaseResourceValidator {
 
         validateField(
             resource.getEmails(),
+            1,
+            contactEmailMaxLength,
             ContactEmailResource::getEmail,
-            StringUtils::isValidEmail,
             ClientErrors.CONTACT_EMAIL_INVALID,
             ClientErrors.CONTACT_EMAIL_INVALID_MESSAGE
         );
 
         validateField(
             resource.getEmails(),
-            1,
-            contactEmailMaxLength,
             ContactEmailResource::getEmail,
+            StringUtils::isValidEmail,
             ClientErrors.CONTACT_EMAIL_INVALID,
             ClientErrors.CONTACT_EMAIL_INVALID_MESSAGE
         );

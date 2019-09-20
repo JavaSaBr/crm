@@ -38,7 +38,7 @@ public class BaseResourceValidator {
     }
 
     protected void validateMaxNullable(@Nullable String string, int maxLength, int code, @NotNull String message) {
-        if (StringUtils.isEmpty(string) && string.length() > maxLength) {
+        if (StringUtils.isNotEmpty(string) && string.length() > maxLength) {
             throw new BadRequestWebException(message, code);
         }
     }

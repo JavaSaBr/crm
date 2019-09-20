@@ -8,6 +8,10 @@ import com.ss.jcrm.client.web.test.ClientSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
+import com.ss.rlib.common.util.ArrayUtils
+import com.ss.rlib.common.util.StringUtils
+import com.ss.rlib.common.util.array.ArrayFactory
+import con.ss.jcrm.client.web.exception.ClientErrors
 import con.ss.jcrm.client.web.resource.ContactEmailResource
 import con.ss.jcrm.client.web.resource.ContactInResource
 import con.ss.jcrm.client.web.resource.ContactMessengerResource
@@ -15,9 +19,31 @@ import con.ss.jcrm.client.web.resource.ContactPhoneNumberResource
 import con.ss.jcrm.client.web.resource.ContactSiteResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.test.web.reactive.server.WebTestClient
 
 import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED
 import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
+import static com.ss.rlib.common.util.array.ArrayFactory.toArray
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_ASSIGNER_NOT_PRESENTED
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_ASSIGNER_NOT_PRESENTED_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_BIRTHDAY_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_BIRTHDAY_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_COMPANY_TOO_LONG
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_COMPANY_TOO_LONG_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_EMAIL_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_EMAIL_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_FIRST_NAME_INVALID_LENGTH
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_FIRST_NAME_INVALID_LENGTH_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_MESSENGER_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_MESSENGER_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_PHONE_NUMBER_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_PHONE_NUMBER_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SECOND_NAME_INVALID_LENGTH
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SECOND_NAME_INVALID_LENGTH_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SITE_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SITE_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_THIRD_NAME_TOO_LONG
+import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_THIRD_NAME_TOO_LONG_MESSAGE
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is
@@ -169,5 +195,176 @@ class ContactHandlerTest extends ClientSpecification {
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(ID_NOT_PRESENTED, ID_NOT_PRESENTED_MESSAGE)
+    }
+    
+    def "should not create an invalid contact"() {
+        
+        given:
+            
+            def org = userTestHelper.newOrg()
+            def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
+            def assigner = userTestHelper.newUser("Assigner1", org)
+            def token = unsafeTokenService.generateNewToken(user)
+            def body = new ContactInResource()
+        
+        when:
+            def response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_ASSIGNER_NOT_PRESENTED, CONTACT_ASSIGNER_NOT_PRESENTED_MESSAGE)
+        when:
+            body.setAssignerId(assigner.id)
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_FIRST_NAME_INVALID_LENGTH, CONTACT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
+        when:
+            body.setFirstName(StringUtils.generate(1000))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_FIRST_NAME_INVALID_LENGTH, CONTACT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
+        when:
+            body.setFirstName("First Name")
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_SECOND_NAME_INVALID_LENGTH, CONTACT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
+        when:
+            body.setSecondName(StringUtils.generate(1000))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_SECOND_NAME_INVALID_LENGTH, CONTACT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
+        when:
+            body.setSecondName("Second name")
+            body.setThirdName(StringUtils.generate(1000))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_THIRD_NAME_TOO_LONG, CONTACT_THIRD_NAME_TOO_LONG_MESSAGE)
+        when:
+            body.setThirdName(null)
+            body.setCompany(StringUtils.generate(1000))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_COMPANY_TOO_LONG, CONTACT_COMPANY_TOO_LONG_MESSAGE)
+        when:
+            body.setCompany(null)
+            body.setBirthday("invaliddate")
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_BIRTHDAY_INVALID, CONTACT_BIRTHDAY_INVALID_MESSAGE)
+        when:
+            body.setBirthday("1700-05-10")
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_BIRTHDAY_INVALID, CONTACT_BIRTHDAY_INVALID_MESSAGE)
+        when:
+            body.setBirthday("2500-05-10")
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_BIRTHDAY_INVALID, CONTACT_BIRTHDAY_INVALID_MESSAGE)
+        when:
+            body.setBirthday("1950-04-22")
+            body.setPhoneNumbers(new ContactPhoneNumberResource(
+                countryCode: "+7",
+                regionCode: "234",
+                phoneNumber:  "123132",
+                type: "invalid"
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_PHONE_NUMBER_INVALID, CONTACT_PHONE_NUMBER_INVALID_MESSAGE)
+        when:
+            body.setPhoneNumbers(new ContactPhoneNumberResource(
+                countryCode: "+7",
+                regionCode: StringUtils.generate(100),
+                phoneNumber:  "123132",
+                type: PhoneNumberType.WORK.name()
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_PHONE_NUMBER_INVALID, CONTACT_PHONE_NUMBER_INVALID_MESSAGE)
+        when:
+            body.setPhoneNumbers(null)
+            body.setEmails(new ContactEmailResource(
+                email: "Test@test.com",
+                type: "invalid"
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_EMAIL_INVALID, CONTACT_EMAIL_INVALID_MESSAGE)
+        when:
+            body.setEmails(new ContactEmailResource(
+                email: "invalid",
+                type: EmailType.HOME.name()
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_EMAIL_INVALID, CONTACT_EMAIL_INVALID_MESSAGE)
+        when:
+            body.setEmails(new ContactEmailResource(
+                email: StringUtils.generate(1000),
+                type: EmailType.HOME.name()
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_EMAIL_INVALID, CONTACT_EMAIL_INVALID_MESSAGE)
+        when:
+            body.setEmails(null)
+            body.setSites(new ContactSiteResource(
+                url: "work.site.com",
+                type: "invalid"
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_SITE_INVALID, CONTACT_SITE_INVALID_MESSAGE)
+        when:
+            body.setSites(new ContactSiteResource(
+                url: StringUtils.generate(1000),
+                type: SiteType.WORK.name()
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_SITE_INVALID, CONTACT_SITE_INVALID_MESSAGE)
+        when:
+            body.setSites(null)
+            body.setMessengers(new ContactMessengerResource(
+                login: "misterX",
+                type: "invalid"
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_MESSENGER_INVALID, CONTACT_MESSENGER_INVALID_MESSAGE)
+        when:
+            body.setMessengers(new ContactMessengerResource(
+                login: StringUtils.generate(1000),
+                type: MessengerType.TELEGRAM.name()
+            ))
+            response = sendCreateRequest(token, body)
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(CONTACT_MESSENGER_INVALID, CONTACT_MESSENGER_INVALID_MESSAGE)
+    }
+    
+    private WebTestClient.ResponseSpec sendCreateRequest(String token, ContactInResource body) {
+        client.post()
+            .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+            .body(body)
+            .url("/client/contact/create")
+            .exchange()
     }
 }
