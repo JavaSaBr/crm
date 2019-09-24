@@ -8,10 +8,7 @@ import com.ss.jcrm.client.web.test.ClientSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
-import com.ss.rlib.common.util.ArrayUtils
 import com.ss.rlib.common.util.StringUtils
-import com.ss.rlib.common.util.array.ArrayFactory
-import con.ss.jcrm.client.web.exception.ClientErrors
 import con.ss.jcrm.client.web.resource.ContactEmailResource
 import con.ss.jcrm.client.web.resource.ContactInResource
 import con.ss.jcrm.client.web.resource.ContactMessengerResource
@@ -23,7 +20,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 
 import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED
 import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
-import static com.ss.rlib.common.util.array.ArrayFactory.toArray
 import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_ASSIGNER_NOT_PRESENTED
 import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_ASSIGNER_NOT_PRESENTED_MESSAGE
 import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_BIRTHDAY_INVALID
@@ -65,7 +61,7 @@ class ContactHandlerTest extends ClientSpecification {
             
             def token = unsafeTokenService.generateNewToken(user)
             def body = new ContactInResource(
-                assignerId: assigner.id,
+                setAssigner: assigner.id,
                 curators: [curator1.id, curator2.id],
                 firstName: "First name",
                 secondName: "Second name",
@@ -95,7 +91,7 @@ class ContactHandlerTest extends ClientSpecification {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
-                    .jsonPath('$.assigner').isEqualTo((int) body.assignerId)
+                    .jsonPath('$.assigner').isEqualTo((int) body.assigner)
                     .jsonPath('$.curators[*]').value(containsInAnyOrder(
                         (int) body.curators[0],
                         (int) body.curators[1]
@@ -213,7 +209,7 @@ class ContactHandlerTest extends ClientSpecification {
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CONTACT_ASSIGNER_NOT_PRESENTED, CONTACT_ASSIGNER_NOT_PRESENTED_MESSAGE)
         when:
-            body.setAssignerId(assigner.id)
+            body.setAssigner(assigner.id)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()

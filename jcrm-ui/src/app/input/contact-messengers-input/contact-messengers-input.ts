@@ -37,7 +37,7 @@ export class ContactMessengersInput extends MultiFieldsMultiEntityInput<ContactM
 
     protected createFormControls(entity: ContactMessenger): FormControl[] {
         return [
-            new FormControl(entity.name, {
+            new FormControl(entity.login, {
                 validators: [Validators.required]
             }),
             new FormControl(entity.type, {

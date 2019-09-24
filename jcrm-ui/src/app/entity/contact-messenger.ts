@@ -6,7 +6,7 @@ export enum MessengerType {
 }
 
 export class ContactMessenger extends Entity {
-    constructor(public name: string | null, public type: MessengerType | null) {
+    constructor(public login: string | null, public type: MessengerType | null) {
         super();
     }
 }

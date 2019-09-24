@@ -51,15 +51,15 @@ export class ContactViewComponent implements AfterViewInit {
         this.startEditableState = false;
         this.editContactInfo = !this.startEditableState;
         this.contactInfoFormGroup = formBuilder.group({
-            assigner: [''],
-            curators: [''],
-            firstName: ['', [
+            assigner: [],
+            curators: [],
+            firstName: [[
                 Validators.required
             ]],
-            secondName: ['', [
+            secondName: [[
                 Validators.required
             ]],
-            thirdName: ['', [
+            thirdName: [[
                 Validators.required
             ]],
             birthday: [],
@@ -67,7 +67,7 @@ export class ContactViewComponent implements AfterViewInit {
             emails: [],
             sites: [],
             messengers: [],
-            company: [''],
+            company: [],
         });
         this.contactInfoFormGroup.valueChanges.subscribe(() => {
             this.hasChangesInContactInfo = true;
@@ -156,6 +156,7 @@ export class ContactViewComponent implements AfterViewInit {
     }
 
     syncContactWithForm(contact: Contact): Contact {
+
         const assigner = this.assigner.value;
         const curators = this.curators.value as User[];
 
@@ -164,12 +165,12 @@ export class ContactViewComponent implements AfterViewInit {
         contact.firstName = this.firstName.value;
         contact.secondName = this.secondName.value;
         contact.thirdName = this.thirdName.value;
+        contact.company = this.company.value;
         contact.birthday = this.birthday.value as Date;
         contact.phoneNumbers = this.phoneNumbers.value;
         contact.emails = this.emails.value;
         contact.sites = this.sites.value;
         contact.messengers = this.messengers.value;
-        contact.company = this.company.value;
 
         return contact;
     }

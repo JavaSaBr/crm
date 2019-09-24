@@ -4,6 +4,7 @@ import {FormControl, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
 import {ContactEmail, EmailType} from '@app/entity/contact-email';
+import {EmailValidator} from '@app/util/validator/email-validator';
 
 @Component({
     selector: 'contact-emails-input',
@@ -38,7 +39,10 @@ export class ContactEmailsInput extends MultiFieldsMultiEntityInput<ContactEmail
     protected createFormControls(entity: ContactEmail): FormControl[] {
         return [
             new FormControl(entity.email, {
-                validators: [Validators.required]
+                validators: [
+                    Validators.required,
+                    EmailValidator.FUNC
+                ]
             }),
             new FormControl(entity.type, {
                 validators: [Validators.required]
@@ -47,7 +51,7 @@ export class ContactEmailsInput extends MultiFieldsMultiEntityInput<ContactEmail
     }
 
     addNew() {
-        this.addEntity(new ContactEmail('', EmailType.WORK));
+        this.addEntity(new ContactEmail(null, EmailType.WORK));
     }
 
     changeEmailType(contactEmail: ContactEmail, event: MatSelectChange) {

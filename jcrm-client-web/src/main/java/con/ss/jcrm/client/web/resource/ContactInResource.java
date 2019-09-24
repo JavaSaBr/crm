@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ContactInResource {
 
-    private long assignerId;
+    private long assigner;
     private long[] curators;
 
     private String firstName;

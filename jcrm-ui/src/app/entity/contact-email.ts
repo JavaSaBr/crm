@@ -1,8 +1,8 @@
 import {Entity} from '@app/entity/entity';
 
 export enum EmailType {
-    WORK = 'work',
-    HOME = 'home'
+    WORK = "WORK",
+    HOME = "HOME"
 }
 
 export class ContactEmail extends Entity {

@@ -54,14 +54,14 @@ export class PhoneNumberValidator implements Validator {
 
             if (phoneNumber.country == null) {
                 return {'noCountry': true};
-            } else if (!Utils.isNumber(phoneNumber.phoneRegion)) {
+            } else if (!Utils.isNumber(phoneNumber.regionCode)) {
                 return {'invalidPhoneNumber': true};
             } else if (!Utils.isNumber(phoneNumber.phoneNumber)) {
                 return {'invalidPhoneNumber': true};
             }
 
             const phoneNumberLength =
-                phoneNumber.phoneRegion.length +
+                phoneNumber.regionCode.length +
                 phoneNumber.phoneNumber.length +
                 phoneNumber.country.phoneCode.length;
 

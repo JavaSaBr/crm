@@ -33,8 +33,14 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
     }
 
     protected addEntity(entity: T) {
+
+        const controls = this.createFormControls(entity);
+        controls.forEach(control => control
+            .valueChanges.subscribe(() => this.changeFromSubControls()));
+
         this._entities.push(entity);
-        this._entityToControl.set(entity, this.createFormControls(entity));
+        this._entityToControl.set(entity, controls);
+
         this.changeFromSubControls();
     }
 
@@ -72,5 +78,26 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
     }
 
     ngOnInit(): void {
+    }
+
+    protected isNotValid(): boolean {
+
+        const isNotValid = super.isNotValid();
+
+        if (isNotValid) {
+            return true;
+        }
+
+        let errors = 0;
+
+        this._entityToControl.forEach(controls => {
+            controls.forEach(control => {
+                if (!control.valid) {
+                    errors++;
+                }
+            });
+        });
+
+        return errors > 0;
     }
 }

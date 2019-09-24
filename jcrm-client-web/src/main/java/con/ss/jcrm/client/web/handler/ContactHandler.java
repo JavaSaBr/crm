@@ -68,7 +68,7 @@ public class ContactHandler {
         var user = authorized.getUser();
         var resource = authorized.getResource();
 
-        return userDao.findByIdAndOrg(resource.getAssignerId(), user.getOrganization())
+        return userDao.findByIdAndOrg(resource.getAssigner(), user.getOrganization())
             .zipWhen(assigner -> userDao.findByIdsAndOrg(resource.getCurators(), assigner.getOrganization()))
             .flatMap(args -> {
 

@@ -37,7 +37,7 @@ public class ResourceValidator extends BaseResourceValidator {
         this.contactPhoneNumberMaxLength = env.getProperty("client.web.contact.phone-number.max.length", int.class, 15);
         this.contactSiteMaxLength = env.getProperty("client.web.contact.site.max.length", int.class, 100);
         this.contactMessengerMaxLength = env.getProperty("client.web.contact.messenger.max.length", int.class, 100);
-        this.contactEmailMaxLength = env.getProperty("client.web.contact.email.max.length", int.class, 100);
+        this.contactEmailMaxLength = env.getProperty("client.web.contact.email.max.length", int.class, 45);
         this.contactMinBirthday = LocalDate.of(
             env.getProperty("client.web.contact.birthday.min.year", int.class, 1800),
             Month.JANUARY,
@@ -52,7 +52,7 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validate(@NotNull ContactInResource resource) {
 
-        if (resource.getAssignerId() == 0) {
+        if (resource.getAssigner() == 0) {
             throw new BadRequestWebException(
                 ClientErrors.CONTACT_ASSIGNER_NOT_PRESENTED_MESSAGE,
                 ClientErrors.CONTACT_ASSIGNER_NOT_PRESENTED

@@ -48,7 +48,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
 
         this.formGroup = formBuilder.group({
             country: '',
-            phoneRegion: '',
+            regionCode: '',
             phoneNumber: '',
         });
 
@@ -56,7 +56,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
         this.countryControl.valueChanges
             .subscribe(value => this.extractCountry(value));
 
-        this.phoneRegionControl = this.formGroup.controls['phoneRegion'];
+        this.phoneRegionControl = this.formGroup.controls['regionCode'];
         this.phoneRegionControl.valueChanges
             .subscribe(() => this.changeFromSubControls());
         this.phoneNumberControl = this.formGroup.controls['phoneNumber'];
@@ -108,7 +108,7 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
 
         if (value instanceof PhoneNumber) {
             this.countryControl.setValue(value.country);
-            this.phoneRegionControl.setValue(value.phoneRegion);
+            this.phoneRegionControl.setValue(value.regionCode);
             this.phoneNumberControl.setValue(value.phoneNumber);
         } else {
             this.countryControl.setValue(null);

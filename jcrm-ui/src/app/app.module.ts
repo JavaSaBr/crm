@@ -37,7 +37,7 @@ import {PhoneNumberInput} from '@app/input/phone-number/phone-number-input';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {CountryInput} from '@app/input/country/country-input';
 import {ErrorService} from '@app/service/error.service';
-import {registerLocaleData} from '@angular/common';
+import {DatePipe, registerLocaleData} from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import localeEn from '@angular/common/locales/en';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
@@ -147,7 +147,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         {
             provide: PERFECT_SCROLLBAR_CONFIG,
             useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-        }
+        },
+        DatePipe
     ],
     bootstrap: [AppComponent]
 })
