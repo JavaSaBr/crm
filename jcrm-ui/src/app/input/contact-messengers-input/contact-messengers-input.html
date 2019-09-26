@@ -10,7 +10,7 @@
     <div fxLayout="column" fxFlex="40%">
       <mat-form-field floatLabel="never">
         <mat-label>{{ 'CONTACT.FIELD.MESSENGER.LOGIN' | translate }}</mat-label>
-        <input matInput [formControl]="findControlsFor(element)[0]" required/>
+        <input matInput [formControl]="findControlsFor(element)[0]" maxlength="{{maxLength}}" required/>
         <mat-error *ngIf="findControlsFor(element)[0].invalid">
           {{getLoginErrorMessage(findControlsFor(element)[0])}}
         </mat-error>
@@ -20,7 +20,7 @@
       <mat-form-field floatLabel="never">
         <mat-label>Type</mat-label>
         <mat-select value="{{element.type}}" [formControl]="findControlsFor(element)[1]"
-                    (selectionChange)="changeEmailType(element, $event)">
+                    (selectionChange)="changeMessengerType(element, $event)">
           <mat-option *ngFor="let type of availableEmailTypes" value="{{type}}">
             {{getMessengerTypeDescription(type)}}
           </mat-option>

@@ -2,8 +2,8 @@ import {Entity} from '@app/entity/entity';
 import {PhoneNumber} from '@app/entity/phone-number';
 
 export enum PhoneNumberType {
-    WORK = 'work',
-    MOBILE = 'mobile'
+    WORK = 'WORK',
+    MOBILE = 'MOBILE'
 }
 
 export class ContactPhoneNumber extends Entity {

@@ -23,6 +23,7 @@ export const environment = {
     // contact
     contactEmailMaxLength: 45,
     contactMessengerMaxLength: 45,
+    contactSiteMaxLength: 100,
 };
 
 /*

@@ -1,6 +1,6 @@
 <div fxLayout="column" fxFlex="100%" fxLayoutAlign="center start">
   <div fxLayout="row" fxFill fxFlex="100%" fxLayoutAlign="space-between center">
-    <mat-label fxFlex="90%">Sites</mat-label>
+    <mat-label fxFlex="90%">{{ 'CONTACT.FIELD.SITES' | translate }}</mat-label>
     <button mat-icon-button color="primary" aria-label="Add">
       <mat-icon (click)="addNew()">add_circle_outline</mat-icon>
     </button>
@@ -9,16 +9,21 @@
        *ngFor="let element of entities">
     <div fxLayout="column" fxFlex="40%">
       <mat-form-field floatLabel="never">
-        <mat-label>Site</mat-label>
-        <input matInput [formControl]="findControlsFor(element)[0]" required/>
+        <mat-label>{{ 'CONTACT.FIELD.SITE.URL' | translate }}</mat-label>
+        <input matInput [formControl]="findControlsFor(element)[0]" maxlength="{{maxLength}}" required/>
+        <mat-error *ngIf="findControlsFor(element)[0].invalid">
+          {{getSiteErrorMessage(findControlsFor(element)[0])}}
+        </mat-error>
       </mat-form-field>
     </div>
     <div fxLayout="column" fxFlex="40%">
       <mat-form-field floatLabel="never">
         <mat-label>Type</mat-label>
         <mat-select value="{{element.type}}" [formControl]="findControlsFor(element)[1]"
-                    (selectionChange)="changeEmailType(element, $event)">
-          <mat-option *ngFor="let type of availableSiteTypes" value="{{type}}">{{type}}</mat-option>
+                    (selectionChange)="changeSiteType(element, $event)">
+          <mat-option *ngFor="let type of availableSiteTypes" value="{{type}}">
+            {{getSiteTypeDescription(type)}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>

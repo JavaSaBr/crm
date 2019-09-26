@@ -3,11 +3,11 @@ import {RegistrationService} from '@app/service/registration.service';
 import {environment} from '@app/env/environment';
 import {BaseLazyAsyncValidator} from './base-lazy-async-validator';
 import {TranslateService} from '@ngx-translate/core';
-import {EmailValidator} from '@app/util/validator/email-validator';
+import {ContactEmailValidator} from '@app/util/validator/contact-email-validator';
 
 export class UserValidator extends BaseLazyAsyncValidator<boolean> {
 
-    public static readonly EMAIL_PATTERN = EmailValidator.EMAIL_PATTERN;
+    public static readonly EMAIL_PATTERN = ContactEmailValidator.EMAIL_PATTERN;
 
     static getEmailErrorDescription(control: FormControl, translateService: TranslateService): string | null {
 

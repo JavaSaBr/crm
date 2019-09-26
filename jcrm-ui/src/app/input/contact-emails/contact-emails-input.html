@@ -10,7 +10,7 @@
     <div fxLayout="column" fxFlex="40%">
       <mat-form-field floatLabel="never">
         <mat-label>{{ 'CONTACT.FIELD.EMAIL' | translate }}</mat-label>
-        <input matInput [formControl]="findControlsFor(element)[0]" required/>
+        <input matInput [formControl]="findControlsFor(element)[0]" maxlength="{{maxLength}}" required/>
         <mat-error *ngIf="findControlsFor(element)[0].invalid">
           {{getEmailErrorMessage(findControlsFor(element)[0])}}
         </mat-error>

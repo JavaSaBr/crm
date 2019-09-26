@@ -53,14 +53,18 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
         ];
     }
 
-    addNew() {
+    addNew(): void {
         this.addEntity(new ContactPhoneNumber(
             new PhoneNumber(null, '', ''),
-            PhoneNumberType.MOBILE)
-        );
+            PhoneNumberType.WORK
+        ));
     }
 
-    changePhoneType(phoneNumber: ContactPhoneNumber, event: MatSelectChange) {
+    changePhoneType(phoneNumber: ContactPhoneNumber, event: MatSelectChange): void {
         phoneNumber.type = event.value as PhoneNumberType;
+    }
+
+    getPhoneNumberTypeDescription(phoneNumberType: PhoneNumberType): void {
+        return this.translateService.instant(`ENUM.PHONE_NUMBER_TYPE.${phoneNumberType}`);
     }
 }

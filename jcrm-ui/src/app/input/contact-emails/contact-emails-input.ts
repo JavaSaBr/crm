@@ -4,8 +4,9 @@ import {FormControl, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
 import {ContactEmail, EmailType} from '@app/entity/contact-email';
-import {EmailValidator} from '@app/util/validator/email-validator';
+import {ContactEmailValidator} from '@app/util/validator/contact-email-validator';
 import {TranslateService} from '@ngx-translate/core';
+import {environment} from '@app/env/environment';
 
 @Component({
     selector: 'contact-emails-input',
@@ -19,6 +20,8 @@ import {TranslateService} from '@ngx-translate/core';
     }
 })
 export class ContactEmailsInput extends MultiFieldsMultiEntityInput<ContactEmail> {
+
+    readonly maxLength = environment.contactEmailMaxLength;
 
     readonly availableEmailTypes: EmailType[] = [
         EmailType.HOME,
@@ -43,7 +46,7 @@ export class ContactEmailsInput extends MultiFieldsMultiEntityInput<ContactEmail
             new FormControl(entity.email, {
                 validators: [
                     Validators.required,
-                    EmailValidator.FUNC
+                    ContactEmailValidator.FUN
                 ]
             }),
             new FormControl(entity.type, {
@@ -52,19 +55,19 @@ export class ContactEmailsInput extends MultiFieldsMultiEntityInput<ContactEmail
         ];
     }
 
-    addNew() {
+    addNew(): void {
         this.addEntity(new ContactEmail(null, EmailType.WORK));
     }
 
-    changeEmailType(contactEmail: ContactEmail, event: MatSelectChange) {
+    changeEmailType(contactEmail: ContactEmail, event: MatSelectChange): void {
         contactEmail.type = event.value as EmailType;
     }
 
-    getEmailErrorMessage(control: FormControl) {
-        return EmailValidator.getEmailErrorDescription(control, this.translateService);
+    getEmailErrorMessage(control: FormControl): string {
+        return ContactEmailValidator.getEmailErrorDescription(control, this.translateService);
     }
 
-    getEmailTypeDescription(emailType: EmailType) {
+    getEmailTypeDescription(emailType: EmailType): string {
         return this.translateService.instant(`ENUM.EMAIL_TYPE.${emailType}`);
     }
 }

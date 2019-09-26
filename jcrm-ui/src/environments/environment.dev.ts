@@ -14,5 +14,10 @@ export const environment = {
     otherUserNameMinLength: 2,
     otherUserNameMaxLength: 45,
     passwordMinLength: 6,
-    passwordMaxLength: 25
+    passwordMaxLength: 25,
+
+    // contact
+    contactEmailMaxLength: 45,
+    contactMessengerMaxLength: 45,
+    contactSiteMaxLength: 100,
 };

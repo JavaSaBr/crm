@@ -20,6 +20,8 @@ import {environment} from '@app/env/environment';
 })
 export class ContactMessengersInput extends MultiFieldsMultiEntityInput<ContactMessenger> {
 
+    readonly maxLength = environment.contactMessengerMaxLength;
+
     readonly availableEmailTypes: MessengerType[] = [
         MessengerType.SKYPE,
         MessengerType.TELEGRAM,
@@ -54,15 +56,15 @@ export class ContactMessengersInput extends MultiFieldsMultiEntityInput<ContactM
         ];
     }
 
-    addNew() {
+    addNew(): void {
         this.addEntity(new ContactMessenger('', MessengerType.SKYPE));
     }
 
-    changeEmailType(contactEmail: ContactMessenger, event: MatSelectChange) {
-        contactEmail.type = event.value as MessengerType;
+    changeMessengerType(contactMessenger: ContactMessenger, event: MatSelectChange): void {
+        contactMessenger.type = event.value as MessengerType;
     }
 
-    getLoginErrorMessage(control: FormControl) {
+    getLoginErrorMessage(control: FormControl): string {
 
         if (control.hasError('required')) {
             return this.translateService.instant('FORMS.ERROR.MESSENGER.LOGIN.REQUIRED');
@@ -73,7 +75,7 @@ export class ContactMessengersInput extends MultiFieldsMultiEntityInput<ContactM
         return null;
     }
 
-    getMessengerTypeDescription(messengerType: MessengerType) {
+    getMessengerTypeDescription(messengerType: MessengerType): string {
         return this.translateService.instant(`ENUM.MESSENGER_TYPE.${messengerType}`);
     }
 }

@@ -5,6 +5,7 @@ import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
 import {ContactSite, SiteType} from '@app/entity/contact-site';
 import {TranslateService} from '@ngx-translate/core';
+import {environment} from '@app/env/environment';
 
 @Component({
     selector: 'contact-sites-input',
@@ -18,6 +19,8 @@ import {TranslateService} from '@ngx-translate/core';
     }
 })
 export class ContactSitesInput extends MultiFieldsMultiEntityInput<ContactSite> {
+
+    readonly maxLength = environment.contactSiteMaxLength;
 
     readonly availableSiteTypes: SiteType[] = [
         SiteType.HOME,
@@ -40,7 +43,10 @@ export class ContactSitesInput extends MultiFieldsMultiEntityInput<ContactSite> 
     protected createFormControls(entity: ContactSite): FormControl[] {
         return [
             new FormControl(entity.url, {
-                validators: [Validators.required]
+                validators: [
+                    Validators.required,
+                    Validators.maxLength(environment.contactSiteMaxLength)
+                ]
             }),
             new FormControl(entity.type, {
                 validators: [Validators.required]
@@ -48,11 +54,26 @@ export class ContactSitesInput extends MultiFieldsMultiEntityInput<ContactSite> 
         ];
     }
 
-    addNew() {
+    addNew():void {
         this.addEntity(new ContactSite('', SiteType.WORK));
     }
 
-    changeEmailType(contactEmail: ContactSite, event: MatSelectChange) {
-        contactEmail.type = event.value as SiteType;
+    changeSiteType(contactSite: ContactSite, event: MatSelectChange):void {
+        contactSite.type = event.value as SiteType;
+    }
+
+    getSiteErrorMessage(control: FormControl): string {
+
+        if (control.hasError('required')) {
+            return this.translateService.instant('FORMS.ERROR.SITE.URL.REQUIRED');
+        } else if (control.hasError('maxlength')) {
+            return this.translateService.instant('FORMS.ERROR.SITE.URL.TOO_LONG');
+        }
+
+        return null;
+    }
+
+    getSiteTypeDescription(siteType: SiteType): string {
+        return this.translateService.instant(`ENUM.SITE_TYPE.${siteType}`);
     }
 }

@@ -1,8 +1,8 @@
 import {Entity} from '@app/entity/entity';
 
 export enum SiteType {
-    WORK = 'work',
-    HOME = 'home'
+    WORK = 'WORK',
+    HOME = 'HOME'
 }
 
 export class ContactSite extends Entity {

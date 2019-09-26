@@ -3,40 +3,44 @@
     <div class="tab-content" fxLayout="row" fxLayout.xs="column" fxLayoutGap="24px" fxLayoutGap.xs="14px">
       <div fxLayout="column" fxFlex="100%" class="container">
         <div fxLayout="row" fxFlex="100%" fxLayoutAlign="space-between" class="contact-info-header">
-          <p>ABOUT</p>
-          <button *ngIf="!editContactInfo" class="contact-info-button" mat-button color="primary">EDIT</button>
+          <p>{{ 'CONTACT.VIEW.LABELS.ABOUT' | translate }}</p>
+          <button *ngIf="!editContactInfo" class="contact-info-button" mat-button color="primary">
+            {{ 'CONTACT.VIEW.ACTIONS.EDIT' | translate }}
+          </button>
           <button *ngIf="editContactInfo && contact != null && contact.id"
                   [disabled]="disabled || !contactInfoFormGroup.valid || !hasChangesInContactInfo"
-                  class="contact-info-button" mat-button color="primary">SAVE
+                  class="contact-info-button" mat-button color="primary">
+            {{ 'CONTACT.VIEW.ACTIONS.SAVE' | translate }}
           </button>
           <button *ngIf="editContactInfo && contact != null && !contact.id"
                   [disabled]="disabled || !contactInfoFormGroup.valid"
-                  class="contact-info-button" mat-button color="primary" (click)="create()">CREATE
+                  class="contact-info-button" mat-button color="primary" (click)="create()">
+            {{ 'CONTACT.VIEW.ACTIONS.CREATE' | translate }}
           </button>
         </div>
         <form [formGroup]="contactInfoFormGroup">
           <mat-form-field class="form-field">
-            <mat-label>Assigner</mat-label>
+            <mat-label>{{ 'CONTACT.FIELD.ASSIGNER' | translate }}</mat-label>
             <user-input formControlName="assigner" required></user-input>
           </mat-form-field>
           <mat-form-field class="form-field">
-            <mat-label>Curators</mat-label>
+            <mat-label>{{ 'CONTACT.FIELD.CURATORS' | translate }}</mat-label>
             <users-input formControlName="curators"></users-input>
           </mat-form-field>
           <mat-form-field class="form-field">
-            <mat-label>First name</mat-label>
+            <mat-label>{{ 'CONTACT.FIELD.FIRST_NAME' | translate }}</mat-label>
             <input matInput formControlName="firstName" required>
           </mat-form-field>
           <mat-form-field class="form-field">
-            <mat-label>Second name</mat-label>
+            <mat-label>{{ 'CONTACT.FIELD.SECOND_NAME' | translate }}</mat-label>
             <input matInput formControlName="secondName" required>
           </mat-form-field>
           <mat-form-field class="form-field">
-            <mat-label>Third name</mat-label>
+            <mat-label>{{ 'CONTACT.FIELD.THIRD_NAME' | translate }}</mat-label>
             <input matInput formControlName="thirdName">
           </mat-form-field>
           <mat-form-field class="form-field">
-            <mat-label>Birthday</mat-label>
+            <mat-label>{{ 'CONTACT.FIELD.BIRTHDAY' | translate }}</mat-label>
             <input matInput [matDatepicker]="birthdayDatepicker" formControlName="birthday">
             <mat-datepicker-toggle matSuffix [for]="birthdayDatepicker"></mat-datepicker-toggle>
             <mat-datepicker #birthdayDatepicker></mat-datepicker>
@@ -46,7 +50,7 @@
           <contact-sites-input formControlName="sites"></contact-sites-input>
           <contact-messengers-input formControlName="messengers"></contact-messengers-input>
           <mat-form-field class="form-field">
-            <mat-label>Company</mat-label>
+            <mat-label>{{ 'CONTACT.FIELD.COMPANY' | translate }}</mat-label>
             <input matInput formControlName="company">
           </mat-form-field>
         </form>

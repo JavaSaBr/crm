@@ -25,7 +25,7 @@ export class ContactRepository extends RemoteRepository<Contact> {
         super(securityService, translateService)
     }
 
-    create(contact: Contact): Promise<Contact | null> {
+    create(contact: Contact): Promise<ErrorResponse | Contact> {
 
         let body = new ContactOutResource();
         body.assigner = contact.assigner;
@@ -44,8 +44,7 @@ export class ContactRepository extends RemoteRepository<Contact> {
         return this.securityService.postRequest<Contact>(url, body)
             .then(resp => this.convert(resp.body))
             .catch(resp => {
-                ErrorResponse.convertToErrorOrNull(resp, this.translateService);
-                return null;
+                return ErrorResponse.convertToErrorOrNull(resp, this.translateService);
             });
     }
 

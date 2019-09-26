@@ -17,7 +17,18 @@
       "2001": "Session is expired",
       "2002": "",
       "2003": "",
-      "2004": "No permissions to perform the action"
+      "2004": "No permissions to perform the action",
+
+      "3000": "Invalid first name",
+      "3001": "Invalid second name",
+      "3002": "No assigner",
+      "3003": "Invalid third name",
+      "3004": "Invalid company name",
+      "3005": "Invalid birthday",
+      "3006": "Invalid one of phone numbers",
+      "3007": "Invalid one of emails",
+      "3008": "Invalid one of sites",
+      "3009": "Invalid one of messengers"
     }
   },
   "FORMS": {
@@ -76,6 +87,10 @@
       "MESSENGER.LOGIN": {
         "REQUIRED": "You must enter a name",
         "TOO_LONG": "Name is too long"
+      },
+      "SITE.URL": {
+        "REQUIRED": "You must enter an URL",
+        "TOO_LONG": "URL is too long"
       }
     }
   },
@@ -89,6 +104,14 @@
       "TELEGRAM": "Telegram",
       "WHATS_UP": "What's Up",
       "VIBER": "Viber"
+    },
+    "SITE_TYPE": {
+      "WORK": "Work",
+      "HOME": "Home"
+    },
+    "PHONE_NUMBER_TYPE": {
+      "WORK": "Work",
+      "MOBILE": "Mobile"
     }
   },
   "REGISTER_ORG": {
@@ -152,10 +175,31 @@
     "CREATE_ACCOUNT": "Create account"
   },
   "CONTACT": {
+    "VIEW": {
+      "LABELS": {
+        "ABOUT": "ABOUT"
+      },
+      "ACTIONS": {
+        "CREATE": "CREATE",
+        "SAVE": "SAVE",
+        "EDIT": "EDIT"
+      }
+    },
     "FIELD": {
+      "ASSIGNER": "Assigner",
+      "CURATORS": "Curators",
+      "FIRST_NAME": "First name",
+      "SECOND_NAME": "Second name",
+      "THIRD_NAME": "Third name",
+      "BIRTHDAY": "Birthday",
       "EMAIL": "Email",
       "MESSENGERS": "Messengers",
-      "MESSENGER.LOGIN": "Name"
+      "MESSENGER.LOGIN": "Name",
+      "SITES": "Sites",
+      "SITE.URL": "URL",
+      "PHONE_NUMBERS": "Phone numbers",
+      "PHONE_NUMBERS.NUMBER": "Number",
+      "COMPANY": "Company"
     }
   }
 }

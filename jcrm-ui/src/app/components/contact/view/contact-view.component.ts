@@ -6,7 +6,8 @@ import {ContactRepository} from '@app/repository/contact/contact.repository';
 import {Utils} from '@app/util/utils';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {User} from '@app/entity/user';
-import {ValidationUtils} from '@app/util/validator/validation-utils';
+import {ErrorService} from '@app/service/error.service';
+import {ErrorResponse} from '@app/error/error-response';
 
 @Component({
     selector: 'app-contact-view',
@@ -43,7 +44,8 @@ export class ContactViewComponent implements AfterViewInit {
     constructor(
         formBuilder: FormBuilder,
         private readonly translateService: TranslateService,
-        private readonly contactService: ContactRepository,
+        private readonly contactRepository: ContactRepository,
+        private readonly errorService: ErrorService,
         private readonly userRepository: UserRepository
     ) {
         this.disabled = false;
@@ -149,11 +151,15 @@ export class ContactViewComponent implements AfterViewInit {
 
     create(): void {
         this.disabled = true;
-        this.contactService.create(this.syncContactWithForm(Contact.create()))
-            .then(contact => {
-                this.reload(contact);
+        this.contactRepository.create(this.syncContactWithForm(Contact.create()))
+            .then(result => {
+                if (result instanceof ErrorResponse) {
+                    this.errorService.showErrorResponse(result);
+                } else if (result instanceof Contact) {
+                    this.reload(result);
+                }
                 this.disabled = false;
-            })
+            });
     }
 
     syncContactWithForm(contact: Contact): Contact {

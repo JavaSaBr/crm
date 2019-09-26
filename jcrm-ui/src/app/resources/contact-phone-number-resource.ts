@@ -5,9 +5,10 @@ export class ContactPhoneNumberResource {
     public static valueOf(contactPhoneNumber: ContactPhoneNumber): ContactPhoneNumberResource {
 
         const phoneNumber = contactPhoneNumber.phoneNumber;
+        const country = phoneNumber.country;
 
         return new ContactPhoneNumberResource(
-            phoneNumber.country.phoneCode,
+            country ? country.phoneCode : null,
             phoneNumber.regionCode,
             phoneNumber.phoneNumber,
             contactPhoneNumber.type
