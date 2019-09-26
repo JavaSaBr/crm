@@ -4,6 +4,7 @@ import {FormControl, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
 import {ContactSite, SiteType} from '@app/entity/contact-site';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'contact-sites-input',
@@ -26,9 +27,10 @@ export class ContactSitesInput extends MultiFieldsMultiEntityInput<ContactSite> 
     constructor(
         ngControl: NgControl,
         focusMonitor: FocusMonitor,
-        elementRef: ElementRef<HTMLElement>
+        elementRef: ElementRef<HTMLElement>,
+        translateService: TranslateService
     ) {
-        super(ngControl, focusMonitor, elementRef);
+        super(ngControl, focusMonitor, elementRef, translateService);
     }
 
     get controlType(): string {

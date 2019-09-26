@@ -1,6 +1,6 @@
 <div fxLayout="column" fxFlex="100%" fxLayoutAlign="center start">
   <div fxLayout="row" fxFill fxFlex="100%" fxLayoutAlign="space-between center">
-    <mat-label fxFlex="90%">Email</mat-label>
+    <mat-label fxFlex="90%">{{ 'CONTACT.FIELD.EMAIL' | translate }}</mat-label>
     <button mat-icon-button color="primary" aria-label="Add">
       <mat-icon (click)="addNew()">add_circle_outline</mat-icon>
     </button>
@@ -9,8 +9,11 @@
        *ngFor="let element of entities">
     <div fxLayout="column" fxFlex="40%">
       <mat-form-field floatLabel="never">
-        <mat-label>Email</mat-label>
+        <mat-label>{{ 'CONTACT.FIELD.EMAIL' | translate }}</mat-label>
         <input matInput [formControl]="findControlsFor(element)[0]" required/>
+        <mat-error *ngIf="findControlsFor(element)[0].invalid">
+          {{getEmailErrorMessage(findControlsFor(element)[0])}}
+        </mat-error>
       </mat-form-field>
     </div>
     <div fxLayout="column" fxFlex="40%">
@@ -18,7 +21,9 @@
         <mat-label>Type</mat-label>
         <mat-select value="{{element.type}}" [formControl]="findControlsFor(element)[1]"
                     (selectionChange)="changeEmailType(element, $event)">
-          <mat-option *ngFor="let type of availableEmailTypes" value="{{type}}">{{type}}</mat-option>
+          <mat-option *ngFor="let type of availableEmailTypes" value="{{type}}">
+            {{getEmailTypeDescription(type)}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>

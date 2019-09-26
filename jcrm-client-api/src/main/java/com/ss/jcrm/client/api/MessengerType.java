@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 public enum MessengerType implements HasId {
     SKYPE(1, "Skype"),
     TELEGRAM(2, "Telegram"),
-    WHATSUP(3, "What's Up"),
+    WHATS_UP(3, "What's Up"),
     VIBER(4, "Viber");
 
     private final long id;

@@ -6,6 +6,7 @@ import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-
 import {ContactPhoneNumber, PhoneNumberType} from '@app/entity/contact-phone-number';
 import {PhoneNumberValidator} from '../phone-number/phone-number-validator';
 import {PhoneNumber} from '@app/entity/phone-number';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'contact-phones-input',
@@ -28,9 +29,10 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
     constructor(
         ngControl: NgControl,
         focusMonitor: FocusMonitor,
-        elementRef: ElementRef<HTMLElement>
+        elementRef: ElementRef<HTMLElement>,
+        translateService: TranslateService
     ) {
-        super(ngControl, focusMonitor, elementRef);
+        super(ngControl, focusMonitor, elementRef, translateService);
     }
 
     get controlType(): string {

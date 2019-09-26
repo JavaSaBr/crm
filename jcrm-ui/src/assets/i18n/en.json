@@ -67,7 +67,28 @@
         "REQUIRED": "You must enter a password",
         "TOO_SHORT": "Password is too short",
         "TOO_LONG": "Password is too long"
+      },
+      "EMAIL": {
+        "REQUIRED": "You must enter an email",
+        "INVALID": "Email is invalid",
+        "TOO_LONG": "Email is too long"
+      },
+      "MESSENGER.LOGIN": {
+        "REQUIRED": "You must enter a name",
+        "TOO_LONG": "Name is too long"
       }
+    }
+  },
+  "ENUM": {
+    "EMAIL_TYPE": {
+      "WORK": "Work",
+      "HOME": "Home"
+    },
+    "MESSENGER_TYPE": {
+      "SKYPE": "Skype",
+      "TELEGRAM": "Telegram",
+      "WHATS_UP": "What's Up",
+      "VIBER": "Viber"
     }
   },
   "REGISTER_ORG": {
@@ -129,5 +150,12 @@
     "GUEST_MODE": "Works on someone else's computer? Turn on the guest mode.",
     "GUEST_MODE_DETAILS": "Details…",
     "CREATE_ACCOUNT": "Create account"
+  },
+  "CONTACT": {
+    "FIELD": {
+      "EMAIL": "Email",
+      "MESSENGERS": "Messengers",
+      "MESSENGER.LOGIN": "Name"
+    }
   }
 }

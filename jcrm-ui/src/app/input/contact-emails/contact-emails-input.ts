@@ -5,6 +5,7 @@ import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
 import {ContactEmail, EmailType} from '@app/entity/contact-email';
 import {EmailValidator} from '@app/util/validator/email-validator';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'contact-emails-input',
@@ -27,9 +28,10 @@ export class ContactEmailsInput extends MultiFieldsMultiEntityInput<ContactEmail
     constructor(
         ngControl: NgControl,
         focusMonitor: FocusMonitor,
-        elementRef: ElementRef<HTMLElement>
+        elementRef: ElementRef<HTMLElement>,
+        translateService: TranslateService
     ) {
-        super(ngControl, focusMonitor, elementRef);
+        super(ngControl, focusMonitor, elementRef, translateService);
     }
 
     get controlType(): string {
@@ -56,5 +58,13 @@ export class ContactEmailsInput extends MultiFieldsMultiEntityInput<ContactEmail
 
     changeEmailType(contactEmail: ContactEmail, event: MatSelectChange) {
         contactEmail.type = event.value as EmailType;
+    }
+
+    getEmailErrorMessage(control: FormControl) {
+        return EmailValidator.getEmailErrorDescription(control, this.translateService);
+    }
+
+    getEmailTypeDescription(emailType: EmailType) {
+        return this.translateService.instant(`ENUM.EMAIL_TYPE.${emailType}`);
     }
 }

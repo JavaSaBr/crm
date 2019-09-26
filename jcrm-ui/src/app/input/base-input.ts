@@ -70,10 +70,6 @@ export class BaseInput<T> implements MatFormFieldControl<T>, OnDestroy, ControlV
     }
 
     get errorState(): boolean {
-        return this.isNotValid();
-    }
-
-    protected isNotValid() {
         return !this.empty && !this.ngControl.valid;
     }
 

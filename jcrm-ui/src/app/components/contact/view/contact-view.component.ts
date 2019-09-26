@@ -6,6 +6,7 @@ import {ContactRepository} from '@app/repository/contact/contact.repository';
 import {Utils} from '@app/util/utils';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {User} from '@app/entity/user';
+import {ValidationUtils} from '@app/util/validator/validation-utils';
 
 @Component({
     selector: 'app-contact-view',

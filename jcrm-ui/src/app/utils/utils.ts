@@ -1,3 +1,5 @@
+import {ValidationErrors} from '@angular/forms';
+
 export class Utils {
 
     static isNumber(string: string | null): boolean {
@@ -19,5 +21,16 @@ export class Utils {
         } else {
             return Array.from(array);
         }
+    }
+
+    static pushTo(errors: ValidationErrors | null | undefined, container: ValidationErrors) {
+
+        if (!errors) {
+            return;
+        }
+
+        Object.keys(errors).forEach(key => {
+            container[key] = errors[key];
+        });
     }
 }

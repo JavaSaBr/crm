@@ -1,8 +1,10 @@
 import {Entity} from '@app/entity/entity';
 
 export enum MessengerType {
-    WORK = 'work',
-    HOME = 'home'
+    SKYPE = 'SKYPE',
+    TELEGRAM = 'TELEGRAM',
+    WHATS_UP = "WHATS_UP",
+    VIBER = 'VIBER',
 }
 
 export class ContactMessenger extends Entity {

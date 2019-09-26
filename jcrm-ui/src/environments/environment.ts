@@ -21,7 +21,8 @@ export const environment = {
     passwordMaxLength: 25,
 
     // contact
-    contactEmailMaxLength: 45
+    contactEmailMaxLength: 45,
+    contactMessengerMaxLength: 45,
 };
 
 /*

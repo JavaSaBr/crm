@@ -1,8 +1,10 @@
 import {BaseInput} from '@app/input/base-input';
-import {FormControl, NgControl} from '@angular/forms';
+import {FormControl, NgControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 import {ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {Entity} from '@app/entity/entity';
+import {Utils} from '@app/util/utils';
+import {TranslateService} from '@ngx-translate/core';
 
 export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends BaseInput<T[]> implements OnInit {
 
@@ -12,12 +14,22 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
     protected constructor(
         @Optional() @Self() ngControl: NgControl,
         focusMonitor: FocusMonitor,
-        elementRef: ElementRef<HTMLElement>
+        elementRef: ElementRef<HTMLElement>,
+        protected readonly translateService: TranslateService
     ) {
         super(ngControl, focusMonitor, elementRef);
 
         this._entities = [];
         this._entityToControl = new Map();
+
+        const _rawValidators: ValidatorFn[] = ngControl['_rawValidators'];
+
+        //FIXME to find best solution by javasabr
+        if (_rawValidators) {
+            _rawValidators.push(() => this.validateSubControls());
+        } else {
+            ngControl['_rawValidators'] = [() => this.validateSubControls()];
+        }
     }
 
     remove(entity: T): void {
@@ -30,6 +42,8 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
 
         this._entities.splice(index, 1);
         this._entityToControl.delete(entity);
+
+        this.changeFromSubControls();
     }
 
     protected addEntity(entity: T) {
@@ -77,27 +91,19 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
         this.onChange(this.value);
     }
 
-    ngOnInit(): void {
-    }
+    ngOnInit(): void {}
 
-    protected isNotValid(): boolean {
+    private validateSubControls(): ValidationErrors | null {
 
-        const isNotValid = super.isNotValid();
+        let result: ValidationErrors = {};
 
-        if (isNotValid) {
-            return true;
+        this._entityToControl.forEach(controls =>
+            controls.forEach(control => Utils.pushTo(control.errors, result)));
+
+        if (Object.keys(result).length < 1) {
+            return null;
         }
 
-        let errors = 0;
-
-        this._entityToControl.forEach(controls => {
-            controls.forEach(control => {
-                if (!control.valid) {
-                    errors++;
-                }
-            });
-        });
-
-        return errors > 0;
+        return result;
     }
 }

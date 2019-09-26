@@ -4,7 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 
 export class EmailValidator implements Validator {
 
-    public static readonly INSTANCE = new EmailValidator();
+    public static readonly INSTANCE: EmailValidator = new EmailValidator();
     public static readonly FUNC: ValidatorFn = control => EmailValidator.INSTANCE.validate(control);
 
     public static readonly EMAIL_PATTERN =
