@@ -1,4 +1,4 @@
-<div [formGroup]="formGroup" class="container">
+<div [formGroup]="formGroup" class="country-input-container">
   <input matInput placeholder="Country" formControlName="country" [matAutocomplete]="auto" required>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCountry">
     <mat-option *ngFor="let country of filteredCountries | async" [value]="country">

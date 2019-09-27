@@ -18,8 +18,6 @@ import {UiUtils} from '@app/util/ui-utils';
 })
 export class AuthenticationComponent {
 
-    readonly rowHeight = UiUtils.FORM_ROW_HEIGHT;
-
     readonly authFormGroup: FormGroup;
     readonly login: FormControl;
     readonly password: FormControl;

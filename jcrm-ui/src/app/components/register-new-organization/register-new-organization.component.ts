@@ -28,10 +28,6 @@ import {MatHorizontalStepper} from '@angular/material';
 })
 export class RegisterNewOrganizationComponent implements OnInit {
 
-    readonly rowHeight = UiUtils.FORM_ROW_HEIGHT;
-    readonly rowRadioButtonHeight = UiUtils.FORM_ROW_RADIO_BUTTON_HEIGHT;
-    readonly gutterSize = UiUtils.FORM_GUTTER_SIZE;
-
     readonly orgFormGroup: FormGroup;
     readonly ownerFormGroup: FormGroup;
     readonly subscribeFormGroup: FormGroup;
