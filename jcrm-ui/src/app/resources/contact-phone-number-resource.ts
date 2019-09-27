@@ -6,9 +6,10 @@ export class ContactPhoneNumberResource {
 
         const phoneNumber = contactPhoneNumber.phoneNumber;
         const country = phoneNumber.country;
+        const countryCode = country ? country.phoneCode : null;
 
         return new ContactPhoneNumberResource(
-            country ? country.phoneCode : null,
+            countryCode,
             phoneNumber.regionCode,
             phoneNumber.phoneNumber,
             contactPhoneNumber.type
@@ -16,10 +17,10 @@ export class ContactPhoneNumberResource {
     }
 
     constructor(
-        countryCode: string,
-        regionCode: string,
-        phoneNumber: string,
-        type: string
+        private countryCode: string,
+        private regionCode: string,
+        private phoneNumber: string,
+        private type: string
     ) {
     }
 }

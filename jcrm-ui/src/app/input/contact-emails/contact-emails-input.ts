@@ -41,17 +41,26 @@ export class ContactEmailsInput extends MultiFieldsMultiEntityInput<ContactEmail
         return 'contact-emails-input';
     }
 
-    protected createFormControls(entity: ContactEmail): FormControl[] {
+    protected createFormControls(contactEmail: ContactEmail): FormControl[] {
+
+        const emailControl = new FormControl(contactEmail.email, {
+            validators: [
+                Validators.required,
+                ContactEmailValidator.FUN
+            ]
+        });
+        const typeControl = new FormControl(contactEmail.type, {
+            validators: [Validators.required]
+        });
+
+        emailControl.valueChanges
+            .subscribe(value => contactEmail.email = value);
+        typeControl.valueChanges
+            .subscribe(value => contactEmail.type = value);
+
         return [
-            new FormControl(entity.email, {
-                validators: [
-                    Validators.required,
-                    ContactEmailValidator.FUN
-                ]
-            }),
-            new FormControl(entity.type, {
-                validators: [Validators.required]
-            })
+            emailControl,
+            typeControl
         ];
     }
 

@@ -40,17 +40,26 @@ export class ContactSitesInput extends MultiFieldsMultiEntityInput<ContactSite> 
         return 'contact-sites-input';
     }
 
-    protected createFormControls(entity: ContactSite): FormControl[] {
+    protected createFormControls(site: ContactSite): FormControl[] {
+
+        const urlControl = new FormControl(site.url, {
+            validators: [
+                Validators.required,
+                Validators.maxLength(environment.contactSiteMaxLength)
+            ]
+        });
+        const typeControl = new FormControl(site.type, {
+            validators: [Validators.required]
+        });
+
+        urlControl.valueChanges
+            .subscribe(value => site.url = value);
+        typeControl.valueChanges
+            .subscribe(value => site.type = value);
+
         return [
-            new FormControl(entity.url, {
-                validators: [
-                    Validators.required,
-                    Validators.maxLength(environment.contactSiteMaxLength)
-                ]
-            }),
-            new FormControl(entity.type, {
-                validators: [Validators.required]
-            })
+            urlControl,
+            typeControl
         ];
     }
 

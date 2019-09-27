@@ -20,7 +20,7 @@ export class ErrorService {
             return
         }
 
-        this.snackBar.open(this.translateService.instant(`ERROR.ERROR.${response.errorCode}`), 'X', {
+        this.snackBar.open(this.translateService.instant(`SERVER.ERROR.${response.errorCode}`), 'X', {
             duration: 5000,
         });
     }

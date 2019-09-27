@@ -39,17 +39,26 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
         return 'contact-phone-numbers-input';
     }
 
-    protected createFormControls(entity: ContactPhoneNumber): FormControl[] {
+    protected createFormControls(phoneNumber: ContactPhoneNumber): FormControl[] {
+
+        const phoneNumberControl = new FormControl(phoneNumber.phoneNumber, {
+            validators: [
+                Validators.required,
+                PhoneNumberValidator.FUN
+            ]
+        });
+        const typeControl = new FormControl(phoneNumber.type, {
+            validators: [Validators.required]
+        });
+
+        phoneNumberControl.valueChanges
+            .subscribe(value => phoneNumber.phoneNumber = value);
+        typeControl.valueChanges
+            .subscribe(value => phoneNumber.type = value);
+
         return [
-            new FormControl(entity.phoneNumber, {
-                validators: [
-                    Validators.required,
-                    PhoneNumberValidator.FUN
-                ]
-            }),
-            new FormControl(entity.type, {
-                validators: [Validators.required]
-            })
+            phoneNumberControl,
+            typeControl
         ];
     }
 

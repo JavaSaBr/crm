@@ -42,17 +42,26 @@ export class ContactMessengersInput extends MultiFieldsMultiEntityInput<ContactM
         return 'contact-messengers-input';
     }
 
-    protected createFormControls(entity: ContactMessenger): FormControl[] {
+    protected createFormControls(messenger: ContactMessenger): FormControl[] {
+
+        const loginControl = new FormControl(messenger.login, {
+            validators: [
+                Validators.required,
+                Validators.maxLength(environment.contactMessengerMaxLength)
+            ]
+        });
+        const typeControl = new FormControl(messenger.type, {
+            validators: [Validators.required]
+        });
+
+        loginControl.valueChanges
+            .subscribe(value => messenger.login = value);
+        typeControl.valueChanges
+            .subscribe(value => messenger.type = value);
+
         return [
-            new FormControl(entity.login, {
-                validators: [
-                    Validators.required,
-                    Validators.maxLength(environment.contactMessengerMaxLength)
-                ]
-            }),
-            new FormControl(entity.type, {
-                validators: [Validators.required]
-            })
+            loginControl,
+            typeControl
         ];
     }
 

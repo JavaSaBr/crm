@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public enum PhoneNumberType implements HasId {
     WORK(1, "Work"),
-    HOME(2, "Home");
+    MOBILE(2, "Mobile");
 
     private final long id;
     private final String name;
