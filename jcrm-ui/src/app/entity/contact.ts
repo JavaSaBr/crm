@@ -6,7 +6,9 @@ import {ContactMessenger} from '@app/entity/contact-messenger';
 
 export class Contact extends UniqEntity {
 
-    public static create(contact?: Contact | null): Contact {
+    public static create(
+        contact?: Contact | null
+    ): Contact {
 
         return new Contact(
             contact ? contact.id : 0,

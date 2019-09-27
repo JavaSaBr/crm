@@ -151,6 +151,17 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
         this._filteredCountries = CountryPhoneCodeAutoCompleter.install(this.countryControl, this.countryRepository);
     }
 
+    writeValue(value: any): void {
+
+        if (value instanceof PhoneNumber) {
+            this.value = value as PhoneNumber;
+        } else {
+            this.value = '';
+        }
+
+        super.writeValue(value);
+    }
+
     displayCountry(country?: Country): string {
         return country ? country.phoneCode : '';
     }

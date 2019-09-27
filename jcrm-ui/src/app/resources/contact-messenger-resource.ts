@@ -7,8 +7,8 @@ export class ContactMessengerResource {
     }
 
     constructor(
-        private login: string,
-        private type: string,
+        public login: string,
+        public type: string,
     ) {
     }
 }

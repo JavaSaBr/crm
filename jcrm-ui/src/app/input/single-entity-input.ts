@@ -53,6 +53,7 @@ export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnIni
             this.entityControl.setValue(null);
         }
 
+        this._entity = entity;
         this.stateChanges.next();
     }
 

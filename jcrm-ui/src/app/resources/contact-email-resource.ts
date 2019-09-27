@@ -7,8 +7,8 @@ export class ContactEmailResource {
     }
 
     constructor(
-        private email: string,
-        private type: string
+        public email: string,
+        public type: string
     ) {
     }
 }

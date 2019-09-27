@@ -49,13 +49,22 @@ export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T
         return MultiEntityInput.DEFAULT_SEPARATOR_KEYS_CODES;
     }
 
-    remove(entity: T): void {
+    removeEntity(entity: T): void {
+        if (this.removeEntityInternal(entity)) {
+            this.changeFromSubControls();
+        }
+    }
+
+    removeEntityInternal(entity: T): boolean {
 
         const index = this._entities.indexOf(entity);
 
         if (index >= 0) {
             this._entities.splice(index, 1);
+            return true;
         }
+
+        return false;
     }
 
     add(event: MatChipInputEvent): void {
@@ -92,15 +101,21 @@ export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T
     }
 
     private addEntity(entity: T) {
+        if (this.addEntityInternal(entity)) {
+            this.changeFromSubControls();
+        }
+    }
+
+    private addEntityInternal(entity: T): boolean {
 
         const index = this._entities.findIndex(element => element.id == entity.id);
 
         if (index >= 0) {
-            return;
+            return false;
         }
 
         this._entities.push(entity);
-        this.changeFromSubControls();
+        return true;
     }
 
     get entities(): T[] {

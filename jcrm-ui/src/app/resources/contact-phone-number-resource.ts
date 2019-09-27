@@ -17,10 +17,10 @@ export class ContactPhoneNumberResource {
     }
 
     constructor(
-        private countryCode: string,
-        private regionCode: string,
-        private phoneNumber: string,
-        private type: string
+        public countryCode: string,
+        public regionCode: string,
+        public phoneNumber: string,
+        public type: string
     ) {
     }
 }

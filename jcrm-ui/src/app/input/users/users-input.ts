@@ -50,4 +50,15 @@ export class UsersInput extends MultiEntityInput<User> {
             return null;
         }
     }
+
+    writeValue(value: any): void {
+
+        if (value instanceof Array) {
+            this.value = value;
+        } else {
+            this.value = [];
+        }
+
+        super.writeValue(value);
+    }
 }

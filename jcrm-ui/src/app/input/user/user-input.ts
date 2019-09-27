@@ -42,4 +42,15 @@ export class UserInput extends SingleEntityInput<User> {
     protected installAutoComplete(): Observable<User[]> {
         return UserAutoCompleter.install(this.entityControl, this.userRepository);
     }
+
+    writeValue(value: any): void {
+
+        if (value instanceof User) {
+            this.value = value;
+        } else {
+            this.value = null;
+        }
+
+        super.writeValue(value);
+    }
 }

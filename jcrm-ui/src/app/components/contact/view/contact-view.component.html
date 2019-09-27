@@ -29,15 +29,15 @@
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>{{ 'CONTACT.FIELD.FIRST_NAME' | translate }}</mat-label>
-            <input matInput formControlName="firstName" required>
+            <input matInput formControlName="firstName" maxlength="{{contactNameMaxLength}}" required>
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>{{ 'CONTACT.FIELD.SECOND_NAME' | translate }}</mat-label>
-            <input matInput formControlName="secondName" required>
+            <input matInput formControlName="secondName" maxlength="{{contactNameMaxLength}}" required>
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>{{ 'CONTACT.FIELD.THIRD_NAME' | translate }}</mat-label>
-            <input matInput formControlName="thirdName">
+            <input matInput formControlName="thirdName" maxlength="{{contactNameMaxLength}}">
           </mat-form-field>
           <mat-form-field class="form-field">
             <mat-label>{{ 'CONTACT.FIELD.BIRTHDAY' | translate }}</mat-label>
@@ -51,7 +51,7 @@
           <contact-messengers-input formControlName="messengers"></contact-messengers-input>
           <mat-form-field class="form-field">
             <mat-label>{{ 'CONTACT.FIELD.COMPANY' | translate }}</mat-label>
-            <input matInput formControlName="company">
+            <input matInput formControlName="company" maxlength="{{contactCompanyMaxLength}}">
           </mat-form-field>
         </form>
       </div>

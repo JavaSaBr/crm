@@ -4,7 +4,7 @@
         *ngFor="let entity of entities"
         [selectable]="selectable"
         [removable]="removable"
-        (removed)="remove(entity)">
+        (removed)="removeEntity(entity)">
       {{displayWith(entity)}}
       <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
     </mat-chip>

@@ -160,6 +160,7 @@ public class RegistrationWebConfig {
         var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
             .GET(contextPath + "/user/{id}", userHandler::findById)
+            .POST(contextPath + "/users/ids", userHandler::findByIds)
             .GET(contextPath + "/exist/user/email/{email}", userHandler::existByEmail)
             .GET(contextPath + "/search/user/name/{name}", userHandler::searchByName)
             .build();

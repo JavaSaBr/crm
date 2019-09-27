@@ -1,6 +1,7 @@
 package com.ss.jcrm.registration.web.handler;
 
 import static com.ss.rlib.common.util.NumberUtils.toOptionalLong;
+import static com.ss.rlib.common.util.array.ArrayCollectors.toArray;
 import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
@@ -8,6 +9,7 @@ import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.IdNotPresentedWebException;
 import com.ss.jcrm.web.util.ResponseUtils;
+import com.ss.rlib.common.util.array.ArrayCollectors;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -34,6 +36,17 @@ public class UserHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(param -> userDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
             .map(UserOutResource::new)
+            .flatMap(ResponseUtils::ok)
+            .switchIfEmpty(ResponseUtils.lazyNotFound());
+    }
+
+    public @NotNull Mono<ServerResponse> findByIds(@NotNull ServerRequest request) {
+        return request.bodyToMono(long[].class)
+            .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
+            .flatMap(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
+            .map(users -> users.stream()
+                .map(UserOutResource::new)
+                .collect(toArray(UserOutResource.class)))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }

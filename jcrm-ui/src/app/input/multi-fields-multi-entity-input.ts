@@ -32,21 +32,32 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
         }
     }
 
-    remove(entity: T): void {
+    protected removeEntity(entity: T): void {
+        if (this.removeEntityInternal(entity)) {
+            this.changeFromSubControls();
+        }
+    }
+
+    protected removeEntityInternal(entity: T): boolean {
 
         const index = this._entities.indexOf(entity);
 
         if (index < 0) {
-            return;
+            return false;
         }
 
         this._entities.splice(index, 1);
         this._entityToControl.delete(entity);
 
-        this.changeFromSubControls();
+        return true;
     }
 
     protected addEntity(entity: T) {
+        this.addEntityInternal(entity);
+        this.changeFromSubControls();
+    }
+
+    protected addEntityInternal(entity: T) {
 
         const controls = this.createFormControls(entity);
         controls.forEach(control => control
@@ -54,9 +65,8 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
 
         this._entities.push(entity);
         this._entityToControl.set(entity, controls);
-
-        this.changeFromSubControls();
     }
+
 
     protected createFormControls(entity: T): FormControl[] {
         return [
@@ -82,8 +92,26 @@ export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends Base
     }
 
     set value(entities: T[]) {
-        this._entities = entities;
-        this.stateChanges.next();
+
+        Array.from(this.entities)
+            .forEach(entity => this.removeEntityInternal(entity));
+
+        entities.forEach(entity => this.addEntityInternal(entity));
+
+        this.changeFromSubControls()
+    }
+
+    writeValue(value: any): void {
+
+        const entities: T[] = value;
+
+        if (entities) {
+            this.value = entities;
+        } else {
+            this.value = [];
+        }
+
+        super.writeValue(value);
     }
 
     private changeFromSubControls(): void {

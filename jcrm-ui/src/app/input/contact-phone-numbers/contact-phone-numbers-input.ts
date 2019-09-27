@@ -7,6 +7,7 @@ import {ContactPhoneNumber, PhoneNumberType} from '@app/entity/contact-phone-num
 import {PhoneNumberValidator} from '../phone-number/phone-number-validator';
 import {PhoneNumber} from '@app/entity/phone-number';
 import {TranslateService} from '@ngx-translate/core';
+import {CountryRepository} from '@app/repository/country/country.repository';
 
 @Component({
     selector: 'contact-phones-input',
@@ -27,6 +28,7 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
     ];
 
     constructor(
+        private readonly countryRepository: CountryRepository,
         ngControl: NgControl,
         focusMonitor: FocusMonitor,
         elementRef: ElementRef<HTMLElement>,
@@ -51,8 +53,10 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
             validators: [Validators.required]
         });
 
+        phoneNumberControl.setValue(phoneNumber.phoneNumber);
         phoneNumberControl.valueChanges
             .subscribe(value => phoneNumber.phoneNumber = value);
+        typeControl.setValue(phoneNumber.type);
         typeControl.valueChanges
             .subscribe(value => phoneNumber.type = value);
 

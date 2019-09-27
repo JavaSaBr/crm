@@ -7,8 +7,8 @@ export class ContactSiteResource {
     }
 
     constructor(
-        private url: string,
-        private type: string
+        public url: string,
+        public type: string
     ) {
     }
 }

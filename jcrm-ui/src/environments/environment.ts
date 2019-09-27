@@ -24,6 +24,8 @@ export const environment = {
     contactEmailMaxLength: 45,
     contactMessengerMaxLength: 45,
     contactSiteMaxLength: 100,
+    contactNameMaxLength: 45,
+    contactCompanyMaxLength: 100,
 };
 
 /*

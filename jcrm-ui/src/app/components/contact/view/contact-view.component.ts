@@ -8,6 +8,7 @@ import {UserRepository} from '@app/repository/user/user.repository';
 import {User} from '@app/entity/user';
 import {ErrorService} from '@app/service/error.service';
 import {ErrorResponse} from '@app/error/error-response';
+import {environment} from '@app/env/environment';
 
 @Component({
     selector: 'app-contact-view',
@@ -15,6 +16,9 @@ import {ErrorResponse} from '@app/error/error-response';
     styleUrls: ['./contact-view.component.scss'],
 })
 export class ContactViewComponent implements AfterViewInit {
+
+    readonly contactNameMaxLength = environment.contactNameMaxLength;
+    readonly contactCompanyMaxLength = environment.contactCompanyMaxLength;
 
     readonly contactInfoFormGroup: FormGroup;
 
@@ -30,8 +34,7 @@ export class ContactViewComponent implements AfterViewInit {
     readonly messengers: FormControl;
     readonly company: FormControl;
 
-    @Input("contact")
-    contact: Contact | null;
+    private contact: Contact | null;
 
     @Input("startEditableState")
     startEditableState: boolean;
@@ -56,13 +59,13 @@ export class ContactViewComponent implements AfterViewInit {
         this.contactInfoFormGroup = formBuilder.group({
             assigner: [],
             curators: [],
-            firstName: [[
+            firstName: ['', [
                 Validators.required
             ]],
-            secondName: [[
+            secondName: ['', [
                 Validators.required
             ]],
-            thirdName: [[
+            thirdName: ['', [
                 Validators.required
             ]],
             birthday: [],

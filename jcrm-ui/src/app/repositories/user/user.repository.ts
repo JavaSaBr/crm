@@ -6,7 +6,8 @@ import {RemoteRepository} from '@app/repository/remote.repository';
 @Injectable({
     providedIn: 'root'
 })
-export class UserRepository extends RemoteRepository<User> {
+//FIXME update implementation
+export class UserRepository extends RemoteRepository<User, User> {
 
     protected buildFetchUrl(): string {
         return `${environment.registrationUrl}/users`;
@@ -14,6 +15,10 @@ export class UserRepository extends RemoteRepository<User> {
 
     protected buildFetchUrlById(id: number): string {
         return `${environment.registrationUrl}/user/${id}`;
+    }
+
+    protected buildFetchUrlByIds(): string {
+        return `${environment.registrationUrl}/users/ids`;
     }
 
     public searchByName(name: string): Promise<User[]> {
