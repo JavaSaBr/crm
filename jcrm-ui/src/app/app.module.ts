@@ -61,6 +61,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {ContactEmailsInput} from '@app/input/contact-emails/contact-emails-input';
 import {ContactSitesInput} from '@app/input/contact-sites-input/contact-sites-input';
 import {ContactMessengersInput} from '@app/input/contact-messengers-input/contact-messengers-input';
+import {UserProfileComponent} from '@app/component/user-profile/user-profile.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -96,6 +97,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         ContactEmailsInput,
         ContactSitesInput,
         ContactMessengersInput,
+        UserProfileComponent,
     ],
     imports: [
         BrowserModule,
