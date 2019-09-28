@@ -6,6 +6,7 @@ import {Contact} from '@app/entity/contact';
 import {ContactRepository} from '@app/repository/contact/contact.repository';
 import {Router} from '@angular/router';
 import {ContactWorkspaceComponent} from '@app/component/contact/workspace-component/contact-workspace.component';
+import {PageEvent} from '@angular/material/paginator';
 
 @Component({
     selector: 'app-contacts',
@@ -34,7 +35,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
     pageSizeOptions: number[] = [5, 10, 25, 100];
 
     // MatPaginator Output
-    //pageEvent: PageEvent;
+    pageEvent: PageEvent;
 
     constructor(
         protected readonly workspaceService: WorkspaceService,

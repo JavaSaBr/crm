@@ -12,19 +12,19 @@ export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T
     protected static readonly DEFAULT_SEPARATOR_KEYS_CODES: number[] = [ENTER, COMMA];
     protected static readonly EMPTY_ENTITIES: any[] = [];
 
-    protected readonly entityControl: FormControl;
+    readonly entityControl: FormControl;
 
     protected _availableEntities: Observable<T[]>;
     protected _entities: T[];
 
-    protected separatorKeysCodes: number[];
+    separatorKeysCodes: number[];
 
     @Input("selectable")
-    protected selectable = false;
+    selectable = false;
     @Input("removable")
-    protected removable = true;
+    removable = true;
     @Input("addOnBlur")
-    protected addOnBlur = false;
+    addOnBlur = false;
 
     @ViewChild('entityInput', {static: false})
     entityInput: ElementRef<HTMLInputElement>;

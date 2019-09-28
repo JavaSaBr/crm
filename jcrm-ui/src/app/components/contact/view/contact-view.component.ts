@@ -34,7 +34,7 @@ export class ContactViewComponent implements AfterViewInit {
     readonly messengers: FormControl;
     readonly company: FormControl;
 
-    private contact: Contact | null;
+    contact: Contact | null;
 
     @Input("startEditableState")
     startEditableState: boolean;

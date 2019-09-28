@@ -7,7 +7,7 @@ import {MatAutocompleteSelectedEvent} from '@angular/material';
 
 export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnInit {
 
-    protected readonly entityControl: FormControl;
+    readonly entityControl: FormControl;
 
     protected _availableEntities: Observable<T[]>;
     protected _entity: T | null;
@@ -68,7 +68,7 @@ export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnIni
 
     protected abstract installAutoComplete(): Observable<T[]>;
 
-    protected abstract displayWith(entity?: T): string;
+    abstract displayWith(entity?: T): string;
 
     ngOnInit(): void {
         this._availableEntities = this.installAutoComplete();

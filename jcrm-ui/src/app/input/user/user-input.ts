@@ -35,7 +35,7 @@ export class UserInput extends SingleEntityInput<User> {
         return 'user-input';
     }
 
-    protected displayWith(user: User | null): string {
+    displayWith(user: User | null): string {
         return user instanceof User ? user.namePresentation : '';
     }
 
