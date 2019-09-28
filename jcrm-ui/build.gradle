@@ -4,28 +4,32 @@ task pullAngularCliImage(type: Exec, group: 'Angular') {
 }
 
 task installNodeModules(type: Exec, group: 'Angular') {
-    commandLine 'docker', 'run', '-u', getDockerUserId(), '--rm', '-v',
+    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
         getDockerMappingFolder(), 'trion/ng-cli', 'npm', 'install'
 }
 
 task updateAngular(type: Exec, group: 'Angular') {
-    commandLine 'docker', 'run', '-u', getDockerUserId(), '--rm', '-v',
+    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
         getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'update', '--all'
 }
 
 task buildAngular(type: Exec, group: 'Build') {
-    commandLine 'docker', 'run', '-u', getDockerUserId(), '--rm', '-v',
+    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
         getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build',
         '--configuration=' + System.getProperty("angular.env", "local")
 }
 
 task debug(type: Exec, group: 'Application', description: 'Debug front-end') {
-    commandLine 'docker', 'run', '-u', getDockerUserId(), '--rm', '-p', '4200:4200', '-v',
+    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-p', '4200:4200', '-v',
         getDockerMappingFolder(), 'trion/ng-cli',  'ng', 'serve'
 }
 
 static def getDockerUserId() {
     return System.getProperty("docker.user.id", "1000")
+}
+
+static def getDockerGroupId() {
+    return System.getProperty("docker.group.id", "1000")
 }
 
 sourceSets {
