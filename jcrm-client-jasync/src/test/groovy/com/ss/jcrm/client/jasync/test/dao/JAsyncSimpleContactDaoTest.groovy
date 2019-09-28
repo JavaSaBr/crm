@@ -30,7 +30,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             )
             ContactPhoneNumber[] phoneNumbers = [
                 new DefaultContactPhoneNumber("+7", "123", "456789", PhoneNumberType.WORK),
-                new DefaultContactPhoneNumber("+7", "123", "098765", PhoneNumberType.HOME)
+                new DefaultContactPhoneNumber("+7", "123", "098765", PhoneNumberType.MOBILE)
             ]
             ContactEmail[] emails = [
                 new DefaultContactEmail("test@test.com", EmailType.WORK),

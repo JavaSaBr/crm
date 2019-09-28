@@ -61,7 +61,7 @@ class ContactHandlerTest extends ClientSpecification {
             
             def token = unsafeTokenService.generateNewToken(user)
             def body = new ContactInResource(
-                setAssigner: assigner.id,
+                assigner: assigner.id,
                 curators: [curator1.id, curator2.id],
                 firstName: "First name",
                 secondName: "Second name",
