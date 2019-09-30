@@ -47,6 +47,6 @@ export class AsyncEntityRemoteRepository<T extends UniqEntity, R> extends Remote
     }
 
     protected convertAsync(resource: R): Promise<T> {
-        throw new Error('Not yet implemented');
+        throw new Error('`convertAsync` is not yet implemented');
     }
 }

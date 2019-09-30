@@ -125,8 +125,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         when:
             userDao.update(user).block()
         then:
-            def ex = thrown(CompletionException)
-            ex.getCause() instanceof NotActualObjectDaoException
+            thrown NotActualObjectDaoException
     }
 
     def "should load a user by name"() {

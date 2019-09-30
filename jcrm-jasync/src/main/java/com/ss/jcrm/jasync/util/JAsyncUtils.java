@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import com.github.jasync.sql.db.Configuration;
 import com.github.jasync.sql.db.ConnectionPoolConfiguration;
+import com.github.jasync.sql.db.SSLConfiguration;
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.exceptions.GenericDatabaseException;
 import com.github.jasync.sql.db.util.ExecutorServiceUtils;
@@ -27,6 +28,7 @@ import org.joda.time.LocalDateTime;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
@@ -326,7 +328,9 @@ public class JAsyncUtils {
             host,
             port,
             password,
-            database
+            database,
+            new SSLConfiguration(),
+            StandardCharsets.UTF_8
         );
     }
 }

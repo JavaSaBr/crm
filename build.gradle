@@ -7,12 +7,11 @@ buildscript {
         }
     }
     dependencies {
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE"
     }
 }
 
-rootProject.version = "0.0.1"
+rootProject.version = "0.0.2"
 group = "com.spaceshift"
 
 allprojects {
@@ -32,26 +31,26 @@ allprojects {
     }
 
     ext {
-        annotationVersion = "16.0.3"
+        annotationVersion = "17.0.0"
         rlibVersion = "9.3.0"
         lombokVersion = '1.18.4'
-        springbootVersion = '2.1.4.RELEASE'
+        springbootVersion = '2.1.8.RELEASE'
         springVersion = '5.1.6.RELEASE'
-        junitJupiterVersion = "5.2.0"
+        junitJupiterVersion = "5.5.2"
         hikariCPVersion = "2.7.8"
-        flywayVersion = "5.2.1"
+        flywayVersion = "6.0.4"
         jsointerVersion = "0.9.23"
-        testcontainersVersion = "1.10.1"
-        groovyVersion = "2.5.3"
+        testcontainersVersion = "1.12.1"
+        groovyVersion = "2.5.8"
         spockVersion = "1.2-groovy-2.5"
         postgresqlVersion = "42.1.1"
-        javassistVersion = "3.24.0-GA"
-        jsonwebtokenVersion = "0.10.5"
+        javassistVersion = "3.25.0-GA"
+        jsonwebtokenVersion = "0.10.7"
         hamcrestVersion = "1.3"
         jsonpathVersion = "2.4.0"
-        jasyncVersion = "1.0.0"
-        nettyVersion = "4.1.36.Final"
-        projectReactorVersion = "3.2.11.RELEASE"
+        jasyncVersion = "1.0.7"
+        nettyVersion = "4.1.41.Final"
+        projectReactorVersion = "3.3.0.RELEASE"
     }
 
     dependencies {
@@ -61,8 +60,6 @@ allprojects {
     afterEvaluate { Project project ->
 
         if (project.ext.has("lombok") && project.ext["lombok"] == "true") {
-
-            project.apply (plugin: "net.ltgt.apt")
             project.dependencies {
                 it.compileOnly "org.projectlombok:lombok:$lombokVersion"
                 it.annotationProcessor "org.projectlombok:lombok:$lombokVersion"

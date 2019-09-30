@@ -1,26 +1,22 @@
 import {Injectable} from '@angular/core';
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from '@angular/material';
 import {ErrorResponse} from '@app/error/error-response';
-import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ErrorService {
 
-    constructor(
-        private readonly translateService: TranslateService,
-        private readonly snackBar: MatSnackBar
-    ) {
+    constructor(private readonly snackBar: MatSnackBar) {
     }
 
     showErrorResponse(response: ErrorResponse) {
 
         if (!response) {
-            return
+            return;
         }
 
-        this.snackBar.open(this.translateService.instant(`SERVER.ERROR.${response.errorCode}`), 'X', {
+        this.snackBar.open(response.errorMessage, 'X', {
             duration: 5000,
         });
     }
@@ -28,7 +24,7 @@ export class ErrorService {
     showError(message: string) {
 
         if (!message) {
-            return
+            return;
         }
 
         this.snackBar.open(message, 'X', {

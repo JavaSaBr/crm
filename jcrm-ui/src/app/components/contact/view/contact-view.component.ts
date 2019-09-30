@@ -57,7 +57,9 @@ export class ContactViewComponent implements AfterViewInit {
         this.startEditableState = false;
         this.editContactInfo = !this.startEditableState;
         this.contactInfoFormGroup = formBuilder.group({
-            assigner: [],
+            assigner: ['', [
+                Validators.required
+            ]],
             curators: [],
             firstName: ['', [
                 Validators.required
@@ -65,9 +67,7 @@ export class ContactViewComponent implements AfterViewInit {
             secondName: ['', [
                 Validators.required
             ]],
-            thirdName: ['', [
-                Validators.required
-            ]],
+            thirdName: [''],
             birthday: [],
             phoneNumbers: [],
             emails: [],
@@ -114,12 +114,14 @@ export class ContactViewComponent implements AfterViewInit {
 
         if (assignerId != null) {
             this.userRepository.findById(assignerId)
-                .then(value => this.assigner.setValue(value));
+                .then(value => this.assigner.setValue(value))
+                .then(() => this.hasChangesInContactInfo = false);
         }
 
         if(curatorIds != null) {
             this.userRepository.findByIds(curatorIds)
-                .then(value => this.curators.setValue(value));
+                .then(value => this.curators.setValue(value))
+                .then(() => this.hasChangesInContactInfo = false);
         }
 
         this.hasChangesInContactInfo = false;

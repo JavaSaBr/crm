@@ -44,18 +44,18 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
     }
 
     protected convert(resource: R): T {
-        throw new Error('Not yet implemented');
+        throw new Error('`convert` is not yet implemented');
     }
 
     protected buildFetchUrl(): string {
-        throw new Error('Not yet implemented');
+        throw new Error('`buildFetchUrl` is not yet implemented');
     }
 
     protected buildFetchUrlById(id: number): string {
-        throw new Error('Not yet implemented');
+        throw new Error('`buildFetchUrlById` is not yet implemented');
     }
 
     protected buildFetchUrlByIds(): string {
-        throw new Error('Not yet implemented');
+        throw new Error('`buildFetchUrlByIds` is not yet implemented');
     }
 }

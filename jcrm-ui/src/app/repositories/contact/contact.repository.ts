@@ -49,9 +49,9 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
 
         const url = `${environment.clientUrl}/contact/create`;
         return this.securityService.postRequest<ContactResource>(url, body)
-            .then(resp => this.convert(resp.body))
-            .catch(resp => {
-                return ErrorResponse.convertToErrorOrNull(resp, this.translateService);
+            .then(resp => this.convertAsync(resp.body))
+            .catch(error => {
+                return ErrorResponse.convertToErrorOrNull(error, this.translateService);
             });
     }
 
@@ -73,6 +73,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         contact.secondName = resource.secondName;
         contact.thirdName = resource.thirdName;
         contact.company = resource.company;
+        contact.birthday = resource.birthday ? new Date(resource.birthday) : null;
         contact.sites = resource.sites
             .map(value => new ContactSite(value.url, value.type as SiteType));
         contact.messengers = resource.messengers

@@ -18,7 +18,7 @@ export class ContactWorkspaceComponent extends ObjectEditingWorkspaceComponent i
     public static readonly NEW_MODE = 'new';
     public static readonly VIEW_MODE = 'view';
 
-    @ViewChild(ContactViewComponent, {static: false})
+    @ViewChild(ContactViewComponent, {static: true})
     contactView: ContactViewComponent;
 
     constructor(
