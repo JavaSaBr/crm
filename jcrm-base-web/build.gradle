@@ -11,4 +11,8 @@ dependencies {
     compile ("org.springframework.boot:spring-boot-starter-webflux:$springbootVersion") {
         exclude group: 'io.netty', module: 'netty-transport-native-epoll'
     }
+    
+    compile "io.netty:netty-codec-http:$nettyVersion"
+    compile "io.netty:netty-codec-http2:$nettyVersion"
+    compile "io.netty:netty-handler-proxy:$nettyVersion"
 }
