@@ -1,40 +1,63 @@
-
 task pullAngularCliImage(type: Exec, group: 'Angular') {
-    commandLine 'docker', 'pull', 'trion/ng-cli'
+    
+    def useDocker = Boolean.parseBoolean(System.getProperty("useNpmDocker", "true")) ||
+        Boolean.parseBoolean(System.getProperty("useAngularDocker", "true"))
+    
+    if (useDocker) {
+        commandLine 'docker', 'pull', 'trion/ng-cli'
+    } else {
+        commandLine 'echo'
+    }
+    
+    println "Need to pull angular docker:$useDocker"
 }
 
 task installNodeModules(type: Exec, group: 'Angular') {
     
-    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
-        getDockerMappingFolder(), 'trion/ng-cli', 'npm', 'install'
+    def useDocker = Boolean.parseBoolean(System.getProperty("useNpmDocker", "true"))
     
-    println 'Install node modules using:' + commandLine
+    if (useDocker) {
+        commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
+            getDockerMappingFolder(), 'trion/ng-cli', 'npm', 'install'
+    } else {
+        commandLine 'npm', 'install'
+    }
+    
+    println "Install node modules using docker:$useDocker with args:$commandLine"
 }
 
 task updateAngular(type: Exec, group: 'Angular') {
     
-    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
-        getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'update', '--all'
+    def useDocker = Boolean.parseBoolean(System.getProperty("useAngularDocker", "true"))
     
-    println 'Update angular using:' + commandLine
+    if (useDocker) {
+        commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-v',
+            getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'update', '--all'
+    } else {
+        commandLine 'ng', 'update', '--all'
+    }
+    
+    println "Update angular using docker:$useDocker with args:$commandLine"
 }
 
 task buildAngular(type: Exec, group: 'Build') {
     
-    if (Boolean.parseBoolean(System.getProperty("useAngularDocker", "true"))) {
-        commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
-            getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
+    def useDocker = Boolean.parseBoolean(System.getProperty("useAngularDocker", "true"))
+    def env = System.getProperty("angular.env", "local")
+    
+    if (useDocker) {
+        commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-v',
+            getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build', "--configuration=$env"
     } else {
-        commandLine 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
+        commandLine 'ng', 'build', "--configuration=$env"
     }
     
-    println 'Build angular using docker:' +
-        System.getProperty("useAngularDocker", "true") + ' with args: ' + commandLine
+    println "Build angular using docker:$useDocker with args:$commandLine"
 }
 
 task debug(type: Exec, group: 'Application', description: 'Debug front-end') {
-    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-p', '4200:4200', '-v',
-        getDockerMappingFolder(), 'trion/ng-cli',  'ng', 'serve'
+    commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-p', '4200:4200', '-v',
+        getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'serve'
 }
 
 static def getDockerUserId() {
