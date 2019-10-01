@@ -8,7 +8,7 @@
     padding: 14px 0;
   }
 
-  .container {
+  .contact-info-container {
     padding: 0 24px;
     border: 1px solid mat-color($foreground, divider);
     border-radius: 8px;
@@ -24,6 +24,10 @@
 
   .contact-info-button {
     min-width: 150px;
+  }
+
+  .contact-info-button-container {
+    padding-bottom: 20px;
   }
 
   @media only screen and (max-width: 700px) {
