@@ -37,7 +37,7 @@ public class NettyWebServerFactorySslCustomizer implements WebServerFactoryCusto
         ssl.setKeyAlias(keyAlias);
         ssl.setKeyStoreType("PKCS12");
         ssl.setKeyStorePassword(password);
-        ssl.setEnabledProtocols(toArray("TLSv1.1","TLSv1.2","TLSv1.3"));
+        ssl.setEnabledProtocols(toArray("TLSv1.2","TLSv1.3"));
 
         var http2 = new Http2();
         http2.setEnabled(true);
