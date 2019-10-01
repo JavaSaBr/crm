@@ -4,8 +4,12 @@ task pullAngularCliImage(type: Exec, group: 'Angular') {
 }
 
 task installNodeModules(type: Exec, group: 'Angular') {
-    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
-        getDockerMappingFolder(), 'trion/ng-cli', 'npm', 'install'
+    if (Boolean.parseBoolean(System.getProperty("useDocker", "true"))) {
+        commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
+            getDockerMappingFolder(), 'trion/ng-cli', 'npm', 'install'
+    } else {
+        commandLine 'npm', 'install'
+    }
 }
 
 task updateAngular(type: Exec, group: 'Angular') {
@@ -14,13 +18,11 @@ task updateAngular(type: Exec, group: 'Angular') {
 }
 
 task buildAngular(type: Exec, group: 'Build') {
-    ignoreExitValue true
-   
-    commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
-        getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
-    
-    doLast {
-        print "Exit code was $execResult.exitValue"
+    if (Boolean.parseBoolean(System.getProperty("useDocker", "true"))) {
+        commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
+            getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
+    } else {
+        commandLine 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
     }
 }
 
