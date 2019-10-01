@@ -17,13 +17,10 @@ task buildAngular(type: Exec, group: 'Build') {
     ignoreExitValue true
    
     commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
-        getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build',
-        '--configuration=' + System.getProperty("angular.env", "local")
+        getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build', '--configuration=' + System.getProperty("angular.env", "local")
     
     doLast {
-        if (execResult.getExitValue() != 0) {
-            print "Exit code was $execResult.exitValue"
-        }
+        print "Exit code was $execResult.exitValue"
     }
 }
 
