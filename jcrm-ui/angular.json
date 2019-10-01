@@ -94,6 +94,9 @@
           "configurations": {
             "production": {
               "browserTarget": "jcrm-ui:build:production"
+            },
+            "dev": {
+              "browserTarget": "jcrm-ui:build:dev"
             }
           }
         },

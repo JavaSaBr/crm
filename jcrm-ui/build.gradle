@@ -57,7 +57,7 @@ task buildAngular(type: Exec, group: 'Build') {
 
 task debug(type: Exec, group: 'Application', description: 'Debug front-end') {
     commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-p', '4200:4200', '-v',
-        getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'serve'
+        getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'serve', "--configuration=local"
 }
 
 static def getDockerUserId() {
