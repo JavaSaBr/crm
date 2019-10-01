@@ -15,6 +15,7 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.user.api.impl.DefaultUser;
+import com.ss.rlib.common.util.StringUtils;
 import com.ss.rlib.common.util.array.Array;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
@@ -117,9 +118,9 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 salt,
                 organization.getId(),
                 JAsyncUtils.idsToJson(roles),
-                firstName,
-                secondName,
-                thirdName,
+                StringUtils.emptyIfNull(firstName),
+                StringUtils.emptyIfNull(secondName),
+                StringUtils.emptyIfNull(thirdName),
                 phoneNumber
             ),
             id -> new DefaultUser(
@@ -185,9 +186,9 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         return update(
             queryUpdate,
             Arrays.asList(
-                user.getFirstName(),
-                user.getSecondName(),
-                user.getThirdName(),
+                StringUtils.emptyIfNull(user.getFirstName()),
+                StringUtils.emptyIfNull(user.getSecondName()),
+                StringUtils.emptyIfNull(user.getThirdName()),
                 user.getPhoneNumber(),
                 JAsyncUtils.idsToJson(user.getRoles()),
                 JAsyncUtils.idsToJson(user.getGroups()),

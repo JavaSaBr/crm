@@ -206,6 +206,40 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             users.size() == 1
     }
     
+    def "should find users by names under the same org on russian"() {
+        
+        given:
+            def org1 = userTestHelper.newOrg()
+            def org2 = userTestHelper.newOrg()
+            userTestHelper.newUser("user1@mail.com", "АЛекс1", "ФАМил1", "Отчест1", org1)
+            userTestHelper.newUser("user2@mail.com", "алеКС2", "Фамил2", "ОТЧЕст2", org1)
+            userTestHelper.newUser("user12@mail.com", "Алекс1", "ФаМиЛ1", "ОтЧЕСтВ1", org2)
+        when:
+            def users = userDao.searchByName("user", org1.id).block()
+        then:
+            users.size() == 2
+        when:
+            users = userDao.searchByName("алекс2", org1.id).block()
+        then:
+            users.size() == 1
+        when:
+            users = userDao.searchByName("Отчест", org1.id).block()
+        then:
+            users.size() == 2
+        when:
+            users = userDao.searchByName("лЕКС", org1.id).block()
+        then:
+            users.size() == 2
+        when:
+            users = userDao.searchByName("алекс1 ФАМИЛ", org1.id).block()
+        then:
+            users.size() == 1
+        when:
+            users = userDao.searchByName("АЛЕКС2 фам", org1.id).block()
+        then:
+            users.size() == 1
+    }
+    
     def "should load user only under the same organization"() {
         
         given:
