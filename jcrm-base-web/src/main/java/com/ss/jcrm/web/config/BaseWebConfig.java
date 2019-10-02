@@ -40,7 +40,8 @@ public class BaseWebConfig {
 
             @Override
             public void configureHttpMessageCodecs(@NotNull ServerCodecConfigurer configurer) {
-                configurer.defaultCodecs().jackson2JsonEncoder(new JsoniterHttpMessageEncoder());
+                // FIXME
+                // configurer.defaultCodecs().jackson2JsonEncoder(new JsoniterHttpMessageEncoder());
             }
         };
     }
