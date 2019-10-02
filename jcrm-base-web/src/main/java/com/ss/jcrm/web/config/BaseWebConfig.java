@@ -2,6 +2,7 @@ package com.ss.jcrm.web.config;
 
 import com.ss.jcrm.web.converter.JsoniterHttpMessageEncoder;
 import com.ss.jcrm.web.customizer.NettyWebServerFactorySslCustomizer;
+import com.ss.jcrm.web.customizer.UndertowWebServerFactorySslCustomizer;
 import com.ss.jcrm.web.exception.handler.DefaultWebExceptionHandler;
 import com.ss.rlib.common.concurrent.GroupThreadFactory;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfig
 import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
+import org.springframework.boot.web.embedded.undertow.UndertowReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -56,8 +58,8 @@ public class BaseWebConfig {
 
     @Lazy
     @Bean
-    @NotNull WebServerFactoryCustomizer<NettyReactiveWebServerFactory> webServerFactoryCustomizer() {
-        return new NettyWebServerFactorySslCustomizer(
+    @NotNull WebServerFactoryCustomizer<UndertowReactiveWebServerFactory> webServerFactoryCustomizer() {
+        return new UndertowWebServerFactorySslCustomizer(
             env.getRequiredProperty("web.server.ssl.keystore.path"),
             env.getRequiredProperty("web.server.ssl.keystore.password"),
             env.getRequiredProperty("web.server.ssl.key.alias")

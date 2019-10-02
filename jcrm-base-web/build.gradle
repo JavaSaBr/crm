@@ -5,14 +5,12 @@ ext {
 
 dependencies {
     compile project(":jcrm-base")
-
     compile "com.jsoniter:jsoniter:$jsointerVersion"
     compile "org.javassist:javassist:$javassistVersion"
-    compile ("org.springframework.boot:spring-boot-starter-webflux:$springbootVersion") {
-        exclude group: 'io.netty', module: 'netty-transport-native-epoll'
-    }
-    
-    compile "io.netty:netty-codec-http:$nettyVersion"
-    compile "io.netty:netty-codec-http2:$nettyVersion"
-    compile "io.netty:netty-handler-proxy:$nettyVersion"
+    compile "org.springframework.boot:spring-boot-starter-webflux:$springbootVersion"
+    compile "org.springframework.boot:spring-boot-starter-undertow:$springbootVersion"
+}
+
+configurations {
+    compile.exclude module: 'spring-boot-starter-reactor-netty'
 }

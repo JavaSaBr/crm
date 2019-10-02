@@ -4,6 +4,7 @@ dependencies {
     compile project(":jcrm-base-spring")
     compile project(":jcrm-base-web")
     compile "org.springframework.boot:spring-boot-starter-test:$springbootVersion"
+    compile "org.springframework.boot:spring-boot-starter-reactor-netty:$springbootVersion"
     compile "org.hamcrest:hamcrest-library:$hamcrestVersion"
     compile "com.jayway.jsonpath:json-path:$jsonpathVersion"
 }
