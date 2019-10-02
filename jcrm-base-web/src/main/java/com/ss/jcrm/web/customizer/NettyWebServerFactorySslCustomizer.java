@@ -8,6 +8,8 @@ import org.springframework.boot.web.embedded.netty.SslServerCustomizer;
 import org.springframework.boot.web.server.Http2;
 import org.springframework.boot.web.server.Ssl;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import reactor.netty.http.HttpProtocol;
+import reactor.netty.http.server.HttpServer;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,19 +36,20 @@ public class NettyWebServerFactorySslCustomizer implements WebServerFactoryCusto
         ssl.setKeyAlias(keyAlias);
         ssl.setKeyStoreType("PKCS12");
         ssl.setKeyStorePassword(password);
-        ssl.setEnabledProtocols(toArray("TLSv1.2","TLSv1.3"));
+        ssl.setEnabledProtocols(toArray("TLSv1.2"));
 
         var http2 = new Http2();
-        http2.setEnabled(true);
+       // http2.setEnabled(true);
 
-        /*serverFactory.addServerCustomizers(new SslServerCustomizer(ssl, http2, null) {
+        serverFactory.addServerCustomizers(new SslServerCustomizer(ssl, http2, null) {
 
             @Override
             public @NotNull HttpServer apply(@NotNull HttpServer server) {
                 return super.apply(server)
                     // it doesn't work without manually setting protocols
-                    .protocol(HttpProtocol.H2, HttpProtocol.HTTP11);
+                    //.protocol(HttpProtocol.H2, HttpProtocol.HTTP11);
+                    .protocol(HttpProtocol.HTTP11);
             }
-        });*/
+        });
     }
 }

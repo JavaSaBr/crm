@@ -13,7 +13,5 @@ dependencies {
     compile "org.postgresql:postgresql:$postgresqlVersion"
     compile "com.github.jasync-sql:jasync-postgresql:$jasyncVersion"
     compile "com.github.jasync-sql:jasync-common:$jasyncVersion"
-    compile "io.netty:netty-transport:$nettyVersion"
-    compile "io.netty:netty-handler:$nettyVersion"
     compile "org.flywaydb:flyway-core:$flywayVersion"
 }

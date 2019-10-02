@@ -8,9 +8,9 @@ dependencies {
     compile "com.jsoniter:jsoniter:$jsointerVersion"
     compile "org.javassist:javassist:$javassistVersion"
     compile "org.springframework.boot:spring-boot-starter-webflux:$springbootVersion"
-    compile "org.springframework.boot:spring-boot-starter-undertow:$springbootVersion"
+   // compile "org.springframework.boot:spring-boot-starter-undertow:$springbootVersion"
 }
 
 configurations {
-    compile.exclude module: 'spring-boot-starter-reactor-netty'
+   // compile.exclude module: 'spring-boot-starter-reactor-netty'
 }

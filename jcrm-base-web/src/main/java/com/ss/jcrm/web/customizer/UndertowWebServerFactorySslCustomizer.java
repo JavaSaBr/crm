@@ -37,7 +37,7 @@ public class UndertowWebServerFactorySslCustomizer implements
         ssl.setEnabledProtocols(toArray("TLSv1.2", "TLSv1.3"));
 
         var http2 = new Http2();
-        http2.setEnabled(true);
+        http2.setEnabled(false);
 
         serverFactory.setSsl(ssl);
         serverFactory.setHttp2(http2);
