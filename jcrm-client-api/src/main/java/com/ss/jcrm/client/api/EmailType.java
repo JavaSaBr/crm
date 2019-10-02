@@ -1,5 +1,7 @@
 package com.ss.jcrm.client.api;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
@@ -12,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-@Getter
 @RequiredArgsConstructor
 public enum EmailType implements HasId {
     WORK(1, "Work"),
     HOME(2, "Home");
 
+    @Getter(onMethod_ = @JsonValue)
     private final long id;
-    private final String name;
+    private final @Getter String name;
 
     private static final EmailType[] ID_TO_EMAIL_TYPE;
     private static final Map<String, EmailType> NAME_TO_EMAIL_TYPE;
@@ -65,6 +67,7 @@ public enum EmailType implements HasId {
         return require((int) id);
     }
 
+    @JsonCreator
     public static @NotNull EmailType require(int id) {
 
         if (id < 0 || id >= ID_TO_EMAIL_TYPE.length) {

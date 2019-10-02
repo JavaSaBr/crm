@@ -3,6 +3,8 @@ package com.ss.jcrm.jasync.util;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jasync.sql.db.Configuration;
 import com.github.jasync.sql.db.ConnectionPoolConfiguration;
 import com.github.jasync.sql.db.SSLConfiguration;
@@ -10,14 +12,13 @@ import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.exceptions.GenericDatabaseException;
 import com.github.jasync.sql.db.util.ExecutorServiceUtils;
 import com.github.jasync.sql.db.util.NettyUtils;
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.rlib.common.function.ObjectLongFunction;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
+import com.ss.rlib.common.util.Utils;
 import com.ss.rlib.common.util.array.Array;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.EventLoopGroup;
@@ -43,6 +44,9 @@ import java.util.stream.Stream;
 public class JAsyncUtils {
 
     private static final long[] EMPTY_IDS = new long[0];
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final JavaType LONG_ARRAY_TYPE = OBJECT_MAPPER.constructType(long[].class);
 
     public static <T> @NotNull BiFunction<T, Throwable, T> handleException() {
 
@@ -142,7 +146,7 @@ public class JAsyncUtils {
         if (StringUtils.isEmpty(json)) {
             return null;
         } else {
-            return JsonIterator.deserialize(json, type);
+            return Utils.uncheckedGet(json, type, OBJECT_MAPPER::readValue);
         }
     }
 
@@ -154,7 +158,10 @@ public class JAsyncUtils {
         if (StringUtils.isEmpty(json)) {
             return def;
         } else {
-            return ObjectUtils.ifNull(JsonIterator.deserialize(json, type), def);
+            return ObjectUtils.ifNull(
+                Utils.uncheckedGet(json, type, OBJECT_MAPPER::readValue),
+                def
+            );
         }
     }
 
@@ -163,13 +170,13 @@ public class JAsyncUtils {
         @NotNull LongFunction<T> function
     ) {
 
-        if (StringUtils.isEmpty(json)) {
+        if (StringUtils.isEmpty(json) || "[]".equals(json)) {
             return Set.of();
         }
 
-        var deserialize = JsonIterator.deserialize(json, long[].class);
+        long[] deserialize = Utils.uncheckedGet(json, LONG_ARRAY_TYPE, OBJECT_MAPPER::readValue);
 
-        if (deserialize == null || deserialize.length < 1) {
+        if (deserialize.length < 1) {
             return Set.of();
         }
 
@@ -187,9 +194,9 @@ public class JAsyncUtils {
             return Mono.just(Set.of());
         }
 
-        var deserialize = JsonIterator.deserialize(json, long[].class);
+        long[] deserialize = Utils.uncheckedGet(json, LONG_ARRAY_TYPE, OBJECT_MAPPER::readValue);
 
-        if (deserialize == null || deserialize.length < 1) {
+        if (deserialize.length < 1) {
             return Mono.just(Set.of());
         }
 
@@ -206,13 +213,13 @@ public class JAsyncUtils {
         @NotNull ObjectLongFunction<A, Mono<T>> function
     ) {
 
-        if (StringUtils.isEmpty(json)) {
+        if (StringUtils.isEmpty(json) || "[]".equals(json)) {
             return Mono.just(Set.of());
         }
 
-        var deserialize = JsonIterator.deserialize(json, long[].class);
+        long[] deserialize = Utils.uncheckedGet(json, LONG_ARRAY_TYPE, OBJECT_MAPPER::readValue);
 
-        if (deserialize == null || deserialize.length < 1) {
+        if (deserialize.length < 1) {
             return Mono.just(Set.of());
         }
 
@@ -247,13 +254,13 @@ public class JAsyncUtils {
 
     public static long @NotNull [] jsonToIds(@Nullable String json) {
 
-        if (StringUtils.isEmpty(json)) {
+        if (StringUtils.isEmpty(json) || "[]".equals(json)) {
             return EMPTY_IDS;
         }
 
-        var deserialize = JsonIterator.deserialize(json, long[].class);
+        long[] deserialize = Utils.uncheckedGet(json, LONG_ARRAY_TYPE, OBJECT_MAPPER::readValue);
 
-        if (deserialize == null || deserialize.length < 1) {
+        if (deserialize.length < 1) {
             return EMPTY_IDS;
         } else {
             return deserialize;
@@ -266,9 +273,9 @@ public class JAsyncUtils {
             return null;
         }
 
-        return JsonStream.serialize(Stream.of(entities)
+        return Utils.uncheckedGet(entities, array -> OBJECT_MAPPER.writeValueAsString(Stream.of(array)
             .mapToLong(HasId::getId)
-            .toArray());
+            .toArray()));
     }
 
     public static <T extends HasId> @Nullable String idsToJson(@Nullable Array<T> entities) {
@@ -277,9 +284,9 @@ public class JAsyncUtils {
             return null;
         }
 
-        return JsonStream.serialize(entities.stream()
+        return Utils.uncheckedGet(entities, array -> OBJECT_MAPPER.writeValueAsString(array.stream()
             .mapToLong(HasId::getId)
-            .toArray());
+            .toArray()));
     }
 
     public static <T extends HasId> @Nullable String idsToJson(@NotNull Set<T> entities) {
@@ -288,16 +295,16 @@ public class JAsyncUtils {
             return null;
         }
 
-        return JsonStream.serialize(entities.stream()
+        return Utils.uncheckedGet(entities, set -> OBJECT_MAPPER.writeValueAsString(set.stream()
             .mapToLong(HasId::getId)
-            .toArray());
+            .toArray()));
     }
 
     public static @Nullable String toJson(@Nullable long[] ids) {
         if (ids == null || ids.length < 1) {
             return null;
         } else {
-            return JsonStream.serialize(ids);
+            return Utils.uncheckedGet(ids, OBJECT_MAPPER::writeValueAsString);
         }
     }
 
@@ -305,7 +312,7 @@ public class JAsyncUtils {
         if (entities == null || entities.length < 1) {
             return null;
         } else {
-            return JsonStream.serialize(entities);
+            return Utils.uncheckedGet(entities, OBJECT_MAPPER::writeValueAsString);
         }
     }
 

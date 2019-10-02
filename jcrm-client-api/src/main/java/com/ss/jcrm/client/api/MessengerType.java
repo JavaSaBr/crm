@@ -1,5 +1,7 @@
 package com.ss.jcrm.client.api;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
@@ -12,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-@Getter
 @RequiredArgsConstructor
 public enum MessengerType implements HasId {
     SKYPE(1, "Skype"),
@@ -20,8 +21,9 @@ public enum MessengerType implements HasId {
     WHATS_UP(3, "What's Up"),
     VIBER(4, "Viber");
 
+    @Getter(onMethod_ = @JsonValue)
     private final long id;
-    private final String name;
+    private final @Getter String name;
 
     private static final MessengerType[] ID_TO_MESSENGER_TYPE;
     private static final Map<String, MessengerType> NAME_TO_MESSENGER_TYPE;
@@ -67,6 +69,7 @@ public enum MessengerType implements HasId {
         return require((int) id);
     }
 
+    @JsonCreator
     public static @NotNull MessengerType require(int id) {
 
         if (id < 0 || id >= ID_TO_MESSENGER_TYPE.length) {

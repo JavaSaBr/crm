@@ -4,16 +4,6 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.pool.PostgreSQLConnectionFactory;
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.EncodingMode;
-import com.jsoniter.output.JsonStream;
-import com.jsoniter.spi.DecodingMode;
-import com.jsoniter.spi.JsoniterSpi;
-import com.ss.jcrm.base.utils.HasId;
-import com.ss.jcrm.client.api.EmailType;
-import com.ss.jcrm.client.api.MessengerType;
-import com.ss.jcrm.client.api.PhoneNumberType;
-import com.ss.jcrm.client.api.SiteType;
 import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.client.jasync.dao.JAsyncSimpleContactDao;
 import com.ss.jcrm.jasync.config.JAsyncConfig;
@@ -38,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 @Import(JAsyncConfig.class)
 public class JAsyncClientConfig {
 
-    static {
+    /*static {
         JsonIterator.setMode(DecodingMode.DYNAMIC_MODE_AND_MATCH_FIELD_WITH_HASH);
         JsonStream.setMode(EncodingMode.DYNAMIC_MODE);
 
@@ -58,7 +48,7 @@ public class JAsyncClientConfig {
             JsoniterSpi.registerTypeDecoder(MessengerType.class, iter -> MessengerType.of(iter.readInt()));
             JsoniterSpi.registerTypeDecoder(SiteType.class, iter -> SiteType.of(iter.readInt()));
         }
-    }
+    }*/
 
     @Autowired
     private Environment env;

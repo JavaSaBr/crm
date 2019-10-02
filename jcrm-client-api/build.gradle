@@ -3,6 +3,7 @@ ext {
 }
 
 dependencies {
+    compile project(":jcrm-base")
     compile project(":jcrm-dictionary-api")
     compile project(":jcrm-user-api")
     

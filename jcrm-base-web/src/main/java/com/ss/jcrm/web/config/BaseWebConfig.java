@@ -34,17 +34,16 @@ public class BaseWebConfig {
     @Autowired
     private Environment env;
 
-    @Bean
+    /*@Bean
     @NotNull WebFluxConfigurer webFluxConfigurer() {
         return new WebFluxConfigurer() {
 
             @Override
             public void configureHttpMessageCodecs(@NotNull ServerCodecConfigurer configurer) {
-                // FIXME
-                // configurer.defaultCodecs().jackson2JsonEncoder(new JsoniterHttpMessageEncoder());
+                configurer.defaultCodecs().jackson2JsonEncoder(new JsoniterHttpMessageEncoder());
             }
         };
-    }
+    }*/
 
     @Bean
     @NotNull ScheduledExecutorService reloadScheduler() {

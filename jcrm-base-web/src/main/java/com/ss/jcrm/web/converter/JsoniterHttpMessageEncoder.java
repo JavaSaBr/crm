@@ -1,26 +1,51 @@
 package com.ss.jcrm.web.converter;
 
-import com.jsoniter.output.JsonStream;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.HttpMessageEncoder;
 import org.springframework.util.MimeType;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class JsoniterHttpMessageEncoder extends AbstractJsoniterHttpMessageConverter implements HttpMessageEncoder<Object> {
 
-    private static final byte[] NEWLINE_SEPARATOR = {'\n'};
+    protected JsoniterHttpMessageEncoder(@NotNull List<MimeType> supportedMimeTypesList) {
+        super(supportedMimeTypesList);
+    }
+
+    @Override
+    public boolean canEncode(ResolvableType elementType, MimeType mimeType) {
+        return false;
+    }
+
+    @Override
+    public Flux<DataBuffer> encode(
+        Publisher<?> inputStream,
+        DataBufferFactory bufferFactory,
+        ResolvableType elementType,
+        MimeType mimeType,
+        Map<String, Object> hints
+    ) {
+        return null;
+    }
+
+    @Override
+    public List<MimeType> getEncodableMimeTypes() {
+        return null;
+    }
+
+    @Override
+    public List<MediaType> getStreamingMediaTypes() {
+        return null;
+    }
+
+    /* private static final byte[] NEWLINE_SEPARATOR = {'\n'};
 
     private static final Map<MediaType, byte[]> STREAM_SEPARATORS;
 
@@ -111,4 +136,6 @@ public class JsoniterHttpMessageEncoder extends AbstractJsoniterHttpMessageConve
     public List<MediaType> getStreamingMediaTypes() {
         return streamingMediaTypes;
     }
+
+     */
 }

@@ -50,6 +50,7 @@ allprojects {
         jsonpathVersion = "2.4.0"
         jasyncVersion = "1.0.7"
         projectReactorVersion = "3.3.0.RELEASE"
+        jacksonVersion = "2.9.0"
     }
 
     dependencies {

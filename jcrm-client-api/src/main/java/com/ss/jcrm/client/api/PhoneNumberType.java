@@ -1,5 +1,7 @@
 package com.ss.jcrm.client.api;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
@@ -12,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-@Getter
 @RequiredArgsConstructor
 public enum PhoneNumberType implements HasId {
     WORK(1, "Work"),
     MOBILE(2, "Mobile");
 
+    @Getter(onMethod_ = @JsonValue)
     private final long id;
-    private final String name;
+    private final @Getter String name;
 
     private static final PhoneNumberType[] ID_TO_PHONE_NUMBER_TYPE;
     private static final Map<String, PhoneNumberType> NAME_TO_PHONE_NUMBER_TYPE;
@@ -65,6 +67,7 @@ public enum PhoneNumberType implements HasId {
         return require((int) id);
     }
 
+    @JsonCreator
     public static @NotNull PhoneNumberType require(int id) {
 
         if (id < 0 || id >= ID_TO_PHONE_NUMBER_TYPE.length) {

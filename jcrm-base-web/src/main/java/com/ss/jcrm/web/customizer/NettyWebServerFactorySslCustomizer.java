@@ -1,6 +1,5 @@
 package com.ss.jcrm.web.customizer;
 
-import static com.ss.rlib.common.util.array.ArrayFactory.toArray;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
@@ -36,10 +35,9 @@ public class NettyWebServerFactorySslCustomizer implements WebServerFactoryCusto
         ssl.setKeyAlias(keyAlias);
         ssl.setKeyStoreType("PKCS12");
         ssl.setKeyStorePassword(password);
-        ssl.setEnabledProtocols(toArray("TLSv1.2","TLSv1.3"));
 
         var http2 = new Http2();
-       // http2.setEnabled(true);
+        http2.setEnabled(true);
 
         serverFactory.addServerCustomizers(new SslServerCustomizer(ssl, http2, null) {
 
@@ -47,8 +45,7 @@ public class NettyWebServerFactorySslCustomizer implements WebServerFactoryCusto
             public @NotNull HttpServer apply(@NotNull HttpServer server) {
                 return super.apply(server)
                     // it doesn't work without manually setting protocols
-                    //.protocol(HttpProtocol.H2, HttpProtocol.HTTP11);
-                    .protocol(HttpProtocol.HTTP11);
+                    .protocol(HttpProtocol.H2, HttpProtocol.HTTP11);
             }
         });
     }
