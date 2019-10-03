@@ -56,10 +56,20 @@ public class BaseWebConfig {
         );
     }
 
+   /* @Lazy
+    @Bean
+    @NotNull WebServerFactoryCustomizer<NettyReactiveWebServerFactory> nettyWebServerFactoryCustomizer() {
+        return new NettyWebServerFactorySslCustomizer(
+            env.getRequiredProperty("web.server.ssl.keystore.path"),
+            env.getRequiredProperty("web.server.ssl.keystore.password"),
+            env.getRequiredProperty("web.server.ssl.key.alias")
+        );
+    }
+*/
     @Lazy
     @Bean
-    @NotNull WebServerFactoryCustomizer<NettyReactiveWebServerFactory> webServerFactoryCustomizer() {
-        return new NettyWebServerFactorySslCustomizer(
+    @NotNull WebServerFactoryCustomizer<UndertowReactiveWebServerFactory> undertowWebServerFactoryCustomizer() {
+        return new UndertowWebServerFactorySslCustomizer(
             env.getRequiredProperty("web.server.ssl.keystore.path"),
             env.getRequiredProperty("web.server.ssl.keystore.password"),
             env.getRequiredProperty("web.server.ssl.key.alias")

@@ -3,12 +3,9 @@ package com.ss.jcrm.web.customizer;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
-import org.springframework.boot.web.embedded.netty.SslServerCustomizer;
 import org.springframework.boot.web.server.Http2;
 import org.springframework.boot.web.server.Ssl;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import reactor.netty.http.HttpProtocol;
-import reactor.netty.http.server.HttpServer;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,7 +36,7 @@ public class NettyWebServerFactorySslCustomizer implements WebServerFactoryCusto
         var http2 = new Http2();
         http2.setEnabled(true);
 
-        serverFactory.addServerCustomizers(new SslServerCustomizer(ssl, http2, null) {
+       /* serverFactory.addServerCustomizers(new SslServerCustomizer(ssl, http2, null) {
 
             @Override
             public @NotNull HttpServer apply(@NotNull HttpServer server) {
@@ -47,6 +44,6 @@ public class NettyWebServerFactorySslCustomizer implements WebServerFactoryCusto
                     // it doesn't work without manually setting protocols
                     .protocol(HttpProtocol.H2, HttpProtocol.HTTP11);
             }
-        });
+        });*/
     }
 }

@@ -34,7 +34,6 @@ public class UndertowWebServerFactorySslCustomizer implements
         ssl.setKeyAlias(keyAlias);
         ssl.setKeyStoreType("PKCS12");
         ssl.setKeyStorePassword(password);
-        ssl.setEnabledProtocols(toArray("TLSv1.2", "TLSv1.3"));
 
         var http2 = new Http2();
         http2.setEnabled(false);
