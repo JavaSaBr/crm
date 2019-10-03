@@ -18,7 +18,6 @@ import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.array.ArrayFactory;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -30,6 +29,8 @@ import java.util.concurrent.CompletionException;
 public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> {
 
     protected final ConnectionPool<? extends ConcreteConnection> connectionPool;
+
+    protected abstract @NotNull Class<T> getEntityType();
 
     @Override
     public @NotNull Mono<@NotNull T> requireById(long id) {
@@ -106,6 +107,31 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
             }));
     }
 
+    protected @NotNull Mono<@NotNull Long> count(
+        @NotNull String query,
+        @NotNull Object arg
+    ) {
+        return count(query, List.of(arg));
+    }
+
+    protected @NotNull Mono<@NotNull Long> count(
+        @NotNull String query,
+        @NotNull List<?> args
+    ) {
+        return Mono.fromFuture(connectionPool.sendPreparedStatement(query, args)
+            .handle(JAsyncUtils.handleException())
+            .thenApply(queryResult -> {
+
+                var rset = queryResult.getRows();
+
+                if (rset.isEmpty()) {
+                    return 0L;
+                } else {
+                    return rset.get(0).getLong(0);
+                }
+            }));
+    }
+
     protected <D extends Dao<T>> @NotNull Mono<@NotNull T> selectAsync(
         @NotNull String query,
         @NotNull List<?> args,
@@ -136,6 +162,13 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
     }
 
     protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAll(
+        @NotNull String query,
+        @NotNull JAsyncConverter<D, T> converter
+    ) {
+        return selectAll(getEntityType(), query, converter);
+    }
+
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAll(
         @NotNull Class<T> type,
         @NotNull String query,
         @NotNull JAsyncConverter<D, T> converter
@@ -154,6 +187,14 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
                     .map(data -> converter.convert((D) this, data))
                     .collect(toArray(type));
             }));
+    }
+
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAll(
+        @NotNull String query,
+        @NotNull List<?> args,
+        @NotNull JAsyncConverter<D, T> converter
+    ) {
+        return selectAll(getEntityType(), query, args, converter);
     }
 
     protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAll(
@@ -176,6 +217,14 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
                     .map(data -> converter.convert((D) this, data))
                     .collect(toArray(type));
             }));
+    }
+
+    protected <D extends Dao<T>, A> @NotNull Mono<@NotNull Array<T>> selectAll(
+        @NotNull String query,
+        @NotNull A attachment,
+        @NotNull JAsyncBiConverter<D, A, T> converter
+    ) {
+        return selectAll(getEntityType(), query, attachment, converter);
     }
 
     protected <D extends Dao<T>, A> @NotNull Mono<@NotNull Array<T>> selectAll(

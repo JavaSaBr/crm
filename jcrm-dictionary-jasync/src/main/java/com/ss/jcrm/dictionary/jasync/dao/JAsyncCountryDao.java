@@ -8,6 +8,7 @@ import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultCountry;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
+import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.rlib.common.util.array.Array;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
@@ -45,6 +46,11 @@ public class JAsyncCountryDao extends AbstractDictionaryDao<Country> implements 
     }
 
     @Override
+    protected @NotNull Class<Country> getEntityType() {
+        return Country.class;
+    }
+
+    @Override
     public @NotNull Mono<@NotNull Country> create(
         @NotNull String name,
         @NotNull String flagCode,
@@ -59,17 +65,21 @@ public class JAsyncCountryDao extends AbstractDictionaryDao<Country> implements 
 
     @Override
     public @NotNull Mono<@NotNull Array<Country>> findAll() {
-        return selectAll(Country.class, querySelectAll, JAsyncCountryDao::toCountry);
+        return selectAll(querySelectAll, converter());
     }
 
     @Override
     public @NotNull Mono<Country> findById(long id) {
-        return select(querySelectById, List.of(id), JAsyncCountryDao::toCountry);
+        return select(querySelectById, List.of(id), converter());
     }
 
     @Override
     public @NotNull Mono<Country> findByName(@NotNull String name) {
-        return select(querySelectByName, List.of(name), JAsyncCountryDao::toCountry);
+        return select(querySelectByName, List.of(name), converter());
+    }
+
+    private @NotNull JAsyncConverter<JAsyncCountryDao, Country> converter() {
+        return JAsyncCountryDao::toCountry;
     }
 
     private @NotNull DefaultCountry toCountry(@NotNull RowData data) {

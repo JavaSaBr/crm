@@ -2,6 +2,7 @@ package com.ss.jcrm.client.api.dao;
 
 import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.dao.Dao;
+import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
@@ -67,4 +68,6 @@ public interface SimpleContactDao extends Dao<SimpleContact> {
     default @NotNull Mono<@NotNull SimpleContact> findByIdAndOrg(long id, @NotNull Organization organization) {
         return findByIdAndOrg(id, organization.getId());
     }
+
+    @NotNull Mono<@NotNull EntityPage<SimpleContact>> findPageByOrg(long offset, long size, long orgId);
 }

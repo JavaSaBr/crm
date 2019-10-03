@@ -8,7 +8,9 @@ import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.client.api.impl.*;
+import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
+import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
 import com.ss.rlib.common.util.array.Array;
@@ -35,6 +37,9 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + CONTACT_FIELDS + " from" +
         " \"${schema}\".\"contact\" where \"id\" = ? AND \"org_id\" = ?";
 
+    private static final String Q_SELECT_PAGE_BY_ORG_ID = "select " + CONTACT_FIELDS + " from \"${schema}\".\"contact\"" +
+        " where \"org_id\" = ? order by \"id\" limit ? offset ?";
+
     private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"org_id\", \"assigner\", \"curators\", " +
         "\"first_name\", \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"emails\", \"sites\", " +
         "\"messengers\", \"company\") values (?,?,?,?,?,?,?,?,?,?,?,?) returning id";
@@ -43,11 +48,16 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         " \"second_name\" = ?, \"third_name\" = ?, \"birthday\" = ?, \"phone_numbers\" = ?, \"emails\" = ?," +
         " \"sites\" = ?, \"messengers\" = ?, \"company\" = ? where \"id\" = ? and \"version\" = ?";
 
+    private static final String Q_COUNT_BY_ORG_ID = "select count(\"id\") from \"${schema}\".\"contact\"" +
+        " where \"org_id\" = ?";
+
     private final String querySelectById;
     private final String querySelectByIdAndOrgId;
     private final String querySelectByOrgId;
+    private final String queryPageByOrgId;
     private final String queryInsert;
     private final String queryUpdate;
+    private final String queryCountByOrgId;
 
     public JAsyncSimpleContactDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
@@ -57,8 +67,15 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
         this.querySelectByIdAndOrgId = Q_SELECT_BY_ID_AND_ORG_ID.replace("${schema}", schema);
         this.querySelectByOrgId = Q_SELECT_BY_ORG_ID.replace("${schema}", schema);
+        this.queryPageByOrgId = Q_SELECT_PAGE_BY_ORG_ID.replace("${schema}", schema);
         this.queryInsert = Q_INSERT.replace("${schema}", schema);
         this.queryUpdate = Q_UPDATE.replace("${schema}", schema);
+        this.queryCountByOrgId = Q_COUNT_BY_ORG_ID.replace("${schema}", schema);
+    }
+
+    @Override
+    protected @NotNull Class<SimpleContact> getEntityType() {
+        return SimpleContact.class;
     }
 
     @Override
@@ -140,21 +157,22 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
     @Override
     public @NotNull Mono<@NotNull Array<SimpleContact>> findByOrg(long orgId) {
-        return selectAll(
-            SimpleContact.class,
-            querySelectByOrgId,
-            List.of(orgId),
-            JAsyncSimpleContactDao::toContact
-        );
+        return selectAll(querySelectByOrgId, List.of(orgId), converter());
+    }
+
+    @Override
+    public @NotNull Mono<@NotNull EntityPage<SimpleContact>> findPageByOrg(long offset, long size, long orgId) {
+        return selectAll(queryPageByOrgId, List.of(orgId, size, offset), converter())
+            .zipWith(count(queryCountByOrgId, orgId), EntityPage::new);
     }
 
     @Override
     public @NotNull Mono<@NotNull SimpleContact> findByIdAndOrg(long id, long orgId) {
-        return select(
-            querySelectByIdAndOrgId,
-            List.of(id, orgId),
-            JAsyncSimpleContactDao::toContact
-        );
+        return select(querySelectByIdAndOrgId, List.of(id, orgId), converter());
+    }
+
+    private @NotNull JAsyncConverter<JAsyncSimpleContactDao, SimpleContact> converter() {
+        return JAsyncSimpleContactDao::toContact;
     }
 
     private @NotNull SimpleContact toContact(@NotNull RowData data) {

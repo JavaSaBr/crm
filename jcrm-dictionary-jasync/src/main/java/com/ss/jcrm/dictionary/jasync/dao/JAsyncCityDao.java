@@ -54,6 +54,11 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
     }
 
     @Override
+    protected @NotNull Class<City> getEntityType() {
+        return City.class;
+    }
+
+    @Override
     public @NotNull Mono<@NotNull City> create(@NotNull String name, @NotNull Country country) {
         return insert(
             queryInsert,
@@ -65,7 +70,7 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
     @Override
     public @NotNull Mono<@NotNull Array<City>> findAll() {
         return countryDao.findAllAsMap()
-            .flatMap(countries -> selectAll(City.class, querySelectAll, countries, JAsyncCityDao::toCities));
+            .flatMap(countries -> selectAll(querySelectAll, countries, JAsyncCityDao::toCities));
     }
 
     @Override
@@ -102,18 +107,6 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
         var countryId = notNull(data.getLong(2));
 
         return countryDao.findById(countryId)
-            .map(country -> {
-
-                if (country == null) {
-                    log.warn(
-                        "Can't load a city \"{}\" because cannot find its country with the id {}.",
-                        name,
-                        countryId
-                    );
-                    return null;
-                }
-
-                return new DefaultCity(name, country, notNull(data.getLong(0)));
-            });
+            .map(country -> new DefaultCity(name, country, notNull(data.getLong(0))));
     }
 }
