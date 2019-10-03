@@ -1,6 +1,5 @@
 package com.ss.jcrm.web.customizer;
 
-import static com.ss.rlib.common.util.array.ArrayFactory.toArray;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.web.embedded.undertow.UndertowReactiveWebServerFactory;
@@ -36,7 +35,7 @@ public class UndertowWebServerFactorySslCustomizer implements
         ssl.setKeyStorePassword(password);
 
         var http2 = new Http2();
-        http2.setEnabled(false);
+        http2.setEnabled(true);
 
         serverFactory.setSsl(ssl);
         serverFactory.setHttp2(http2);
