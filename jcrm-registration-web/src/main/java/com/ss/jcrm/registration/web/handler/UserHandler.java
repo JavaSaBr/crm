@@ -46,7 +46,7 @@ public class UserHandler {
             .flatMap(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
             .map(users -> users.stream()
                 .map(UserOutResource::new)
-                .collect(toArray(UserOutResource.class)))
+                .toArray(UserOutResource[]::new))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
