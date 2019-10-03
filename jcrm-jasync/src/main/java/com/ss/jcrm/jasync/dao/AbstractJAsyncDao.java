@@ -90,6 +90,14 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
 
     protected <D extends Dao<T>> @NotNull Mono<@NotNull T> select(
         @NotNull String query,
+        @NotNull Object arg,
+        @NotNull JAsyncConverter<D, T> converter
+    ) {
+        return select(query, List.of(arg), converter);
+    }
+
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull T> select(
+        @NotNull String query,
         @NotNull List<?> args,
         @NotNull JAsyncConverter<D, T> converter
     ) {
@@ -134,6 +142,14 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
 
     protected <D extends Dao<T>> @NotNull Mono<@NotNull T> selectAsync(
         @NotNull String query,
+        @NotNull Object arg,
+        @NotNull JAsyncLazyConverter<D, T> converter
+    ) {
+        return selectAsync(query, List.of(arg), converter);
+    }
+
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull T> selectAsync(
+        @NotNull String query,
         @NotNull List<?> args,
         @NotNull JAsyncLazyConverter<D, T> converter
     ) {
@@ -150,6 +166,13 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
                 }
             }))
             .flatMap(data -> converter.convert((D) this, data));
+    }
+
+    protected @NotNull Mono<Boolean> delete(
+        @NotNull String query,
+        @NotNull Object arg
+    ) {
+        return delete(query, List.of(arg));
     }
 
     protected @NotNull Mono<Boolean> delete(
@@ -250,6 +273,13 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
     }
 
     protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAllAsync(
+        @NotNull String query,
+        @NotNull JAsyncLazyConverter<D, T> converter
+    ) {
+        return selectAllAsync(getEntityType(), query, converter);
+    }
+
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAllAsync(
         @NotNull Class<T> type,
         @NotNull String query,
         @NotNull JAsyncLazyConverter<D, T> converter
@@ -270,6 +300,22 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
             }))
             .flatMapMany(Flux::concat)
             .collect(() -> ArrayFactory.newArray(type), Collection::add);
+    }
+
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAllAsync(
+        @NotNull String query,
+        @NotNull Object arg,
+        @NotNull JAsyncLazyConverter<D, T> converter
+    ) {
+        return selectAllAsync(query, List.of(arg), converter);
+    }
+
+    protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAllAsync(
+        @NotNull String query,
+        @NotNull List<?> args,
+        @NotNull JAsyncLazyConverter<D, T> converter
+    ) {
+        return selectAllAsync(getEntityType(), query, args, converter);
     }
 
     protected <D extends Dao<T>> @NotNull Mono<@NotNull Array<T>> selectAllAsync(

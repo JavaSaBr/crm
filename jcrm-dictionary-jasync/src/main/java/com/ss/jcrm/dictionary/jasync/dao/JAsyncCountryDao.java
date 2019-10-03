@@ -84,10 +84,10 @@ public class JAsyncCountryDao extends AbstractDictionaryDao<Country> implements 
 
     private @NotNull DefaultCountry toCountry(@NotNull RowData data) {
         return new DefaultCountry(
-            notNull(data.getString(1)),
-            notNull(data.getString(2)),
-            notNull(data.getString(3)),
-            notNull(data.getLong(0))
+            notNull(data.getString(1)),  // name
+            notNull(data.getString(2)),  // flag code
+            notNull(data.getString(3)),  // phone code
+            notNull(data.getLong(0))     // id
         );
     }
 }

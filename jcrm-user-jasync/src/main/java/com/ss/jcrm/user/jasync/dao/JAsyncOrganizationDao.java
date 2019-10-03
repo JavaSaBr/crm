@@ -12,6 +12,7 @@ import com.ss.jcrm.dictionary.api.dao.CityDao;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.jasync.dao.AbstractNamedObjectJAsyncDao;
+import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
@@ -28,17 +29,14 @@ import java.util.List;
 @Log4j2
 public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organization> implements OrganizationDao {
 
-    private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"country_id\", \"version\"," +
-        "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
-        " from \"${schema}\".\"organization\"";
+    private static final String FIELD_LIST = "\"id\", \"name\", \"country_id\", \"version\", \"zip_code\"," +
+        " \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"";
 
-    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"country_id\", \"version\", " +
-        "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
-        " from \"${schema}\".\"organization\" where \"name\" = ?";
-
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"country_id\", \"version\"," +
-        "\"zip_code\", \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"" +
-        " from \"${schema}\".\"organization\" where \"id\" = ?";
+    private static final String Q_SELECT_ALL = "select " + FIELD_LIST + " from \"${schema}\".\"organization\"";
+    private static final String Q_SELECT_BY_NAME = "select " + FIELD_LIST + " from \"${schema}\".\"organization\"" +
+        " where \"name\" = ?";
+    private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST + " from \"${schema}\".\"organization\"" +
+        " where \"id\" = ?";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"organization\" (\"name\", \"country_id\")" +
         " values (?, ?) RETURNING id";
@@ -78,6 +76,11 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
     }
 
     @Override
+    protected @NotNull Class<Organization> getEntityType() {
+        return Organization.class;
+    }
+
+    @Override
     public @NotNull Mono<@NotNull Organization> create(@NotNull String name, @NotNull Country country) {
         return insert(
             queryInsert,
@@ -88,21 +91,17 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
 
     @Override
     public @NotNull Mono<@Nullable Organization> findByName(@NotNull String name) {
-        return selectAsync(querySelectByName, List.of(name), JAsyncOrganizationDao::toOrganization);
+        return selectAsync(querySelectByName, name, convert());
     }
 
     @Override
     public @NotNull Mono<@Nullable Organization> findById(long id) {
-        return selectAsync(querySelectById, List.of(id), JAsyncOrganizationDao::toOrganization);
+        return selectAsync(querySelectById, id, convert());
     }
 
     @Override
     public @NotNull Mono<@NotNull Array<Organization>> findAll() {
-        return selectAllAsync(
-            Organization.class,
-            querySelectAll,
-            JAsyncOrganizationDao::toOrganization
-        );
+        return selectAllAsync(querySelectAll, convert());
     }
 
     @Override
@@ -113,6 +112,10 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
     @Override
     public @NotNull Mono<Boolean> delete(long id) {
         return delete(queryDeleteById, List.of(id));
+    }
+
+    private @NotNull JAsyncLazyConverter<@NotNull JAsyncOrganizationDao, @NotNull Organization> convert() {
+        return JAsyncOrganizationDao::toOrganization;
     }
 
     private @NotNull Mono<@NotNull Organization> toOrganization(@NotNull RowData data) {

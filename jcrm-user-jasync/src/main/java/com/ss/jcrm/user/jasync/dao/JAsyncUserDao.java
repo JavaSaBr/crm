@@ -7,6 +7,7 @@ import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
+import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
@@ -31,17 +32,17 @@ import java.util.Set;
 @Log4j2
 public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
-    private static final String USER_FIELDS = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
+    private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
         " \"version\", \"email_confirmed\", \"password_version\"";
 
-    private static final String Q_SELECT_BY_EMAIL = "select " + USER_FIELDS +
+    private static final String Q_SELECT_BY_EMAIL = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"email\" = ?";
 
-    private static final String Q_SELECT_BY_ID = "select " + USER_FIELDS +
+    private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"id\" = ?";
 
-    private static final String Q_SELECT_BY_PHONE_NUMBER = "select " + USER_FIELDS +
+    private static final String Q_SELECT_BY_PHONE_NUMBER = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"phone_number\" = ?";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"user\" (\"email\", \"password\", \"salt\", " +
@@ -54,14 +55,14 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"${schema}\".\"user\" where \"email\" = ?";
 
-    private static final String Q_SEARCH_BY_NAME = "select " + USER_FIELDS +
+    private static final String Q_SEARCH_BY_NAME = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where ((\"first_name\" || ' ' || \"second_name\" || ' ' ||" +
         " \"third_name\" ilike (?)) OR \"email\" ilike (?)) AND \"organization_id\" = ?";
 
-    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + USER_FIELDS +
+    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"id\" = ? AND \"organization_id\" = ?";
 
-    private static final String Q_SELECT_BY_IDS_AND_ORG_ID = "select " + USER_FIELDS +
+    private static final String Q_SELECT_BY_IDS_AND_ORG_ID = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"id\" in (${id_list}) AND \"organization_id\" = ?";
 
     private final String querySelectById;
@@ -95,6 +96,11 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         this.querySelectByIdsAndOrgId = Q_SELECT_BY_IDS_AND_ORG_ID.replace("${schema}", schema);
         this.organizationDao = organizationDao;
         this.userGroupDao = userGroupDao;
+    }
+
+    @Override
+    protected @NotNull Class<User> getEntityType() {
+        return User.class;
     }
 
     @Override
@@ -141,17 +147,17 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     @Override
     public @NotNull Mono<@NotNull User> findByEmail(@NotNull String email) {
-        return selectAsync(querySelectByEmail, List.of(email), JAsyncUserDao::toUser);
+        return selectAsync(querySelectByEmail, email, converter());
     }
 
     @Override
     public @NotNull Mono<@NotNull User> findById(long id) {
-        return selectAsync(querySelectById, List.of(id), JAsyncUserDao::toUser);
+        return selectAsync(querySelectById, id, converter());
     }
 
     @Override
     public @NotNull Mono<@NotNull User> findByIdAndOrgId(long id, long orgId) {
-        return selectAsync(querySelectByIdAndOrgId, List.of(id, orgId), JAsyncUserDao::toUser);
+        return selectAsync(querySelectByIdAndOrgId, List.of(id, orgId), converter());
     }
 
     @Override
@@ -160,7 +166,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         if (ids == null || ids.length == 0) {
             return Mono.just(Array.empty());
         } else if (ids.length == 1) {
-            return selectAllAsync(User.class, querySelectByIdAndOrgId, List.of(ids[0], orgId), JAsyncUserDao::toUser);
+            return selectAllAsync(User.class, querySelectByIdAndOrgId, List.of(ids[0], orgId), converter());
         }
 
         var condition = new StringBuilder(ids.length * 2);
@@ -178,7 +184,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
         var query = querySelectByIdsAndOrgId.replace("${id_list}", condition.toString());
 
-        return selectAllAsync(User.class, query, args, JAsyncUserDao::toUser);
+        return selectAllAsync(User.class, query, args, converter());
     }
 
     @Override
@@ -209,7 +215,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     @Override
     public @NotNull Mono<@Nullable User> findByPhoneNumber(@NotNull String phoneNumber) {
-        return selectAsync(querySelectByPhoneNumber, List.of(phoneNumber), JAsyncUserDao::toUser);
+        return selectAsync(querySelectByPhoneNumber, List.of(phoneNumber), converter());
     }
 
     @Override
@@ -218,9 +224,12 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         return selectAllAsync(
             User.class,
             querySearchByName,
-            List.of(pattern, pattern, orgId),
-            JAsyncUserDao::toUser
+            List.of(pattern, pattern, orgId), converter()
         );
+    }
+
+    private @NotNull JAsyncLazyConverter<@NotNull JAsyncUserDao, @NotNull User> converter() {
+        return JAsyncUserDao::toUser;
     }
 
     private @NotNull Mono<@NotNull User> toUser(@NotNull RowData data) {

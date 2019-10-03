@@ -5,6 +5,7 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
+import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
@@ -49,6 +50,11 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
     }
 
     @Override
+    protected @NotNull Class<UserGroup> getEntityType() {
+        return UserGroup.class;
+    }
+
+    @Override
     public @NotNull Mono<@NotNull UserGroup> create(@NotNull String name, @NotNull Organization organization) {
         return insert(
             queryInsert,
@@ -59,19 +65,17 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
 
     @Override
     public @NotNull Mono<@Nullable UserGroup> findById(long id) {
-        return selectAsync(querySelectById, List.of(id), JAsyncUserGroupDao::toUserGroup);
+        return selectAsync(querySelectById, id, converter());
     }
 
     @Override
     public @NotNull Mono<@NotNull Set<UserGroup>> findAll(@NotNull Organization organization) {
+        return selectAllAsync(querySelectAllByOrgId, organization.getId(), converter())
+            .map(Set::copyOf);
+    }
 
-        var asyncGroups = selectAllAsync(UserGroup.class,
-            querySelectAllByOrgId,
-            List.of(organization.getId()),
-            JAsyncUserGroupDao::toUserGroup
-        );
-
-        return asyncGroups.map(Set::copyOf);
+    private @NotNull JAsyncLazyConverter<@NotNull JAsyncUserGroupDao, @NotNull UserGroup> converter() {
+        return JAsyncUserGroupDao::toUserGroup;
     }
 
     private @NotNull Mono<@NotNull UserGroup> toUserGroup(@NotNull RowData data) {

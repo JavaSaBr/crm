@@ -24,20 +24,20 @@ import java.util.List;
 
 public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> implements SimpleContactDao {
 
-    private static final String CONTACT_FIELDS = "\"id\", \"org_id\", \"assigner\", \"curators\", \"first_name\"," +
+    private static final String FIELD_LIST = "\"id\", \"org_id\", \"assigner\", \"curators\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"emails\", \"sites\", \"messengers\"," +
         " \"company\", \"version\"";
 
-    private static final String Q_SELECT_BY_ID = "select " + CONTACT_FIELDS + " from \"${schema}\".\"contact\"" +
+    private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST + " from \"${schema}\".\"contact\"" +
         " where \"id\" = ?";
 
-    private static final String Q_SELECT_BY_ORG_ID = "select " + CONTACT_FIELDS + " from \"${schema}\".\"contact\"" +
+    private static final String Q_SELECT_BY_ORG_ID = "select " + FIELD_LIST + " from \"${schema}\".\"contact\"" +
         " where \"org_id\" = ?";
 
-    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + CONTACT_FIELDS + " from" +
+    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + FIELD_LIST + " from" +
         " \"${schema}\".\"contact\" where \"id\" = ? AND \"org_id\" = ?";
 
-    private static final String Q_SELECT_PAGE_BY_ORG_ID = "select " + CONTACT_FIELDS + " from \"${schema}\".\"contact\"" +
+    private static final String Q_SELECT_PAGE_BY_ORG_ID = "select " + FIELD_LIST + " from \"${schema}\".\"contact\"" +
         " where \"org_id\" = ? order by \"id\" limit ? offset ?";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"org_id\", \"assigner\", \"curators\", " +

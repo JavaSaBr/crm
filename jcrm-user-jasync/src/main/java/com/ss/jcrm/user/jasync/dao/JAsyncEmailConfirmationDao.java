@@ -7,6 +7,7 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
+import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.jcrm.user.api.EmailConfirmation;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
@@ -21,10 +22,11 @@ import java.util.List;
 
 public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmation> implements EmailConfirmationDao {
 
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"code\", \"email\", \"expiration\"" +
-        " from \"${schema}\".\"email_confirmation\" where \"id\" = ?";
+    private static final String FIELD_LIST = "\"id\", \"code\", \"email\", \"expiration\"";
 
-    private static final String Q_SELECT_BY_CODE_AND_EMAIL = "select \"id\", \"code\", \"email\", \"expiration\"" +
+    private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST +
+        " from \"${schema}\".\"email_confirmation\" where \"id\" = ?";
+    private static final String Q_SELECT_BY_CODE_AND_EMAIL = "select " + FIELD_LIST +
         " from \"${schema}\".\"email_confirmation\" where \"code\" = ? and \"email\" = ?";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"email_confirmation\"" +
@@ -49,6 +51,11 @@ public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmat
     }
 
     @Override
+    protected @NotNull Class<EmailConfirmation> getEntityType() {
+        return EmailConfirmation.class;
+    }
+
+    @Override
     public @NotNull Mono<@NotNull EmailConfirmation> create(
         @NotNull String code,
         @NotNull String email,
@@ -63,25 +70,21 @@ public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmat
 
     @Override
     public @NotNull Mono<@Nullable EmailConfirmation> findById(long id) {
-        return select(
-            querySelectById,
-            List.of(id),
-            JAsyncEmailConfirmationDao::toEmailConformation
-        );
+        return select(querySelectById, id, converter());
     }
 
     @Override
     public @NotNull Mono<@Nullable EmailConfirmation> findByEmailAndCode(@NotNull String email, @NotNull String code) {
-        return select(
-            querySelectByCodeAndEmail,
-            List.of(code, email),
-            JAsyncEmailConfirmationDao::toEmailConformation
-        );
+        return select(querySelectByCodeAndEmail, List.of(code, email), converter());
+    }
+
+    private @NotNull JAsyncConverter<@NotNull JAsyncEmailConfirmationDao, @NotNull EmailConfirmation> converter() {
+        return JAsyncEmailConfirmationDao::toEmailConformation;
     }
 
     @Override
     public @NotNull Mono<Boolean> delete(long id) {
-        return delete(queryDeleteById, List.of(id));
+        return delete(queryDeleteById, id);
     }
 
     private @NotNull EmailConfirmation toEmailConformation(@NotNull RowData data) {

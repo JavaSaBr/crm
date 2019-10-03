@@ -10,6 +10,7 @@ import com.ss.jcrm.dictionary.api.dao.CityDao;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultCity;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
+import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import lombok.extern.log4j.Log4j2;
@@ -22,13 +23,13 @@ import java.util.List;
 @Log4j2
 public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDao {
 
-    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"country_id\" " +
-        " from \"${schema}\".\"city\" where \"name\" = ?";
+    private static final String FIELD_LIST = "\"id\", \"name\", \"country_id\"";
 
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"country_id\" " +
-        " from \"${schema}\".\"city\" where \"id\" = ?";
-
-    private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"country_id\" from \"${schema}\".\"city\"";
+    private static final String Q_SELECT_BY_NAME =
+        "select " + FIELD_LIST + " from \"${schema}\".\"city\" where \"name\" = ?";
+    private static final String Q_SELECT_BY_ID =
+        "select " + FIELD_LIST + " from \"${schema}\".\"city\" where \"id\" = ?";
+    private static final String Q_SELECT_ALL = "select " + FIELD_LIST + " from \"${schema}\".\"city\"";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"city\" (\"name\", \"country_id\") " +
         "values (?, ?) returning id";
@@ -70,20 +71,24 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
     @Override
     public @NotNull Mono<@NotNull Array<City>> findAll() {
         return countryDao.findAllAsMap()
-            .flatMap(countries -> selectAll(querySelectAll, countries, JAsyncCityDao::toCities));
+            .flatMap(countries -> selectAll(querySelectAll, countries, JAsyncCityDao::toCity));
     }
 
     @Override
     public @NotNull Mono<City> findById(long id) {
-        return selectAsync(querySelectById, List.of(id), JAsyncCityDao::toCity);
+        return selectAsync(querySelectById, List.of(id), converter());
     }
 
     @Override
     public @NotNull Mono<City> findByName(@NotNull String name) {
-        return selectAsync(querySelectByName, List.of(name), JAsyncCityDao::toCity);
+        return selectAsync(querySelectByName, List.of(name), converter());
     }
 
-    private @Nullable City toCities(@NotNull LongDictionary<Country> countries, @NotNull RowData data) {
+    private @NotNull JAsyncLazyConverter<@NotNull JAsyncCityDao, @NotNull City> converter() {
+        return JAsyncCityDao::toAsyncCity;
+    }
+
+    private @Nullable City toCity(@NotNull LongDictionary<Country> countries, @NotNull RowData data) {
 
         var name = notNull(data.getString(1));
         var countryId = notNull(data.getLong(2));
@@ -101,7 +106,7 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
         return new DefaultCity(name, country, notNull(data.getLong(0)));
     }
 
-    private @NotNull Mono<@Nullable City> toCity(@NotNull RowData data) {
+    private @NotNull Mono<@NotNull City> toAsyncCity(@NotNull RowData data) {
 
         var name = notNull(data.getString(1));
         var countryId = notNull(data.getLong(2));
