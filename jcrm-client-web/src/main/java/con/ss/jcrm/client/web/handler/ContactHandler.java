@@ -1,6 +1,5 @@
 package con.ss.jcrm.client.web.handler;
 
-import static com.ss.rlib.common.util.NumberUtils.toOptionalLong;
 import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.client.api.dao.SimpleContactDao;
 import com.ss.jcrm.client.api.impl.DefaultContactEmail;
@@ -12,7 +11,8 @@ import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.web.exception.IdNotPresentedWebException;
+import com.ss.jcrm.web.resources.DataPageResponse;
+import com.ss.jcrm.web.util.RequestUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.ArrayUtils;
 import com.ss.rlib.common.util.DateUtils;
@@ -52,11 +52,31 @@ public class ContactHandler {
     }
 
     public @NotNull Mono<ServerResponse> findById(@NotNull ServerRequest request) {
-        return Mono.fromSupplier(() -> toOptionalLong(request.pathVariable("id")))
-            .map(optional -> optional.orElseThrow(IdNotPresentedWebException::new))
+        return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
-            .flatMap(res -> simpleContactDao.findByIdAndOrg(res.getParam(), res.getOrgId()))
+            .flatMap(authorized -> simpleContactDao.findByIdAndOrg(authorized.getParam(), authorized.getOrgId()))
             .map(ContactOutResource::new)
+            .flatMap(ResponseUtils::ok)
+            .switchIfEmpty(ResponseUtils.lazyNotFound());
+    }
+
+    public @NotNull Mono<ServerResponse> findPage(@NotNull ServerRequest request) {
+        return RequestUtils.pageRequest(request)
+            .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
+            .flatMap(authorized -> {
+                var pageRequest = authorized.getParam();
+                return simpleContactDao.findPageByOrg(
+                    pageRequest.getOffset(),
+                    pageRequest.getPageSize(),
+                    authorized.getOrgId()
+                );
+            })
+            .map(entityPage -> DataPageResponse.from(
+                entityPage.getTotalSize(),
+                entityPage.getEntities(),
+                ContactOutResource::new,
+                ContactOutResource[]::new
+            ))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }

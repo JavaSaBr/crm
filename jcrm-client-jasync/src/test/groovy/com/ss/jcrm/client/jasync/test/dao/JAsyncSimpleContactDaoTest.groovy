@@ -168,4 +168,42 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             reloaded.phoneNumbers == loaded.phoneNumbers
             reloaded.birthday == loaded.birthday
     }
+    
+    def "should load a page of contacts"() {
+        
+        given:
+    
+            def firstOrgContactsCount = 20
+            def secondOrgContactsCount = 5
+    
+            def firstOrg = userTestHelper.newOrg()
+            def firstUser = userTestHelper.newUser("User1", firstOrg)
+            def secondOrg = userTestHelper.newOrg()
+            def secondUser = userTestHelper.newUser("User2", secondOrg)
+    
+            firstOrgContactsCount.times {
+                clientTestHelper.newSimpleContact(firstUser)
+            }
+    
+            secondOrgContactsCount.times {
+                clientTestHelper.newSimpleContact(secondUser)
+            }
+        
+            List<SimpleContact> loadedContacts = []
+    
+        when:
+            def page = simpleContactDao.findPageByOrg(0, 5, firstOrg.id).block()
+            loadedContacts.addAll(page.entities)
+        then:
+            page != null
+            page.totalSize == firstOrgContactsCount
+            page.entities.size() == 5
+        when:
+            page = simpleContactDao.findPageByOrg(17, 5, firstOrg.id).block()
+        then:
+            page != null
+            page.totalSize == firstOrgContactsCount
+            page.entities.size() == 3
+            !page.entities.stream().anyMatch({ loadedContacts.contains(it) })
+    }
 }
