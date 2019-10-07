@@ -1,6 +1,7 @@
 package com.ss.jcrm.web.customizer;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.web.embedded.undertow.UndertowReactiveWebServerFactory;
 import org.springframework.boot.web.server.Http2;
@@ -10,6 +11,7 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+@Log4j2
 @AllArgsConstructor
 public class UndertowWebServerFactorySslCustomizer implements
     WebServerFactoryCustomizer<UndertowReactiveWebServerFactory> {
@@ -26,6 +28,8 @@ public class UndertowWebServerFactorySslCustomizer implements
         if (!Files.exists(keystorePath)) {
             return;
         }
+
+        log.info("Use SSL Certificate: {}", keystorePath);
 
         var ssl = new Ssl();
         ssl.setEnabled(true);

@@ -63,6 +63,10 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         return `${environment.clientUrl}/contact/${id}`;
     }
 
+    protected buildEntityPageFetchUrl(pageSize: number, offset: number): string {
+        return `${environment.clientUrl}/contacts/page?pageSize=${pageSize}&offset=${offset}`;
+    }
+
     protected convertAsync(resource: ContactResource): Promise<Contact> {
 
         const contact = Contact.create();

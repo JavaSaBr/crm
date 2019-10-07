@@ -4,6 +4,8 @@ import {UniqEntity} from '@app/entity/uniq-entity';
 import {SecurityService} from '@app/service/security.service';
 import {ErrorResponse} from '@app/error/error-response';
 import {TranslateService} from '@ngx-translate/core';
+import {DataPageResource} from '@app/resource/data-page-resource';
+import {EntityPage} from '@app/entity/entity-page';
 
 @Injectable({
     providedIn: 'root'
@@ -43,6 +45,19 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
             });
     }
 
+    public findEntityPage(pageSize: number, offset: number): Promise<EntityPage<T>> {
+        return this.securityService.getRequest<DataPageResource<R>>(this.buildEntityPageFetchUrl(pageSize, offset))
+            .then(value => {
+                const resource = value.body;
+                const entities = resource.resources.map(resource => this.convert(resource));
+                return new EntityPage(entities, resource.totalSize);
+            })
+            .catch(resp => {
+                ErrorResponse.convertToErrorOrNull(resp, this.translateService);
+                return null;
+            });
+    }
+
     protected convert(resource: R): T {
         throw new Error('`convert` is not yet implemented');
     }
@@ -57,5 +72,9 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
 
     protected buildFetchUrlByIds(): string {
         throw new Error('`buildFetchUrlByIds` is not yet implemented');
+    }
+
+    protected buildEntityPageFetchUrl(pageSize: number, offset: number): string {
+        throw new Error('`buildDataPageFetchUrl` is not yet implemented');
     }
 }

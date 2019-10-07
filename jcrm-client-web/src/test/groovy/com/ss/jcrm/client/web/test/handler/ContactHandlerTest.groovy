@@ -363,4 +363,50 @@ class ContactHandlerTest extends ClientSpecification {
             .url("/client/contact/create")
             .exchange()
     }
+    
+    def "should load a page of contacts"() {
+        
+        given:
+          
+            def firstOrgContactsCount = 20
+            def secondOrgContactsCount = 5
+    
+            def firstOrg = userTestHelper.newOrg()
+            def firstUser = userTestHelper.newUser("User1", firstOrg)
+            def secondOrg = userTestHelper.newOrg()
+            def secondUser = userTestHelper.newUser("User2", secondOrg)
+    
+            firstOrgContactsCount.times {
+                clientTestHelper.newSimpleContact(firstUser)
+            }
+    
+            secondOrgContactsCount.times {
+                clientTestHelper.newSimpleContact(secondUser)
+            }
+    
+            def token = unsafeTokenService.generateNewToken(firstUser)
+        
+        when:
+            def response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/client/contacts/page?pageSize=5&offset=0")
+                .exchange()
+        then:
+            response.expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectBody()
+                    .jsonPath('$.totalSize').isEqualTo(20)
+                    .jsonPath('$.resources').value(hasSize(5))
+        when:
+            response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/client/contacts/page?pageSize=10&offset=12")
+                .exchange()
+        then:
+            response.expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectBody()
+                    .jsonPath('$.totalSize').isEqualTo(20)
+                    .jsonPath('$.resources').value(hasSize(8))
+    }
 }

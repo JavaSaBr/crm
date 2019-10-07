@@ -112,6 +112,12 @@
             },
             "dev": {
               "browserTarget": "jcrm-ui:build:dev"
+            },
+            "local": {
+              "browserTarget": "jcrm-ui:build:local"
+            },
+            "local-ssl": {
+              "browserTarget": "jcrm-ui:build:local-ssl"
             }
           }
         },

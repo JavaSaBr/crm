@@ -138,9 +138,9 @@ allprojects {
             'mailFrom': System.getProperty("mailFrom", ""),
             
             // SSL
-            'keystorePath': System.getProperty("keystorePath", "/opt/jcrm/dev.p12"),
-            'keystorePassword': System.getProperty("keystorePassword", "devdevdev"),
-            'keystoreAlias': System.getProperty("keystoreAlias", "dev"),
+            'keystorePath': System.getProperty("keystorePath", projectDir.toPath().resolve("../jcrm.p12").toString()),
+            'keystorePassword': System.getProperty("keystorePassword", "ssljcrm"),
+            'keystoreAlias': System.getProperty("keystoreAlias", "jcrm"),
         ])
     }
 }

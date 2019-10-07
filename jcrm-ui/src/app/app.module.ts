@@ -62,6 +62,9 @@ import {ContactEmailsInput} from '@app/input/contact-emails/contact-emails-input
 import {ContactSitesInput} from '@app/input/contact-sites-input/contact-sites-input';
 import {ContactMessengersInput} from '@app/input/contact-messengers-input/contact-messengers-input';
 import {UserProfileComponent} from '@app/component/user-profile/user-profile.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSortModule} from '@angular/material/sort';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -132,6 +135,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatChipsModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatProgressSpinnerModule,
+        MatSortModule,
+        MatCheckboxModule,
         TranslateModule.forRoot(
             {
                 useDefaultLang: true,
