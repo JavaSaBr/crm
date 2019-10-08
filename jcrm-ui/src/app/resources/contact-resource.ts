@@ -7,6 +7,8 @@ import {EntityResource} from '@app/resource/entity-resource';
 export class ContactResource extends EntityResource {
 
     assigner: number;
+    created: number;
+    modified: number;
     curators: number[];
 
     firstName: string;

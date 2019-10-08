@@ -118,8 +118,4 @@ export class Utils {
 
         return array.filter((val, index, self) => self.indexOf(val) == index)
     }
-
-    public static distinctFunc(): (val, index, self) => boolean {
-        return (val, index, self) => self.indexOf(val) == index;
-    }
 }

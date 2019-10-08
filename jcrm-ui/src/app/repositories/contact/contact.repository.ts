@@ -77,6 +77,8 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         contact.secondName = resource.secondName;
         contact.thirdName = resource.thirdName;
         contact.company = resource.company;
+        contact.created = new Date(resource.created);
+        contact.modified = new Date(resource.modified);
         contact.birthday = resource.birthday ? new Date(resource.birthday) : null;
         contact.sites = resource.sites
             .map(value => new ContactSite(value.url, value.type as SiteType));

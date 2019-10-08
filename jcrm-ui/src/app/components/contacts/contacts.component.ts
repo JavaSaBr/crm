@@ -15,6 +15,7 @@ import {User} from '@app/entity/user';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {Utils} from '@app/util/utils';
 import {EntityPage} from '@app/entity/entity-page';
+import {DatePipe} from '@angular/common';
 
 @Component({
     selector: 'app-contacts',
@@ -64,7 +65,8 @@ export class ContactsComponent extends BaseWorkspaceComponent {
         protected readonly workspaceService: WorkspaceService,
         private readonly contactService: ContactRepository,
         private readonly userRepository: UserRepository,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly datepipe: DatePipe
     ) {
         super(workspaceService);
     }
@@ -103,9 +105,8 @@ export class ContactsComponent extends BaseWorkspaceComponent {
 
     private loadAssigners(entityPage: EntityPage<Contact>): Promise<EntityPage<Contact>> {
 
-        const assignerIds: number[] = entityPage.entities
-            .map(value => value.assigner)
-            .filter(Utils.distinctFunc);
+        const assignerIds: number[] = Utils.distinct(entityPage.entities
+            .map(value => value.assigner));
 
         if (assignerIds.length < 1) {
             return Promise.resolve(entityPage);
@@ -154,6 +155,21 @@ export class ContactsComponent extends BaseWorkspaceComponent {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         } else {
             return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+        }
+    }
+
+    buildCreated(contact: Contact): string {
+
+        const now = new Date();
+        const currentDate = now.getDate();
+
+        const created = contact.created;
+        const createdDate = created.getDate();
+
+        if (currentDate === createdDate) {
+            return `Today ${this.datepipe.transform(created, 'HH:mm')}`;
+        } else {
+            return `${this.datepipe.transform(created, 'yyyy/mm/dd HH:mm')}`;
         }
     }
 
