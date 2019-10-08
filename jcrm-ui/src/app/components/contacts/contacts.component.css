@@ -6,6 +6,20 @@ tr.contact-row:hover {
     cursor: pointer;
 }
 
+.mat-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+    min-width: 32px;
+    text-align: start;
+}
+
+.mat-header-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+    min-width: 32px;
+    text-align: start;
+}
+
 .contact-loading-shade {
     position: absolute;
     top: 0;

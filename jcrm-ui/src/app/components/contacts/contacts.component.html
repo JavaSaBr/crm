@@ -11,7 +11,7 @@
     <table class="table-contacts" mat-table [dataSource]="dataSource" matSort matSortActive="first_name"
            matSortDisableClear matSortDirection="desc">
 
-    <!-- Checkbox Column -->
+      <!-- Checkbox Column -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
           <mat-checkbox (change)="$event ? toggleAllSelection() : null"
@@ -29,26 +29,37 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="first_name">
-        <th mat-header-cell *matHeaderCellDef>First name</th>
-        <td mat-cell *matCellDef="let element"> {{element.firstName}}</td>
+      <ng-container matColumnDef="creation_date">
+        <th mat-header-cell *matHeaderCellDef>Creation date</th>
+        <td mat-cell *matCellDef="let element">Unsupported</td>
       </ng-container>
-      <ng-container matColumnDef="second_name">
-        <th mat-header-cell *matHeaderCellDef>Second name</th>
-        <td mat-cell *matCellDef="let element"> {{element.secondName}}</td>
+      <ng-container matColumnDef="assigner">
+        <th mat-header-cell *matHeaderCellDef>Assigner</th>
+        <td mat-cell *matCellDef="let element">{{buildAssignerName(element)}}</td>
       </ng-container>
-      <ng-container matColumnDef="third_name">
-        <th mat-header-cell *matHeaderCellDef>Third name</th>
-        <td mat-cell *matCellDef="let element"> {{element.thirdName}}</td>
+      <ng-container matColumnDef="full_name">
+        <th mat-header-cell *matHeaderCellDef>Full name</th>
+        <td mat-cell *matCellDef="let element">{{buildFullName(element)}}</td>
+      </ng-container>
+      <ng-container matColumnDef="phone_numbers">
+        <th mat-header-cell *matHeaderCellDef>Phone numbers</th>
+        <td mat-cell *matCellDef="let element">{{buildPhoneNumbers(element)}}</td>
+      </ng-container>
+      <ng-container matColumnDef="emails">
+        <th mat-header-cell *matHeaderCellDef>Emails</th>
+        <td mat-cell *matCellDef="let element">{{buildEmails(element)}}</td>
+      </ng-container>
+      <ng-container matColumnDef="deals">
+        <th mat-header-cell *matHeaderCellDef>Deals</th>
+        <td mat-cell *matCellDef="let element">Unsupported</td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr class="contact-row" mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openContact(row)"></tr>
     </table>
   </perfect-scrollbar>
   <span fxLayout="column" relative-height="ignore"></span>
-  <mat-paginator class="mat-paginator-left-layout" [length]="dataSource.length"
+  <mat-paginator class="mat-paginator-left-layout" [length]="resultsLength"
                  [pageSize]="pageSize"
-                 [pageSizeOptions]="pageSizeOptions"
                  [hidePageSize]="true"
                  (page)="pageEvent = $event">
   </mat-paginator>

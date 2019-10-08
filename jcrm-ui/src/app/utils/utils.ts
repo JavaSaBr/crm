@@ -109,4 +109,17 @@ export class Utils {
 
         return result;
     }
+
+    public static distinct<T>(array: T[]): T[] {
+
+        if (array.length < 2) {
+            return array;
+        }
+
+        return array.filter((val, index, self) => self.indexOf(val) == index)
+    }
+
+    public static distinctFunc(): (val, index, self) => boolean {
+        return (val, index, self) => self.indexOf(val) == index;
+    }
 }

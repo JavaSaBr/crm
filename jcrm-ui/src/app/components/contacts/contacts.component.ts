@@ -9,8 +9,12 @@ import {ContactWorkspaceComponent} from '@app/component/contact/workspace-compon
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatSort} from '@angular/material/sort';
-import {merge, of as observableOf} from 'rxjs';
+import {merge} from 'rxjs';
 import {catchError, map, startWith, switchMap} from 'rxjs/operators';
+import {User} from '@app/entity/user';
+import {UserRepository} from '@app/repository/user/user.repository';
+import {Utils} from '@app/util/utils';
+import {EntityPage} from '@app/entity/entity-page';
 
 @Component({
     selector: 'app-contacts',
@@ -31,14 +35,22 @@ export class ContactsComponent extends BaseWorkspaceComponent {
         }
     ];
 
-    displayedColumns: string[] = ['select', 'first_name', 'second_name', 'third_name'];
+    displayedColumns: string[] = [
+        'select',
+        'creation_date',
+        'assigner',
+        'full_name',
+        'phone_numbers',
+        'emails',
+        'deals'
+    ];
+
     dataSource: Contact[] = [];
+    assigners: Map<number, User> = new Map<number, User>();
+
     selection = new SelectionModel<Contact>(true, []);
 
-    pageSize = 10;
-    pageSizeOptions: number[] = [5, 10, 25, 100];
-
-    // MatPaginator Output
+    pageSize = 50;
     pageEvent: PageEvent;
 
     resultsLength = 0;
@@ -51,14 +63,10 @@ export class ContactsComponent extends BaseWorkspaceComponent {
     constructor(
         protected readonly workspaceService: WorkspaceService,
         private readonly contactService: ContactRepository,
+        private readonly userRepository: UserRepository,
         private readonly router: Router
     ) {
         super(workspaceService);
-    }
-
-    setPageSizeOptions(options: string) {
-        this.pageSizeOptions = options.split(',')
-            .map(str => +str);
     }
 
     getComponentType(): Type<BaseWorkspaceComponent> {
@@ -74,27 +82,50 @@ export class ContactsComponent extends BaseWorkspaceComponent {
         merge(this.sort.sortChange, this.paginator.page)
             .pipe(
                 startWith({}),
-                switchMap(() => {
-                    this.isLoadingResults = true;
-                    return this.contactService.findEntityPage(
-                        this.paginator.pageSize,
-                        this.paginator.pageIndex * this.paginator.pageSize
-                    );
-                }),
-                map(data => {
-
-                    this.isLoadingResults = false;
-                    this.isRateLimitReached = false;
-                    this.resultsLength = data.totalSize;
-
-                    return data.entities;
-                }),
+                switchMap(() => this.startLoadingContacts()),
+                switchMap(data => this.loadAssigners(data)),
+                map(data => this.finishLoadingContacts(data)),
                 catchError(() => {
                     this.isLoadingResults = false;
                     this.isRateLimitReached = true;
-                    return observableOf([]);
+                    return Promise.resolve([]);
                 })
             ).subscribe(data => this.dataSource = data);
+    }
+
+    private startLoadingContacts(): Promise<EntityPage<Contact>> {
+        this.isLoadingResults = true;
+        return this.contactService.findEntityPage(
+            this.paginator.pageSize,
+            this.paginator.pageIndex * this.paginator.pageSize
+        );
+    }
+
+    private loadAssigners(entityPage: EntityPage<Contact>): Promise<EntityPage<Contact>> {
+
+        const assignerIds: number[] = entityPage.entities
+            .map(value => value.assigner)
+            .filter(Utils.distinctFunc);
+
+        if (assignerIds.length < 1) {
+            return Promise.resolve(entityPage);
+        }
+
+        return this.userRepository.findByIds(assignerIds)
+            .then(users => {
+                this.assigners.clear();
+                users.forEach(user => this.assigners.set(user.id, user));
+                return entityPage;
+            });
+    }
+
+    private finishLoadingContacts(entityPage: EntityPage<Contact>): Contact[] {
+
+        this.isLoadingResults = false;
+        this.isRateLimitReached = false;
+        this.resultsLength = entityPage.totalSize;
+
+        return entityPage.entities;
     }
 
     openContact(contact: Contact): void {
@@ -123,6 +154,82 @@ export class ContactsComponent extends BaseWorkspaceComponent {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         } else {
             return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+        }
+    }
+
+    buildAssignerName(contact: Contact): string {
+
+        const names: string[] = [];
+        const assigner = this.assigners.get(contact.assigner);
+
+        if (assigner == null) {
+            return 'No assigner';
+        }
+
+        if (assigner.firstName) {
+            names.push(assigner.firstName);
+        }
+
+        if (assigner.secondName) {
+            names.push(assigner.secondName);
+        }
+
+        const resultName = names.length > 0 && names.join(' ');
+
+        if (resultName.length > 1) {
+            return resultName;
+        } else {
+            return assigner.email;
+        }
+    }
+
+    buildFullName(contact: Contact): string {
+
+        const names: string[] = [];
+
+        if (contact.firstName) {
+            names.push(contact.firstName);
+        }
+
+        if (contact.secondName) {
+            names.push(contact.secondName);
+        }
+
+        if (contact.thirdName) {
+            names.push(contact.thirdName);
+        }
+
+        return names.join(' ');
+    }
+
+    buildPhoneNumbers(contact: Contact): string {
+
+        const contactPhoneNumbers = contact.phoneNumbers;
+
+        if (contactPhoneNumbers.length < 1) {
+            return '';
+        }
+
+        const phoneNumber = contactPhoneNumbers[0].phoneNumber;
+        const phoneNumberString = `${phoneNumber.country.phoneCode}(${phoneNumber.regionCode})${phoneNumber.phoneNumber}`;
+
+        if (contactPhoneNumbers.length == 1) {
+            return phoneNumberString;
+        }
+
+        return phoneNumberString + ', ...';
+    }
+
+    buildEmails(contact: Contact): string {
+
+        const contactEmails = contact.emails;
+
+        if (contactEmails.length < 1) {
+            return '';
+        } else if (contactEmails.length == 1) {
+            return contactEmails[0].email;
+        } else {
+            return contactEmails[0].email + ', ...';
         }
     }
 }
