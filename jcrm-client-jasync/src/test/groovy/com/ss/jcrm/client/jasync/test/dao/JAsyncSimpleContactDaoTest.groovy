@@ -13,6 +13,7 @@ import com.ss.rlib.common.util.array.Array
 import com.ss.rlib.common.util.array.ArrayFactory
 import org.springframework.beans.factory.annotation.Autowired
 
+import java.time.Instant
 import java.time.LocalDate
 
 class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
@@ -23,7 +24,10 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
     def "should create and load a simple contact"() {
         
         given:
+            
             def assigner = userTestHelper.newUser("Test1")
+            def currentTime = Instant.now()
+        
             Array<User> curators = ArrayFactory.asArray(
                 userTestHelper.newUser("Curator1"),
                 userTestHelper.newUser("Curator2")
@@ -74,6 +78,8 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             contact.sites == sites
             contact.messengers == messengers
             contact.company == "My company"
+            contact.created.isAfter(currentTime)
+            contact.modified.isAfter(currentTime)
         when:
             contact = simpleContactDao.findById(contact.id).block()
         then:
@@ -91,6 +97,8 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             contact.sites == sites
             contact.messengers == messengers
             contact.company == "My company"
+            contact.created.isAfter(currentTime)
+            contact.modified.isAfter(currentTime)
     }
     
     def "should load a simple contact"() {
@@ -131,8 +139,10 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             def assigner = userTestHelper.newUser()
             def contact = clientTestHelper.newSimpleContact(assigner)
             def curator = userTestHelper.newUser("Curator2", assigner.organization)
+            def timeAfterCreation = Instant.now()
         when:
             def loaded = simpleContactDao.findById(contact.id).block()
+            def prevModified = loaded.modified
         then:
             loaded != null
             loaded.id == contact.id
@@ -147,7 +157,9 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             loaded.sites.length == 0
             loaded.messengers.length == 0
             loaded.company == null
+            loaded.created.isBefore(timeAfterCreation)
         when:
+            Thread.sleep(1000)
             loaded.company = "New Company"
             loaded.messengers = [new DefaultContactMessenger("test", MessengerType.SKYPE)]
             loaded.sites = [new DefaultContactSite("google.com", SiteType.HOME)]
@@ -167,6 +179,8 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             reloaded.emails == loaded.emails
             reloaded.phoneNumbers == loaded.phoneNumbers
             reloaded.birthday == loaded.birthday
+            reloaded.modified.isAfter(reloaded.created)
+            reloaded.modified.isAfter(prevModified)
     }
     
     def "should load a page of contacts"() {

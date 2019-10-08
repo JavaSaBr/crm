@@ -4,7 +4,9 @@ import com.ss.jcrm.dao.VersionedUniqEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface SimpleContact extends VersionedUniqEntity {
 
@@ -60,4 +62,12 @@ public interface SimpleContact extends VersionedUniqEntity {
     @Nullable String getCompany();
 
     void setCompany(@Nullable String company);
+
+    @NotNull Instant getCreated();
+
+    void setCreated(@NotNull Instant created);
+
+    @NotNull Instant getModified();
+
+    void setModified(@NotNull Instant modified);
 }

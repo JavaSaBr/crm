@@ -3,7 +3,9 @@ package com.ss.jcrm.client.api.impl;
 import com.ss.jcrm.client.api.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,6 +26,8 @@ public class DefaultSimpleContact implements SimpleContact {
     private String company;
 
     private LocalDate birthday;
+    private Instant created;
+    private Instant modified;
 
     private ContactPhoneNumber[] phoneNumbers;
     private ContactEmail[] emails;

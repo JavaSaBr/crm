@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +27,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
     private static final String FIELD_LIST = "\"id\", \"org_id\", \"assigner\", \"curators\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"emails\", \"sites\", \"messengers\"," +
-        " \"company\", \"version\"";
+        " \"company\", \"version\", \"created\", \"modified\"";
 
     private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST + " from \"${schema}\".\"contact\"" +
         " where \"id\" = ?";
@@ -42,11 +43,11 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"org_id\", \"assigner\", \"curators\", " +
         "\"first_name\", \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"emails\", \"sites\", " +
-        "\"messengers\", \"company\") values (?,?,?,?,?,?,?,?,?,?,?,?) returning id";
+        "\"messengers\", \"company\", \"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) returning id";
 
     private static final String Q_UPDATE = "update \"${schema}\".\"contact\" set \"curators\" = ?, \"first_name\" = ?," +
         " \"second_name\" = ?, \"third_name\" = ?, \"birthday\" = ?, \"phone_numbers\" = ?, \"emails\" = ?," +
-        " \"sites\" = ?, \"messengers\" = ?, \"company\" = ? where \"id\" = ? and \"version\" = ?";
+        " \"sites\" = ?, \"messengers\" = ?, \"company\" = ?, \"modified\" = ? where \"id\" = ? and \"version\" = ?";
 
     private static final String Q_COUNT_BY_ORG_ID = "select count(\"id\") from \"${schema}\".\"contact\"" +
         " where \"org_id\" = ?";
@@ -98,6 +99,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         @Nullable ContactMessenger[] messengers,
         @Nullable String company
     ) {
+        var currentTime = Instant.now();
         return insert(
             queryInsert,
             Arrays.asList(
@@ -112,7 +114,9 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
                 toJson(emails),
                 toJson(sites),
                 toJson(messengers),
-                company
+                company,
+                toDateTime(currentTime),
+                toDateTime(currentTime)
             ),
             id -> new DefaultSimpleContact(
                 id,
@@ -124,6 +128,8 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
                 thirdName,
                 company,
                 birthday,
+                currentTime,
+                currentTime,
                 phoneNumbers,
                 emails,
                 sites,
@@ -135,6 +141,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
     @Override
     public @NotNull Mono<Void> update(@NotNull SimpleContact contact) {
+        contact.setModified(Instant.now());
         return update(
             queryUpdate,
             Arrays.asList(
@@ -148,6 +155,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
                 toJson(contact.getSites()),
                 toJson(contact.getMessengers()),
                 contact.getCompany(),
+                toDateTime(contact.getModified()),
                 contact.getId(),
                 contact.getVersion()
             ),
@@ -202,6 +210,8 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
         var company = data.getString(12);
         var version = notNull(data.getInt(13));
+        var created = toJavaInstant(data.getAs(14));
+        var modified = toJavaInstant(data.getAs(15));
 
         return new DefaultSimpleContact(
             id,
@@ -213,6 +223,8 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
             thirdName,
             company,
             birthday,
+            created,
+            modified,
             phoneNumbers,
             emails,
             sites,

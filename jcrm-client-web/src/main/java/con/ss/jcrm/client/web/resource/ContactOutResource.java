@@ -12,6 +12,8 @@ public class ContactOutResource {
     private final long id;
 
     private final long assigner;
+    private final long created;
+    private final long modified;
     private final long[] curators;
 
     private final String firstName;
@@ -33,6 +35,8 @@ public class ContactOutResource {
         this.secondName = contact.getSecondName();
         this.thirdName = contact.getThirdName();
         this.company = contact.getCompany();
+        this.created = contact.getCreated().toEpochMilli();
+        this.modified = contact.getModified().toEpochMilli();
         this.birthday = DateUtils.toString(contact.getBirthday());
         this.phoneNumbers = ArrayUtils.mapNullable(
             contact.getPhoneNumbers(),

@@ -101,6 +101,8 @@ class ContactHandlerTest extends ClientSpecification {
                     .jsonPath('$.thirdName').isEqualTo(body.thirdName)
                     .jsonPath('$.company').isEqualTo(body.company)
                     .jsonPath('$.birthday').isEqualTo(body.birthday)
+                    .jsonPath('$.created').isNotEmpty()
+                    .jsonPath('$.modified').isNotEmpty()
                     .jsonPath('$.phoneNumbers').value(hasSize(1))
                     .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers[0].countryCode)
                     .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers[0].regionCode)
