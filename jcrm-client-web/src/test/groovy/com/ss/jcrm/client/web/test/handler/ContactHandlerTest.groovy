@@ -53,7 +53,7 @@ class ContactHandlerTest extends ClientSpecification {
     @Autowired
     UnsafeTokenService unsafeTokenService
     
-    def "should create a new contact"() {
+    def "should create a new contact successfully"() {
     
         given:
             
@@ -135,7 +135,7 @@ class ContactHandlerTest extends ClientSpecification {
                     ))
     }
     
-    def "should get all available contacts for org"() {
+    def "should get all available contacts for org successfully"() {
         
         given:
             def user = userTestHelper.newUser("User2", AccessRole.ORG_ADMIN)
@@ -163,7 +163,7 @@ class ContactHandlerTest extends ClientSpecification {
                         contact3.firstName))
     }
     
-    def "should load created contact"() {
+    def "should load a created contact successfully"() {
         
         given:
             def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
@@ -184,7 +184,7 @@ class ContactHandlerTest extends ClientSpecification {
                     .jsonPath('$.thirdName').isEqualTo(contact.thirdName)
     }
     
-    def "should failed when id not presented"() {
+    def "should failed when id is not presented"() {
         
         given:
             def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
@@ -199,7 +199,7 @@ class ContactHandlerTest extends ClientSpecification {
                 .verifyErrorResponse(ID_NOT_PRESENTED, ID_NOT_PRESENTED_MESSAGE)
     }
     
-    def "should not create an invalid contact"() {
+    def "should failed creating an invalid contact"() {
         
         given:
             
@@ -370,7 +370,7 @@ class ContactHandlerTest extends ClientSpecification {
             .exchange()
     }
     
-    def "should load a page of contacts"() {
+    def "should load a page of contacts successfully"() {
         
         given:
           
@@ -416,7 +416,7 @@ class ContactHandlerTest extends ClientSpecification {
                     .jsonPath('$.resources').value(hasSize(8))
     }
     
-    def "should update contact"() {
+    def "should update contact successfully"() {
         
         given:
             
@@ -501,7 +501,7 @@ class ContactHandlerTest extends ClientSpecification {
                     ))
     }
     
-    def "should failed update contact"() {
+    def "should failed updating a contact"() {
         
         given:
             

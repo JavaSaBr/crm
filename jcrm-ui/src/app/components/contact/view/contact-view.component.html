@@ -47,7 +47,7 @@
           </button>
           <button *ngIf="editContactInfo && contact != null && contact.id"
                   [disabled]="disabled || !contactInfoFormGroup.valid || !hasChangesInContactInfo"
-                  class="contact-info-button" mat-raised-button color="primary" (click)="updareContact()">
+                  class="contact-info-button" mat-raised-button color="primary" (click)="updateContact()">
             {{ 'CONTACT.VIEW.ACTIONS.SAVE' | translate }}
           </button>
           <button *ngIf="editContactInfo && contact != null && !contact.id"

@@ -156,7 +156,7 @@ export class ContactViewComponent implements AfterViewInit {
 
     createContact(): void {
         this.disabled = true;
-        this.contactRepository.create(this.syncContactWithForm(Contact.create()))
+        this.contactRepository.create(this.syncContactWithForm(this.contact))
             .then(result => {
                 if (result instanceof ErrorResponse) {
                     this.errorService.showErrorResponse(result);
@@ -167,9 +167,9 @@ export class ContactViewComponent implements AfterViewInit {
             });
     }
 
-    updareContact(): void {
+    updateContact(): void {
         this.disabled = true;
-        this.contactRepository.update(this.syncContactWithForm(Contact.create()))
+        this.contactRepository.update(this.syncContactWithForm(this.contact))
             .then(result => {
                 if (result instanceof ErrorResponse) {
                     this.errorService.showErrorResponse(result);

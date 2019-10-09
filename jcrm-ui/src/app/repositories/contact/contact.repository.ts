@@ -39,9 +39,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
 
         return this.securityService.postRequest<ContactResource>(url, body)
             .then(resp => this.convertAsync(resp.body))
-            .catch(error => {
-                return ErrorResponse.convertToErrorOrNull(error, this.translateService);
-            });
+            .catch(error => ErrorResponse.convertToErrorOrNull(error, this.translateService));
     }
 
     update(contact: Contact): Promise<ErrorResponse | Contact> {
@@ -51,9 +49,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
 
         return this.securityService.putRequest<ContactResource>(url, body)
             .then(resp => this.convertAsync(resp.body))
-            .catch(error => {
-                return ErrorResponse.convertToErrorOrNull(error, this.translateService);
-            });
+            .catch(error => ErrorResponse.convertToErrorOrNull(error, this.translateService));
     }
 
     protected buildFetchUrl(): string {
@@ -87,6 +83,10 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
             body.id = contact.id;
         }
 
+        if (contact.version) {
+            body.version = contact.version;
+        }
+
         return body;
     }
 
@@ -95,6 +95,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         const contact = Contact.create();
         contact.id = resource.id;
         contact.assigner = resource.assigner;
+        contact.version = resource.version;
         contact.curators = resource.curators;
         contact.firstName = resource.firstName;
         contact.secondName = resource.secondName;

@@ -25,6 +25,7 @@ export class Contact extends UniqEntity {
             contact ? contact.sites : null,
             contact ? contact.messengers : null,
             contact ? contact.company : null,
+            contact ? contact.version : null,
         );
     }
 
@@ -42,7 +43,8 @@ export class Contact extends UniqEntity {
         public emails: ContactEmail[] | null,
         public sites: ContactSite[] | null,
         public messengers: ContactMessenger[] | null,
-        public company: string | null
+        public company: string | null,
+        public version: number | null
     ) {
         super(id);
     }

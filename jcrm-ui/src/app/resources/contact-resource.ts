@@ -11,6 +11,7 @@ export class ContactResource extends EntityResource {
     created: number;
     modified: number;
     curators: number[];
+    version: number;
 
     firstName: string;
     secondName: string;

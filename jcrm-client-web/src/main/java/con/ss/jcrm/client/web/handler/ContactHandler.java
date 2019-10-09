@@ -14,6 +14,7 @@ import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.ExceptionUtils;
+import com.ss.jcrm.web.exception.IdNotPresentedWebException;
 import com.ss.jcrm.web.exception.ResourceIsAlreadyChangedWebException;
 import com.ss.jcrm.web.resources.DataPageResponse;
 import com.ss.jcrm.web.util.RequestUtils;
@@ -136,6 +137,7 @@ public class ContactHandler {
         var resource = authorized.getResource();
 
         return simpleContactDao.findByIdAndOrg(resource.getId(), org)
+            .switchIfEmpty(Mono.error(IdNotPresentedWebException::new))
             .zipWhen(contact -> {
                 if (contact.getVersion() != resource.getVersion()) {
                     return Mono.error(new ResourceIsAlreadyChangedWebException());

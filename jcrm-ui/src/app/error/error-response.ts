@@ -19,6 +19,8 @@ export class ErrorResponse {
 
             if (!errorMessage.startsWith('SERVER.ERROR')) {
                 return new ErrorResponse(error.errorCode, errorMessage);
+            } else if (error.errorMessage) {
+                return new ErrorResponse(error.errorCode, error.errorMessage);
             }
 
             return error;
