@@ -34,7 +34,7 @@ public interface UserDao extends Dao<User> {
     /**
      * @throws CompletionException -> NotActualObjectDaoException if the user was changed in another thread/server.
      */
-    @NotNull Mono<Void> update(@NotNull User user);
+    @NotNull Mono<Boolean> update(@NotNull User user);
 
     @NotNull Mono<Boolean> existByEmail(@NotNull String email);
 

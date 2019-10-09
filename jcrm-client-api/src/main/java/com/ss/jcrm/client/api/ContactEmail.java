@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ContactEmail extends Entity {
 
+    @NotNull ContactEmail[] EMPTY_ARRAY = new ContactEmail[0];
+
     @NotNull String getEmail();
 
     void setEmail(@NotNull String email);

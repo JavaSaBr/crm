@@ -44,6 +44,12 @@ public class ExceptionUtils {
             return new CompletionException(throwable);
         }
     }
+    public static @NotNull BadRequestWebException toBadRequest(
+        int errorCode,
+        @NotNull String message
+    ) {
+        return new BadRequestWebException(message, errorCode);
+    }
 
     public static <T> @NotNull T unauthorized(
         int errorCode,

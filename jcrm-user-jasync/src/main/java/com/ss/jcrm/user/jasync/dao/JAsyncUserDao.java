@@ -188,7 +188,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     }
 
     @Override
-    public @NotNull Mono<Void> update(@NotNull User user) {
+    public @NotNull Mono<Boolean> update(@NotNull User user) {
         return update(
             queryUpdate,
             Arrays.asList(

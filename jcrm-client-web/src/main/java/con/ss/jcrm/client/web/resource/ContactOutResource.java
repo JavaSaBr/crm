@@ -16,6 +16,8 @@ public class ContactOutResource {
     private final long modified;
     private final long[] curators;
 
+    private int version;
+
     private final String firstName;
     private final String secondName;
     private final String thirdName;
@@ -29,6 +31,7 @@ public class ContactOutResource {
 
     public ContactOutResource(@NotNull SimpleContact contact) {
         this.id = contact.getId();
+        this.version = contact.getVersion();
         this.assigner = contact.getAssignerId();
         this.curators = contact.getCuratorIds();
         this.firstName = contact.getFirstName();

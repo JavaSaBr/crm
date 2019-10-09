@@ -34,21 +34,22 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
 
     create(contact: Contact): Promise<ErrorResponse | Contact> {
 
-        let body = new ContactResource();
-        body.assigner = contact.assigner;
-        body.curators = contact.curators;
-        body.firstName = contact.firstName;
-        body.secondName = contact.secondName;
-        body.thirdName = contact.thirdName;
-        body.company = contact.company;
-        body.birthday = this.datePipe.transform(contact.birthday, 'yyyy-MM-dd');
-        body.phoneNumbers = contact.phoneNumbers.map(value => ContactPhoneNumberResource.valueOf(value));
-        body.emails = contact.emails.map(value => ContactEmailResource.valueOf(value));
-        body.sites = contact.sites.map(value => ContactSiteResource.valueOf(value));
-        body.messengers = contact.messengers.map(value => ContactMessengerResource.valueOf(value));
+        const body = this.convertToResource(contact);
+        const url = `${environment.clientUrl}/contact`;
 
-        const url = `${environment.clientUrl}/contact/create`;
         return this.securityService.postRequest<ContactResource>(url, body)
+            .then(resp => this.convertAsync(resp.body))
+            .catch(error => {
+                return ErrorResponse.convertToErrorOrNull(error, this.translateService);
+            });
+    }
+
+    update(contact: Contact): Promise<ErrorResponse | Contact> {
+
+        const body = this.convertToResource(contact);
+        const url = `${environment.clientUrl}/contact`;
+
+        return this.securityService.putRequest<ContactResource>(url, body)
             .then(resp => this.convertAsync(resp.body))
             .catch(error => {
                 return ErrorResponse.convertToErrorOrNull(error, this.translateService);
@@ -65,6 +66,28 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
 
     protected buildEntityPageFetchUrl(pageSize: number, offset: number): string {
         return `${environment.clientUrl}/contacts/page?pageSize=${pageSize}&offset=${offset}`;
+    }
+
+    private convertToResource(contact: Contact) {
+
+        let body = new ContactResource();
+        body.assigner = contact.assigner;
+        body.curators = contact.curators;
+        body.firstName = contact.firstName;
+        body.secondName = contact.secondName;
+        body.thirdName = contact.thirdName;
+        body.company = contact.company;
+        body.birthday = this.datePipe.transform(contact.birthday, 'yyyy-MM-dd');
+        body.phoneNumbers = contact.phoneNumbers.map(value => ContactPhoneNumberResource.valueOf(value));
+        body.emails = contact.emails.map(value => ContactEmailResource.valueOf(value));
+        body.sites = contact.sites.map(value => ContactSiteResource.valueOf(value));
+        body.messengers = contact.messengers.map(value => ContactMessengerResource.valueOf(value));
+
+        if (contact.id && contact.id > 0) {
+            body.id = contact.id;
+        }
+
+        return body;
     }
 
     protected convertAsync(resource: ContactResource): Promise<Contact> {

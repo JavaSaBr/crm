@@ -76,7 +76,8 @@ public class ClientWebConfig {
                 .build())
             .GET(contextPath + "/contacts", contactHandler::list)
             .GET(contextPath + "/contacts/page", contactHandler::findPage)
-            .POST(contextPath + "/contact/create", contactHandler::create)
+            .POST(contextPath + "/contact", contactHandler::create)
+            .PUT(contextPath + "/contact", contactHandler::update)
             .GET(contextPath + "/contact/{id}", contactHandler::findById)
             .build();
     }

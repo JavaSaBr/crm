@@ -31,4 +31,7 @@ public interface ClientErrors {
 
     int CONTACT_MESSENGER_INVALID = 3009;
     String CONTACT_MESSENGER_INVALID_MESSAGE = "Messenger is invalid";
+
+    int INVALID_ASSIGNER = 3010;
+    String INVALID_ASSIGNER_MESSAGE = "Assigner is not valid";
 }

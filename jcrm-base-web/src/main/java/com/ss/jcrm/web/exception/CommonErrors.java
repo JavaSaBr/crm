@@ -13,4 +13,7 @@ public interface CommonErrors {
 
     int PAGE_SIZE_NOT_PRESENTED = 5003;
     String PAGE_SIZE_NOT_PRESENTED_MESSAGE = "Page size not presented";
+
+    int RESOURCE_IS_ALREADY_CHANFED = 5004;
+    String RESOURCE_IS_ALREADY_CHANFED_MESSAGE = "Resource is already changed";
 }

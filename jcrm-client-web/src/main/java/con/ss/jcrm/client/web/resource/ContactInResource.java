@@ -9,8 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ContactInResource {
 
+    private long id;
     private long assigner;
     private long[] curators;
+
+    private int version;
 
     private String firstName;
     private String secondName;

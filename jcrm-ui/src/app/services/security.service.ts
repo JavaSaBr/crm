@@ -114,6 +114,20 @@ export class SecurityService {
         }).toPromise() as Promise<HttpResponse<T>>;
     }
 
+    putRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
+
+        let headers = new HttpHeaders();
+
+        if (this._accessToken) {
+            headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
+        }
+
+        return this.httpClient.put(url, body, {
+            headers: headers,
+            observe: 'response'
+        }).toPromise() as Promise<HttpResponse<T>>;
+    }
+
     postUnauthorizedRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
 
         return this.httpClient.post(url, body, {

@@ -154,9 +154,22 @@ export class ContactViewComponent implements AfterViewInit {
         }
     }
 
-    create(): void {
+    createContact(): void {
         this.disabled = true;
         this.contactRepository.create(this.syncContactWithForm(Contact.create()))
+            .then(result => {
+                if (result instanceof ErrorResponse) {
+                    this.errorService.showErrorResponse(result);
+                } else if (result instanceof Contact) {
+                    this.reload(result);
+                }
+                this.disabled = false;
+            });
+    }
+
+    updareContact(): void {
+        this.disabled = true;
+        this.contactRepository.update(this.syncContactWithForm(Contact.create()))
             .then(result => {
                 if (result instanceof ErrorResponse) {
                     this.errorService.showErrorResponse(result);
@@ -185,9 +198,5 @@ export class ContactViewComponent implements AfterViewInit {
         contact.messengers = this.messengers.value;
 
         return contact;
-    }
-
-    saveContactInfo(): void {
-
     }
 }

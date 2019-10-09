@@ -31,4 +31,10 @@ public class WebException extends RuntimeException {
         this.status = status;
         this.errorCode = 0;
     }
+
+    public WebException(int status, @NotNull Throwable cause, @NotNull String message, int errorCode) {
+        super(message, cause);
+        this.status = status;
+        this.errorCode = errorCode;
+    }
 }

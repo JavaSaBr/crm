@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ContactPhoneNumber {
 
+    @NotNull ContactPhoneNumber[] EMPTY_ARRAY = new ContactPhoneNumber[0];
+
     @NotNull String getCountryCode();
 
     void setCountryCode(@NotNull String countryCode);

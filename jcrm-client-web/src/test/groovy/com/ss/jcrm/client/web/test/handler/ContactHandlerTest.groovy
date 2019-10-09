@@ -3,6 +3,7 @@ package com.ss.jcrm.client.web.test.handler
 import com.ss.jcrm.client.api.EmailType
 import com.ss.jcrm.client.api.MessengerType
 import com.ss.jcrm.client.api.PhoneNumberType
+import com.ss.jcrm.client.api.SimpleContact
 import com.ss.jcrm.client.api.SiteType
 import com.ss.jcrm.client.web.test.ClientSpecification
 import com.ss.jcrm.security.AccessRole
@@ -15,6 +16,7 @@ import con.ss.jcrm.client.web.resource.ContactMessengerResource
 import con.ss.jcrm.client.web.resource.ContactPhoneNumberResource
 import con.ss.jcrm.client.web.resource.ContactSiteResource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 
@@ -40,6 +42,8 @@ import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SITE_INVALID
 import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SITE_INVALID_MESSAGE
 import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_THIRD_NAME_TOO_LONG
 import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_THIRD_NAME_TOO_LONG_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.INVALID_ASSIGNER
+import static con.ss.jcrm.client.web.exception.ClientErrors.INVALID_ASSIGNER_MESSAGE
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is
@@ -84,7 +88,7 @@ class ContactHandlerTest extends ClientSpecification {
             def response = client.post()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(body)
-                .url("/client/contact/create")
+                .url("/client/contact")
                 .exchange()
         then:
             response.expectStatus().isCreated()
@@ -410,5 +414,138 @@ class ContactHandlerTest extends ClientSpecification {
                 .expectBody()
                     .jsonPath('$.totalSize').isEqualTo(20)
                     .jsonPath('$.resources').value(hasSize(8))
+    }
+    
+    def "should update contact"() {
+        
+        given:
+            
+            def org = userTestHelper.newOrg()
+            def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
+            def assigner = userTestHelper.newUser("Assigner1", org)
+            def curator1 = userTestHelper.newUser("Curator1", org)
+            def curator2 = userTestHelper.newUser("Curator2", org)
+            def contact = clientTestHelper.newSimpleContact(user)
+    
+            def token = unsafeTokenService.generateNewToken(user)
+            def body = new ContactInResource(
+                id: contact.id,
+                assigner: assigner.id,
+                curators: [curator1.id, curator2.id],
+                firstName: "First name",
+                secondName: "Second name",
+                thirdName: "Third name",
+                company: "Company",
+                birthday: "1990-05-22",
+                version: contact.version,
+                phoneNumbers: [new ContactPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())],
+                emails: [new ContactEmailResource("Test@test.com", EmailType.HOME.name())],
+                sites: [
+                    new ContactSiteResource("work.site.com", SiteType.WORK.name()),
+                    new ContactSiteResource("home.site.com", SiteType.HOME.name())
+                ],
+                messengers: [
+                    new ContactMessengerResource("misterX", MessengerType.TELEGRAM.name()),
+                    new ContactMessengerResource("misterX", MessengerType.SKYPE.name())
+                ]
+            )
+        
+        when:
+            def response = client.put()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .body(body)
+                .url("/client/contact")
+                .exchange()
+        then:
+            response.expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectBody()
+                    .jsonPath('$.id').isNotEmpty()
+                    .jsonPath('$.assigner').isEqualTo((int) body.assigner)
+                    .jsonPath('$.curators[*]').value(containsInAnyOrder(
+                        (int) body.curators[0],
+                        (int) body.curators[1]
+                    ))
+                    .jsonPath('$.firstName').isEqualTo(body.firstName)
+                    .jsonPath('$.secondName').isEqualTo(body.secondName)
+                    .jsonPath('$.thirdName').isEqualTo(body.thirdName)
+                    .jsonPath('$.company').isEqualTo(body.company)
+                    .jsonPath('$.birthday').isEqualTo(body.birthday)
+                    .jsonPath('$.created').isNotEmpty()
+                    .jsonPath('$.modified').isNotEmpty()
+                    .jsonPath('$.phoneNumbers').value(hasSize(1))
+                    .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers[0].countryCode)
+                    .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers[0].regionCode)
+                    .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers[0].phoneNumber)
+                    .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers[0].type))
+                    .jsonPath('$.emails').value(hasSize(1))
+                    .jsonPath('$.emails[0].type').isEqualTo(body.emails[0].type)
+                    .jsonPath('$.emails[0].email').isEqualTo(body.emails[0].email)
+                    .jsonPath('$.sites').value(hasSize(2))
+                    .jsonPath('$.sites[*].type').value(containsInAnyOrder(
+                        body.sites[0].type,
+                        body.sites[1].type
+                    ))
+                    .jsonPath('$.sites[*].url').value(containsInAnyOrder(
+                        body.sites[0].url,
+                        body.sites[1].url
+                    ))
+                    .jsonPath('$.messengers').value(hasSize(2))
+                    .jsonPath('$.messengers[*].type').value(containsInAnyOrder(
+                        body.messengers[0].type,
+                        body.messengers[1].type
+                    ))
+                    .jsonPath('$.messengers[*].login').value(containsInAnyOrder(
+                        body.messengers[0].login,
+                        body.messengers[1].login
+                    ))
+    }
+    
+    def "should failed update contact"() {
+        
+        given:
+            
+            def org = userTestHelper.newOrg()
+            def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
+            def assigner = userTestHelper.newUser("Assigner1", org)
+            def contact = clientTestHelper.newSimpleContact(user)
+            
+            def token = unsafeTokenService.generateNewToken(user)
+            def body = new ContactInResource(
+                id: contact.id,
+                assigner: assigner.id,
+                firstName: "First name",
+                secondName: "Second name",
+                thirdName: "Third name",
+                version: 10
+            )
+        
+        when:
+            def response = client.put()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .body(body)
+                .url("/client/contact")
+                .exchange()
+        then:
+            response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
+        when:
+    
+            body = new ContactInResource(
+                id: contact.id,
+                assigner: (assigner.id + 100),
+                firstName: "First name",
+                secondName: "Second name",
+                thirdName: "Third name",
+                version: contact.version
+            )
+        
+            response = client.put()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .body(body)
+                .url("/client/contact")
+                .exchange()
+        then:
+            response.expectStatus().isBadRequest()
+                .verifyErrorResponse(INVALID_ASSIGNER, INVALID_ASSIGNER_MESSAGE)
     }
 }

@@ -63,7 +63,7 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
             );
     }
 
-    protected @NotNull Mono<Void> update(
+    protected @NotNull Mono<Boolean> update(
         @NotNull String query,
         @NotNull List<?> args,
         @NotNull T entity
@@ -84,7 +84,7 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
                     versioned.setVersion(versioned.getVersion() + 1);
                 }
 
-                return null;
+                return Boolean.TRUE;
             }));
     }
 

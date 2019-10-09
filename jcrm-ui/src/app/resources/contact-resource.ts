@@ -6,6 +6,7 @@ import {EntityResource} from '@app/resource/entity-resource';
 
 export class ContactResource extends EntityResource {
 
+    id: number;
     assigner: number;
     created: number;
     modified: number;
