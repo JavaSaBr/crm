@@ -7,6 +7,7 @@ import com.ss.jcrm.client.api.impl.DefaultContactMessenger
 import com.ss.jcrm.client.api.impl.DefaultContactPhoneNumber
 import com.ss.jcrm.client.api.impl.DefaultContactSite
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
+import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.jasync.util.JAsyncUtils
 import com.ss.jcrm.user.api.User
 import com.ss.rlib.common.util.array.Array
@@ -158,6 +159,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             loaded.messengers.length == 0
             loaded.company == null
             loaded.created.isBefore(timeAfterCreation)
+            loaded.version == 0
         when:
             Thread.sleep(1000)
             loaded.company = "New Company"
@@ -181,6 +183,31 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             reloaded.birthday == loaded.birthday
             reloaded.modified.isAfter(reloaded.created)
             reloaded.modified.isAfter(prevModified)
+            reloaded.version == 1
+        when:
+            reloaded.thirdName = "Third name 2"
+            simpleContactDao.update(loaded).block()
+            reloaded = simpleContactDao.findById(loaded.id).block()
+        then:
+            reloaded.version == 2
+    }
+    
+    def "should failed updating a simple contact by outdated version reason"() {
+        
+        given:
+            def assigner = userTestHelper.newUser()
+            def contact = clientTestHelper.newSimpleContact(assigner)
+        when:
+            def loaded = simpleContactDao.findById(contact.id).block()
+        then:
+            loaded != null
+            loaded.id == contact.id
+            loaded.version == 0
+        when:
+            loaded.setVersion(5)
+            simpleContactDao.update(loaded).block()
+        then:
+            thrown NotActualObjectDaoException
     }
     
     def "should load a page of contacts"() {

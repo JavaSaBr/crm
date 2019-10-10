@@ -37,12 +37,16 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
     }
 
     public findByIds(ids: number[]): Promise<T[]> {
-        return this.securityService.postRequest<R[]>(this.buildFetchUrlByIds(), ids)
-            .then(value => value.body.map(entity => this.convert(entity)))
-            .catch(resp => {
-                ErrorResponse.convertToErrorOrNull(resp, this.translateService);
-                return null;
-            });
+        if (ids.length < 1) {
+            return Promise.resolve([]);
+        } else {
+            return this.securityService.postRequest<R[]>(this.buildFetchUrlByIds(), ids)
+                .then(value => value.body.map(entity => this.convert(entity)))
+                .catch(resp => {
+                    ErrorResponse.convertToErrorOrNull(resp, this.translateService);
+                    return null;
+                });
+        }
     }
 
     public findEntityPage(pageSize: number, offset: number): Promise<EntityPage<T>> {

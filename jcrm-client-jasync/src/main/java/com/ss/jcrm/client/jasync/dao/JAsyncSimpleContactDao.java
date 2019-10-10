@@ -47,7 +47,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
 
     private static final String Q_UPDATE = "update \"${schema}\".\"contact\" set \"curators\" = ?, \"first_name\" = ?," +
         " \"second_name\" = ?, \"third_name\" = ?, \"birthday\" = ?, \"phone_numbers\" = ?, \"emails\" = ?," +
-        " \"sites\" = ?, \"messengers\" = ?, \"company\" = ?, \"modified\" = ? where \"id\" = ? and \"version\" = ?";
+        " \"sites\" = ?, \"messengers\" = ?, \"company\" = ?, \"modified\" = ?, \"version\" = ? where \"id\" = ? and \"version\" = ?";
 
     private static final String Q_COUNT_BY_ORG_ID = "select count(\"id\") from \"${schema}\".\"contact\"" +
         " where \"org_id\" = ?";
@@ -156,6 +156,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
                 toJson(contact.getMessengers()),
                 contact.getCompany(),
                 toDateTime(contact.getModified()),
+                contact.getVersion() + 1,
                 contact.getId(),
                 contact.getVersion()
             ),

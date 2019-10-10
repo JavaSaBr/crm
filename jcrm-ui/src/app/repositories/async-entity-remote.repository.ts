@@ -39,13 +39,17 @@ export class AsyncEntityRemoteRepository<T extends UniqEntity, R> extends Remote
     }
 
     public findByIds(ids: number[]): Promise<T[]> {
-        return this.securityService.postRequest<R[]>(this.buildFetchUrlByIds(), ids)
-            .then(value => value.body.map(resource => this.convertAsync(resource)))
-            .then(promises => Promise.all(promises))
-            .catch(resp => {
-                ErrorResponse.convertToErrorOrNull(resp, this.translateService);
-                return null;
-            });
+        if (ids.length < 1) {
+            return Promise.resolve([]);
+        } else {
+            return this.securityService.postRequest<R[]>(this.buildFetchUrlByIds(), ids)
+                .then(value => value.body.map(resource => this.convertAsync(resource)))
+                .then(promises => Promise.all(promises))
+                .catch(resp => {
+                    ErrorResponse.convertToErrorOrNull(resp, this.translateService);
+                    return null;
+                });
+        }
     }
 
     public findEntityPage(pageSize: number, offset: number): Promise<EntityPage<T>> {
