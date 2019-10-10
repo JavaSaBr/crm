@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {User} from '@app/entity/user';
 import {RegistrationService} from '@app/service/registration.service';
 import {ErrorResponse} from '@app/error/error-response';
@@ -10,10 +10,12 @@ import {ErrorResponse} from '@app/error/error-response';
 })
 export class SecurityService {
 
+    public static readonly MAX_REFRESHED_TOKEN_MESSAGE = 2001;
+
     private static readonly LOCAL_STORAGE_TOKEN = 'jcrm:auth:token';
     private static readonly HEADER_TOKEN = 'JCRM-Access-Token';
 
-    private readonly _authenticated: BehaviorSubject<boolean>;
+    private readonly _authenticated: Subject<boolean>;
     private readonly _userObservable: BehaviorSubject<User | null>;
 
     private _accessToken: string | null;
@@ -24,7 +26,7 @@ export class SecurityService {
     ) {
         this._accessToken = '';
         this._userObservable = new BehaviorSubject<User | null>(null);
-        this._authenticated = new BehaviorSubject<boolean>(false);
+        this._authenticated = new Subject<boolean>();
     }
 
     private internalAuthenticate(user: User | null, token: string | null) {
@@ -46,37 +48,30 @@ export class SecurityService {
             return Promise.resolve(false);
         }
 
-        return new Promise(resolve => {
+        return this.registrationService.authenticateByToken(token)
+            .then(resource => {
+                this.authenticate(resource.user, resource.token);
+                return true;
+            })
+            .catch(reason => {
 
-            this.registrationService.authenticateByToken(token)
-                .then(value => {
-                    this.authenticate(value.user, value.token);
-                    resolve(true);
-                })
-                .catch(reason => {
+                if (!ErrorResponse.isTokenExpired(reason)) {
+                    return false;
+                }
 
-                    let error = reason as ErrorResponse;
-
-                    if (error.errorCode != RegistrationService.ERROR_EXPIRED_TOKEN) {
+                return this.registrationService.refreshToken(token)
+                    .then(value => {
+                        this.authenticate(value.user, value.token);
+                        return true;
+                    })
+                    .catch(() => {
                         this.logout();
-                        resolve(false);
-                        return;
-                    }
-
-                    this.registrationService.refreshToken(token)
-                        .then(value => {
-                            this.authenticate(value.user, value.token);
-                            resolve(true);
-                        })
-                        .catch(() => {
-                            this.logout();
-                            resolve(false);
-                        });
-                });
-        });
+                        return false;
+                    });
+            });
     }
 
-    authenticate(user: User, token: string) {
+    authenticate(user: User, token: string): void {
         this.internalAuthenticate(user, token);
 
         if (token) {
@@ -108,10 +103,31 @@ export class SecurityService {
             headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
         }
 
-        return this.httpClient.post(url, body, {
+        const asyncRequest = this.httpClient.post(url, body, {
             headers: headers,
             observe: 'response'
         }).toPromise() as Promise<HttpResponse<T>>;
+
+        return asyncRequest
+            .then(value => value)
+            .catch(reason => this.handleExpiredToken<T>(reason, () => this.postRequest(url, body)));
+    }
+
+    private handleExpiredToken<T>(reason: any, callback: () => Promise<HttpResponse<T>>) {
+
+        if (!ErrorResponse.isTokenExpired(reason)) {
+            return Promise.reject(reason);
+        }
+
+        return this.registrationService.refreshToken(this._accessToken)
+            .then(value => {
+                this.authenticate(value.user, value.token);
+                return callback();
+            })
+            .catch(() => {
+                this.logout();
+                return Promise.reject(reason);
+            });
     }
 
     putRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
@@ -122,10 +138,14 @@ export class SecurityService {
             headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
         }
 
-        return this.httpClient.put(url, body, {
+        const asyncRequest = this.httpClient.put(url, body, {
             headers: headers,
             observe: 'response'
         }).toPromise() as Promise<HttpResponse<T>>;
+
+        return asyncRequest
+            .then(value => value)
+            .catch(reason => this.handleExpiredToken<T>(reason, () => this.putRequest(url, body)));
     }
 
     postUnauthorizedRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
@@ -143,10 +163,14 @@ export class SecurityService {
             headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
         }
 
-        return this.httpClient.get(url, {
+        const asyncRequest = this.httpClient.get(url, {
             headers: headers,
             observe: 'response'
         }).toPromise() as Promise<HttpResponse<T>>;
+
+        return asyncRequest
+            .then(value => value)
+            .catch(reason => this.handleExpiredToken<T>(reason, () => this.getRequest(url)));
     }
 
     getUnauthorizedRequest<T>(url: string, params?: HttpParams): Promise<HttpResponse<T>> {

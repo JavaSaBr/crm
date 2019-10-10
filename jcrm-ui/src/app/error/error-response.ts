@@ -4,6 +4,23 @@ import {Utils} from '@app/util/utils';
 
 export class ErrorResponse {
 
+    private static readonly ERROR_EXPIRED_TOKEN = 2000;
+
+    public static isTokenExpired(reason: any): boolean {
+
+        if (reason instanceof ErrorResponse) {
+            return reason.errorCode == ErrorResponse.ERROR_EXPIRED_TOKEN;
+        } else if (!(reason instanceof HttpErrorResponse)) {
+            return false;
+        }
+
+        if (reason.status != 401) {
+            return false;
+        } else {
+            return (reason.error as ErrorResponse).errorCode == ErrorResponse.ERROR_EXPIRED_TOKEN;
+        }
+    }
+
     public static convertToErrorOrNull(resp: HttpErrorResponse, translateService: TranslateService): ErrorResponse | null {
 
         if (resp.ok) {

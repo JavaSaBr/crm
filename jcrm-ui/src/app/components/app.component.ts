@@ -1,6 +1,8 @@
 import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {SecurityService} from '@app/service/security.service';
+import {Router} from '@angular/router';
+import {NoAuthHomeComponent} from '@app/component/no-auth-home/no-auth-home.component';
 
 @Component({
     selector: 'app-root',
@@ -13,7 +15,8 @@ export class AppComponent {
 
     constructor(
         private readonly securityService: SecurityService,
-        private readonly translateService: TranslateService
+        private readonly translateService: TranslateService,
+        private readonly router: Router,
     ) {
         this.authenticated = false;
 
@@ -24,6 +27,11 @@ export class AppComponent {
         translateService.use(browserLang.match(/en|ru/) ? browserLang : 'en');
 
         securityService.authenticated
-            .subscribe(value => this.authenticated = value);
+            .subscribe(authenticated => {
+                this.authenticated = authenticated;
+                if (!authenticated) {
+                    this.router.navigate(['/' + NoAuthHomeComponent.COMPONENT_PATH]);
+                }
+            });
     }
 }

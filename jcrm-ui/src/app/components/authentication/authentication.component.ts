@@ -4,11 +4,9 @@ import {environment} from '@app/env/environment';
 import {TranslateService} from '@ngx-translate/core';
 import {RegistrationService} from '@app/service/registration.service';
 import {ErrorService} from '@app/service/error.service';
-import {ErrorResponse} from '@app/error/error-response';
 import {AuthenticationInResource} from '@app/resource/authentication-in-resource';
 import {Router} from '@angular/router';
 import {SecurityService} from '@app/service/security.service';
-import {UiUtils} from '@app/util/ui-utils';
 
 @Component({
     selector: 'app-authentication',
@@ -50,20 +48,19 @@ export class AuthenticationComponent {
         this.password = this.authFormGroup.controls['password'] as FormControl;
     }
 
-    authenticate() {
+    authenticate(): void {
         this.disabled = true;
         this.registrationService.authenticate(this.login.value as string, this.password.value as string)
             .then(value => this.finishAuthentication(value))
             .catch(reason => this.handleError(reason));
     }
 
-    private handleError(reason: any) {
-        let error = reason as ErrorResponse;
-        this.errorService.showError(error.errorMessage);
+    private handleError(reason: any): void {
+        this.errorService.showError(reason);
         this.disabled = false;
     }
 
-    private finishAuthentication(value: AuthenticationInResource) {
+    private finishAuthentication(value: AuthenticationInResource): void {
         this.securityService.authenticate(value.user, value.token);
         this.disabled = false;
         this.router.navigate(['/']);

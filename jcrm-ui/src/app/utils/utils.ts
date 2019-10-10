@@ -59,16 +59,20 @@ export class Utils {
     private static toStringField(level: number, name: string, object: any): string | null {
 
         if (!object) {
-            return null;
+            return `${'  '.repeat(level)}${name != null ? name + ':' : ''}"undefined",\n`;
         } else if (typeof object === 'string') {
             return `${'  '.repeat(level)}${name != null ? name + ':' : ''}"${object}",\n`;
         } else if (typeof object === 'number') {
             return `${'  '.repeat(level)}${name != null ? name + ':' : ''}${object},\n`;
         } else if (object instanceof Array) {
             return this.toStringArrayField(level, name, object);
+        } else if (typeof object === 'boolean') {
+            return `${'  '.repeat(level)}${name != null ? name + ':' : ''}${object},\n`;
+        } else if (typeof object === 'function') {
+            return `${'  '.repeat(level)}${name != null ? name + ':' : ''}"function",\n`;
         }
 
-        let result: string = `${'  '.repeat(level)}{\n`;
+        let result: string = `${'  '.repeat(level)}${name != null ? name + ':' : ''}{\n`;
 
         for (const propName in object) {
 

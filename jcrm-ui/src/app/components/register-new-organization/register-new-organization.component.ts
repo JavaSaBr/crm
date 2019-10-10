@@ -168,7 +168,7 @@ export class RegisterNewOrganizationComponent implements OnInit {
 
         const activationCode = controls['activationCode'].value as string;
 
-        let result = this.registrationService.register(
+        this.registrationService.register(
             orgName,
             country,
             firstName,
@@ -178,15 +178,14 @@ export class RegisterNewOrganizationComponent implements OnInit {
             password,
             phoneNumber,
             subscribe
-        );
-
-        result.then(value => this.finishRegistration(value))
+        )
+            .then(resource => this.finishRegistration(resource))
             .catch(reason => this.handleError(reason));
     }
 
     private handleError(reason: any) {
         let error = reason as ErrorResponse;
-        this.errorService.showError(error.errorMessage);
+        this.errorService.showMessage(error.errorMessage);
         this.disabled = false;
     }
 
@@ -203,12 +202,8 @@ export class RegisterNewOrganizationComponent implements OnInit {
         const email = this.email.value as string;
 
         this.registrationService.confirmEmail(email)
-            .then(value => {
-                if (value != null) {
-                    this.errorService.showError(value.errorMessage);
-                }
-                this.disabled = false;
-            });
+            .then(() => this.disabled = false)
+            .catch(reason => this.errorService.showErrorResponse(reason))
     }
 
     getOrgNameErrorMessage() {

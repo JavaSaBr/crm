@@ -61,7 +61,7 @@ export class UserProfileComponent {
 
     private handleError(reason: any) {
         let error = reason as ErrorResponse;
-        this.errorService.showError(error.errorMessage);
+        this.errorService.showMessage(error.errorMessage);
         this.disabled = false;
     }
 

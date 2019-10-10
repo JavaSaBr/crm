@@ -8,16 +8,15 @@ import {OrganizationRegisterOutResource} from '../resources/organization-registe
 import {AuthenticationInResource} from '../resources/authentication-in-resource';
 import {AuthenticationOutResource} from '../resources/authentication-out-resource';
 import {HttpClient} from '@angular/common/http';
+import {ErrorService} from '@app/service/error.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RegistrationService {
 
-    static readonly ERROR_EXPIRED_TOKEN = 1011;
-
     constructor(
-        private readonly translateService: TranslateService,
+        private readonly errorService: ErrorService,
         private readonly httpClient: HttpClient,
     ) {
     }
@@ -34,7 +33,8 @@ export class RegistrationService {
         subscribe: boolean
     ): Promise<AuthenticationInResource> {
 
-        let body = new OrganizationRegisterOutResource(
+        const url = `${environment.registrationUrl}/register/organization`;
+        const body = new OrganizationRegisterOutResource(
             orgName,
             email,
             activationCode,
@@ -46,61 +46,55 @@ export class RegistrationService {
             country.id
         );
 
-        return new Promise<AuthenticationInResource>((resolve, reject) => {
-            const url = environment.registrationUrl + '/register/organization';
-            this.httpClient.post<AuthenticationInResource>(url, body, {observe: 'response'})
-                .toPromise()
-                .then(resp => resolve(resp.body))
-                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
-        });
+        return this.httpClient.post<AuthenticationInResource>(url, body, {observe: 'response'})
+            .toPromise()
+            .then(response => AuthenticationInResource.of(response.body))
+            .catch(reason => this.errorService.convertError(reason));
     }
 
-    authenticate(
-        login: string,
-        password: string
-    ): Promise<AuthenticationInResource> {
+    authenticate(login: string, password: string): Promise<AuthenticationInResource> {
 
-        let body = new AuthenticationOutResource(login, password);
+        const url = `${environment.registrationUrl}/authenticate`;
+        const body = new AuthenticationOutResource(login, password);
 
-        return new Promise<AuthenticationInResource>((resolve, reject) => {
-            const url = environment.registrationUrl + '/authenticate';
-            this.httpClient.post<AuthenticationInResource>(url, body, {observe: 'response'})
-                .toPromise()
-                .then(resp => resolve(resp.body))
-                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
-        });
+        return this.httpClient.post<AuthenticationInResource>(url, body, {observe: 'response'})
+            .toPromise()
+            .then(response => AuthenticationInResource.of(response.body))
+            .catch(reason => this.errorService.convertError(reason));
     }
 
     authenticateByToken(token: string): Promise<AuthenticationInResource> {
-        return new Promise<AuthenticationInResource>((resolve, reject) => {
-            const url = environment.registrationUrl + '/authenticate/' + token;
-            this.httpClient.get<AuthenticationInResource>(url, {observe: 'response'})
-                .toPromise()
-                .then(resp => resolve(resp.body))
-                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
-        });
+
+        const url = `${environment.registrationUrl}/authenticate/${token}`;
+
+        return this.httpClient.get<AuthenticationInResource>(url, {observe: 'response'})
+            .toPromise()
+            .then(response => AuthenticationInResource.of(response.body))
+            .catch(reason => this.errorService.convertError(reason));
     }
 
     refreshToken(token: string): Promise<AuthenticationInResource> {
-        return new Promise<AuthenticationInResource>((resolve, reject) => {
-            const url = environment.registrationUrl + '/token/refresh/' + token;
-            this.httpClient.get<AuthenticationInResource>(url, {observe: 'response'})
-                .toPromise()
-                .then(resp => resolve(resp.body))
-                .catch(resp => reject(ErrorResponse.convertToErrorOrNull(resp, this.translateService)));
-        });
+
+        const url = `${environment.registrationUrl}/token/refresh/${token}`;
+
+        return this.httpClient.get<AuthenticationInResource>(url, {observe: 'response'})
+            .toPromise()
+            .then(response => AuthenticationInResource.of(response.body))
+            .catch(reason => this.errorService.convertError(reason));
     }
 
-    confirmEmail(email: string): Promise<ErrorResponse | null> {
-        const url = environment.registrationUrl + '/email-confirmation/' + email;
+    confirmEmail(email: string): Promise<void> {
+
+        const url = `${environment.registrationUrl}/email-confirmation/${email}`;
+
         return this.httpClient.get(url, {observe: 'response'})
             .toPromise()
             .then(() => null)
-            .catch(resp => ErrorResponse.convertToErrorOrNull(resp, this.translateService));
+            .catch(reason => this.errorService.convertError(reason));
     }
 
     orgExistByName(orgName: string): Promise<boolean> {
-        const url = environment.registrationUrl + '/exist/organization/name/' + orgName;
+        const url = `${environment.registrationUrl}/exist/organization/name/${orgName}`;
         return this.httpClient.get<{}>(url, {observe: 'response'})
             .toPromise()
             .then(value => value.ok)
@@ -108,7 +102,7 @@ export class RegistrationService {
     }
 
     userExistByName(name: string): Promise<boolean> {
-        const url = environment.registrationUrl + '/exist/user/name/' + name;
+        const url = `${environment.registrationUrl}/exist/user/name/${name}`;
         return this.httpClient.get<{}>(url, {observe: 'response'})
             .toPromise()
             .then(value => value.ok)
