@@ -23,10 +23,11 @@ export class UserRepository extends RemoteRepository<User, User> {
 
     public searchByName(name: string): Promise<User[]> {
         return this.securityService.getRequest<User[]>(`${environment.registrationUrl}/search/user/name/${name}`)
-            .then(value => value.body.map(user => this.convert(user)));
+            .then(value => value.body.map(user => this.convert(user)))
+            .catch(reason => this.errorService.convertError(reason));
     }
 
     protected convert(user: User): User {
-        return new User(user);
+        return User.copy(user);
     }
 }

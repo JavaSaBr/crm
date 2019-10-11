@@ -16,6 +16,7 @@ import {UserRepository} from '@app/repository/user/user.repository';
 import {Utils} from '@app/util/utils';
 import {EntityPage} from '@app/entity/entity-page';
 import {DatePipe} from '@angular/common';
+import {ErrorService} from '@app/service/error.service';
 
 @Component({
     selector: 'app-contacts',
@@ -62,11 +63,12 @@ export class ContactsComponent extends BaseWorkspaceComponent {
     @ViewChild(MatSort, {static: false}) sort: MatSort;
 
     constructor(
-        protected readonly workspaceService: WorkspaceService,
         private readonly contactService: ContactRepository,
         private readonly userRepository: UserRepository,
         private readonly router: Router,
-        private readonly datepipe: DatePipe
+        private readonly datePipe: DatePipe,
+        private readonly errorService: ErrorService,
+        workspaceService: WorkspaceService,
     ) {
         super(workspaceService);
     }
@@ -87,9 +89,10 @@ export class ContactsComponent extends BaseWorkspaceComponent {
                 switchMap(() => this.startLoadingContacts()),
                 switchMap(data => this.loadAssigners(data)),
                 map(data => this.finishLoadingContacts(data)),
-                catchError(() => {
+                catchError(reason => {
                     this.isLoadingResults = false;
                     this.isRateLimitReached = true;
+                    this.errorService.showError(reason);
                     return Promise.resolve([]);
                 })
             ).subscribe(data => this.dataSource = data);
@@ -97,10 +100,9 @@ export class ContactsComponent extends BaseWorkspaceComponent {
 
     private startLoadingContacts(): Promise<EntityPage<Contact>> {
         this.isLoadingResults = true;
-        return this.contactService.findEntityPage(
-            this.paginator.pageSize,
-            this.paginator.pageIndex * this.paginator.pageSize
-        );
+        const pageSize = this.paginator.pageSize;
+        const offset = this.paginator.pageIndex * pageSize;
+        return this.contactService.findEntityPage(pageSize, offset);
     }
 
     private loadAssigners(entityPage: EntityPage<Contact>): Promise<EntityPage<Contact>> {
@@ -167,55 +169,21 @@ export class ContactsComponent extends BaseWorkspaceComponent {
         const createdDate = created.getDate();
 
         if (currentDate === createdDate) {
-            return `Today ${this.datepipe.transform(created, 'HH:mm')}`;
+            return `Today ${this.datePipe.transform(created, 'HH:mm')}`;
         } else {
-            return `${this.datepipe.transform(created, 'yyyy/mm/dd HH:mm')}`;
+            return `${this.datePipe.transform(created, 'yyyy/mm/dd HH:mm')}`;
         }
     }
 
     buildAssignerName(contact: Contact): string {
 
-        const names: string[] = [];
         const assigner = this.assigners.get(contact.assigner);
 
         if (assigner == null) {
             return 'No assigner';
-        }
-
-        if (assigner.firstName) {
-            names.push(assigner.firstName);
-        }
-
-        if (assigner.secondName) {
-            names.push(assigner.secondName);
-        }
-
-        const resultName = names.length > 0 && names.join(' ');
-
-        if (resultName.length > 1) {
-            return resultName;
         } else {
-            return assigner.email;
+            return assigner.namePresentation;
         }
-    }
-
-    buildFullName(contact: Contact): string {
-
-        const names: string[] = [];
-
-        if (contact.firstName) {
-            names.push(contact.firstName);
-        }
-
-        if (contact.secondName) {
-            names.push(contact.secondName);
-        }
-
-        if (contact.thirdName) {
-            names.push(contact.thirdName);
-        }
-
-        return names.join(' ');
     }
 
     buildPhoneNumbers(contact: Contact): string {

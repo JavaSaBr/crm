@@ -6,28 +6,47 @@ import {ContactMessenger} from '@app/entity/contact-messenger';
 
 export class Contact extends UniqEntity {
 
-    public static create(
-        contact?: Contact | null
-    ): Contact {
-
+    public static create(): Contact {
         return new Contact(
-            contact ? contact.id : 0,
-            contact ? contact.assigner : null,
-            contact ? contact.curators : null,
-            contact ? contact.firstName : null,
-            contact ? contact.secondName : null,
-            contact ? contact.thirdName : null,
-            contact ? contact.birthday : null,
-            contact ? contact.created : null,
-            contact ? contact.modified : null,
-            contact ? contact.phoneNumbers : null,
-            contact ? contact.emails : null,
-            contact ? contact.sites : null,
-            contact ? contact.messengers : null,
-            contact ? contact.company : null,
-            contact ? contact.version : null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
         );
     }
+
+    public static copy(another?: Contact | null): Contact {
+        return new Contact(
+            another ? another.id : 0,
+            another ? another.assigner : null,
+            another ? another.curators : null,
+            another ? another.firstName : null,
+            another ? another.secondName : null,
+            another ? another.thirdName : null,
+            another ? another.birthday : null,
+            another ? another.created : null,
+            another ? another.modified : null,
+            another ? another.phoneNumbers : null,
+            another ? another.emails : null,
+            another ? another.sites : null,
+            another ? another.messengers : null,
+            another ? another.company : null,
+            another ? another.version : null,
+        );
+    }
+
+    private _namePresentation: string = null;
 
     constructor(
         id: number | null,
@@ -47,5 +66,33 @@ export class Contact extends UniqEntity {
         public version: number | null
     ) {
         super(id);
+    }
+
+    get namePresentation(): string {
+
+        if (this._namePresentation == null) {
+            this._namePresentation = this.buildNamePresentation();
+        }
+
+        return this._namePresentation;
+    }
+
+    private buildNamePresentation(): string {
+
+        const names: string[] = [];
+
+        if (this.firstName) {
+            names.push(this.firstName);
+        }
+
+        if (this.secondName) {
+            names.push(this.secondName);
+        }
+
+        if (this.thirdName) {
+            names.push(this.thirdName);
+        }
+
+        return names.join(' ');
     }
 }

@@ -11,13 +11,11 @@ import {OtherUserNameValidator} from '@app/util/validator/other-user-name-valida
 import {UserValidator} from '@app/util/validator/user-validator';
 import {ErrorService} from '@app/service/error.service';
 import {TranslateService} from '@ngx-translate/core';
-import {ErrorResponse} from '@app/error/error-response';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {AuthenticationInResource} from '@app/resource/authentication-in-resource';
 import {Router} from '@angular/router';
 import {environment} from '@app/env/environment';
 import {SecurityService} from '@app/service/security.service';
-import {UiUtils} from '@app/util/ui-utils';
 import {MatHorizontalStepper} from '@angular/material';
 
 @Component({
@@ -146,7 +144,7 @@ export class RegisterNewOrganizationComponent implements OnInit {
         });
     }
 
-    activateAndClose() {
+    activateAndClose(): void {
         this.disabled = true;
 
         const orgName = this.orgName.value as string;
@@ -180,45 +178,39 @@ export class RegisterNewOrganizationComponent implements OnInit {
             subscribe
         )
             .then(resource => this.finishRegistration(resource))
-            .catch(reason => this.handleError(reason));
+            .catch(reason => this.errorService.showError(reason))
+            .finally(() => this.disabled = false);
     }
 
-    private handleError(reason: any) {
-        let error = reason as ErrorResponse;
-        this.errorService.showMessage(error.errorMessage);
-        this.disabled = false;
-    }
-
-    private finishRegistration(value: AuthenticationInResource) {
+    private finishRegistration(value: AuthenticationInResource): void {
         this.securityService.authenticate(value.user, value.token);
-        this.disabled = false;
         this.router.navigate(['/']);
     }
 
-    sendEmailConfirmation() {
+    sendEmailConfirmation(): void {
         this.disabled = true;
         this.canEditSteps = false;
 
         const email = this.email.value as string;
 
         this.registrationService.confirmEmail(email)
-            .then(() => this.disabled = false)
-            .catch(reason => this.errorService.showErrorResponse(reason))
+            .catch(reason => this.errorService.showError(reason))
+            .finally(() => this.disabled = false);
     }
 
-    getOrgNameErrorMessage() {
+    getOrgNameErrorMessage(): string {
         return OrganizationValidator.getNameErrorDescription(this.orgName, this.translateService);
     }
 
-    getCountryErrorMessage() {
+    getCountryErrorMessage(): string {
         return CountryValidator.getErrorDescription(this.country, this.translateService);
     }
 
-    getEmailErrorMessage() {
+    getEmailErrorMessage(): string {
         return UserValidator.getEmailErrorDescription(this.email, this.translateService);
     }
 
-    getPhoneNumberErrorMessage() {
+    getPhoneNumberErrorMessage(): string {
         return PhoneNumberValidator.getErrorDescription(this.phoneNumber, this.translateService);
     }
 }

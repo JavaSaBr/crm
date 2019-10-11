@@ -27,7 +27,7 @@ export class WorkspaceService {
         this._currentTitle.next(title);
     }
 
-    switchWorkspaceMode(mode: WorkspaceMode) {
+    switchWorkspaceMode(mode: WorkspaceMode): void {
         this._workspaceMode.next(mode);
     }
 

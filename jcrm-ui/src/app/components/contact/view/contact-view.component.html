@@ -45,12 +45,12 @@
           <button *ngIf="!editContactInfo" class="contact-info-button" mat-raised-button color="primary">
             {{ 'CONTACT.VIEW.ACTIONS.EDIT' | translate }}
           </button>
-          <button *ngIf="editContactInfo && contact != null && contact.id"
+          <button *ngIf="editContactInfo && contact && contact.id"
                   [disabled]="disabled || !contactInfoFormGroup.valid || !hasChangesInContactInfo"
                   class="contact-info-button" mat-raised-button color="primary" (click)="updateContact()">
             {{ 'CONTACT.VIEW.ACTIONS.SAVE' | translate }}
           </button>
-          <button *ngIf="editContactInfo && contact != null && !contact.id"
+          <button *ngIf="editContactInfo && contact && !contact.id"
                   [disabled]="disabled || !contactInfoFormGroup.valid"
                   class="contact-info-button" mat-raised-button color="primary" (click)="createContact()">
             {{ 'CONTACT.VIEW.ACTIONS.CREATE' | translate }}

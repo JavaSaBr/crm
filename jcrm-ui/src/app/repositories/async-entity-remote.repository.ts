@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core';
 import {UniqEntity} from '@app/entity/uniq-entity';
 import {SecurityService} from '@app/service/security.service';
-import {ErrorResponse} from '@app/error/error-response';
-import {TranslateService} from '@ngx-translate/core';
 import {RemoteRepository} from '@app/repository/remote.repository';
 import {DataPageResource} from '@app/resource/data-page-resource';
 import {EntityPage} from '@app/entity/entity-page';
+import {ErrorService} from '@app/service/error.service';
 
 @Injectable({
     providedIn: 'root'
@@ -14,28 +13,22 @@ export class AsyncEntityRemoteRepository<T extends UniqEntity, R> extends Remote
 
     protected constructor(
         securityService: SecurityService,
-        translateService: TranslateService,
+        errorService: ErrorService,
     ) {
-        super(securityService, translateService);
+        super(securityService, errorService);
     }
 
     public findAll(): Promise<T[]> {
         return this.securityService.getRequest<R[]>(this.buildFetchUrl())
             .then(value => value.body.map(resource => this.convertAsync(resource)))
             .then(promises => Promise.all(promises))
-            .catch(resp => {
-                ErrorResponse.convertToErrorOrNull(resp, this.translateService);
-                return [];
-            });
+            .catch(reason => this.errorService.convertError(reason));
     }
 
     public findById(id: number): Promise<T | null> {
         return this.securityService.getRequest<R>(this.buildFetchUrlById(id))
             .then(value => this.convertAsync(value.body))
-            .catch(resp => {
-                ErrorResponse.convertToErrorOrNull(resp, this.translateService);
-                return null;
-            });
+            .catch(reason => this.errorService.convertError(reason));
     }
 
     public findByIds(ids: number[]): Promise<T[]> {
@@ -45,10 +38,7 @@ export class AsyncEntityRemoteRepository<T extends UniqEntity, R> extends Remote
             return this.securityService.postRequest<R[]>(this.buildFetchUrlByIds(), ids)
                 .then(value => value.body.map(resource => this.convertAsync(resource)))
                 .then(promises => Promise.all(promises))
-                .catch(resp => {
-                    ErrorResponse.convertToErrorOrNull(resp, this.translateService);
-                    return null;
-                });
+                .catch(reason => this.errorService.convertError(reason));
         }
     }
 
@@ -61,10 +51,7 @@ export class AsyncEntityRemoteRepository<T extends UniqEntity, R> extends Remote
                         return new EntityPage(entities, resource.totalSize);
                     })
             })
-            .catch(resp => {
-                ErrorResponse.convertToErrorOrNull(resp, this.translateService);
-                return null;
-            });
+            .catch(reason => this.errorService.convertError(reason));
     }
 
     protected convertAsync(resource: R): Promise<T> {

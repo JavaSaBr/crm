@@ -96,6 +96,35 @@ export class SecurityService {
     }
 
     postRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
+        return this.httpClient.post<T>(url, body, {headers: this.prepareHeaders(), observe: 'response'})
+            .toPromise()
+            .then(value => value)
+            .catch(reason => this.handleExpiredToken<T>(reason, () => this.postRequest(url, body)));
+    }
+
+    putRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
+        return this.httpClient.put<T>(url, body, {headers: this.prepareHeaders(), observe: 'response'})
+            .toPromise()
+            .then(value => value)
+            .catch(reason => this.handleExpiredToken<T>(reason, () => this.putRequest(url, body)));
+    }
+
+    postUnauthorizedRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
+        return this.httpClient.post<T>(url, body, {observe: 'response'}).toPromise();
+    }
+
+    getRequest<T>(url: string): Promise<HttpResponse<T>> {
+        return this.httpClient.get<T>(url, {headers: this.prepareHeaders(), observe: 'response'})
+            .toPromise()
+            .then(value => value)
+            .catch(reason => this.handleExpiredToken<T>(reason, () => this.getRequest(url)));
+    }
+
+    getUnauthorizedRequest<T>(url: string, params?: HttpParams): Promise<HttpResponse<T>> {
+        return this.httpClient.get<T>(url, {params: params, observe: 'response'}).toPromise();
+    }
+
+    private prepareHeaders(): HttpHeaders {
 
         let headers = new HttpHeaders();
 
@@ -103,14 +132,7 @@ export class SecurityService {
             headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
         }
 
-        const asyncRequest = this.httpClient.post(url, body, {
-            headers: headers,
-            observe: 'response'
-        }).toPromise() as Promise<HttpResponse<T>>;
-
-        return asyncRequest
-            .then(value => value)
-            .catch(reason => this.handleExpiredToken<T>(reason, () => this.postRequest(url, body)));
+        return headers;
     }
 
     private handleExpiredToken<T>(reason: any, callback: () => Promise<HttpResponse<T>>) {
@@ -128,56 +150,5 @@ export class SecurityService {
                 this.logout();
                 return Promise.reject(reason);
             });
-    }
-
-    putRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
-
-        let headers = new HttpHeaders();
-
-        if (this._accessToken) {
-            headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
-        }
-
-        const asyncRequest = this.httpClient.put(url, body, {
-            headers: headers,
-            observe: 'response'
-        }).toPromise() as Promise<HttpResponse<T>>;
-
-        return asyncRequest
-            .then(value => value)
-            .catch(reason => this.handleExpiredToken<T>(reason, () => this.putRequest(url, body)));
-    }
-
-    postUnauthorizedRequest<T>(url: string, body: any | null): Promise<HttpResponse<T>> {
-
-        return this.httpClient.post(url, body, {
-            observe: 'response'
-        }).toPromise() as Promise<HttpResponse<T>>;
-    }
-
-    getRequest<T>(url: string): Promise<HttpResponse<T>> {
-
-        let headers = new HttpHeaders();
-
-        if (this._accessToken) {
-            headers = headers.append(SecurityService.HEADER_TOKEN, this._accessToken);
-        }
-
-        const asyncRequest = this.httpClient.get(url, {
-            headers: headers,
-            observe: 'response'
-        }).toPromise() as Promise<HttpResponse<T>>;
-
-        return asyncRequest
-            .then(value => value)
-            .catch(reason => this.handleExpiredToken<T>(reason, () => this.getRequest(url)));
-    }
-
-    getUnauthorizedRequest<T>(url: string, params?: HttpParams): Promise<HttpResponse<T>> {
-
-        return this.httpClient.get(url, {
-            params: params,
-            observe: 'response'
-        }).toPromise() as Promise<HttpResponse<T>>;
     }
 }

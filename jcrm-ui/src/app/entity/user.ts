@@ -2,53 +2,53 @@ import {UniqEntity} from '@app/entity/uniq-entity';
 
 export class User extends UniqEntity {
 
-    email: string | null;
-    firstName: string | null;
-    secondName: string | null;
-    phoneNumber: string | null;
+    public static create(): User {
+        return new User(null, null, null, null, null);
+    }
+
+    public static copy(user?: User): User {
+        return new User(
+            user ? user.id : null,
+            user ? user.email : null,
+            user ? user.firstName : null,
+            user ? user.secondName : null,
+            user ? user.phoneNumber : null,
+        );
+    }
 
     private _namePresentation: string = null;
 
-    constructor(user?: User) {
-        super(user ? user.id : 0);
-        this.email = user ? user.email : null;
-        this.firstName = user ? user.firstName : null;
-        this.secondName = user ? user.secondName : null;
-        this.phoneNumber = user ? user.phoneNumber : null;
+    constructor(
+        id: number | null,
+        public email: string | null,
+        public firstName: string | null,
+        public secondName: string | null,
+        public phoneNumber: string | null,
+    ) {
+        super(id);
     }
 
     get namePresentation(): string {
 
         if (this._namePresentation == null) {
-            this._namePresentation = this.prepareNamePresentation();
+            this._namePresentation = this.buildNamePresentation();
         }
 
         return this._namePresentation;
     }
 
-    private prepareNamePresentation(): string {
+    private buildNamePresentation(): string {
 
-        if (this.firstName || this.secondName) {
+        const names: string[] = [];
 
-            let result = null;
-
-            if (this.firstName) {
-                result = this.firstName;
-            }
-
-            if (this.secondName) {
-                if (result != null) {
-                    result += ' ' + this.secondName;
-                } else {
-                    result = this.secondName;
-                }
-            }
-
-            result += ` (${this.email})`;
-
-            return result;
+        if (this.firstName) {
+            names.push(this.firstName);
         }
 
-        return this.email;
+        if (this.secondName) {
+            names.push(this.secondName);
+        }
+
+        return names.length > 0 ? names.join(' ') : this.email;
     }
 }

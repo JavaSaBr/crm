@@ -84,10 +84,8 @@ export class RegistrationService {
     }
 
     confirmEmail(email: string): Promise<void> {
-
         const url = `${environment.registrationUrl}/email-confirmation/${email}`;
-
-        return this.httpClient.get(url, {observe: 'response'})
+        return this.httpClient.get<{}>(url, {observe: 'response'})
             .toPromise()
             .then(() => null)
             .catch(reason => this.errorService.convertError(reason));

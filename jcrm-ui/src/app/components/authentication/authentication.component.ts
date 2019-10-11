@@ -23,12 +23,12 @@ export class AuthenticationComponent {
     disabled: boolean;
 
     constructor(
-        formBuilder: FormBuilder,
         private readonly translateService: TranslateService,
         private readonly registrationService: RegistrationService,
         private readonly errorService: ErrorService,
         private readonly securityService: SecurityService,
-        private readonly router: Router
+        private readonly router: Router,
+        formBuilder: FormBuilder
     ) {
         this.disabled = false;
         this.authFormGroup = formBuilder.group({
@@ -52,17 +52,12 @@ export class AuthenticationComponent {
         this.disabled = true;
         this.registrationService.authenticate(this.login.value as string, this.password.value as string)
             .then(value => this.finishAuthentication(value))
-            .catch(reason => this.handleError(reason));
-    }
-
-    private handleError(reason: any): void {
-        this.errorService.showError(reason);
-        this.disabled = false;
+            .catch(reason => this.errorService.showError(reason))
+            .finally(() => this.disabled = false);
     }
 
     private finishAuthentication(value: AuthenticationInResource): void {
         this.securityService.authenticate(value.user, value.token);
-        this.disabled = false;
         this.router.navigate(['/']);
     }
 

@@ -1,10 +1,8 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@app/env/environment';
-import {ErrorResponse} from '@app/error/error-response';
 import {Contact} from '@app/entity/contact';
 import {ContactResource} from '@app/resource/contact-resource';
 import {SecurityService} from '@app/service/security.service';
-import {TranslateService} from '@ngx-translate/core';
 import {DatePipe} from '@angular/common';
 import {ContactPhoneNumberResource} from '@app/resource/contact-phone-number-resource';
 import {ContactEmailResource} from '@app/resource/contact-email-resource';
@@ -17,39 +15,40 @@ import {ContactEmail, EmailType} from '@app/entity/contact-email';
 import {AsyncEntityRemoteRepository} from '@app/repository/async-entity-remote.repository';
 import {PhoneNumber} from '@app/entity/phone-number';
 import {ContactPhoneNumber, PhoneNumberType} from '@app/entity/contact-phone-number';
+import {ErrorService} from '@app/service/error.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ContactRepository extends AsyncEntityRemoteRepository<Contact, ContactResource> {
 
-    protected constructor(
+    constructor(
         private readonly countryRepository: CountryRepository,
         private readonly datePipe: DatePipe,
         securityService: SecurityService,
-        translateService: TranslateService,
+        errorService: ErrorService
     ) {
-        super(securityService, translateService)
+        super(securityService, errorService)
     }
 
-    create(contact: Contact): Promise<ErrorResponse | Contact> {
+    create(contact: Contact): Promise<Contact> {
 
         const body = this.convertToResource(contact);
         const url = `${environment.clientUrl}/contact`;
 
         return this.securityService.postRequest<ContactResource>(url, body)
-            .then(resp => this.convertAsync(resp.body))
-            .catch(error => ErrorResponse.convertToErrorOrNull(error, this.translateService));
+            .then(response => this.convertAsync(response.body))
+            .catch(reason => this.errorService.convertError(reason));
     }
 
-    update(contact: Contact): Promise<ErrorResponse | Contact> {
+    update(contact: Contact): Promise<Contact> {
 
         const body = this.convertToResource(contact);
         const url = `${environment.clientUrl}/contact`;
 
         return this.securityService.putRequest<ContactResource>(url, body)
-            .then(resp => this.convertAsync(resp.body))
-            .catch(error => ErrorResponse.convertToErrorOrNull(error, this.translateService));
+            .then(response => this.convertAsync(response.body))
+            .catch(reason => this.errorService.convertError(reason));
     }
 
     protected buildFetchUrl(): string {

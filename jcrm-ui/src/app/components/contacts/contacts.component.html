@@ -39,7 +39,7 @@
       </ng-container>
       <ng-container matColumnDef="full_name">
         <th mat-header-cell *matHeaderCellDef>Full name</th>
-        <td mat-cell *matCellDef="let element">{{buildFullName(element)}}</td>
+        <td mat-cell *matCellDef="let element">{{element.namePresentation}}</td>
       </ng-container>
       <ng-container matColumnDef="phone_numbers">
         <th mat-header-cell *matHeaderCellDef>Phone numbers</th>

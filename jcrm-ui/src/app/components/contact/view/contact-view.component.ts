@@ -7,7 +7,6 @@ import {Utils} from '@app/util/utils';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {User} from '@app/entity/user';
 import {ErrorService} from '@app/service/error.service';
-import {ErrorResponse} from '@app/error/error-response';
 import {environment} from '@app/env/environment';
 
 @Component({
@@ -96,7 +95,7 @@ export class ContactViewComponent implements AfterViewInit {
 
     reload(contact: Contact | null): void {
 
-        this.contact = Contact.create(contact);
+        this.contact = Contact.copy(contact);
         this.assigner.setValue(null);
         this.curators.setValue([]);
         this.firstName.setValue(Utils.emptyIfNull(this.contact.firstName));
@@ -157,27 +156,17 @@ export class ContactViewComponent implements AfterViewInit {
     createContact(): void {
         this.disabled = true;
         this.contactRepository.create(this.syncContactWithForm(this.contact))
-            .then(result => {
-                if (result instanceof ErrorResponse) {
-                    this.errorService.showErrorResponse(result);
-                } else if (result instanceof Contact) {
-                    this.reload(result);
-                }
-                this.disabled = false;
-            });
+            .then(result => this.reload(result))
+            .catch(reason => this.errorService.showError(reason))
+            .finally(() => this.disabled = false);
     }
 
     updateContact(): void {
         this.disabled = true;
         this.contactRepository.update(this.syncContactWithForm(this.contact))
-            .then(result => {
-                if (result instanceof ErrorResponse) {
-                    this.errorService.showErrorResponse(result);
-                } else if (result instanceof Contact) {
-                    this.reload(result);
-                }
-                this.disabled = false;
-            });
+            .then(result => this.reload(result))
+            .catch(reason => this.errorService.showError(reason))
+            .finally(() => this.disabled = false);
     }
 
     syncContactWithForm(contact: Contact): Contact {

@@ -53,22 +53,6 @@ export class UserProfileComponent {
     }
 
     authenticate() {
-        this.disabled = true;
-        this.registrationService.authenticate(this.login.value as string, this.password.value as string)
-            .then(value => this.finishAuthentication(value))
-            .catch(reason => this.handleError(reason));
-    }
-
-    private handleError(reason: any) {
-        let error = reason as ErrorResponse;
-        this.errorService.showMessage(error.errorMessage);
-        this.disabled = false;
-    }
-
-    private finishAuthentication(value: AuthenticationInResource) {
-        this.securityService.authenticate(value.user, value.token);
-        this.disabled = false;
-        this.router.navigate(['/']);
     }
 
     getPasswordErrorMessage(): string | null {

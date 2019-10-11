@@ -2,24 +2,29 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Repository} from '@app/repository/repository';
 import {UniqEntity} from '@app/entity/uniq-entity';
+import {ErrorService} from '@app/service/error.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CachedNotAuthorizedRepository<T extends UniqEntity> implements Repository<T> {
 
-    protected cache: T[] | null;
+    protected cachedMap: Map<number, T> | null;
+    protected cachedArray: T[] | null;
     protected executing: Promise<T[]> | null;
 
-    protected constructor(protected httpClient: HttpClient) {
-        this.cache = null;
+    protected constructor(
+        protected readonly httpClient: HttpClient,
+        protected readonly errorService: ErrorService
+    ) {
+        this.cachedMap = null;
         this.executing = null;
     }
 
     public findAll(): Promise<T[]> {
 
-        if (this.cache != null) {
-            return Promise.resolve(this.cache);
+        if (this.cachedMap != null) {
+            return Promise.resolve(Array.from(this.cachedMap.values()));
         } else if (this.executing != null) {
             return this.executing;
         }
@@ -27,13 +32,15 @@ export class CachedNotAuthorizedRepository<T extends UniqEntity> implements Repo
         this.executing = this.httpClient.get<T[]>(this.buildFetchUrl())
             .toPromise()
             .then(value => {
-                this.cache = this.extractValue(value);
+                this.cachedArray = this.extractValue(value);
+                this.cachedMap = new Map<number, T>();
+                this.cachedArray.forEach(entity => this.cachedMap.set(entity.id, entity));
                 this.executing = null;
-                return this.cache;
+                return this.cachedArray;
             })
-            .catch(() => {
+            .catch(reason => {
                 this.executing = null;
-                return this.cache;
+                return this.errorService.convertError(reason);
             });
 
         return this.executing;
@@ -41,10 +48,7 @@ export class CachedNotAuthorizedRepository<T extends UniqEntity> implements Repo
 
     public findById(id: number): Promise<T | null> {
         return this.findAll()
-            .then(values => {
-                let result = values.find(value => value.id == id);
-                return result ? result : null;
-            });
+            .then(() => this.cachedMap.get(id));
     }
 
     protected buildFetchUrl(): string {
