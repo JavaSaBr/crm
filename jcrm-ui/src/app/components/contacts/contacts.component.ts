@@ -73,10 +73,6 @@ export class ContactsComponent extends BaseWorkspaceComponent {
         super(workspaceService);
     }
 
-    getComponentType(): Type<BaseWorkspaceComponent> {
-        return ContactsComponent;
-    }
-
     ngAfterViewInit(): void {
         super.ngAfterViewInit();
 
@@ -96,6 +92,14 @@ export class ContactsComponent extends BaseWorkspaceComponent {
                     return Promise.resolve([]);
                 })
             ).subscribe(data => this.dataSource = data);
+    }
+
+    isNeedGlobalMenu(): boolean {
+        return true;
+    }
+
+    isNeedGlobalSearch(): boolean {
+        return true;
     }
 
     private startLoadingContacts(): Promise<EntityPage<Contact>> {

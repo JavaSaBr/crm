@@ -6,6 +6,7 @@ import {RegisterNewOrganizationComponent} from '@app/component/register-new-orga
 import {AuthenticationComponent} from '@app/component/authentication/authentication.component';
 import {ContactsComponent} from '@app/component/contacts/contacts.component';
 import {ContactWorkspaceComponent} from '@app/component/contact/workspace-component/contact-workspace.component';
+import {SettingsComponent} from '@app/component/settings/settings.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/' + WorkspaceComponent.COMPONENT_NAME, pathMatch: 'full'},
@@ -13,7 +14,10 @@ const routes: Routes = [
         path: WorkspaceComponent.COMPONENT_NAME,
         component: WorkspaceComponent,
         children: [
-            {path: ContactsComponent.COMPONENT_NAME, component: ContactsComponent},
+            {
+                path: ContactsComponent.COMPONENT_NAME,
+                component: ContactsComponent
+            },
             {
                 path: `${ContactWorkspaceComponent.COMPONENT_NAME}/${ContactWorkspaceComponent.NEW_MODE}`,
                 component: ContactWorkspaceComponent
@@ -21,6 +25,10 @@ const routes: Routes = [
             {
                 path: `${ContactWorkspaceComponent.COMPONENT_NAME}/${ContactWorkspaceComponent.VIEW_MODE}/:id`,
                 component: ContactWorkspaceComponent
+            },
+            {
+                path: SettingsComponent.COMPONENT_NAME,
+                component: SettingsComponent
             },
         ]
     },

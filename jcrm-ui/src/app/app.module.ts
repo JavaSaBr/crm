@@ -65,6 +65,7 @@ import {UserProfileComponent} from '@app/component/user-profile/user-profile.com
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSortModule} from '@angular/material/sort';
+import {SettingsComponent} from '@app/component/settings/settings.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -101,6 +102,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         ContactSitesInput,
         ContactMessengersInput,
         UserProfileComponent,
+        SettingsComponent,
     ],
     imports: [
         BrowserModule,

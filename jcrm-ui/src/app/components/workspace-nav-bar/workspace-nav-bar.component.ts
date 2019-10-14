@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {WorkspaceSideMenuService} from '@app/service/workspace-side-menu.service';
 import {SecurityService} from '@app/service/security.service';
 import {Router} from '@angular/router';
-import {WorkspaceMode, WorkspaceService} from '@app/service/workspace.service';
+import {WorkspaceService} from '@app/service/workspace.service';
 import {NoAuthHomeComponent} from '@app/component/no-auth-home/no-auth-home.component';
 import {Location} from '@angular/common';
 
@@ -13,7 +13,7 @@ import {Location} from '@angular/common';
 })
 export class WorkspaceNavBarComponent implements OnInit {
 
-    @Input("title")
+    @Input('title')
     title: string;
 
     searchValue: string;
@@ -32,26 +32,11 @@ export class WorkspaceNavBarComponent implements OnInit {
     ) {
         this.searchValue = '';
         this.additionalHamburgerStyle = '';
-        this.showMenuButton = this.canShowMenuButton(workspaceService.workspaceMode.value);
-        this.showBackButton = this.canShowBackButton(workspaceService.workspaceMode.value);
-        this.showSearchField = this.canShowSearchField(workspaceService.workspaceMode.value);
-        this.workspaceService.workspaceMode.subscribe(value => {
-            this.showMenuButton = this.canShowMenuButton(value);
-            this.showBackButton = this.canShowBackButton(value);
-            this.showSearchField = this.canShowSearchField(value);
+        this.workspaceService.component.subscribe(component => {
+            this.showMenuButton = component ? component.isNeedGlobalMenu() : true;
+            this.showBackButton = component ? component.isFullScreen() : false;
+            this.showSearchField = component ? component.isNeedGlobalSearch() : true;
         });
-    }
-
-    private canShowSearchField(value: WorkspaceMode): boolean {
-        return value == WorkspaceMode.DEFAULT;
-    }
-
-    private canShowMenuButton(value: WorkspaceMode): boolean {
-        return value == WorkspaceMode.DEFAULT;
-    }
-
-    private canShowBackButton(value: WorkspaceMode): boolean {
-        return value == WorkspaceMode.OBJECT_EDITING;
     }
 
     ngOnInit(): void {

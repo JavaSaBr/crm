@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, OnInit, Type} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {SecurityService} from '@app/service/security.service';
 import {NoAuthHomeComponent} from '@app/component/no-auth-home/no-auth-home.component';
-import {WorkspaceMode, WorkspaceService} from '@app/service/workspace.service';
+import {WorkspaceService} from '@app/service/workspace.service';
 
 export abstract class BaseWorkspaceComponent implements AfterViewInit {
 
@@ -10,27 +10,27 @@ export abstract class BaseWorkspaceComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        setTimeout(() => {
-            this.workspaceService.activate(this.getComponentType(), this.getTitle());
-            this.workspaceService.switchWorkspaceMode(this.getWorkspaceMode());
-        });
+        setTimeout(() => this.workspaceService.activate(this));
     }
 
-    protected getWorkspaceMode(): WorkspaceMode {
-        return WorkspaceMode.DEFAULT;
-    }
-
-    protected getTitle(): string | null {
+    getTitle(): string | null {
         return null;
     }
 
-    abstract getComponentType(): Type<BaseWorkspaceComponent>;
-}
+    isFullScreen(): boolean {
+        return false;
+    }
 
-export abstract class ObjectEditingWorkspaceComponent extends BaseWorkspaceComponent {
+    isNeedGlobalSearch(): boolean {
+        return false;
+    }
 
-    protected getWorkspaceMode(): WorkspaceMode {
-        return WorkspaceMode.OBJECT_EDITING;
+    isNeedGlobalMenu(): boolean {
+        return false;
+    }
+
+    isNeedContentPadding(): boolean {
+        return false;
     }
 }
 
@@ -54,8 +54,8 @@ export class WorkspaceComponent implements OnInit {
     ) {
         this.ready = false;
         this.currentTitle = '';
-        this.workspaceService.currentTitle
-            .subscribe(value => this.currentTitle = value);
+        this.workspaceService.component
+            .subscribe(value => this.currentTitle = value ? value.getTitle() : null);
     }
 
     ngOnInit(): void {

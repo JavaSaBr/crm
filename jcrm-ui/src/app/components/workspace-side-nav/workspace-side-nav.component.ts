@@ -1,7 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav} from '@angular/material';
 import {WorkspaceSideMenuService} from '@app/service/workspace-side-menu.service';
-import {WorkspaceMode, WorkspaceService} from '../../services/workspace.service';
+import {WorkspaceService} from '@app/service/workspace.service';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs/operators';
+import {BaseWorkspaceComponent} from '@app/component/workspace/workspace.component';
 
 @Component({
     selector: 'app-workspace-side-nav',
@@ -21,27 +24,19 @@ export class WorkspaceSideNavComponent implements OnInit {
 
     constructor(
         private readonly sideMenuService: WorkspaceSideMenuService,
-        private readonly workspaceService: WorkspaceService
+        private readonly workspaceService: WorkspaceService,
+        private readonly router: Router
     ) {
         sideMenuService.requestMenuProperty()
-            .subscribe(open => {
-                this.toggleMenu(open);
-            });
-        workspaceService.workspaceMode
-            .subscribe(value => {
-                this.showSideMenu = this.canShowSideMenu(value);
-                this.updateMainViewStyle(value);
-            });
-
-        this.showSideMenu = this.canShowSideMenu(workspaceService.workspaceMode.value);
-        this.updateMainViewStyle(workspaceService.workspaceMode.value);
+            .subscribe(open => this.toggleMenu(open));
+        workspaceService.component
+            .subscribe(component => this.updateMainViewStyle(component));
+        router.events.pipe(filter(value => value instanceof NavigationEnd))
+            .subscribe(() => this.closeMenu());
     }
 
-    private canShowSideMenu(value: WorkspaceMode): boolean {
-        return value == WorkspaceMode.DEFAULT;
-    }
-
-    private updateMainViewStyle(value: WorkspaceMode) {
+    private updateMainViewStyle(component: BaseWorkspaceComponent) {
+        this.showSideMenu = component ? component.isNeedGlobalMenu() : false;
 
         const nativeElement = this.mainView &&
             this.mainView.nativeElement;
@@ -52,23 +47,16 @@ export class WorkspaceSideNavComponent implements OnInit {
 
         nativeElement.classList.remove('main-view-padding');
 
-        switch (value) {
-            case WorkspaceMode.OBJECT_EDITING: {
-                nativeElement.classList.add('main-view-padding');
-                return;
-            }
+        if (component ? component.isNeedContentPadding() : false) {
+            nativeElement.classList.add('main-view-padding');
         }
     }
 
     ngOnInit() {
         this.matSidenav.openedStart
-            .subscribe(() => {
-                this.sideMenuService.notifyStartOpening();
-            });
+            .subscribe(() => this.sideMenuService.notifyStartOpening());
         this.matSidenav.closedStart
-            .subscribe(() => {
-                this.sideMenuService.notifyStartClosing();
-            });
+            .subscribe(() => this.sideMenuService.notifyStartClosing());
     }
 
     private toggleMenu(open: boolean) {
@@ -89,5 +77,13 @@ export class WorkspaceSideNavComponent implements OnInit {
 
                 this.sideMenuService.notifyFinishChanging();
             });
+    }
+
+    closeMenu(): void {
+        if (!this.matSidenav.opened) {
+            return;
+        } else {
+            this.matSidenav.toggle();
+        }
     }
 }

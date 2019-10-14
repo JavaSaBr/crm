@@ -1,5 +1,5 @@
-import {Component, OnInit, Type, ViewChild} from '@angular/core';
-import {BaseWorkspaceComponent, ObjectEditingWorkspaceComponent} from '@app/component/workspace/workspace.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {BaseWorkspaceComponent} from '@app/component/workspace/workspace.component';
 import {WorkspaceService} from '@app/service/workspace.service';
 import {Contact} from '@app/entity/contact';
 import {ActivatedRoute} from '@angular/router';
@@ -12,7 +12,7 @@ import {ContactViewComponent} from '@app/component/contact/view/contact-view.com
     templateUrl: './contact-workspace.component.html',
     styleUrls: ['./contact-workspace.component.css'],
 })
-export class ContactWorkspaceComponent extends ObjectEditingWorkspaceComponent implements OnInit {
+export class ContactWorkspaceComponent extends BaseWorkspaceComponent implements OnInit {
 
     public static readonly COMPONENT_NAME = 'contact';
     public static readonly NEW_MODE = 'new';
@@ -29,13 +29,16 @@ export class ContactWorkspaceComponent extends ObjectEditingWorkspaceComponent i
         super(workspaceService);
     }
 
-    getComponentType(): Type<BaseWorkspaceComponent> {
-        return ContactWorkspaceComponent;
+    getTitle(): string | null {
+        return 'Contact view';
     }
 
+    isFullScreen(): boolean {
+        return true;
+    }
 
-    protected getTitle(): string | null {
-        return 'Contact view';
+    isNeedContentPadding(): boolean {
+        return true;
     }
 
     ngOnInit(): void {
