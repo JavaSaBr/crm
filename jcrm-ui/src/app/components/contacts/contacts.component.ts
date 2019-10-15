@@ -62,7 +62,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
     @ViewChild(MatSort, {static: false}) sort: MatSort;
 
     constructor(
-        private readonly contactService: ContactRepository,
+        private readonly contactRepository: ContactRepository,
         private readonly userRepository: UserRepository,
         private readonly router: Router,
         private readonly datePipe: DatePipe,
@@ -106,7 +106,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
         this.globalLoadingService.increaseLoading();
         const pageSize = this.paginator.pageSize;
         const offset = this.paginator.pageIndex * pageSize;
-        return this.contactService.findEntityPage(pageSize, offset);
+        return this.contactRepository.findEntityPage(pageSize, offset);
     }
 
     private loadAssigners(entityPage: EntityPage<Contact>): Promise<EntityPage<Contact>> {

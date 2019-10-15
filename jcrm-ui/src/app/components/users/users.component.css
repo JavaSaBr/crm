@@ -1,0 +1,25 @@
+:host {
+    flex: 100%;
+}
+
+.table-users {
+    width: 100%;
+}
+
+tr.user-row:hover {
+    cursor: pointer;
+}
+
+.mat-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+    min-width: 32px;
+    text-align: start;
+}
+
+.mat-header-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+    min-width: 32px;
+    text-align: start;
+}
