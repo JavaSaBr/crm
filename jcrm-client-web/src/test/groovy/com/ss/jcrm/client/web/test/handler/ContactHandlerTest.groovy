@@ -366,7 +366,7 @@ class ContactHandlerTest extends ClientSpecification {
         client.post()
             .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
             .body(body)
-            .url("/client/contact/create")
+            .url("/client/contact")
             .exchange()
     }
     

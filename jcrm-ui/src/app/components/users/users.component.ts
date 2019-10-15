@@ -84,9 +84,7 @@ export class UsersComponent implements AfterViewInit {
         this.globalLoadingService.increaseLoading();
         const pageSize = this.paginator.pageSize;
         const offset = this.paginator.pageIndex * pageSize;
-        //TODO return this.userRepository.findEntityPage(pageSize, offset);
-        return this.userRepository.findAll()
-            .then(value => new EntityPage(value, value.length));
+        return this.userRepository.findEntityPage(pageSize, offset);
     }
 
     private finishLoadingContacts(entityPage: EntityPage<User>): User[] {

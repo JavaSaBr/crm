@@ -25,7 +25,7 @@ import java.util.List;
 
 public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> implements SimpleContactDao {
 
-    private static final String FIELD_LIST = "\"id\", \"org_id\", \"assigner\", \"curators\", \"first_name\"," +
+    private static final String FIELD_LIST = "\"id\", \"organization_id\", \"assigner\", \"curators\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"emails\", \"sites\", \"messengers\"," +
         " \"company\", \"version\", \"created\", \"modified\"";
 
@@ -33,15 +33,15 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         " where \"id\" = ?";
 
     private static final String Q_SELECT_BY_ORG_ID = "select " + FIELD_LIST + " from \"${schema}\".\"contact\"" +
-        " where \"org_id\" = ?";
+        " where \"organization_id\" = ?";
 
     private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + FIELD_LIST + " from" +
-        " \"${schema}\".\"contact\" where \"id\" = ? AND \"org_id\" = ?";
+        " \"${schema}\".\"contact\" where \"id\" = ? AND \"organization_id\" = ?";
 
     private static final String Q_SELECT_PAGE_BY_ORG_ID = "select " + FIELD_LIST + " from \"${schema}\".\"contact\"" +
-        " where \"org_id\" = ? order by \"id\" limit ? offset ?";
+        " where \"organization_id\" = ? order by \"id\" limit ? offset ?";
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"org_id\", \"assigner\", \"curators\", " +
+    private static final String Q_INSERT = "insert into \"${schema}\".\"contact\" (\"organization_id\", \"assigner\", \"curators\", " +
         "\"first_name\", \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"emails\", \"sites\", " +
         "\"messengers\", \"company\", \"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) returning id";
 
@@ -50,7 +50,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
         " \"sites\" = ?, \"messengers\" = ?, \"company\" = ?, \"modified\" = ?, \"version\" = ? where \"id\" = ? and \"version\" = ?";
 
     private static final String Q_COUNT_BY_ORG_ID = "select count(\"id\") from \"${schema}\".\"contact\"" +
-        " where \"org_id\" = ?";
+        " where \"organization_id\" = ?";
 
     private final String querySelectById;
     private final String querySelectByIdAndOrgId;

@@ -210,7 +210,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             thrown NotActualObjectDaoException
     }
     
-    def "should load a page of contacts"() {
+    def "should load page of contacts"() {
         
         given:
     

@@ -1,8 +1,8 @@
-.table-users {
+.table-contacts {
     width: 100%;
 }
 
-tr.user-row:hover {
+tr.contact-row:hover {
     cursor: pointer;
 }
 

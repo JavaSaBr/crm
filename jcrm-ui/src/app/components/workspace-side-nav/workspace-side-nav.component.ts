@@ -36,7 +36,7 @@ export class WorkspaceSideNavComponent implements OnInit {
     }
 
     private updateMainViewStyle(component: BaseWorkspaceComponent) {
-        this.showSideMenu = component ? component.isNeedGlobalMenu() : false;
+        this.showSideMenu = component ? component.isNeedGlobalMenu() : true;
 
         const nativeElement = this.mainView &&
             this.mainView.nativeElement;

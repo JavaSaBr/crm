@@ -1,6 +1,7 @@
 package com.ss.jcrm.user.api.dao;
 
 import com.ss.jcrm.dao.Dao;
+import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
@@ -62,4 +63,6 @@ public interface UserDao extends Dao<User> {
     ) {
         return findByIdsAndOrgId(ids, organization.getId());
     }
+
+    @NotNull Mono<@NotNull EntityPage<User>> findPageByOrg(long offset, long size, long orgId);
 }

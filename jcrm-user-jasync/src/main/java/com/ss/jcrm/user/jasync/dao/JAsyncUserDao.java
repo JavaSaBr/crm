@@ -6,6 +6,7 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.Dao;
+import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
@@ -65,15 +66,23 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     private static final String Q_SELECT_BY_IDS_AND_ORG_ID = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"id\" in (${id_list}) AND \"organization_id\" = ?";
 
+    private static final String Q_SELECT_PAGE_BY_ORG_ID = "select " + FIELD_LIST + " from \"${schema}\".\"user\"" +
+        " where \"organization_id\" = ? order by \"id\" limit ? offset ?";
+
+    private static final String Q_COUNT_BY_ORG_ID = "select count(\"id\") from \"${schema}\".\"user\"" +
+        " where \"organization_id\" = ?";
+
     private final String querySelectById;
     private final String querySelectByEmail;
     private final String querySelectByPhoneNumber;
-    private final String queryInsert;
-    private final String queryUpdate;
-    private final String queryExistByEmail;
-    private final String querySearchByName;
     private final String querySelectByIdAndOrgId;
     private final String querySelectByIdsAndOrgId;
+    private final String queryExistByEmail;
+    private final String querySearchByName;
+    private final String queryInsert;
+    private final String queryUpdate;
+    private final String queryPageByOrgId;
+    private final String queryCountByOrgId;
 
     private final OrganizationDao organizationDao;
     private final UserGroupDao userGroupDao;
@@ -88,12 +97,14 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
         this.querySelectByEmail = Q_SELECT_BY_EMAIL.replace("${schema}", schema);
         this.querySelectByPhoneNumber = Q_SELECT_BY_PHONE_NUMBER.replace("${schema}", schema);
-        this.queryInsert = Q_INSERT.replace("${schema}", schema);
-        this.queryUpdate = Q_UPDATE.replace("${schema}", schema);
-        this.queryExistByEmail = Q_EXIST_BY_EMAIL.replace("${schema}", schema);
-        this.querySearchByName = Q_SEARCH_BY_NAME.replace("${schema}", schema);
         this.querySelectByIdAndOrgId = Q_SELECT_BY_ID_AND_ORG_ID.replace("${schema}", schema);
         this.querySelectByIdsAndOrgId = Q_SELECT_BY_IDS_AND_ORG_ID.replace("${schema}", schema);
+        this.querySearchByName = Q_SEARCH_BY_NAME.replace("${schema}", schema);
+        this.queryExistByEmail = Q_EXIST_BY_EMAIL.replace("${schema}", schema);
+        this.queryPageByOrgId = Q_SELECT_PAGE_BY_ORG_ID.replace("${schema}", schema);
+        this.queryInsert = Q_INSERT.replace("${schema}", schema);
+        this.queryUpdate = Q_UPDATE.replace("${schema}", schema);
+        this.queryCountByOrgId = Q_COUNT_BY_ORG_ID.replace("${schema}", schema);
         this.organizationDao = organizationDao;
         this.userGroupDao = userGroupDao;
     }
@@ -230,6 +241,12 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private @NotNull JAsyncLazyConverter<@NotNull JAsyncUserDao, @NotNull User> converter() {
         return JAsyncUserDao::toUser;
+    }
+
+    @Override
+    public @NotNull Mono<@NotNull EntityPage<User>> findPageByOrg(long offset, long size, long orgId) {
+        return selectAllAsync(queryPageByOrgId, List.of(orgId, size, offset), converter())
+            .zipWith(count(queryCountByOrgId, orgId), EntityPage::new);
     }
 
     private @NotNull Mono<@NotNull User> toUser(@NotNull RowData data) {

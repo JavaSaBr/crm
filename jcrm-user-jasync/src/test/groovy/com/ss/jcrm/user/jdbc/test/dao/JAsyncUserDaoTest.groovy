@@ -284,4 +284,40 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         then:
             loaded.size() == 1
     }
+    
+    def "should load page of users"() {
+        
+        given:
+    
+            def firstOrgUsersCount = 20
+            def secondOrgUsersCount = 5
+    
+            def firstOrg = userTestHelper.newOrg()
+            def secondOrg = userTestHelper.newOrg()
+    
+            firstOrgUsersCount.times {
+                userTestHelper.newUser(userTestHelper.nextUId(), firstOrg)
+            }
+    
+            secondOrgUsersCount.times {
+                userTestHelper.newUser(userTestHelper.nextUId(), secondOrg)
+            }
+    
+            List<User> loadedUsers = []
+        
+        when:
+            def page = userDao.findPageByOrg(0, 5, firstOrg.id).block()
+            loadedUsers.addAll(page.entities)
+        then:
+            page != null
+            page.totalSize == firstOrgUsersCount
+            page.entities.size() == 5
+        when:
+            page = userDao.findPageByOrg(17, 5, firstOrg.id).block()
+        then:
+            page != null
+            page.totalSize == firstOrgUsersCount
+            page.entities.size() == 3
+            !page.entities.stream().anyMatch({ loadedUsers.contains(it) })
+    }
 }

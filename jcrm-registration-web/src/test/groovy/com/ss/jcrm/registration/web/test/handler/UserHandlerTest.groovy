@@ -1,18 +1,16 @@
 package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
-import com.ss.jcrm.security.web.exception.SecurityErrors
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
 import static com.ss.jcrm.security.web.exception.SecurityErrors.NOT_PRESENTED_TOKEN
 import static com.ss.jcrm.security.web.exception.SecurityErrors.NOT_PRESENTED_TOKEN_MESSAGE
-import static org.hamcrest.Matchers.containsInAnyOrder
-import static org.hamcrest.Matchers.hasSize
-import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.*
 
 class UserHandlerTest extends RegistrationSpecification {
     
@@ -181,5 +179,46 @@ class UserHandlerTest extends RegistrationSpecification {
                     .jsonPath('$[*].id').value(containsInAnyOrder(
                         (int) user1.id, (int) user2.id, (int) user3.id)
                     )
+    }
+    
+    def "should load a page of contacts successfully"() {
+        
+        given:
+    
+            def firstOrgContactsCount = 20
+            def secondOrgContactsCount = 5
+    
+            def firstOrg = userTestHelper.newOrg()
+            def firstUser = userTestHelper.newUser("User1", firstOrg)
+    
+            def secondOrg = userTestHelper.newOrg()
+    
+            (firstOrgContactsCount - 1).times { userTestHelper.newUser(userTestHelper.nextUId(), firstOrg) }
+            secondOrgContactsCount.times { userTestHelper.newUser(userTestHelper.nextUId(), secondOrg) }
+    
+            def token = unsafeTokenService.generateNewToken(firstUser)
+        
+        when:
+            def response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/registration/users/page?pageSize=5&offset=0")
+                .exchange()
+        then:
+            response.expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectBody()
+                .jsonPath('$.totalSize').isEqualTo(20)
+                .jsonPath('$.resources').value(hasSize(5))
+        when:
+            response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/registration/users/page?pageSize=10&offset=12")
+                .exchange()
+        then:
+            response.expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectBody()
+                .jsonPath('$.totalSize').isEqualTo(20)
+                .jsonPath('$.resources').value(hasSize(8))
     }
 }

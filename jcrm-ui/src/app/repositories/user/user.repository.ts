@@ -21,6 +21,10 @@ export class UserRepository extends RemoteRepository<User, User> {
         return `${environment.registrationUrl}/users/ids`;
     }
 
+    protected buildEntityPageFetchUrl(pageSize: number, offset: number): string {
+        return `${environment.registrationUrl}/users/page?pageSize=${pageSize}&offset=${offset}`;
+    }
+
     public searchByName(name: string): Promise<User[]> {
         return this.securityService.getRequest<User[]>(`${environment.registrationUrl}/search/user/name/${name}`)
             .then(value => value.body.map(user => this.convert(user)))

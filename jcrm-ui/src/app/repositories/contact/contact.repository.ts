@@ -63,7 +63,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         return `${environment.clientUrl}/contacts/page?pageSize=${pageSize}&offset=${offset}`;
     }
 
-    private convertToResource(contact: Contact) {
+    private convertToResource(contact: Contact): ContactResource {
 
         let body = new ContactResource();
         body.assigner = contact.assigner;
