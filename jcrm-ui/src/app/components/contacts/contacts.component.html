@@ -1,12 +1,4 @@
 <div fxLayout="column" fxFlex="100%">
-
-  <div class="contact-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
-    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-    <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
-      GitHub's API rate limit has been reached. It will be reset in one minute.
-    </div>
-  </div>
-
   <perfect-scrollbar id="#contacts-scrollbar" app-relative-height [relativeHeightOffset]="6">
     <table class="table-contacts" mat-table [dataSource]="dataSource" matSort matSortActive="first_name"
            matSortDisableClear matSortDirection="desc">

@@ -17,6 +17,7 @@ import {Utils} from '@app/util/utils';
 import {EntityPage} from '@app/entity/entity-page';
 import {DatePipe} from '@angular/common';
 import {ErrorService} from '@app/service/error.service';
+import {GlobalLoadingService} from '@app/service/global-loading.service';
 
 @Component({
     selector: 'app-contacts',
@@ -56,8 +57,6 @@ export class ContactsComponent extends BaseWorkspaceComponent {
     pageEvent: PageEvent;
 
     resultsLength = 0;
-    isLoadingResults = true;
-    isRateLimitReached = false;
 
     @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
     @ViewChild(MatSort, {static: false}) sort: MatSort;
@@ -68,6 +67,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
         private readonly router: Router,
         private readonly datePipe: DatePipe,
         private readonly errorService: ErrorService,
+        private readonly globalLoadingService: GlobalLoadingService,
         workspaceService: WorkspaceService,
     ) {
         super(workspaceService);
@@ -86,12 +86,12 @@ export class ContactsComponent extends BaseWorkspaceComponent {
                 switchMap(data => this.loadAssigners(data)),
                 map(data => this.finishLoadingContacts(data)),
                 catchError(reason => {
-                    this.isLoadingResults = false;
-                    this.isRateLimitReached = true;
+                    this.globalLoadingService.decreaseLoading();
                     this.errorService.showError(reason);
                     return Promise.resolve([]);
                 })
-            ).subscribe(data => this.dataSource = data);
+            )
+            .subscribe(data => this.dataSource = data);
     }
 
     isNeedGlobalMenu(): boolean {
@@ -103,7 +103,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
     }
 
     private startLoadingContacts(): Promise<EntityPage<Contact>> {
-        this.isLoadingResults = true;
+        this.globalLoadingService.increaseLoading();
         const pageSize = this.paginator.pageSize;
         const offset = this.paginator.pageIndex * pageSize;
         return this.contactService.findEntityPage(pageSize, offset);
@@ -128,8 +128,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
 
     private finishLoadingContacts(entityPage: EntityPage<Contact>): Contact[] {
 
-        this.isLoadingResults = false;
-        this.isRateLimitReached = false;
+        this.globalLoadingService.decreaseLoading();
         this.resultsLength = entityPage.totalSize;
 
         return entityPage.entities;

@@ -19,22 +19,3 @@ tr.contact-row:hover {
     min-width: 32px;
     text-align: start;
 }
-
-.contact-loading-shade {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.15);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.example-rate-limit-reached {
-    color: #980000;
-    max-width: 360px;
-    text-align: center;
-}
