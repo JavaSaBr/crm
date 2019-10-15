@@ -1,0 +1,9 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 100%;
+}
+
+.mat-tab-body-wrapper {
+    flex: 1 1 100%;
+}

@@ -49,6 +49,9 @@
       ],
       "@app/error/*": [
         "src/app/error/*"
+      ],
+      "@app/node-modules/*": [
+        "node_modules/*"
       ]
     }
   }

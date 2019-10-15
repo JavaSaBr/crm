@@ -6,6 +6,8 @@ import {ActivatedRoute} from '@angular/router';
 import {Utils} from '@app/util/utils';
 import {ContactRepository} from '@app/repository/contact/contact.repository';
 import {ContactViewComponent} from '@app/component/contact/view/contact-view.component';
+import {GlobalLoadingService} from '@app/service/global-loading.service';
+import {ErrorService} from '@app/service/error.service';
 
 @Component({
     selector: 'app-new-contact',
@@ -22,9 +24,11 @@ export class ContactWorkspaceComponent extends BaseWorkspaceComponent implements
     contactView: ContactViewComponent;
 
     constructor(
-        protected readonly workspaceService: WorkspaceService,
         private readonly route: ActivatedRoute,
-        private readonly contactService: ContactRepository
+        private readonly contactService: ContactRepository,
+        private readonly globalLoadingService: GlobalLoadingService,
+        private readonly errorService: ErrorService,
+        workspaceService: WorkspaceService,
     ) {
         super(workspaceService);
     }
@@ -42,17 +46,19 @@ export class ContactWorkspaceComponent extends BaseWorkspaceComponent implements
     }
 
     ngOnInit(): void {
+        this.globalLoadingService.increaseLoading();
         this.route.paramMap.subscribe(value => {
 
             const id = value.get('id');
 
             if (id && Utils.isNumber(id)) {
                 this.contactService.findById(Number.parseInt(id))
-                    .then(loaded => {
-                        this.contactView.reload(loaded);
-                    });
+                    .then(loaded => this.contactView.reload(loaded))
+                    .catch(reason => this.errorService.showError(reason))
+                    .finally(() => this.globalLoadingService.decreaseLoading());
             } else {
                 this.contactView.reload(Contact.create());
+                this.globalLoadingService.decreaseLoading();
             }
         });
     }

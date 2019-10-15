@@ -30,6 +30,10 @@ const routes: Routes = [
                 path: SettingsComponent.COMPONENT_NAME,
                 component: SettingsComponent
             },
+            {
+                path: `${SettingsComponent.COMPONENT_NAME}/:selectedTab`,
+                component: SettingsComponent
+            },
         ]
     },
     {
