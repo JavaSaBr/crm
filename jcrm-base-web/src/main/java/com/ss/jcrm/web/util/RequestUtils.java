@@ -30,4 +30,9 @@ public class RequestUtils {
         return Mono.fromSupplier(() -> NumberUtils.toOptionalLong(request.pathVariable("id"))
             .orElseThrow(IdNotPresentedWebException::new));
     }
+
+    public static @NotNull Mono<long[]> idsRequest(@NotNull ServerRequest request) {
+        return request.bodyToMono(long[].class)
+            .filter(ids -> ids.length > 0);
+    }
 }

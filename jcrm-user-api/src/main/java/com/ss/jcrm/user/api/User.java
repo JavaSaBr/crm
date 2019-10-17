@@ -5,6 +5,7 @@ import com.ss.jcrm.security.AccessRole;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.util.Set;
 
 public interface User extends VersionedUniqEntity {
@@ -54,4 +55,10 @@ public interface User extends VersionedUniqEntity {
     int getPasswordVersion();
 
     void setPasswordVersion(int passwordVersion);
+
+    @NotNull Instant getCreated();
+
+    @NotNull Instant getModified();
+
+    void setModified(@NotNull Instant modified);
 }

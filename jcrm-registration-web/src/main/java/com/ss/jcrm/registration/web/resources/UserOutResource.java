@@ -1,25 +1,18 @@
 package com.ss.jcrm.registration.web.resources;
 
 import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.web.resources.RestResource;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class UserOutResource implements RestResource {
+public class UserOutResource extends MinimalUserOutResource {
 
-    private final String email;
-    private final String firstName;
-    private final String secondName;
-    private final String phoneNumber;
-
-    private long id;
+    private final long created;
+    private final long modified;
 
     public UserOutResource(@NotNull User user) {
-        this.email = user.getEmail();
-        this.firstName = user.getFirstName();
-        this.secondName = user.getSecondName();
-        this.phoneNumber = user.getPhoneNumber();
-        this.id = user.getId();
+        super(user);
+        this.created = user.getCreated().toEpochMilli();
+        this.modified = user.getModified().toEpochMilli();
     }
 }

@@ -1,13 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {fabButtonAnimations} from './fab-button.animations';
 
-export interface FabButtonElement {
-    routerLink: string,
-    icon: string;
-    tooltip: string,
-    callback: Function | null
-}
-
 @Component({
     selector: 'app-fab-button',
     templateUrl: './fab-button.component.html',
@@ -47,4 +40,11 @@ export class FabButtonComponent {
             this.onToggleFab();
         }
     }
+}
+
+export interface FabButtonElement {
+    routerLink: string,
+    icon: string;
+    tooltip: string,
+    callback: Function | null
 }

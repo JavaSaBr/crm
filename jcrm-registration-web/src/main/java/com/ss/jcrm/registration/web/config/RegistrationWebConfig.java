@@ -159,6 +159,8 @@ public class RegistrationWebConfig {
     ) {
         var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
+            .GET(contextPath + "/user/minimal/{id}", userHandler::findMinimalById)
+            .POST(contextPath + "/users/minimal/ids", userHandler::findMinimalByIds)
             .GET(contextPath + "/user/{id}", userHandler::findById)
             .POST(contextPath + "/users/ids", userHandler::findByIds)
             .GET(contextPath + "/users/page", userHandler::findPage)

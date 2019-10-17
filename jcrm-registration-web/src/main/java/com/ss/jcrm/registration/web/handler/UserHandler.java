@@ -1,12 +1,12 @@
 package com.ss.jcrm.registration.web.handler;
 
-import static com.ss.rlib.common.util.NumberUtils.toOptionalLong;
+import com.ss.jcrm.registration.web.resources.MinimalUserOutResource;
 import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
+import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.web.exception.IdNotPresentedWebException;
 import com.ss.jcrm.web.resources.DataPageResponse;
 import com.ss.jcrm.web.util.RequestUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
@@ -19,6 +19,13 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class UserHandler {
 
+    private static final AccessRole[] USER_VIEWERS = {
+        AccessRole.SUPER_ADMIN,
+        AccessRole.ORG_ADMIN,
+        AccessRole.USER_MANAGER,
+        AccessRole.VIEW_USERS
+    };
+
     private final UserDao userDao;
     private final ResourceValidator resourceValidator;
     private final WebRequestSecurityService webRequestSecurityService;
@@ -30,23 +37,22 @@ public class UserHandler {
             .flatMap(ResponseUtils::exist);
     }
 
-    public @NotNull Mono<ServerResponse> findById(@NotNull ServerRequest request) {
-        return Mono.fromSupplier(() -> toOptionalLong(request.pathVariable("id")))
-            .map(optional -> optional.orElseThrow(IdNotPresentedWebException::new))
+    public @NotNull Mono<ServerResponse> findMinimalById(@NotNull ServerRequest request) {
+        return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(param -> userDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
-            .map(UserOutResource::new)
+            .map(MinimalUserOutResource::new)
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
 
-    public @NotNull Mono<ServerResponse> findByIds(@NotNull ServerRequest request) {
-        return request.bodyToMono(long[].class)
+    public @NotNull Mono<ServerResponse> findMinimalByIds(@NotNull ServerRequest request) {
+        return RequestUtils.idsRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
             .map(users -> users.stream()
-                .map(UserOutResource::new)
-                .toArray(UserOutResource[]::new))
+                .map(MinimalUserOutResource::new)
+                .toArray(MinimalUserOutResource[]::new))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
@@ -56,14 +62,14 @@ public class UserHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(res -> userDao.searchByName(res.getParam(), res.getOrgId()))
             .map(users -> users.stream()
-                .map(UserOutResource::new)
-                .toArray(UserOutResource[]::new))
+                .map(MinimalUserOutResource::new)
+                .toArray(MinimalUserOutResource[]::new))
             .flatMap(ResponseUtils::ok);
     }
 
     public @NotNull Mono<ServerResponse> findPage(@NotNull ServerRequest request) {
         return RequestUtils.pageRequest(request)
-            .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
+            .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
             .flatMap(authorized -> {
                 var pageRequest = authorized.getParam();
                 return userDao.findPageByOrg(
@@ -78,6 +84,26 @@ public class UserHandler {
                 UserOutResource::new,
                 UserOutResource[]::new
             ))
+            .flatMap(ResponseUtils::ok)
+            .switchIfEmpty(ResponseUtils.lazyNotFound());
+    }
+
+    public @NotNull Mono<ServerResponse> findById(@NotNull ServerRequest request) {
+        return RequestUtils.idRequest(request)
+            .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
+            .flatMap(param -> userDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
+            .map(UserOutResource::new)
+            .flatMap(ResponseUtils::ok)
+            .switchIfEmpty(ResponseUtils.lazyNotFound());
+    }
+
+    public @NotNull Mono<ServerResponse> findByIds(@NotNull ServerRequest request) {
+        return RequestUtils.idsRequest(request)
+            .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
+            .flatMap(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
+            .map(users -> users.stream()
+                .map(UserOutResource::new)
+                .toArray(UserOutResource[]::new))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }

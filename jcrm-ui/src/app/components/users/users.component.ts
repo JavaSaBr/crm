@@ -1,9 +1,6 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {FabButtonElement} from '@app/component/fab-button/fab-button.component';
 import {Router} from '@angular/router';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {SelectionModel} from '@angular/cdk/collections';
-import {MatSort} from '@angular/material/sort';
 import {merge} from 'rxjs';
 import {catchError, map, startWith, switchMap} from 'rxjs/operators';
 import {User} from '@app/entity/user';
@@ -12,6 +9,7 @@ import {EntityPage} from '@app/entity/entity-page';
 import {DatePipe} from '@angular/common';
 import {ErrorService} from '@app/service/error.service';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
+import {AbstractEntityTableComponent} from '@app/component/table/abstract-entity-table.component';
 
 @Component({
     selector: 'app-users',
@@ -19,11 +17,11 @@ import {GlobalLoadingService} from '@app/service/global-loading.service';
     styleUrls: ['./users.component.css'],
     host: {'class': 'flex-column'}
 })
-export class UsersComponent implements AfterViewInit {
+export class UsersComponent extends AbstractEntityTableComponent<User> implements AfterViewInit {
 
     public static readonly COMPONENT_NAME = 'users';
 
-    fabButtons: FabButtonElement[] = [
+    private static readonly FAB_ACTIONS: FabButtonElement[] = [
         {
             //routerLink: `../${ContactWorkspaceComponent.COMPONENT_NAME}/${ContactWorkspaceComponent.NEW_MODE}`,
             routerLink: `./user/new`,
@@ -33,39 +31,32 @@ export class UsersComponent implements AfterViewInit {
         }
     ];
 
-    displayedColumns: string[] = [
+    private static readonly DISPLAYED_COLUMNS: string[] = [
         'select',
         'creation_date',
         'full_name',
         'email',
     ];
 
-    dataSource: User[] = [];
-
-    selection = new SelectionModel<User>(true, []);
-
-    pageSize = 50;
-    pageEvent: PageEvent;
-
-    resultsLength = 0;
-
-    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-    @ViewChild(MatSort, {static: false}) sort: MatSort;
-
     constructor(
         private readonly userRepository: UserRepository,
         private readonly router: Router,
-        private readonly datePipe: DatePipe,
-        private readonly errorService: ErrorService,
-        private readonly globalLoadingService: GlobalLoadingService
+        datePipe: DatePipe,
+        errorService: ErrorService,
+        globalLoadingService: GlobalLoadingService
     ) {
+        super(datePipe, errorService, globalLoadingService);
+    }
+
+    createDisplayedColumns(): string[] {
+        return UsersComponent.DISPLAYED_COLUMNS;
+    }
+
+    createFabActions(): FabButtonElement[] {
+        return UsersComponent.FAB_ACTIONS;
     }
 
     ngAfterViewInit(): void {
-
-        // If the user changes the sort order, reset back to the first page.
-        this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-
         merge(this.sort.sortChange, this.paginator.page)
             .pipe(
                 startWith({}),
@@ -88,43 +79,12 @@ export class UsersComponent implements AfterViewInit {
     }
 
     private finishLoadingContacts(entityPage: EntityPage<User>): User[] {
-
         this.globalLoadingService.decreaseLoading();
         this.resultsLength = entityPage.totalSize;
-
         return entityPage.entities;
     }
 
-    openUser(contact: User): void {
-        /*this.router.navigate([
-            WorkspaceComponent.COMPONENT_NAME,
-            ContactWorkspaceComponent.COMPONENT_NAME,
-            ContactWorkspaceComponent.VIEW_MODE,
-            contact.id
-        ]);*/
-    }
-
-    isAllSelected() {
-        return this.selection.selected.length === this.dataSource.length;
-    }
-
-    toggleAllSelection() {
-        if (!this.isAllSelected()) {
-            this.dataSource.forEach(row => this.selection.select(row));
-        } else {
-            this.selection.clear();
-        }
-    }
-
-    toggleSelection(row?: User): string {
-        if (!row) {
-            return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
-        } else {
-            return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
-        }
-    }
-
-    buildCreated(contact: User): string {
+    buildCreated(user: User): string {
 
         const now = new Date();
         const currentDate = now.getDate();

@@ -1,8 +1,10 @@
 package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
+import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
+import com.ss.jcrm.user.api.dao.UserDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
@@ -16,6 +18,9 @@ class UserHandlerTest extends RegistrationSpecification {
     
     @Autowired
     UnsafeTokenService unsafeTokenService
+    
+    @Autowired
+    UserDao userDao
     
     def "should found that user is exist"() {
 
@@ -114,7 +119,12 @@ class UserHandlerTest extends RegistrationSpecification {
     def "should load user by id"() {
         
         given:
-            def user = userTestHelper.newUser()
+            def user = userTestHelper.newUser("Admin 1", AccessRole.USER_MANAGER)
+            user.phoneNumber = "testphonenumber"
+            user.firstName = "First name"
+            user.secondName = "Second name"
+            user.thirdName = "Third name"
+            userDao.update(user).block()
             def token = unsafeTokenService.generateNewToken(user)
         when:
             def response = client.get()
@@ -125,7 +135,46 @@ class UserHandlerTest extends RegistrationSpecification {
             response.expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$').isNotEmpty()
-                    .jsonPath('$.email').value(is(user.email))
+                    .jsonPath('$.email').isEqualTo(user.email)
+                    .jsonPath('$.firstName').isEqualTo(user.firstName)
+                    .jsonPath('$.secondName').isEqualTo(user.secondName)
+                    .jsonPath('$.thirdName').isEqualTo(user.thirdName)
+                    .jsonPath('$.phoneNumber').isEqualTo(user.phoneNumber)
+                    .jsonPath('$.created').isEqualTo(user.created.toEpochMilli())
+                    .jsonPath('$.modified').isEqualTo(user.modified.toEpochMilli())
+    }
+    
+    def "should load minimal user presentation by id"() {
+        
+        given:
+            def user = userTestHelper.newUser("Not admin")
+            user.phoneNumber = "testphonenumber"
+            user.firstName = "First name"
+            user.secondName = "Second name"
+            user.thirdName = "Third name"
+            userDao.update(user).block()
+            def token = unsafeTokenService.generateNewToken(user)
+        when:
+            def response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/registration/user/minimal/$user.id")
+                .exchange()
+        then:
+            response.expectStatus().isOk()
+                .expectBody()
+                    .jsonPath('$').isNotEmpty()
+                    .jsonPath('$.email').isEqualTo(user.email)
+                    .jsonPath('$.firstName').isEqualTo(user.firstName)
+                    .jsonPath('$.secondName').isEqualTo(user.secondName)
+                    .jsonPath('$.thirdName').isEqualTo(user.thirdName)
+                    .jsonPath('$.phoneNumber').isEqualTo(user.phoneNumber)
+        when:
+            response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/registration/user/$user.id")
+                .exchange()
+        then:
+            response.expectStatus().isForbidden()
     }
     
     def "should not load user by id without token or under other organization"() {
@@ -133,7 +182,7 @@ class UserHandlerTest extends RegistrationSpecification {
         given:
             def org1 = userTestHelper.newOrg()
             def org2 = userTestHelper.newOrg()
-            def user1 = userTestHelper.newUser("TestUser1", org1)
+            def user1 = userTestHelper.newUser("TestUser1", org1, AccessRole.USER_MANAGER)
             def user2 = userTestHelper.newUser("TestUser2", org2)
             def token = unsafeTokenService.generateNewToken(user1)
         when:
@@ -157,7 +206,7 @@ class UserHandlerTest extends RegistrationSpecification {
         given:
             def org1 = userTestHelper.newOrg()
             def org2 = userTestHelper.newOrg()
-            def user1 = userTestHelper.newUser("TestUser1", org1)
+            def user1 = userTestHelper.newUser("TestUser1", org1, AccessRole.USER_MANAGER)
             def user2 = userTestHelper.newUser("TestUser2", org1)
             def user3 = userTestHelper.newUser("TestUser3", org1)
             def user4 = userTestHelper.newUser("TestUser4", org2)
@@ -189,7 +238,7 @@ class UserHandlerTest extends RegistrationSpecification {
             def secondOrgContactsCount = 5
     
             def firstOrg = userTestHelper.newOrg()
-            def firstUser = userTestHelper.newUser("User1", firstOrg)
+            def firstUser = userTestHelper.newUser("User1", firstOrg, AccessRole.USER_MANAGER)
     
             def secondOrg = userTestHelper.newOrg()
     
@@ -207,8 +256,8 @@ class UserHandlerTest extends RegistrationSpecification {
             response.expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
-                .jsonPath('$.totalSize').isEqualTo(20)
-                .jsonPath('$.resources').value(hasSize(5))
+                    .jsonPath('$.totalSize').isEqualTo(20)
+                    .jsonPath('$.resources').value(hasSize(5))
         when:
             response = client.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
@@ -218,7 +267,7 @@ class UserHandlerTest extends RegistrationSpecification {
             response.expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
-                .jsonPath('$.totalSize').isEqualTo(20)
-                .jsonPath('$.resources').value(hasSize(8))
+                    .jsonPath('$.totalSize').isEqualTo(20)
+                    .jsonPath('$.resources').value(hasSize(8))
     }
 }

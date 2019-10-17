@@ -1,5 +1,7 @@
 package com.ss.jcrm.user.jasync.dao;
 
+import static com.ss.jcrm.jasync.util.JAsyncUtils.toDateTime;
+import static com.ss.jcrm.jasync.util.JAsyncUtils.toJavaInstant;
 import static com.ss.rlib.common.util.ObjectUtils.ifNull;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
@@ -25,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +38,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
         " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\", \"password_version\"";
+        " \"version\", \"email_confirmed\", \"password_version\", \"created\", \"modified\"";
 
     private static final String Q_SELECT_BY_EMAIL = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"email\" = ?";
@@ -47,12 +50,12 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         " from \"${schema}\".\"user\" where \"phone_number\" = ?";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"user\" (\"email\", \"password\", \"salt\", " +
-        "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\")" +
-        " values (?,?,?,?,?,?,?,?,?) returning id";
+        "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\", " +
+        "\"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?) returning id";
 
     private static final String Q_UPDATE = "update \"${schema}\".\"user\" set \"first_name\" = ?, \"second_name\" = ?," +
         " \"third_name\" = ?, \"phone_number\" = ?,  \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
-        " \"email_confirmed\" = ?, \"password_version\" = ? where \"id\" = ? and \"version\" = ?";
+        " \"email_confirmed\" = ?, \"password_version\" = ?, \"modified\" = ? where \"id\" = ? and \"version\" = ?";
 
     private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"${schema}\".\"user\" where \"email\" = ?";
 
@@ -127,6 +130,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         @Nullable String phoneNumber
     ) {
 
+        var currentTime = Instant.now();
         return insert(
             queryInsert,
             Arrays.asList(
@@ -138,7 +142,9 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 StringUtils.emptyIfNull(firstName),
                 StringUtils.emptyIfNull(secondName),
                 StringUtils.emptyIfNull(thirdName),
-                phoneNumber
+                phoneNumber,
+                toDateTime(currentTime),
+                toDateTime(currentTime)
             ),
             id -> new DefaultUser(
                 id,
@@ -150,6 +156,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 secondName,
                 thirdName,
                 phoneNumber,
+                currentTime,
+                currentTime,
                 0,
                 0
             )
@@ -200,6 +208,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     @Override
     public @NotNull Mono<Boolean> update(@NotNull User user) {
+        var now = Instant.now();
+        user.setModified(now);
         return update(
             queryUpdate,
             Arrays.asList(
@@ -212,6 +222,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 user.getVersion() + 1,
                 user.isEmailConfirmed(),
                 user.getPasswordVersion(),
+                toDateTime(now),
                 user.getId(),
                 user.getVersion()
             ),
@@ -278,6 +289,9 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
             Dao::requireById
         );
 
+        var created = toJavaInstant(data.getAs(14));
+        var modified = toJavaInstant(data.getAs(15));
+
         return Flux.concat(groupsAsync, orgAsync)
             .last().map(ignore -> new DefaultUser(
                 id,
@@ -287,6 +301,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 secondName,
                 thirdName,
                 phoneNumber,
+                created,
+                modified,
                 password,
                 salt,
                 roles,

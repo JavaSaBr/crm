@@ -134,7 +134,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             loaded == null
     }
     
-    def "should update a simple contact"() {
+    def "should update simple contact correctly"() {
         
         given:
             def assigner = userTestHelper.newUser()
@@ -186,8 +186,8 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             reloaded.version == 1
         when:
             reloaded.thirdName = "Third name 2"
-            simpleContactDao.update(loaded).block()
-            reloaded = simpleContactDao.findById(loaded.id).block()
+            simpleContactDao.update(reloaded).block()
+            reloaded = simpleContactDao.findById(reloaded.id).block()
         then:
             reloaded.version == 2
     }

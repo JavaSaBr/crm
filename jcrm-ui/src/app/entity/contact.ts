@@ -57,7 +57,7 @@ export class Contact extends UniqEntity {
         public thirdName: string | null,
         public birthday: Date | null,
         public created: Date | null,
-        public modified: Date | number,
+        public modified: Date | null,
         public phoneNumbers: ContactPhoneNumber[] | null,
         public emails: ContactEmail[] | null,
         public sites: ContactSite[] | null,

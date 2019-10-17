@@ -11,6 +11,7 @@ import com.ss.jcrm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
+import java.time.Instant
 import java.util.concurrent.CompletionException
 
 class JAsyncUserDaoTest extends JAsyncUserSpecification {
@@ -27,7 +28,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
     @Autowired
     PasswordService passwordService
 
-    def "should create and load a new user"() {
+    def "should create and load new user"() {
 
         given:
             def org = userTestHelper.newOrg()
@@ -54,7 +55,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             loaded.getRoles().size() == 1
     }
 
-    def "should prevent creating a user with the same name"() {
+    def "should prevent creating user with the same name"() {
 
         given:
             userTestHelper.newUser("User1")
@@ -64,71 +65,81 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             thrown DuplicateObjectDaoException
     }
 
-    def "should load a changed user with correct version"() {
+    def "should load changed user with correct version"() {
 
         given:
             def user = userTestHelper.newUser("User1")
         when:
             userDao.update(user).block()
         then:
-            user.getVersion() == 1
+            user.version == 1
         when:
             def user2 = userDao.findById(user.getId()).block()
         then:
             user2 != null
-            user2.getEmail() == user.getEmail()
-            user2.getId() == user.getId()
-            user2.getVersion() == user.getVersion()
+            user2.email == user.email
+            user2.id == user.id
+            user2.version == user.version
     }
 
     def "should update user correctly"() {
 
         given:
-        def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrg()
             def group1 = userTestHelper.newGroup(org)
             def group2 = userTestHelper.newGroup(org)
             def user = userTestHelper.newUser("User1", org)
-            user.setFirstName("First name")
-            user.setSecondName("Second name")
-            user.setThirdName("Third name")
-            user.setPhoneNumber("Phone number")
-            user.setRoles(Set.of(AccessRole.SUPER_ADMIN, AccessRole.ORG_ADMIN))
-            user.setGroups(Set.of(group1, group2))
-            user.setEmailConfirmed(true)
-            user.setPasswordVersion(3)
+            def timeAfterCreation = Instant.now()
         when:
-            userDao.update(user).block()
+            def loaded = userDao.findById(user.id).block()
+            def prevModified = loaded.modified
         then:
-            user.getVersion() == 1
+            loaded != null
+            loaded.id == user.id
+            loaded.email == "User1"
+            loaded.created.isBefore(timeAfterCreation)
+            loaded.organization == org
         when:
-            def user2 = userDao.findById(user.getId()).block()
+            Thread.sleep(1000)
+            loaded.firstName = "First name"
+            loaded.secondName = "Second name"
+            loaded.thirdName = "Third name"
+            loaded.phoneNumber = "Phone number"
+            loaded.roles = Set.of(AccessRole.SUPER_ADMIN, AccessRole.ORG_ADMIN)
+            loaded.groups = Set.of(group1, group2)
+            loaded.emailConfirmed = true
+            loaded.passwordVersion = 3
+            userDao.update(loaded).block()
+            def reloaded = userDao.findById(loaded.id).block()
         then:
-            user2 != null
-            user2.getEmail() == user.getEmail()
-            user2.getId() == user.getId()
-            user2.getFirstName() == user.getFirstName()
-            user2.getSecondName() == user.getSecondName()
-            user2.getThirdName() == user.getThirdName()
-            user2.getPhoneNumber() == user.getPhoneNumber()
-            user2.getVersion() == user.getVersion()
-            user2.getRoles().size() == 2
-            user2.getGroups().size() == 2
-            user2.isEmailConfirmed() == user.isEmailConfirmed()
-            user2.getPasswordVersion() == 3
+            reloaded.id == loaded.id
+            reloaded.firstName == loaded.firstName
+            reloaded.secondName == loaded.secondName
+            reloaded.thirdName == loaded.thirdName
+            reloaded.phoneNumber == loaded.phoneNumber
+            reloaded.modified.isAfter(reloaded.created)
+            reloaded.modified.isAfter(prevModified)
+            reloaded.version == 1
+        when:
+            reloaded.thirdName = "Third name 2"
+            userDao.update(reloaded).block()
+            reloaded = userDao.findById(reloaded.id).block()
+        then:
+            reloaded.version == 2
     }
 
-    def "should throw NotActualObjectDaoException during changing a user"() {
+    def "should throw NotActualObjectDaoException during upating outdated user"() {
 
         given:
             def user = userTestHelper.newUser("User1")
-            user.setVersion(-1)
+            user.version = -1
         when:
             userDao.update(user).block()
         then:
             thrown NotActualObjectDaoException
     }
 
-    def "should load a user by name"() {
+    def "should load user by email"() {
 
         given:
             userTestHelper.newUser("User1")
@@ -136,13 +147,13 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             def user = userDao.findByEmail("User1").block()
         then:
             user != null
-            user.getEmail() == "User1"
-            user.getSalt() != null
-            user.getId() != 0L
-            user.getOrganization() != null
+            user.email == "User1"
+            user.salt != null
+            user.id != 0L
+            user.organization != null
     }
     
-    def "should load a user by phone number"() {
+    def "should load user by phone number"() {
     
         given:
             userTestHelper.newUser("User1", "+24223423")
@@ -150,13 +161,13 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             def user = userDao.findByPhoneNumber("+24223423").block()
         then:
             user != null
-            user.getEmail() == "User1"
-            user.getSalt() != null
-            user.getId() != 0L
-            user.getOrganization() != null
+            user.email == "User1"
+            user.salt != null
+            user.id != 0L
+            user.organization != null
     }
 
-    def "should found created user by name"() {
+    def "should found created user by email"() {
 
         given:
             def user = userTestHelper.newUser()
@@ -166,7 +177,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             exist
     }
     
-    def "should find users by names under the same org"() {
+    def "should find users by names or email under the same org"() {
         
         given:
             def org1 = userTestHelper.newOrg()
@@ -206,7 +217,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             users.size() == 1
     }
     
-    def "should find users by names under the same org on russian"() {
+    def "should find users by names or email under the same org on russian"() {
         
         given:
             def org1 = userTestHelper.newOrg()

@@ -181,7 +181,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             passwordService.hash(password, salt),
             salt,
             organization,
-            onlyOrgAdminRole(),
+            Set.of(),
             null,
             null,
             null,

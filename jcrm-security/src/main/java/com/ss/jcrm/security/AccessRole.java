@@ -15,7 +15,17 @@ import java.util.stream.Stream;
 public enum AccessRole implements HasId {
     SUPER_ADMIN(1, "Super administrator"),
     ORG_ADMIN(2, "Organization administrator"),
-    CURATOR(3, "Curator");
+    CURATOR(3, "Curator"),
+    USER_MANAGER(4, "User manager"),
+
+    CREATE_USER(100, "Create user"),
+    CHANGE_USER(101, "Change user"),
+    VIEW_USERS(102, "View users"),
+    DELETE_USER(103, "Delete user"),
+
+    ;
+
+    public static final AccessRole[] EMPTY_ARRAY = new AccessRole[0];
 
     private static final AccessRole[] ID_TO_ROLE;
 

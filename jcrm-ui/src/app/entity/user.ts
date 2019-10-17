@@ -1,9 +1,19 @@
-import {UniqEntity} from '@app/entity/uniq-entity';
+import {UserResource} from '@app/resource/user-resource';
+import {MinimalUser} from '@app/entity/minimal-user';
 
-export class User extends UniqEntity {
+export class User extends MinimalUser {
 
     public static create(): User {
-        return new User(null, null, null, null, null);
+        return new User(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
     }
 
     public static copy(user?: User): User {
@@ -12,43 +22,36 @@ export class User extends UniqEntity {
             user ? user.email : null,
             user ? user.firstName : null,
             user ? user.secondName : null,
+            user ? user.thirdName : null,
             user ? user.phoneNumber : null,
+            user ? user.created : null,
+            user ? user.modified : null,
         );
     }
 
-    private _namePresentation: string = null;
+    public static from(resource: UserResource): User {
+        return new User(
+            resource.id,
+            resource.email,
+            resource.firstName,
+            resource.secondName,
+            resource.thirdName,
+            resource.phoneNumber,
+            resource.created ? new Date(resource.created) : null,
+            resource.modified ? new Date(resource.modified) : null
+        );
+    }
 
     constructor(
         id: number | null,
-        public email: string | null,
-        public firstName: string | null,
-        public secondName: string | null,
-        public phoneNumber: string | null,
+        email: string | null,
+        firstName: string | null,
+        secondName: string | null,
+        thirdName: string | null,
+        phoneNumber: string | null,
+        public created: Date | null,
+        public modified: Date | null,
     ) {
-        super(id);
-    }
-
-    get namePresentation(): string {
-
-        if (this._namePresentation == null) {
-            this._namePresentation = this.buildNamePresentation();
-        }
-
-        return this._namePresentation;
-    }
-
-    private buildNamePresentation(): string {
-
-        const names: string[] = [];
-
-        if (this.firstName) {
-            names.push(this.firstName);
-        }
-
-        if (this.secondName) {
-            names.push(this.secondName);
-        }
-
-        return names.length > 0 ? names.join(' ') : this.email;
+        super(id, email, firstName, secondName, thirdName, phoneNumber);
     }
 }

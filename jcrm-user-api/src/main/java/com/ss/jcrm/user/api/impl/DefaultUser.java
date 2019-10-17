@@ -8,6 +8,7 @@ import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.util.Set;
 
 @Setter
@@ -25,6 +26,9 @@ public class DefaultUser implements User {
     private String secondName;
     private String thirdName;
     private String phoneNumber;
+
+    private Instant created;
+    private Instant modified;
 
     private byte[] password;
     private byte[] salt;
@@ -48,6 +52,8 @@ public class DefaultUser implements User {
         @Nullable String secondName,
         @Nullable String thirdName,
         @Nullable String phoneNumber,
+        @NotNull Instant created,
+        @NotNull Instant modified,
         int version,
         int passwordVersion
     ) {
@@ -57,6 +63,8 @@ public class DefaultUser implements User {
         this.password = password;
         this.salt = salt;
         this.roles = roles;
+        this.created = created;
+        this.modified = modified;
         this.version = version;
         this.firstName = firstName;
         this.secondName = secondName;
