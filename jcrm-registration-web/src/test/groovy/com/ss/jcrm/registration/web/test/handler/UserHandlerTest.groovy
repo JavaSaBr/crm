@@ -270,4 +270,33 @@ class UserHandlerTest extends RegistrationSpecification {
                     .jsonPath('$.totalSize').isEqualTo(20)
                     .jsonPath('$.resources').value(hasSize(8))
     }
+    
+    def "should load minimal users by ids"() {
+        
+        given:
+            def org1 = userTestHelper.newOrg()
+            def org2 = userTestHelper.newOrg()
+            def user1 = userTestHelper.newUser("TestUser1", org1)
+            def user2 = userTestHelper.newUser("TestUser2", org1)
+            def user3 = userTestHelper.newUser("TestUser3", org1)
+            def user4 = userTestHelper.newUser("TestUser4", org2)
+            def token = unsafeTokenService.generateNewToken(user1)
+            
+            long[] ids = [user1.id, user2.id, user3.id]
+        
+        when:
+            def response = client.post()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/registration/users/minimal/ids")
+                .body(ids)
+                .exchange()
+        then:
+            response.expectStatus().isOk()
+                .expectBody()
+                    .jsonPath('$').isNotEmpty()
+                    .jsonPath('$').value(hasSize(3))
+                    .jsonPath('$[*].id').value(containsInAnyOrder(
+                        (int) user1.id, (int) user2.id, (int) user3.id)
+            )
+    }
 }

@@ -22,14 +22,14 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
             return Promise.resolve([]);
         } else {
             return this.securityService.postRequest<MinimalUserResource[]>(`${environment.registrationUrl}/users/minimal/ids`, ids)
-                .then(response => response.body.map(entity => MinimalUser.from(entity)))
+                .then(response => response.body.map(resource => MinimalUser.from(resource)))
                 .catch(reason => this.errorService.convertError(reason));
         }
     }
 
-    public searchByName(name: string): Promise<User[]> {
-        return this.securityService.getRequest<UserResource[]>(`${environment.registrationUrl}/search/user/name/${name}`)
-            .then(value => value.body.map(user => this.convert(user)))
+    public searchByName(name: string): Promise<MinimalUser[]> {
+        return this.securityService.getRequest<MinimalUserResource[]>(`${environment.registrationUrl}/search/user/name/${name}`)
+            .then(value => value.body.map(resource => MinimalUser.from(resource)))
             .catch(reason => this.errorService.convertError(reason));
     }
 

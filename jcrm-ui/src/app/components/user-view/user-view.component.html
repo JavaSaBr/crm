@@ -1,0 +1,34 @@
+<div fxLayout="column" fxFlex="100%" class="contact-info-container">
+  <div fxLayout="row" fxFlex="100%" class="contact-info-header">
+    <p>{{ 'CONTACT.VIEW.LABELS.ABOUT' | translate }}</p>
+  </div>
+  <form [formGroup]="entityFormGroup">
+    <mat-form-field class="form-field">
+      <mat-label>{{ 'CONTACT.FIELD.FIRST_NAME' | translate }}</mat-label>
+      <input matInput formControlName="firstName" required>
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>{{ 'CONTACT.FIELD.SECOND_NAME' | translate }}</mat-label>
+      <input matInput formControlName="secondName" required>
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>{{ 'CONTACT.FIELD.THIRD_NAME' | translate }}</mat-label>
+      <input matInput formControlName="thirdName">
+    </mat-form-field>
+  </form>
+  <div fxLayout="row" fxFlex="100%" class="contact-info-button-container" fxLayoutAlign="end center">
+    <button *ngIf="!editing" class="contact-info-button" mat-raised-button color="primary">
+      {{ 'CONTACT.VIEW.ACTIONS.EDIT' | translate }}
+    </button>
+    <button *ngIf="editing && entity && entity.id"
+            [disabled]="disabled || !entityFormGroup.valid || !hasChanges"
+            class="contact-info-button" mat-raised-button color="primary" (click)="updateEntity()">
+      {{ 'CONTACT.VIEW.ACTIONS.SAVE' | translate }}
+    </button>
+    <button *ngIf="editing && entity && !entity.id"
+            [disabled]="disabled || !entityFormGroup.valid"
+            class="contact-info-button" mat-raised-button color="primary" (click)="createEntity()">
+      {{ 'CONTACT.VIEW.ACTIONS.CREATE' | translate }}
+    </button>
+  </div>
+</div>

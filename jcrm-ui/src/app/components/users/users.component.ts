@@ -36,6 +36,7 @@ export class UsersComponent extends AbstractEntityTableComponent<User> implement
         'creation_date',
         'full_name',
         'email',
+        'actions',
     ];
 
     constructor(
@@ -89,7 +90,7 @@ export class UsersComponent extends AbstractEntityTableComponent<User> implement
         const now = new Date();
         const currentDate = now.getDate();
 
-        const created = new Date(); //TODO contact.created;
+        const created = user.created;
         const createdDate = created.getDate();
 
         if (currentDate === createdDate) {
@@ -97,5 +98,9 @@ export class UsersComponent extends AbstractEntityTableComponent<User> implement
         } else {
             return `${this.datePipe.transform(created, 'yyyy/mm/dd HH:mm')}`;
         }
+    }
+
+    openUser(row: User) {
+
     }
 }

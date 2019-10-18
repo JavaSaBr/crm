@@ -7,6 +7,7 @@ import {UserRepository} from '@app/repository/user/user.repository';
 import {Observable} from 'rxjs';
 import {MultiEntityInput} from '@app/input/multi-entity-input';
 import {UserAutoCompleter} from '@app/util/auto-completer/user-auto-completer';
+import {MinimalUser} from '@app/entity/minimal-user';
 
 @Component({
     selector: 'users-input',
@@ -20,7 +21,7 @@ import {UserAutoCompleter} from '@app/util/auto-completer/user-auto-completer';
         '(focusout)': 'onTouched()',
     }
 })
-export class UsersInput extends MultiEntityInput<User> {
+export class UsersInput extends MultiEntityInput<MinimalUser> {
 
     constructor(
         ngControl: NgControl,
@@ -35,17 +36,17 @@ export class UsersInput extends MultiEntityInput<User> {
         return 'users-input';
     }
 
-    protected displayWith(user?: User): string {
-        return user instanceof User ? user.namePresentation : '';
+    protected displayWith(user?: MinimalUser): string {
+        return user instanceof MinimalUser ? user.namePresentation : '';
     }
 
-    protected installAutoComplete(): Observable<User[]> {
+    protected installAutoComplete(): Observable<MinimalUser[]> {
         return UserAutoCompleter.install(this.entityControl, this.userRepository);
     }
 
-    protected inputToEntity(value: any): User | null {
-        if (value instanceof User) {
-            return value as User;
+    protected inputToEntity(value: any): MinimalUser | null {
+        if (value instanceof MinimalUser) {
+            return value as MinimalUser;
         } else {
             return null;
         }

@@ -7,6 +7,7 @@ import {FocusMonitor} from '@angular/cdk/a11y';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {UserAutoCompleter} from '@app/util/auto-completer/user-auto-completer';
 import {Observable} from 'rxjs';
+import {MinimalUser} from '@app/entity/minimal-user';
 
 @Component({
     selector: 'user-input',
@@ -20,7 +21,7 @@ import {Observable} from 'rxjs';
         '(focusout)': 'onTouched()',
     }
 })
-export class UserInput extends SingleEntityInput<User> {
+export class UserInput extends SingleEntityInput<MinimalUser> {
 
     constructor(
         ngControl: NgControl,
@@ -35,17 +36,17 @@ export class UserInput extends SingleEntityInput<User> {
         return 'user-input';
     }
 
-    displayWith(user: User | null): string {
-        return user instanceof User ? user.namePresentation : '';
+    displayWith(user: MinimalUser | null): string {
+        return user instanceof MinimalUser ? user.namePresentation : '';
     }
 
-    protected installAutoComplete(): Observable<User[]> {
+    protected installAutoComplete(): Observable<MinimalUser[]> {
         return UserAutoCompleter.install(this.entityControl, this.userRepository);
     }
 
     writeValue(value: any): void {
 
-        if (value instanceof User) {
+        if (value instanceof MinimalUser) {
             this.value = value;
         } else {
             this.value = null;

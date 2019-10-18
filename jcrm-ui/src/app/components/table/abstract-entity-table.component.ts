@@ -10,12 +10,7 @@ import {DatePipe} from '@app/node-modules/@angular/common';
 export abstract class AbstractEntityTableComponent<T extends UniqEntity> implements AfterViewInit {
 
     fabActions: FabButtonElement[] = this.createFabActions();
-    displayedColumns: string[] = [
-        'select',
-        'creation_date',
-        'full_name',
-        'email',
-    ];
+    displayedColumns: string[] = this.createDisplayedColumns();
 
     @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
     @ViewChild(MatSort, {static: false}) sort: MatSort;

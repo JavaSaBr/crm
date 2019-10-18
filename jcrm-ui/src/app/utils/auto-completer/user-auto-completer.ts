@@ -3,10 +3,11 @@ import {Observable} from 'rxjs';
 import {User} from '@app/entity/user';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {BaseAutoCompleter} from '@app/util/auto-completer/base-auto-completer';
+import {MinimalUser} from '@app/entity/minimal-user';
 
-export class UserAutoCompleter extends BaseAutoCompleter<User> {
+export class UserAutoCompleter extends BaseAutoCompleter<MinimalUser> {
 
-    public static install(control: AbstractControl, userRepository: UserRepository): Observable<User[]> {
+    public static install(control: AbstractControl, userRepository: UserRepository): Observable<MinimalUser[]> {
         return new UserAutoCompleter(userRepository, control)._filteredElements;
     }
 

@@ -1,0 +1,38 @@
+@import '../../../../../node_modules/@angular/material/theming';
+
+@mixin contact-view($theme) {
+
+  $foreground: map-get($theme, foreground);
+
+  .tab-content {
+    padding: 14px 0;
+  }
+
+  .contact-info-container {
+    padding: 0 24px;
+    border: 1px solid mat-color($foreground, divider);
+    border-radius: 8px;
+  }
+
+  .contact-info-header {
+    border-bottom-color: mat-color($foreground, disabled);
+    border-bottom-style: solid;
+    border-width: 1px;
+    padding-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .contact-info-button {
+    min-width: 150px;
+  }
+
+  .contact-info-button-container {
+    padding-bottom: 20px;
+  }
+
+  @media only screen and (max-width: 700px) {
+    .tab-content {
+      flex-direction: column;
+    }
+  }
+}

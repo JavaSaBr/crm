@@ -112,14 +112,14 @@ export class ContactViewComponent implements AfterViewInit {
         const curatorIds = this.contact.curators;
 
         if (assignerId != null) {
-            this.userRepository.findById(assignerId)
-                .then(value => this.assigner.setValue(value))
+            this.userRepository.findMinimalById(assignerId)
+                .then(user => this.assigner.setValue(user))
                 .then(() => this.hasChangesInContactInfo = false);
         }
 
         if(curatorIds != null) {
-            this.userRepository.findByIds(curatorIds)
-                .then(value => this.curators.setValue(value))
+            this.userRepository.findMinimalByIds(curatorIds)
+                .then(users => this.curators.setValue(users))
                 .then(() => this.hasChangesInContactInfo = false);
         }
 

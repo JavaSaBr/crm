@@ -68,6 +68,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {SettingsComponent} from '@app/component/settings/settings.component';
 import {GlobalLoadingComponent} from '@app/component/global-loading/global-loading.component';
 import {UsersComponent} from '@app/component/users/users.component';
+import {UserViewComponent} from '@app/component/user-view/user-view.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -107,6 +108,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         SettingsComponent,
         GlobalLoadingComponent,
         UsersComponent,
+        UserViewComponent,
     ],
     imports: [
         BrowserModule,

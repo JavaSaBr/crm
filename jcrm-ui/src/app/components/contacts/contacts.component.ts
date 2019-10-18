@@ -18,6 +18,7 @@ import {EntityPage} from '@app/entity/entity-page';
 import {DatePipe} from '@angular/common';
 import {ErrorService} from '@app/service/error.service';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
+import {MinimalUser} from '@app/entity/minimal-user';
 
 @Component({
     selector: 'app-contacts',
@@ -49,7 +50,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
     ];
 
     dataSource: Contact[] = [];
-    assigners: Map<number, User> = new Map<number, User>();
+    assigners: Map<number, MinimalUser> = new Map<number, MinimalUser>();
 
     selection = new SelectionModel<Contact>(true, []);
 
@@ -118,7 +119,7 @@ export class ContactsComponent extends BaseWorkspaceComponent {
             return Promise.resolve(entityPage);
         }
 
-        return this.userRepository.findByIds(assignerIds)
+        return this.userRepository.findMinimalByIds(assignerIds)
             .then(users => {
                 this.assigners.clear();
                 users.forEach(user => this.assigners.set(user.id, user));
