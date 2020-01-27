@@ -31,6 +31,7 @@ allprojects {
     }
 
     ext {
+        angularVersion = "8.3.23"
         annotationVersion = "17.0.0"
         rlibVersion = "9.5.0"
         lombokVersion = '1.18.4'

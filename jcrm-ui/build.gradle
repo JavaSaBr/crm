@@ -4,7 +4,7 @@ task pullAngularCliImage(type: Exec, group: 'Angular') {
         Boolean.parseBoolean(System.getProperty("useAngularDocker", "true"))
     
     if (useDocker) {
-        commandLine 'docker', 'pull', 'trion/ng-cli'
+        commandLine 'docker', 'pull', "trion/ng-cli:$angularVersion"
     } else {
         commandLine 'echo'
     }
@@ -18,7 +18,7 @@ task installNodeModules(type: Exec, group: 'Angular') {
     
     if (useDocker) {
         commandLine 'docker', 'run', '-u', (getDockerUserId() + ":" + getDockerGroupId()), '--rm', '-v',
-            getDockerMappingFolder(), 'trion/ng-cli', 'npm', 'install'
+            getDockerMappingFolder(), "trion/ng-cli:$angularVersion", 'npm', 'install'
     } else {
         commandLine 'npm', 'install'
     }
@@ -32,7 +32,7 @@ task updateAngular(type: Exec, group: 'Angular') {
     
     if (useDocker) {
         commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-v',
-            getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'update', '--all'
+            getDockerMappingFolder(), "trion/ng-cli:$angularVersion", 'ng', 'update', '--all'
     } else {
         commandLine 'ng', 'update', '--all'
     }
@@ -47,7 +47,7 @@ task buildAngular(type: Exec, group: 'Build') {
     
     if (useDocker) {
         commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-v',
-            getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'build', "--configuration=$env"
+            getDockerMappingFolder(), "trion/ng-cli:$angularVersion", 'ng', 'build', "--configuration=$env"
     } else {
         commandLine 'ng', 'build', "--configuration=$env"
     }
@@ -57,7 +57,7 @@ task buildAngular(type: Exec, group: 'Build') {
 
 task debug(type: Exec, group: 'Application', description: 'Debug front-end') {
     commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-p', '4200:4200', '-v',
-        getDockerMappingFolder(), 'trion/ng-cli', 'ng', 'serve', "--configuration=local-ssl"
+        getDockerMappingFolder(), "trion/ng-cli:$angularVersion", 'ng', 'serve', "--configuration=local-ssl"
 }
 
 static def getDockerUserId() {
