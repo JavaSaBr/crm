@@ -22,6 +22,7 @@ import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -79,10 +80,10 @@ public class WebSecurityConfig {
     @Bean
     @NotNull WebFilter corsWebFilter() {
 
-        var allowOrigin = env.getProperty("cors.allow.origin", String.class, null);
-        var allowMethods = env.getProperty("cors.allow.methods", String.class, null);
-        var maxAge = env.getProperty("cors.max.age", String.class, null);
-        var allowHeaders = env.getProperty("cors.allow.headers", String.class, null);
+        var allowOrigin = env.getProperty("cors.allow.origin", String.class);
+        var allowMethods = env.getProperty("cors.allow.methods", String.class);
+        var maxAge = env.getProperty("cors.max.age", String.class);
+        var allowHeaders = env.getProperty("cors.allow.headers", String.class);
 
         if (allowHeaders == null || maxAge == null || allowMethods == null || allowOrigin == null) {
             return (exchange, chain) -> chain.filter(exchange);
@@ -91,8 +92,10 @@ public class WebSecurityConfig {
         return (exchange, chain) -> {
 
             var request = exchange.getRequest();
+            var uri = request.getURI();
+            var actualScheme = uri.getScheme();
 
-            if (CorsUtils.isCorsRequest(request)) {
+            if (actualScheme == null || CorsUtils.isCorsRequest(request)) {
 
                 var response = exchange.getResponse();
                 var headers = response.getHeaders();
