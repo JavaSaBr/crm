@@ -21,6 +21,7 @@ afterEvaluate {
     
         main = 'com.ss.jcrm.full.web.FullWebApplication'
         jvmArgs = [
+            "--enable-preview",
             "-Dserver.port=8090",
             "-Djavax.mail.username=$smtpUser",
             "-Djavax.mail.password=$smtpPassword",
