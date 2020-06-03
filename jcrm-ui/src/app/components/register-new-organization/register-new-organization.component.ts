@@ -16,7 +16,7 @@ import {AuthenticationInResource} from '@app/resource/authentication-in-resource
 import {Router} from '@angular/router';
 import {environment} from '@app/env/environment';
 import {SecurityService} from '@app/service/security.service';
-import {MatHorizontalStepper} from '@angular/material';
+import {MatHorizontalStepper} from '@app/node-modules/@angular/material/stepper';
 
 @Component({
     selector: 'app-register-new-organization',

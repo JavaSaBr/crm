@@ -2,12 +2,12 @@ import {Component, ElementRef, Input, OnInit, Optional, Self} from '@angular/cor
 import {Country} from '@app/entity/country';
 import {AbstractControl, FormBuilder, FormGroup, NgControl} from '@angular/forms';
 import {PhoneNumber} from '@app/entity/phone-number';
-import {MatFormFieldControl} from '@angular/material';
 import {Observable} from 'rxjs';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {BaseInput} from '../base-input';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {CountryPhoneCodeAutoCompleter} from '@app/util/auto-completer/country-phone-code-auto-completer';
+import {MatFormFieldControl} from '@angular/material/form-field';
 
 @Component({
     selector: 'phone-number-input',

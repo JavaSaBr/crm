@@ -1,5 +1,4 @@
 import {Component, ElementRef} from '@angular/core';
-import {MatFormFieldControl, MatSelectChange} from '@angular/material';
 import {FormControl, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
@@ -8,6 +7,8 @@ import {PhoneNumberValidator} from '../phone-number/phone-number-validator';
 import {PhoneNumber} from '@app/entity/phone-number';
 import {TranslateService} from '@ngx-translate/core';
 import {CountryRepository} from '@app/repository/country/country.repository';
+import {MatFormFieldControl} from '@app/node-modules/@angular/material/form-field';
+import {MatSelectChange} from '@app/node-modules/@angular/material/select';
 
 @Component({
     selector: 'contact-phones-input',

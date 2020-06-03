@@ -1,11 +1,12 @@
 import {AfterViewInit, ViewChild} from '@app/node-modules/@angular/core';
 import {FabButtonElement} from '@app/component/fab-button/fab-button.component';
 import {SelectionModel} from '@app/node-modules/@angular/cdk/collections';
-import {MatPaginator, MatSort, PageEvent} from '@app/node-modules/@angular/material';
 import {UniqEntity} from '@app/entity/uniq-entity';
 import {ErrorService} from '@app/service/error.service';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
 import {DatePipe} from '@app/node-modules/@angular/common';
+import {MatPaginator, PageEvent} from '@app/node-modules/@angular/material/paginator';
+import {MatSort} from '@app/node-modules/@angular/material/sort';
 
 export abstract class AbstractEntityTableComponent<T extends UniqEntity> implements AfterViewInit {
 

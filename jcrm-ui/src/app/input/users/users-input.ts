@@ -1,5 +1,4 @@
 import {Component, ElementRef} from '@angular/core';
-import {MatFormFieldControl} from '@angular/material';
 import {User} from '@app/entity/user';
 import {NgControl} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
@@ -8,6 +7,7 @@ import {Observable} from 'rxjs';
 import {MultiEntityInput} from '@app/input/multi-entity-input';
 import {UserAutoCompleter} from '@app/util/auto-completer/user-auto-completer';
 import {MinimalUser} from '@app/entity/minimal-user';
+import {MatFormFieldControl} from '@app/node-modules/@angular/material/form-field';
 
 @Component({
     selector: 'users-input',

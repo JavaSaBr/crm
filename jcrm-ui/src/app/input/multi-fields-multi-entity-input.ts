@@ -1,11 +1,12 @@
 import {BaseInput} from '@app/input/base-input';
 import {FormControl, NgControl, ValidationErrors, ValidatorFn} from '@angular/forms';
-import {ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
+import { ElementRef, Input, OnInit, Optional, Self, Directive } from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {Entity} from '@app/entity/entity';
 import {Utils} from '@app/util/utils';
 import {TranslateService} from '@ngx-translate/core';
 
+@Directive()
 export abstract class MultiFieldsMultiEntityInput<T extends Entity> extends BaseInput<T[]> implements OnInit {
 
     protected _entities: T[];

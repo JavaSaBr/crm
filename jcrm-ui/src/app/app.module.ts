@@ -5,30 +5,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from '@app/component/app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {WorkspaceNavBarComponent} from '@app/component/workspace-nav-bar/workspace-nav-bar.component';
-import {
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatCardModule,
-    MatChipsModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatPaginatorModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSnackBarModule,
-    MatStepperModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule
-} from '@angular/material';
 import {WorkspaceSideNavComponent} from '@app/component/workspace-side-nav/workspace-side-nav.component';
 import {WorkspaceComponent} from '@app/component/workspace/workspace.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -69,6 +45,28 @@ import {SettingsComponent} from '@app/component/settings/settings.component';
 import {GlobalLoadingComponent} from '@app/component/global-loading/global-loading.component';
 import {UsersComponent} from '@app/component/users/users.component';
 import {UserViewComponent} from '@app/component/user-view/user-view.component';
+import {MatToolbarModule} from '@app/node-modules/@angular/material/toolbar';
+import {MatSidenavModule} from '@app/node-modules/@angular/material/sidenav';
+import {MatFormFieldModule} from '@app/node-modules/@angular/material/form-field';
+import {MatInputModule} from '@app/node-modules/@angular/material/input';
+import {MatDividerModule} from '@app/node-modules/@angular/material/divider';
+import {MatIconModule} from '@app/node-modules/@angular/material/icon';
+import {MatListModule} from '@app/node-modules/@angular/material/list';
+import {MatGridListModule} from '@app/node-modules/@angular/material/grid-list';
+import {MatStepperModule} from '@app/node-modules/@angular/material/stepper';
+import {MatMenuModule} from '@app/node-modules/@angular/material/menu';
+import {MatButtonModule} from '@app/node-modules/@angular/material/button';
+import {MatAutocompleteModule} from '@app/node-modules/@angular/material/autocomplete';
+import {MatSelectModule} from '@app/node-modules/@angular/material/select';
+import {MatRadioModule} from '@app/node-modules/@angular/material/radio';
+import {MatSnackBarModule} from '@app/node-modules/@angular/material/snack-bar';
+import {MatCardModule} from '@app/node-modules/@angular/material/card';
+import {MatPaginatorModule} from '@app/node-modules/@angular/material/paginator';
+import {MatTableModule} from '@app/node-modules/@angular/material/table';
+import {MatChipsModule} from '@app/node-modules/@angular/material/chips';
+import {MatTabsModule} from '@app/node-modules/@angular/material/tabs';
+import {MatDialogModule} from '@app/node-modules/@angular/material/dialog';
+import {MatTooltipModule} from '@app/node-modules/@angular/material/tooltip';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);

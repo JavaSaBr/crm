@@ -5,5 +5,5 @@ ext {
 
 dependencies {
     compile project(":jcrm-base-spring")
-    testCompileOnly project(":jcrm-integration-test")
+    testCompile project(":jcrm-integration-test")
 }

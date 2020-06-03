@@ -1,12 +1,14 @@
 import {BaseInput} from '@app/input/base-input';
 import {FormControl, NgControl} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {ElementRef, Input, OnInit, Optional, Self, ViewChild} from '@angular/core';
+import { ElementRef, Input, OnInit, Optional, Self, ViewChild, Directive } from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
 import {UniqEntity} from '@app/entity/uniq-entity';
+import {MatAutocomplete, MatAutocompleteSelectedEvent} from '@app/node-modules/@angular/material/autocomplete';
+import {MatChipInputEvent} from '@app/node-modules/@angular/material/chips';
 
+@Directive()
 export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T[]> implements OnInit {
 
     protected static readonly DEFAULT_SEPARATOR_KEYS_CODES: number[] = [ENTER, COMMA];
@@ -26,10 +28,10 @@ export abstract class MultiEntityInput<T extends UniqEntity> extends BaseInput<T
     @Input("addOnBlur")
     addOnBlur = false;
 
-    @ViewChild('entityInput', {static: false})
+    @ViewChild('entityInput')
     entityInput: ElementRef<HTMLInputElement>;
 
-    @ViewChild('auto', {static: false})
+    @ViewChild('auto')
     matAutocomplete: MatAutocomplete;
 
     protected constructor(

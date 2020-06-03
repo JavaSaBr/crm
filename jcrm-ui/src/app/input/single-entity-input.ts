@@ -1,10 +1,11 @@
 import {BaseInput} from '@app/input/base-input';
 import {FormControl, NgControl} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
+import { ElementRef, Input, OnInit, Optional, Self, Directive } from '@angular/core';
 import {FocusMonitor} from '@angular/cdk/a11y';
-import {MatAutocompleteSelectedEvent} from '@angular/material';
+import {MatAutocompleteSelectedEvent} from '@app/node-modules/@angular/material/autocomplete';
 
+@Directive()
 export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnInit {
 
     readonly entityControl: FormControl;

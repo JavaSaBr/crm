@@ -1,10 +1,11 @@
-import {ElementRef, Input, OnDestroy} from '@angular/core';
-import {MatFormFieldControl} from '@angular/material';
+import { ElementRef, Input, OnDestroy, Directive } from '@angular/core';
 import {ControlValueAccessor, NgControl} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
+import {MatFormFieldControl} from '@app/node-modules/@angular/material/form-field';
 
+@Directive()
 export class BaseInput<T> implements MatFormFieldControl<T>, OnDestroy, ControlValueAccessor {
 
     static nextId = 0;

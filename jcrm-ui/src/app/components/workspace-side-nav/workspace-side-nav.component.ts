@@ -1,10 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {MatSidenav} from '@angular/material';
 import {WorkspaceSideMenuService} from '@app/service/workspace-side-menu.service';
 import {WorkspaceService} from '@app/service/workspace.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {BaseWorkspaceComponent} from '@app/component/workspace/workspace.component';
+import {MatSidenav} from '@app/node-modules/@angular/material/sidenav';
 
 @Component({
     selector: 'app-workspace-side-nav',

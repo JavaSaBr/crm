@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {MatSnackBar} from '@angular/material';
 import {ErrorResponse} from '@app/error/error-response';
 import {TranslateService} from '@ngx-translate/core';
 import {HttpErrorResponse} from '@angular/common/http';
+import {MatSnackBar} from '@app/node-modules/@angular/material/snack-bar';
 
 @Injectable({
     providedIn: 'root'

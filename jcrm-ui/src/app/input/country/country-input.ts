@@ -1,12 +1,12 @@
 import {BaseInput} from '@app/input/base-input';
 import {Country} from '@app/entity/country';
 import {Component, ElementRef, Input, OnInit, Optional, Self} from '@angular/core';
-import {MatFormFieldControl} from '@angular/material';
 import {AbstractControl, FormBuilder, FormGroup, NgControl} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {Observable} from 'rxjs';
 import {CountryAutocompleter} from '@app/util/auto-completer/country-autocompleter';
+import {MatFormFieldControl} from '@angular/material/form-field';
 
 @Component({
     selector: 'country-input',
