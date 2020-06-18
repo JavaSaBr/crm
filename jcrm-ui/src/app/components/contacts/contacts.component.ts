@@ -1,6 +1,6 @@
-import {Component, Type, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {FabButtonElement} from '@app/component/fab-button/fab-button.component';
-import {BaseWorkspaceComponent, WorkspaceComponent} from '@app/component/workspace/workspace.component';
+import {WorkspaceComponent} from '@app/component/workspace/workspace.component';
 import {WorkspaceService} from '@app/service/workspace.service';
 import {Contact} from '@app/entity/contact';
 import {ContactRepository} from '@app/repository/contact/contact.repository';
@@ -11,7 +11,6 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {MatSort} from '@angular/material/sort';
 import {merge} from 'rxjs';
 import {catchError, map, startWith, switchMap} from 'rxjs/operators';
-import {User} from '@app/entity/user';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {Utils} from '@app/util/utils';
 import {EntityPage} from '@app/entity/entity-page';
@@ -19,6 +18,7 @@ import {DatePipe} from '@angular/common';
 import {ErrorService} from '@app/service/error.service';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
 import {MinimalUser} from '@app/entity/minimal-user';
+import {BaseWorkspaceComponent} from '@app/component/workspace/base-workspace.component';
 
 @Component({
     selector: 'app-contacts',

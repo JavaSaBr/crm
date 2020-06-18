@@ -1,8 +1,6 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {FabButtonElement} from '@app/component/fab-button/fab-button.component';
 import {Router} from '@angular/router';
-import {merge} from 'rxjs';
-import {catchError, map, startWith, switchMap} from 'rxjs/operators';
 import {User} from '@app/entity/user';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {EntityPage} from '@app/entity/entity-page';
@@ -10,6 +8,7 @@ import {DatePipe} from '@angular/common';
 import {ErrorService} from '@app/service/error.service';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
 import {AbstractEntityTableComponent} from '@app/component/table/abstract-entity-table.component';
+import {UserWorkspaceComponent} from '@app/component/user/workspace/user-workspace.component';
 
 @Component({
     selector: 'app-users',
@@ -17,21 +16,20 @@ import {AbstractEntityTableComponent} from '@app/component/table/abstract-entity
     styleUrls: ['./users.component.css'],
     host: {'class': 'flex-column'}
 })
-export class UsersComponent extends AbstractEntityTableComponent<User> implements AfterViewInit {
+export class UsersComponent extends AbstractEntityTableComponent<User> {
 
-    public static readonly COMPONENT_NAME = 'users';
+    public static readonly componentName = 'users';
 
-    private static readonly FAB_ACTIONS: FabButtonElement[] = [
+    private static readonly fabActions: FabButtonElement[] = [
         {
-            //routerLink: `../${ContactWorkspaceComponent.COMPONENT_NAME}/${ContactWorkspaceComponent.NEW_MODE}`,
-            routerLink: `./user/new`,
+            routerLink: `../${UserWorkspaceComponent.componentName}/${UserWorkspaceComponent.modeNew}`,
             icon: 'perm_identity',
             tooltip: 'Add new user',
             callback: null
         }
     ];
 
-    private static readonly DISPLAYED_COLUMNS: string[] = [
+    private static readonly displayedColumns: string[] = [
         'select',
         'creation_date',
         'full_name',
@@ -50,42 +48,18 @@ export class UsersComponent extends AbstractEntityTableComponent<User> implement
     }
 
     createDisplayedColumns(): string[] {
-        return UsersComponent.DISPLAYED_COLUMNS;
+        return UsersComponent.displayedColumns;
     }
 
     createFabActions(): FabButtonElement[] {
-        return UsersComponent.FAB_ACTIONS;
+        return UsersComponent.fabActions;
     }
 
-    ngAfterViewInit(): void {
-        merge(this.sort.sortChange, this.paginator.page)
-            .pipe(
-                startWith({}),
-                switchMap(() => this.startLoadingUsers()),
-                map(data => this.finishLoadingContacts(data)),
-                catchError(reason => {
-                    this.globalLoadingService.decreaseLoading();
-                    this.errorService.showError(reason);
-                    return Promise.resolve([]);
-                })
-            )
-            .subscribe(data => this.dataSource = data);
-    }
-
-    private startLoadingUsers(): Promise<EntityPage<User>> {
-        this.globalLoadingService.increaseLoading();
-        const pageSize = this.paginator.pageSize;
-        const offset = this.paginator.pageIndex * pageSize;
+    loadEntityPage(pageSize: number, offset: number): Promise<EntityPage<User>> {
         return this.userRepository.findEntityPage(pageSize, offset);
     }
 
-    private finishLoadingContacts(entityPage: EntityPage<User>): User[] {
-        this.globalLoadingService.decreaseLoading();
-        this.resultsLength = entityPage.totalSize;
-        return entityPage.entities;
-    }
-
-    buildCreated(user: User): string {
+    createdToString(user: User): string {
 
         const now = new Date();
         const currentDate = now.getDate();
@@ -100,7 +74,6 @@ export class UsersComponent extends AbstractEntityTableComponent<User> implement
         }
     }
 
-    openUser(row: User) {
-
+    openEntity(entity: User) {
     }
 }

@@ -7,6 +7,7 @@ import {AuthenticationComponent} from '@app/component/authentication/authenticat
 import {ContactsComponent} from '@app/component/contacts/contacts.component';
 import {ContactWorkspaceComponent} from '@app/component/contact/workspace-component/contact-workspace.component';
 import {SettingsComponent} from '@app/component/settings/settings.component';
+import {UserWorkspaceComponent} from '@app/component/user/workspace/user-workspace.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/' + WorkspaceComponent.COMPONENT_NAME, pathMatch: 'full'},
@@ -27,12 +28,17 @@ const routes: Routes = [
                 component: ContactWorkspaceComponent
             },
             {
-                path: SettingsComponent.COMPONENT_NAME,
-                component: SettingsComponent
+                path: SettingsComponent.componentName,
+                component: SettingsComponent,
             },
             {
-                path: `${SettingsComponent.COMPONENT_NAME}/:selectedTab`,
+                path: `${SettingsComponent.componentName}/:selectedTab`,
                 component: SettingsComponent
+            },
+            // user
+            {
+                path: `${SettingsComponent.componentName}/${UserWorkspaceComponent.componentName}/:mode`,
+                component: UserWorkspaceComponent
             },
         ]
     },

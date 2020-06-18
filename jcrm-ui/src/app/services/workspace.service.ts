@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {BaseWorkspaceComponent} from '@app/component/workspace/workspace.component';
+import {BaseWorkspaceComponent} from '@app/component/workspace/base-workspace.component';
 
 @Injectable({
     providedIn: 'root'

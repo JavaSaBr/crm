@@ -44,7 +44,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {SettingsComponent} from '@app/component/settings/settings.component';
 import {GlobalLoadingComponent} from '@app/component/global-loading/global-loading.component';
 import {UsersComponent} from '@app/component/users/users.component';
-import {UserViewComponent} from '@app/component/user-view/user-view.component';
+import {UserViewComponent} from '@app/component/user/view/user-view.component';
 import {MatToolbarModule} from '@app/node-modules/@angular/material/toolbar';
 import {MatSidenavModule} from '@app/node-modules/@angular/material/sidenav';
 import {MatFormFieldModule} from '@app/node-modules/@angular/material/form-field';
@@ -67,6 +67,8 @@ import {MatChipsModule} from '@app/node-modules/@angular/material/chips';
 import {MatTabsModule} from '@app/node-modules/@angular/material/tabs';
 import {MatDialogModule} from '@app/node-modules/@angular/material/dialog';
 import {MatTooltipModule} from '@app/node-modules/@angular/material/tooltip';
+import {UserWorkspaceComponent} from '@app/component/user/workspace/user-workspace.component';
+import {EntityFieldsViewBlockComponent} from '@app/component/entity-view/block/entity/fields/entity-fields-vew-block.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -107,6 +109,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         GlobalLoadingComponent,
         UsersComponent,
         UserViewComponent,
+        UserWorkspaceComponent,
+        EntityFieldsViewBlockComponent,
     ],
     imports: [
         BrowserModule,

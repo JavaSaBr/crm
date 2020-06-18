@@ -1,0 +1,28 @@
+<div fxLayout="row" fxFlex="100%" class="entity-info-header">
+  <p>{{ data.title | translate }}</p>
+</div>
+
+<form [formGroup]="data.entityFormGroup">
+  <mat-form-field *ngFor="let field of data.fields">
+    <mat-label>{{ field.title | translate }}</mat-label>
+    <input matInput formControlName="{{field.formControlName}}" required>
+  </mat-form-field>
+</form>
+
+
+<!--
+<div fxLayout="row" fxFlex="100%" class="entity-info-button-container" fxLayoutAlign="end center">
+  <button *ngIf="!data.editing" class="entity-info-button" mat-raised-button color="primary">
+    {{ 'CONTACT.VIEW.ACTIONS.EDIT' | translate }}
+  </button>
+  <button *ngIf="data.editing && data.entity && data.entity.id"
+          [disabled]="data.disabled || !data.entityFormGroup.valid || !data.hasChanges"
+          class="contact-info-button" mat-raised-button color="primary" (click)="updateEntity()">
+    {{ 'CONTACT.VIEW.ACTIONS.SAVE' | translate }}
+  </button>
+  <button *ngIf="data.editing && data.entity && !data.entity.id"
+          [disabled]="data.disabled || !data.entityFormGroup.valid"
+          class="contact-info-button" mat-raised-button color="primary" (click)="createEntity()">
+    {{ 'CONTACT.VIEW.ACTIONS.CREATE' | translate }}
+  </button>
+</div>-->

@@ -3,6 +3,7 @@
 @import "../app/components/no-auth-home/no-auth-home.component";
 @import "../app/components/app.component";
 @import "../app/components/contact/view/contact-view.component";
+@import "../app/components/entity-view/entity-view.component";
 
 @mixin additional-components($theme) {
 
@@ -22,4 +23,5 @@
   @include no-auth-home($theme);
   @include additional-components($theme);
   @include contact-view($theme);
+  @include entity-view($theme);
 }

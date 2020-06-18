@@ -3,9 +3,12 @@ import {AfterViewInit, Input} from '@app/node-modules/@angular/core';
 import {FormBuilder, FormGroup} from '@app/node-modules/@angular/forms';
 import {TranslateService} from '@app/node-modules/@ngx-translate/core';
 import {ErrorService} from '@app/service/error.service';
+import {EntityViewTab} from '@app/component/entity-view/tab/entity-view-tab';
+import {EntityViewBlockType} from '@app/component/entity-view/block/entity-view-block';
 
 export abstract class EntityViewComponent<T extends Entity> implements AfterViewInit {
 
+    readonly viewBlockType = EntityViewBlockType;
     readonly entityFormGroup: FormGroup;
 
     entity: T | null;
@@ -43,9 +46,11 @@ export abstract class EntityViewComponent<T extends Entity> implements AfterView
         });
     }
 
+    abstract getEntityViewTabs(): EntityViewTab[];
+
     protected abstract buildEntityFormGroup(formBuilder: FormBuilder): FormGroup;
 
-    protected abstract reloadEntity(entity: Entity | null): void;
+    abstract reloadEntity(entity: T | null): void;
 
     createEntity(): void {
     }

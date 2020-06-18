@@ -6,16 +6,23 @@ import {UserRepository} from '@app/repository/user/user.repository';
 import {User} from '@app/entity/user';
 import {ErrorService} from '@app/service/error.service';
 import {EntityViewComponent} from '@app/component/entity-view/entity-view.component';
+import {EntityViewTab} from '@app/component/entity-view/tab/entity-view-tab';
+import {
+    EntityFieldsViewBlock,
+    EntityFieldsViewBlockData
+} from '@app/component/entity-view/block/entity/fields/entity-fields-vew-block.component';
 
 @Component({
     selector: 'app-user-view',
-    templateUrl: './user-view.component.html',
-    styleUrls: ['./user-view.component.scss'],
+    templateUrl: '../../entity-view/entity-view.component.html',
+    styleUrls: ['../../entity-view/entity-view.component.scss'],
 })
 export class UserViewComponent extends EntityViewComponent<User> {
 
     //readonly contactNameMaxLength = environment.contactNameMaxLength;
     //readonly contactCompanyMaxLength = environment.contactCompanyMaxLength;
+
+    readonly entityViewTabs: EntityViewTab[];
 
     readonly firstName: FormControl;
     readonly secondName: FormControl;
@@ -34,6 +41,25 @@ export class UserViewComponent extends EntityViewComponent<User> {
         this.firstName = userFormControls['firstName'] as FormControl;
         this.secondName = userFormControls['secondName'] as FormControl;
         this.thirdName = userFormControls['thirdName'] as FormControl;
+
+        this.entityViewTabs = [
+            new EntityViewTab(
+                'Main',
+                [
+                    new EntityFieldsViewBlock(
+                        new EntityFieldsViewBlockData(
+                            'ABOUT USER',
+                            this.entityFormGroup,
+                            []
+                        )
+                    )
+                ]
+            )
+        ];
+    }
+
+    getEntityViewTabs(): EntityViewTab[] {
+        return this.entityViewTabs;
     }
 
     protected buildEntityFormGroup(formBuilder: FormBuilder) {

@@ -1,38 +1,8 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {SecurityService} from '@app/service/security.service';
 import {NoAuthHomeComponent} from '@app/component/no-auth-home/no-auth-home.component';
 import {WorkspaceService} from '@app/service/workspace.service';
-
-export abstract class BaseWorkspaceComponent implements AfterViewInit {
-
-    protected constructor(protected readonly workspaceService: WorkspaceService) {
-    }
-
-    ngAfterViewInit(): void {
-        setTimeout(() => this.workspaceService.activate(this));
-    }
-
-    getTitle(): string | null {
-        return null;
-    }
-
-    isFullScreen(): boolean {
-        return false;
-    }
-
-    isNeedGlobalSearch(): boolean {
-        return false;
-    }
-
-    isNeedGlobalMenu(): boolean {
-        return false;
-    }
-
-    isNeedContentPadding(): boolean {
-        return false;
-    }
-}
 
 @Component({
     selector: 'app-workspace',

@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {BaseWorkspaceComponent} from '@app/component/workspace/workspace.component';
 import {WorkspaceService} from '@app/service/workspace.service';
 import {Contact} from '@app/entity/contact';
 import {ActivatedRoute} from '@angular/router';
@@ -8,6 +7,7 @@ import {ContactRepository} from '@app/repository/contact/contact.repository';
 import {ContactViewComponent} from '@app/component/contact/view/contact-view.component';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
 import {ErrorService} from '@app/service/error.service';
+import {BaseWorkspaceComponent} from '@app/component/workspace/base-workspace.component';
 
 @Component({
     selector: 'app-new-contact',
@@ -41,7 +41,7 @@ export class ContactWorkspaceComponent extends BaseWorkspaceComponent implements
         return true;
     }
 
-    isNeedContentPadding(): boolean {
+    isNeedLeftRightPadding(): boolean {
         return true;
     }
 

@@ -1,6 +1,6 @@
 @import "../../../../node_modules/@angular/material/theming";
 
-@mixin contact-view($theme) {
+@mixin entity-view($theme) {
 
   $foreground: map-get($theme, foreground);
 
@@ -8,13 +8,13 @@
     padding: 14px 0;
   }
 
-  .contact-info-container {
+  .entity-info-container {
     padding: 0 24px;
     border: 1px solid mat-color($foreground, divider);
     border-radius: 8px;
   }
 
-  .contact-info-header {
+  .entity-info-header {
     border-bottom-color: mat-color($foreground, disabled);
     border-bottom-style: solid;
     border-width: 1px;
@@ -22,11 +22,11 @@
     margin-bottom: 20px;
   }
 
-  .contact-info-button {
+  .entity-info-button {
     min-width: 150px;
   }
 
-  .contact-info-button-container {
+  .entity-info-button-container {
     padding-bottom: 20px;
   }
 

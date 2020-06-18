@@ -3,8 +3,8 @@ import {WorkspaceSideMenuService} from '@app/service/workspace-side-menu.service
 import {WorkspaceService} from '@app/service/workspace.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
-import {BaseWorkspaceComponent} from '@app/component/workspace/workspace.component';
 import {MatSidenav} from '@app/node-modules/@angular/material/sidenav';
+import {BaseWorkspaceComponent} from '@app/component/workspace/base-workspace.component';
 
 @Component({
     selector: 'app-workspace-side-nav',
@@ -45,10 +45,15 @@ export class WorkspaceSideNavComponent implements OnInit {
             return;
         }
 
-        nativeElement.classList.remove('main-view-padding');
+        nativeElement.classList.remove('main-view-left-right-padding');
+        nativeElement.classList.remove('main-view-top-bottom-padding');
 
-        if (component ? component.isNeedContentPadding() : false) {
-            nativeElement.classList.add('main-view-padding');
+        if (component ? component.isNeedLeftRightPadding() : false) {
+            nativeElement.classList.add('main-view-left-right-padding');
+        }
+
+        if (component ? component.isNeedTopBottomPadding() : false) {
+            nativeElement.classList.add('main-view-top-bottom-padding');
         }
     }
 
