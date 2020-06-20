@@ -2,27 +2,37 @@
   <p>{{ data.title | translate }}</p>
 </div>
 
-<form [formGroup]="data.entityFormGroup">
-  <mat-form-field *ngFor="let field of data.fields">
+<form [formGroup]="entityFormGroup">
+  <mat-form-field *ngFor="let field of data.fields" class="form-field">
     <mat-label>{{ field.title | translate }}</mat-label>
-    <input matInput formControlName="{{field.formControlName}}" required>
+
+    <input *ngIf="field.type == fieldType.STRING && !field.required" matInput
+           formControlName="{{field.formControlName}}">
+    <input *ngIf="field.type == fieldType.STRING && field.required" matInput formControlName="{{field.formControlName}}"
+           required>
+
+    <phone-number-input *ngIf="field.type == fieldType.PHONE_NUMBER && !field.required" matInput
+                        formControlName="{{field.formControlName}}"></phone-number-input>
+    <phone-number-input *ngIf="field.type == fieldType.PHONE_NUMBER && field.required" matInput
+                        formControlName="{{field.formControlName}}" required=""></phone-number-input>
+
+    <!-- <mat-error *ngIf="phoneNumber.invalid">{{getPhoneNumberErrorMessage()}}</mat-error> -->
   </mat-form-field>
 </form>
 
-
-<!--
 <div fxLayout="row" fxFlex="100%" class="entity-info-button-container" fxLayoutAlign="end center">
-  <button *ngIf="!data.editing" class="entity-info-button" mat-raised-button color="primary">
+  <button *ngIf="!editing && entityCreated" class="entity-info-button"
+          mat-raised-button color="primary" (click)="startEditing()">
     {{ 'CONTACT.VIEW.ACTIONS.EDIT' | translate }}
   </button>
-  <button *ngIf="data.editing && data.entity && data.entity.id"
-          [disabled]="data.disabled || !data.entityFormGroup.valid || !data.hasChanges"
-          class="contact-info-button" mat-raised-button color="primary" (click)="updateEntity()">
+  <button *ngIf="editing"
+          [disabled]="disabled || !entityFormGroup.valid || !hasChanges" class="contact-info-button"
+          mat-raised-button color="primary" (click)="saveEntity()">
     {{ 'CONTACT.VIEW.ACTIONS.SAVE' | translate }}
   </button>
-  <button *ngIf="data.editing && data.entity && !data.entity.id"
-          [disabled]="data.disabled || !data.entityFormGroup.valid"
-          class="contact-info-button" mat-raised-button color="primary" (click)="createEntity()">
+  <button *ngIf="!entityCreated"
+          [disabled]="disabled || !entityFormGroup.valid" class="contact-info-button"
+          mat-raised-button color="primary" (click)="createEntity()">
     {{ 'CONTACT.VIEW.ACTIONS.CREATE' | translate }}
   </button>
-</div>-->
+</div>

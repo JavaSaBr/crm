@@ -6,8 +6,10 @@ import {ErrorService} from '@app/service/error.service';
 import {OnInit, ViewChild} from '@angular/core';
 import {EntityViewComponent} from '@app/component/entity-view/entity-view.component';
 import {Utils} from '@app/util/utils';
+import {UniqEntity} from '@app/entity/uniq-entity';
 
-export abstract class EntityViewWorkspaceComponent<E, T extends EntityViewComponent<E>> extends BaseWorkspaceComponent implements OnInit {
+export abstract class EntityViewWorkspaceComponent<E extends UniqEntity, T extends EntityViewComponent<E>>
+    extends BaseWorkspaceComponent implements OnInit {
 
     @ViewChild('view', {static: true})
     view: T;

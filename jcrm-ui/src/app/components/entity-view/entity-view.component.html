@@ -1,14 +1,14 @@
 <mat-tab-group>
-  <mat-tab *ngFor="let entityViewTab of getEntityViewTabs()" label="{{entityViewTab.title}}">
+  <mat-tab *ngFor="let entityViewTab of entityViewTabs" label="{{entityViewTab.title}}">
     <div class="tab-content" fxLayout="row" fxLayout.xs="column" fxLayoutGap="24px" fxLayoutGap.xs="14px">
 
-      <div *ngFor="let entityViewBlock of entityViewTab.blocks" fxLayout="column" fxFlex="100%"
-           class="entity-info-container">
+      <div *ngFor="let entityViewBlock of entityViewTab.blocks" fxLayout="column" fxFlex="100%">
 
-        <app-entity-view-entity-fields
+        <app-entity-view-entity-fields fxLayout="column" fxFlex="100%"
             *ngIf="entityViewBlock.type == viewBlockType.entityFieldForm"
             [data]="entityViewBlock.data">
         </app-entity-view-entity-fields>
+
       </div>
 
     </div>

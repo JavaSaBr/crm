@@ -1,13 +1,12 @@
 import {Component} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {Utils} from '@app/util/utils';
 import {UserRepository} from '@app/repository/user/user.repository';
 import {User} from '@app/entity/user';
 import {ErrorService} from '@app/service/error.service';
 import {EntityViewComponent} from '@app/component/entity-view/entity-view.component';
 import {EntityViewTab} from '@app/component/entity-view/tab/entity-view-tab';
 import {
+    EntityFieldDescriptor,
     EntityFieldsViewBlock,
     EntityFieldsViewBlockData
 } from '@app/component/entity-view/block/entity/fields/entity-fields-vew-block.component';
@@ -21,66 +20,61 @@ export class UserViewComponent extends EntityViewComponent<User> {
 
     //readonly contactNameMaxLength = environment.contactNameMaxLength;
     //readonly contactCompanyMaxLength = environment.contactCompanyMaxLength;
-
-    readonly entityViewTabs: EntityViewTab[];
-
-    readonly firstName: FormControl;
-    readonly secondName: FormControl;
-    readonly thirdName: FormControl;
-
     constructor(
         private readonly userRepository: UserRepository,
         translateService: TranslateService,
-        errorService: ErrorService,
-        formBuilder: FormBuilder,
+        errorService: ErrorService
     ) {
-        super(translateService, errorService, formBuilder);
+        super(translateService, errorService);
+    }
 
-        const userFormControls = this.entityFormGroup.controls;
-
-        this.firstName = userFormControls['firstName'] as FormControl;
-        this.secondName = userFormControls['secondName'] as FormControl;
-        this.thirdName = userFormControls['thirdName'] as FormControl;
-
-        this.entityViewTabs = [
+    protected buildEntityViewTabs(): EntityViewTab[] {
+        return [
             new EntityViewTab(
                 'Main',
                 [
-                    new EntityFieldsViewBlock(
-                        new EntityFieldsViewBlockData(
-                            'ABOUT USER',
-                            this.entityFormGroup,
-                            []
-                        )
-                    )
+                    this.buildEntityFieldsViewBlock()
                 ]
             )
         ];
     }
 
-    getEntityViewTabs(): EntityViewTab[] {
-        return this.entityViewTabs;
-    }
-
-    protected buildEntityFormGroup(formBuilder: FormBuilder) {
-        return formBuilder.group({
-            firstName: ['', [
-                Validators.required
-            ]],
-            secondName: ['', [
-                Validators.required
-            ]],
-            thirdName: [''],
-        });
+    private buildEntityFieldsViewBlock() {
+        return new EntityFieldsViewBlock(new EntityFieldsViewBlockData(
+            this,
+            'ABOUT USER',
+            [
+                EntityFieldDescriptor.requiredString(
+                    'First name',
+                    'firstName',
+                    newValue => this.entity.firstName = newValue,
+                    () => this.entity ? this.entity.firstName : ''
+                ),
+                EntityFieldDescriptor.requiredString(
+                    'Second name',
+                    'secondName',
+                    newValue => this.entity.secondName = newValue,
+                    () => this.entity ? this.entity.secondName : ''
+                ),
+                EntityFieldDescriptor.string(
+                    'Third name',
+                    'thirdName',
+                    newValue => this.entity.thirdName = newValue,
+                    () => this.entity ? this.entity.thirdName : ''
+                ),
+                EntityFieldDescriptor.phoneNumber(
+                    'Phone Number',
+                    'phoneNumber',
+                    newValue => this.entity.phoneNumber = newValue,
+                    () => this.entity ? this.entity.phoneNumber : ''
+                ),
+            ]
+            )
+        );
     }
 
     reloadEntity(user: User | null): void {
-
-        this.entity = User.copy(user);
-        this.firstName.setValue(Utils.emptyIfNull(this.entity.firstName));
-        this.secondName.setValue(Utils.emptyIfNull(this.entity.secondName));
-        this.thirdName.setValue(Utils.emptyIfNull(this.entity.thirdName));
-        this.hasChanges = false;
+        this.entityProperty.next(User.copy(user))
     }
 
     createEntity(): void {
@@ -100,9 +94,6 @@ export class UserViewComponent extends EntityViewComponent<User> {
     }
 
     protected syncEntityWithForm(user: User): User {
-        user.firstName = this.firstName.value;
-        user.secondName = this.secondName.value;
-        user.thirdName = this.thirdName.value;
         return user;
     }
 }
