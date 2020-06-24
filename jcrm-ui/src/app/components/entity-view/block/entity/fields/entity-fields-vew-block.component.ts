@@ -3,7 +3,7 @@ import {Component, OnInit, Type} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {
     EditableEntityViewBlock,
-    EntityProvider,
+    EntityControl,
     EntityViewBlock,
     EntityViewBlockData,
     EntityViewBlockType
@@ -11,13 +11,14 @@ import {
 import {EntityViewBlockComponent} from '@app/component/entity-view/block/entity-view-block.component';
 import {PhoneNumberValidator} from '@app/input/phone-number/phone-number-validator';
 import {UniqEntity} from '@app/entity/uniq-entity';
+import {UserValidator} from '@app/util/validator/user-validator';
 
 export class EntityFieldsViewBlockData extends EntityViewBlockData {
 
     readonly title: string;
     readonly fields: EntityFieldDescriptor[];
 
-    constructor(entityProvider: EntityProvider, title: string, fields: EntityFieldDescriptor[]) {
+    constructor(entityProvider: EntityControl, title: string, fields: EntityFieldDescriptor[]) {
         super(entityProvider);
         this.title = title;
         this.fields = fields;
@@ -33,7 +34,8 @@ export class EntityFieldsViewBlock extends EntityViewBlock<EntityFieldsViewBlock
 
 export enum EntityFieldType {
     STRING,
-    PHONE_NUMBER
+    PHONE_NUMBER,
+    EMAIL
 }
 
 export class EntityFieldDescriptor {
@@ -63,6 +65,15 @@ export class EntityFieldDescriptor {
         getter: () => any
     ): EntityFieldDescriptor {
         return new EntityFieldDescriptor(title, formControlName, EntityFieldType.PHONE_NUMBER, setter, getter, false);
+    }
+
+    public static requiredEmail(
+        title: string,
+        formControlName: string,
+        setter: (newValue: any) => void,
+        getter: () => any
+    ): EntityFieldDescriptor {
+        return new EntityFieldDescriptor(title, formControlName, EntityFieldType.EMAIL, setter, getter, true);
     }
 
     title: string;
@@ -126,18 +137,23 @@ export class EntityFieldsViewBlockComponent extends EntityViewBlockComponent<Ent
             }
 
             if (field.type == EntityFieldType.STRING) {
-                group[field.formControlName] = new FormControl(field.currentValue(), validatorOrOpts);
+                group[field.formControlName] = new FormControl(validatorOrOpts);
             } else if (field.type == EntityFieldType.PHONE_NUMBER) {
-                validatorOrOpts.push(PhoneNumberValidator.FUN);
-                group[field.formControlName] = new FormControl(field.currentValue(), validatorOrOpts);
+                validatorOrOpts.push(PhoneNumberValidator.fun);
+                group[field.formControlName] = new FormControl(validatorOrOpts);
+            } else if (field.type == EntityFieldType.EMAIL) {
+                validatorOrOpts.push(Validators.pattern(UserValidator.emailPatter));
+                group[field.formControlName] = new FormControl(validatorOrOpts);
             }
         });
 
         this.entityFormGroup = this.formBuilder.group(group);
         this.entityFormGroup.valueChanges.subscribe(() => this.hasChanges = true);
 
-        this.data.entityProvider.observableEntity()
+        this.data.entityControl.observableEntity()
             .subscribe(value => this.updateEntity(value));
+        this.data.entityControl.observableDisabled()
+            .subscribe(value => this.disabled = value);
     }
 
     setEditing(editing: boolean): void {
@@ -172,10 +188,27 @@ export class EntityFieldsViewBlockComponent extends EntityViewBlockComponent<Ent
     }
 
     saveEntity(): void {
-
+        this.applyForm();
+        this.data.entityControl.saveEntity();
+        this.editing = false;
+        this.hasChanges = false;
     }
 
     createEntity(): void {
+        this.applyForm();
+        this.data.entityControl.createEntity();
+        this.editing = false;
+        this.hasChanges = false;
+    }
 
+    applyForm(): void {
+
+        const controls = this.entityFormGroup.controls;
+        const fields = this.data.fields;
+
+        fields.forEach(field => {
+            const control = controls[field.formControlName];
+            field.updateValue(control.value);
+        });
     }
 }

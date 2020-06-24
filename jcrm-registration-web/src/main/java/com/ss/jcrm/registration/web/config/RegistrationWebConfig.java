@@ -24,7 +24,6 @@ import com.ss.jcrm.web.config.BaseWebConfig;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
@@ -52,13 +51,10 @@ import java.util.List;
 public class RegistrationWebConfig {
 
     private static final RequestPredicate APP_JSON =
-        RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8);
+        RequestPredicates.contentType(MediaType.APPLICATION_JSON);
 
-    @Autowired
     private final Environment env;
-
-    @Autowired
-    private List<? extends Flyway> flyways;
+    private final List<? extends Flyway> flyways;
 
     @Bean
     @NotNull ResourceValidator registrationResourceValidator() {
@@ -162,6 +158,7 @@ public class RegistrationWebConfig {
             .GET(contextPath + "/user/minimal/{id}", userHandler::findMinimalById)
             .POST(contextPath + "/users/minimal/ids", userHandler::findMinimalByIds)
             .GET(contextPath + "/user/{id}", userHandler::findById)
+            .GET(contextPath + "/user", userHandler::create)
             .POST(contextPath + "/users/ids", userHandler::findByIds)
             .GET(contextPath + "/users/page", userHandler::findPage)
             .GET(contextPath + "/exist/user/email/{email}", userHandler::existByEmail)

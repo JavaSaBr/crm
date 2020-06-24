@@ -8,4 +8,5 @@ dependencies {
     compile "com.spaceshift:rlib.logger.slf4j:$rlibVersion"
     compile "io.projectreactor:reactor-core:$projectReactorVersion"
     compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 }

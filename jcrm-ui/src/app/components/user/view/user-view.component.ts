@@ -10,6 +10,7 @@ import {
     EntityFieldsViewBlock,
     EntityFieldsViewBlockData
 } from '@app/component/entity-view/block/entity/fields/entity-fields-vew-block.component';
+import {GlobalLoadingService} from '@app/service/global-loading.service';
 
 @Component({
     selector: 'app-user-view',
@@ -20,21 +21,21 @@ export class UserViewComponent extends EntityViewComponent<User> {
 
     //readonly contactNameMaxLength = environment.contactNameMaxLength;
     //readonly contactCompanyMaxLength = environment.contactCompanyMaxLength;
+
     constructor(
         private readonly userRepository: UserRepository,
         translateService: TranslateService,
-        errorService: ErrorService
+        errorService: ErrorService,
+        globalLoadingService: GlobalLoadingService
     ) {
-        super(translateService, errorService);
+        super(translateService, errorService, globalLoadingService);
     }
 
     protected buildEntityViewTabs(): EntityViewTab[] {
         return [
             new EntityViewTab(
                 'Main',
-                [
-                    this.buildEntityFieldsViewBlock()
-                ]
+                this.buildEntityFieldsViewBlock()
             )
         ];
     }
@@ -48,25 +49,31 @@ export class UserViewComponent extends EntityViewComponent<User> {
                     'First name',
                     'firstName',
                     newValue => this.entity.firstName = newValue,
-                    () => this.entity ? this.entity.firstName : ''
+                    () => this.entity.firstName
                 ),
                 EntityFieldDescriptor.requiredString(
                     'Second name',
                     'secondName',
                     newValue => this.entity.secondName = newValue,
-                    () => this.entity ? this.entity.secondName : ''
+                    () => this.entity.secondName
                 ),
                 EntityFieldDescriptor.string(
                     'Third name',
                     'thirdName',
                     newValue => this.entity.thirdName = newValue,
-                    () => this.entity ? this.entity.thirdName : ''
+                    () => this.entity.thirdName
+                ),
+                EntityFieldDescriptor.requiredEmail(
+                    'Email',
+                    'userEmail',
+                    newValue => this.entity.email = newValue,
+                    () => this.entity.email
                 ),
                 EntityFieldDescriptor.phoneNumber(
                     'Phone Number',
                     'phoneNumber',
                     newValue => this.entity.phoneNumber = newValue,
-                    () => this.entity ? this.entity.phoneNumber : ''
+                    () => this.entity.phoneNumber
                 ),
             ]
             )
@@ -78,15 +85,21 @@ export class UserViewComponent extends EntityViewComponent<User> {
     }
 
     createEntity(): void {
-        this.disabled = true;
+        this.disabledProperty.next(true)
+        this.globalLoadingService.increaseLoading();
+
+        const entity = this.entity;
+
+        console.log(entity);
+
         /*this.contactRepository.create(this.syncContactWithForm(this.contact))
             .then(result => this.reloadEntity(result))
             .catch(reason => this.errorService.showError(reason))
             .finally(() => this.disabled = false);*/
     }
 
-    updateEntity(): void {
-        this.disabled = true;
+    saveEntity(): void {
+        this.disabledProperty.next(true)
         /*this.contactRepository.update(this.syncContactWithForm(this.contact))
             .then(result => this.reloadEntity(result))
             .catch(reason => this.errorService.showError(reason))

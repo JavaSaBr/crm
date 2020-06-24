@@ -47,7 +47,7 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
         const phoneNumberControl = new FormControl(phoneNumber.phoneNumber, {
             validators: [
                 Validators.required,
-                PhoneNumberValidator.FUN
+                PhoneNumberValidator.fun
             ]
         });
         const typeControl = new FormControl(phoneNumber.type, {

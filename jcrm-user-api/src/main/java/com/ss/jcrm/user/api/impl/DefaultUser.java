@@ -4,6 +4,7 @@ import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.UserGroup;
+import com.ss.jcrm.user.contact.api.PhoneNumber;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,8 @@ public class DefaultUser implements User {
     private String firstName;
     private String secondName;
     private String thirdName;
-    private String phoneNumber;
+
+    private PhoneNumber phoneNumber;
 
     private Instant created;
     private Instant modified;
@@ -51,7 +53,7 @@ public class DefaultUser implements User {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
-        @Nullable String phoneNumber,
+        @Nullable PhoneNumber phoneNumber,
         @NotNull Instant created,
         @NotNull Instant modified,
         int version,

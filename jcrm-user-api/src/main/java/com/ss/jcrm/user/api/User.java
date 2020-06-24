@@ -2,6 +2,7 @@ package com.ss.jcrm.user.api;
 
 import com.ss.jcrm.dao.VersionedUniqEntity;
 import com.ss.jcrm.security.AccessRole;
+import com.ss.jcrm.user.contact.api.PhoneNumber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,9 +29,9 @@ public interface User extends VersionedUniqEntity {
 
     void setThirdName(@Nullable String thirdName);
 
-    @Nullable String getPhoneNumber();
+    @Nullable PhoneNumber getPhoneNumber();
 
-    void setPhoneNumber(@Nullable String phoneNumber);
+    void setPhoneNumber(@Nullable PhoneNumber phoneNumber);
 
     @NotNull byte[] getPassword();
 

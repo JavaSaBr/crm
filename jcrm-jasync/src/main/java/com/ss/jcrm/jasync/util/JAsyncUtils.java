@@ -3,6 +3,7 @@ package com.ss.jcrm.jasync.util;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jasync.sql.db.Configuration;
@@ -165,6 +166,35 @@ public class JAsyncUtils {
         }
     }
 
+    public static <T> @Nullable T fromJson(
+        @Nullable String json,
+        @NotNull Class<T> type
+    ) {
+
+        if (StringUtils.isEmpty(json)) {
+            return null;
+        }
+
+        try {
+            return OBJECT_MAPPER.readValue(json, type);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static @Nullable String toJson(@Nullable Object object) {
+
+        if (object == null) {
+            return null;
+        }
+
+        try {
+            return OBJECT_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static <T> @NotNull Set<T> fromJsonIds(
         @Nullable String json,
         @NotNull LongFunction<T> function
@@ -314,6 +344,20 @@ public class JAsyncUtils {
         } else {
             return Utils.uncheckedGet(entities, OBJECT_MAPPER::writeValueAsString);
         }
+    }
+
+    public static @NotNull String buildQueryIdList(@NotNull long[] ids) {
+
+        var condition = new StringBuilder(ids.length * 2);
+
+        for (int i = 0, last = ids.length - 1; i < ids.length; i++) {
+            condition.append('?');
+            if (i != last) {
+                condition.append(',');
+            }
+        }
+
+        return condition.toString();
     }
 
     public static @NotNull ConnectionPoolConfiguration buildPoolConfig(

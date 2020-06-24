@@ -1,0 +1,7 @@
+ext {
+    lombok = "true"
+}
+
+dependencies {
+    compile project(":jcrm-base")
+}

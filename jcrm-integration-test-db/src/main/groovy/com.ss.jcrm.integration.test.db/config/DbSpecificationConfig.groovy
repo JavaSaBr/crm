@@ -20,7 +20,7 @@ class DbSpecificationConfig {
     @Bean(destroyMethod = "stop")
     @NotNull PostgreSQLContainer postgreSQLContainer() {
 
-        def container = new PostgreSQLContainer("postgres:11.1")
+        def container = new PostgreSQLContainer("postgres:12.3")
             .withDatabaseName(DB_NAME)
             .withUsername(USER)
             .withPassword(PWD)

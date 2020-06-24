@@ -9,18 +9,11 @@ import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.jasync.config.JAsyncConfig;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
-import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
-import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserGroupDao;
-import com.ss.jcrm.user.jasync.dao.JAsyncEmailConfirmationDao;
-import com.ss.jcrm.user.jasync.dao.JAsyncOrganizationDao;
-import com.ss.jcrm.user.jasync.dao.JAsyncUserDao;
-import com.ss.jcrm.user.jasync.dao.JAsyncUserGroupDao;
+import com.ss.jcrm.user.api.dao.*;
+import com.ss.jcrm.user.jasync.dao.*;
 import io.netty.channel.EventLoopGroup;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
@@ -37,30 +30,9 @@ import java.util.concurrent.ExecutorService;
 @Import(JAsyncConfig.class)
 public class JAsyncUserConfig {
 
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    private PoolConfiguration dbPoolConfiguration;
-
-    @Autowired
-    private EventLoopGroup dbEventLoopGroup;
-
-    @Autowired
-    private ExecutorService dbExecutor;
-
-    @Autowired
-    private CityDao cityDao;
-
-    @Autowired
-    private IndustryDao industryDao;
-
-    @Autowired
-    private CountryDao countryDao;
-
     @Bean
     @DependsOn("userConnectionPool")
-    @NotNull Flyway userFlyway() {
+    @NotNull Flyway userFlyway(@NotNull Environment env) {
 
         var flyway = Flyway.configure()
             .locations("classpath:com/ss/jcrm/user/db/migration")
@@ -81,7 +53,12 @@ public class JAsyncUserConfig {
     }
 
     @Bean
-    @NotNull ConnectionPool<? extends ConcreteConnection> userConnectionPool() {
+    @NotNull ConnectionPool<? extends ConcreteConnection> userConnectionPool(
+        @NotNull Environment env,
+        @NotNull EventLoopGroup dbEventLoopGroup,
+        @NotNull PoolConfiguration dbPoolConfiguration,
+        @NotNull ExecutorService dbExecutor
+    ) {
 
         var configuration = JAsyncUtils.buildConfiguration(
             env.getRequiredProperty("jdbc.user.db.username"),
@@ -105,28 +82,54 @@ public class JAsyncUserConfig {
     }
 
     @Bean
-    @NotNull UserDao userDao() {
+    @NotNull UserDao userDao(
+        @NotNull Environment env,
+        @NotNull ConnectionPool<? extends ConcreteConnection> userConnectionPool,
+        @NotNull OrganizationDao organizationDao,
+        @NotNull UserGroupDao userGroupDao
+    ) {
         return new JAsyncUserDao(
-            userConnectionPool(),
+            userConnectionPool,
             env.getRequiredProperty("jdbc.user.db.schema"),
-            organizationDao(),
-            userGroupDao()
+            organizationDao,
+            userGroupDao
         );
     }
 
     @Bean
-    @NotNull UserGroupDao userGroupDao() {
+    @NotNull MinimalUserDao minimalUserDao(
+        @NotNull Environment env,
+        @NotNull ConnectionPool<? extends ConcreteConnection> userConnectionPool
+    ) {
+        return new JAsyncMinimalUserDao(
+            userConnectionPool,
+            env.getRequiredProperty("jdbc.user.db.schema")
+        );
+    }
+
+    @Bean
+    @NotNull UserGroupDao userGroupDao(
+        @NotNull Environment env,
+        @NotNull ConnectionPool<? extends ConcreteConnection> userConnectionPool,
+        @NotNull OrganizationDao organizationDao
+    ) {
         return new JAsyncUserGroupDao(
-            userConnectionPool(),
+            userConnectionPool,
             env.getRequiredProperty("jdbc.user.db.schema"),
-            organizationDao()
+            organizationDao
         );
     }
 
     @Bean
-    @NotNull OrganizationDao organizationDao() {
+    @NotNull OrganizationDao organizationDao(
+        @NotNull Environment env,
+        @NotNull ConnectionPool<? extends ConcreteConnection> userConnectionPool,
+        @NotNull CityDao cityDao,
+        @NotNull IndustryDao industryDao,
+        @NotNull CountryDao countryDao
+    ) {
         return new JAsyncOrganizationDao(
-            userConnectionPool(),
+            userConnectionPool,
             env.getRequiredProperty("jdbc.user.db.schema"),
             cityDao,
             industryDao,
@@ -135,9 +138,12 @@ public class JAsyncUserConfig {
     }
 
     @Bean
-    @NotNull EmailConfirmationDao emailConfirmationDao() {
+    @NotNull EmailConfirmationDao emailConfirmationDao(
+        @NotNull Environment env,
+        @NotNull ConnectionPool<? extends ConcreteConnection> userConnectionPool
+    ) {
         return new JAsyncEmailConfirmationDao(
-            userConnectionPool(),
+            userConnectionPool,
             env.getRequiredProperty("jdbc.user.db.schema")
         );
     }

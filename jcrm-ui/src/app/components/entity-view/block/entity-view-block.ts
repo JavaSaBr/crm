@@ -5,16 +5,23 @@ export enum EntityViewBlockType {
     entityFieldForm
 }
 
-export interface EntityProvider {
+export interface EntityControl {
+
     observableEntity(): Observable<UniqEntity>
+
+    observableDisabled(): Observable<boolean>
+
+    createEntity(): void;
+
+    saveEntity(): void
 }
 
 export class EntityViewBlockData {
 
-    readonly entityProvider: EntityProvider;
+    readonly entityControl: EntityControl;
 
-    constructor(entityProvider: EntityProvider) {
-        this.entityProvider = entityProvider;
+    constructor(entityControl1: EntityControl) {
+        this.entityControl = entityControl1;
     }
 }
 

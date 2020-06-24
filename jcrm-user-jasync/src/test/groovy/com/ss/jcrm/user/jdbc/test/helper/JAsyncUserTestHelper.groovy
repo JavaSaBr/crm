@@ -15,6 +15,7 @@ import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.api.test.UserTestHelper
+import com.ss.jcrm.user.contact.api.PhoneNumber
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 
 import java.time.Instant
@@ -117,7 +118,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
     }
     
     @Override
-    User newUser(String name, String phoneNumber) {
+    User newUser(String name, PhoneNumber phoneNumber) {
         return newUser(
             name,
             passwordService.nextPassword(24),
@@ -127,7 +128,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
         )
     }
     
-    User newUser(String name, String phoneNumber, String password) {
+    User newUser(String name, PhoneNumber phoneNumber, String password) {
         return newUser(
             name,
             password,
@@ -203,7 +204,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
         ).block()
     }
     
-    def newUser(String name, String password, byte[] salt, Organization organization, String phoneNumber) {
+    def newUser(String name, String password, byte[] salt, Organization organization, PhoneNumber phoneNumber) {
         return userDao.create(
             name,
             passwordService.hash(password, salt),

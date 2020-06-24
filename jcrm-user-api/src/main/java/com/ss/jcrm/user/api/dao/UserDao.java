@@ -3,8 +3,10 @@ package com.ss.jcrm.user.api.dao;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.security.AccessRole;
+import com.ss.jcrm.user.api.MinimalUser;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
+import com.ss.jcrm.user.contact.api.PhoneNumber;
 import com.ss.rlib.common.util.array.Array;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +31,7 @@ public interface UserDao extends Dao<User> {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
-        @Nullable String phoneNumber
+        @Nullable PhoneNumber phoneNumber
     );
 
     /**

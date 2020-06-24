@@ -3,6 +3,7 @@ package com.ss.jcrm.registration.web.validator;
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
+import com.ss.jcrm.registration.web.resources.UserInResource;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.validator.BaseResourceValidator;
 import com.ss.rlib.common.util.StringUtils;
@@ -122,5 +123,9 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validateEmail(@Nullable String email) {
         validateEmail(email, emailMinLength, emailMaxLength, INVALID_EMAIL, INVALID_EMAIL_MESSAGE);
+    }
+
+    public void validate(@NotNull UserInResource resource) {
+
     }
 }

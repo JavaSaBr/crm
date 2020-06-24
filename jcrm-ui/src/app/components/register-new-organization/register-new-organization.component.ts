@@ -81,7 +81,7 @@ export class RegisterNewOrganizationComponent implements OnInit {
             ]],
             email: ['', [
                 Validators.required,
-                Validators.pattern(UserValidator.EMAIL_PATTERN)
+                Validators.pattern(UserValidator.emailPatter)
             ], [
                 new UserValidator(registrationService)
             ]],
@@ -99,7 +99,7 @@ export class RegisterNewOrganizationComponent implements OnInit {
             ]],
             phoneNumber: ['', [
                 Validators.required,
-                PhoneNumberValidator.INSTANCE,
+                PhoneNumberValidator.instance,
             ]]
         });
         this.subscribeFormGroup = formBuilder.group({

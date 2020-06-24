@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class ContactInResource {
 
     private long id;
-    private long assigner;
     private long[] curators;
+    private long assigner;
 
     private int version;
 

@@ -7,7 +7,7 @@ import {ContactEmailValidator} from '@app/util/validator/contact-email-validator
 
 export class UserValidator extends BaseLazyAsyncValidator<boolean> {
 
-    public static readonly EMAIL_PATTERN = ContactEmailValidator.EMAIL_PATTERN;
+    public static readonly emailPatter = ContactEmailValidator.EMAIL_PATTERN;
 
     static getEmailErrorDescription(control: FormControl, translateService: TranslateService): string | null {
 

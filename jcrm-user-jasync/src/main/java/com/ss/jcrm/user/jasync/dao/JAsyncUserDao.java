@@ -19,6 +19,7 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.user.api.impl.DefaultUser;
+import com.ss.jcrm.user.contact.api.PhoneNumber;
 import com.ss.rlib.common.util.StringUtils;
 import com.ss.rlib.common.util.array.Array;
 import lombok.extern.log4j.Log4j2;
@@ -37,7 +38,7 @@ import java.util.Set;
 public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
-        " \"second_name\", \"third_name\", \"phone_number\", \"password\", \"salt\", \"roles\", \"groups\"," +
+        " \"second_name\", \"third_name\", \"phone_number\", \"phone_number_plain\", \"password\", \"salt\", \"roles\", \"groups\"," +
         " \"version\", \"email_confirmed\", \"password_version\", \"created\", \"modified\"";
 
     private static final String Q_SELECT_BY_EMAIL = "select " + FIELD_LIST +
@@ -47,14 +48,14 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         " from \"${schema}\".\"user\" where \"id\" = ?";
 
     private static final String Q_SELECT_BY_PHONE_NUMBER = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where \"phone_number\" = ?";
+        " from \"${schema}\".\"user\" where \"phone_number_plain\" = ?";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"user\" (\"email\", \"password\", \"salt\", " +
         "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\", " +
-        "\"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?) returning id";
+        "\"phone_number_plain\", \"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?,?) returning id";
 
     private static final String Q_UPDATE = "update \"${schema}\".\"user\" set \"first_name\" = ?, \"second_name\" = ?," +
-        " \"third_name\" = ?, \"phone_number\" = ?,  \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
+        " \"third_name\" = ?, \"phone_number\" = ?, \"phone_number_plain\" = ?, \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
         " \"email_confirmed\" = ?, \"password_version\" = ?, \"modified\" = ? where \"id\" = ? and \"version\" = ?";
 
     private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"${schema}\".\"user\" where \"email\" = ?";
@@ -127,7 +128,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
-        @Nullable String phoneNumber
+        @Nullable PhoneNumber phoneNumber
     ) {
 
         var currentTime = Instant.now();
@@ -142,13 +143,15 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 StringUtils.emptyIfNull(firstName),
                 StringUtils.emptyIfNull(secondName),
                 StringUtils.emptyIfNull(thirdName),
-                phoneNumber,
+                JAsyncUtils.toJson(phoneNumber),
+                phoneNumber == null ? null : phoneNumber.plainView(),
                 toDateTime(currentTime),
                 toDateTime(currentTime)
             ),
             id -> new DefaultUser(
                 id,
-                organization, email,
+                organization,
+                email,
                 password,
                 salt,
                 roles,
@@ -188,35 +191,38 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
             return selectAllAsync(User.class, querySelectByIdAndOrgId, List.of(ids[0], orgId), converter());
         }
 
-        var condition = new StringBuilder(ids.length * 2);
         var args = new ArrayList<>(ids.length + 1);
 
-        for (int i = 0, last = ids.length - 1; i < ids.length; i++) {
-            condition.append('?');
-            if (i != last) {
-                condition.append(',');
-            }
-            args.add(ids[i]);
+        for (var id : ids) {
+            args.add(id);
         }
 
         args.add(orgId);
 
-        var query = querySelectByIdsAndOrgId.replace("${id_list}", condition.toString());
+        var query = querySelectByIdsAndOrgId.replace(
+            "${id_list}",
+            JAsyncUtils.buildQueryIdList(ids)
+        );
 
         return selectAllAsync(User.class, query, args, converter());
     }
 
     @Override
     public @NotNull Mono<Boolean> update(@NotNull User user) {
+
         var now = Instant.now();
+        var phoneNumber = user.getPhoneNumber();
+
         user.setModified(now);
+
         return update(
             queryUpdate,
             Arrays.asList(
                 StringUtils.emptyIfNull(user.getFirstName()),
                 StringUtils.emptyIfNull(user.getSecondName()),
                 StringUtils.emptyIfNull(user.getThirdName()),
-                user.getPhoneNumber(),
+                phoneNumber,
+                phoneNumber == null ? null : phoneNumber.plainView(),
                 JAsyncUtils.idsToJson(user.getRoles()),
                 JAsyncUtils.idsToJson(user.getGroups()),
                 user.getVersion() + 1,
@@ -263,34 +269,34 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     private @NotNull Mono<@NotNull User> toUser(@NotNull RowData data) {
 
         var id = notNull(data.getLong(0));
-        var version = notNull(data.getInt(11));
+        var version = notNull(data.getInt(12));
 
         var orgId = ifNull(data.getLong(1), 0L);
         var email = data.getString(2);
         var firstName = data.getString(3);
         var secondName = data.getString(4);
         var thirdName = data.getString(5);
-        var phoneNumber = data.getString(6);
-        var passwordVersion = ifNull(data.getInt(13), 0);
-        var emailConfirmed = ifNull(data.getBoolean(12), Boolean.FALSE);
+        var phoneNumber = JAsyncUtils.fromJson(data.getString(6), PhoneNumber.class);
+        var passwordVersion = ifNull(data.getInt(14), 0);
+        var emailConfirmed = ifNull(data.getBoolean(13), Boolean.FALSE);
 
-        byte[] password = data.getAs(7);
-        byte[] salt = data.getAs(8);
+        byte[] password = data.getAs(8);
+        byte[] salt = data.getAs(9);
 
         var roles = JAsyncUtils.fromJsonIds(
-            data.getString(9),
+            data.getString(10),
             AccessRole::require
         );
 
         var orgAsync = organizationDao.requireById(orgId);
         var groupsAsync = JAsyncUtils.fromJsonIdsAsync(
-            data.getString(10),
+            data.getString(11),
             userGroupDao,
             Dao::requireById
         );
 
-        var created = toJavaInstant(data.getAs(14));
-        var modified = toJavaInstant(data.getAs(15));
+        var created = toJavaInstant(data.getAs(15));
+        var modified = toJavaInstant(data.getAs(16));
 
         return Flux.concat(groupsAsync, orgAsync)
             .last().map(ignore -> new DefaultUser(

@@ -8,6 +8,7 @@ import com.ss.jcrm.user.api.User
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
+import com.ss.jcrm.user.contact.api.PhoneNumber
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -104,7 +105,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             loaded.firstName = "First name"
             loaded.secondName = "Second name"
             loaded.thirdName = "Third name"
-            loaded.phoneNumber = "Phone number"
+            loaded.phoneNumber = new PhoneNumber("+375", "25", "312333")
             loaded.roles = Set.of(AccessRole.SUPER_ADMIN, AccessRole.ORG_ADMIN)
             loaded.groups = Set.of(group1, group2)
             loaded.emailConfirmed = true
@@ -156,7 +157,8 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
     def "should load user by phone number"() {
     
         given:
-            userTestHelper.newUser("User1", "+24223423")
+            def phoneNumber = new PhoneNumber("+24", "22", "3423")
+            userTestHelper.newUser("User1", phoneNumber)
         when:
             def user = userDao.findByPhoneNumber("+24223423").block()
         then:
@@ -165,6 +167,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             user.salt != null
             user.id != 0L
             user.organization != null
+            user.phoneNumber == phoneNumber
     }
 
     def "should found created user by email"() {

@@ -6,6 +6,7 @@ import com.ss.jcrm.user.api.EmailConfirmation
 import com.ss.jcrm.user.api.Organization
 import com.ss.jcrm.user.api.User
 import com.ss.jcrm.user.api.UserGroup
+import com.ss.jcrm.user.contact.api.PhoneNumber
 
 interface UserTestHelper extends TestHelper {
 
@@ -23,9 +24,9 @@ interface UserTestHelper extends TestHelper {
     
     User newUser(String email, String firstName, String secondName, String thirdName, Organization organization);
     
-    User newUser(String name, String phoneNumber)
+    User newUser(String name, PhoneNumber phoneNumber)
     
-    User newUser(String name, String phoneNumber, String password);
+    User newUser(String name, PhoneNumber phoneNumber, String password);
     
     EmailConfirmation newEmailConfirmation();
 

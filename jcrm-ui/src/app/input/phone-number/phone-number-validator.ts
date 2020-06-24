@@ -6,9 +6,10 @@ import {TranslateService} from '@ngx-translate/core';
 
 export class PhoneNumberValidator implements Validator {
 
-    public static readonly INSTANCE = new PhoneNumberValidator();
-    public static readonly FUN: ValidatorFn = (contorl: AbstractControl) => {
-        return PhoneNumberValidator.INSTANCE.validate(contorl);
+    public static readonly instance = new PhoneNumberValidator();
+
+    public static readonly fun: ValidatorFn = (control: AbstractControl) => {
+        return PhoneNumberValidator.instance.validate(control);
     };
 
     static getErrorDescription(control: FormControl, translateService: TranslateService): string | null {

@@ -9,6 +9,8 @@ import {ErrorService} from '@app/service/error.service';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
 import {AbstractEntityTableComponent} from '@app/component/table/abstract-entity-table.component';
 import {UserWorkspaceComponent} from '@app/component/user/workspace/user-workspace.component';
+import {WorkspaceComponent} from '@app/component/workspace/workspace.component';
+import {SettingsComponent} from '@app/component/settings/settings.component';
 
 @Component({
     selector: 'app-users',
@@ -26,7 +28,7 @@ export class UsersComponent extends AbstractEntityTableComponent<User> {
             icon: 'perm_identity',
             tooltip: 'Add new user',
             callback: null
-        }
+        },
     ];
 
     private static readonly displayedColumns: string[] = [
@@ -74,6 +76,13 @@ export class UsersComponent extends AbstractEntityTableComponent<User> {
         }
     }
 
-    openEntity(entity: User) {
+    openEntity(user: User) {
+        this.router.navigate([
+            WorkspaceComponent.COMPONENT_NAME,
+            SettingsComponent.componentName,
+            UserWorkspaceComponent.componentName,
+            UserWorkspaceComponent.modeView,
+            user.id
+        ]);
     }
 }

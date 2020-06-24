@@ -16,6 +16,9 @@
     <phone-number-input *ngIf="field.type == fieldType.PHONE_NUMBER && field.required" matInput
                         formControlName="{{field.formControlName}}" required=""></phone-number-input>
 
+    <input *ngIf="field.type == fieldType.EMAIL && field.required" matInput formControlName="{{field.formControlName}}"
+           required>
+
     <!-- <mat-error *ngIf="phoneNumber.invalid">{{getPhoneNumberErrorMessage()}}</mat-error> -->
   </mat-form-field>
 </form>

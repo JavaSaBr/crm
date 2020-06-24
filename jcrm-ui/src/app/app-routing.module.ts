@@ -37,7 +37,11 @@ const routes: Routes = [
             },
             // user
             {
-                path: `${SettingsComponent.componentName}/${UserWorkspaceComponent.componentName}/:mode`,
+                path: `${SettingsComponent.componentName}/${UserWorkspaceComponent.componentName}/${UserWorkspaceComponent.modeNew}`,
+                component: UserWorkspaceComponent
+            },
+            {
+                path: `${SettingsComponent.componentName}/${UserWorkspaceComponent.componentName}/${UserWorkspaceComponent.modeView}/:id`,
                 component: UserWorkspaceComponent
             },
         ]

@@ -1,7 +1,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {EntityFieldsViewBlockComponent} from './entity-fields-vew-block.component';
 
-describe('RootComponent', () => {
+describe('EntityFieldsViewBlockComponent', () => {
+
     let component: EntityFieldsViewBlockComponent;
     let fixture: ComponentFixture<EntityFieldsViewBlockComponent>;
 

@@ -6,5 +6,6 @@ ext {
 dependencies {
     compile project(":jcrm-dictionary-api")
     compile project(":jcrm-security")
+    compile project(":jcrm-user-contact")
     testCompile project(":jcrm-integration-test-db")
 }

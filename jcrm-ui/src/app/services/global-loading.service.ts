@@ -6,20 +6,21 @@ import {BehaviorSubject, Observable} from 'rxjs';
 })
 export class GlobalLoadingService {
 
-    private _loadingCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    private readonly loadingCountProperty: BehaviorSubject<number>;
 
     constructor() {
+        this.loadingCountProperty = new BehaviorSubject<number>(0);
     }
 
     get loadingCount(): Observable<number> {
-        return this._loadingCount;
+        return this.loadingCountProperty;
     }
 
     increaseLoading(): void {
-        this._loadingCount.next(this._loadingCount.value + 1);
+        this.loadingCountProperty.next(this.loadingCountProperty.value + 1);
     }
 
     decreaseLoading(): void {
-        this._loadingCount.next(this._loadingCount.value - 1);
+        this.loadingCountProperty.next(this.loadingCountProperty.value - 1);
     }
 }
