@@ -221,7 +221,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 StringUtils.emptyIfNull(user.getFirstName()),
                 StringUtils.emptyIfNull(user.getSecondName()),
                 StringUtils.emptyIfNull(user.getThirdName()),
-                phoneNumber,
+                JAsyncUtils.toJson(phoneNumber),
                 phoneNumber == null ? null : phoneNumber.plainView(),
                 JAsyncUtils.idsToJson(user.getRoles()),
                 JAsyncUtils.idsToJson(user.getGroups()),
