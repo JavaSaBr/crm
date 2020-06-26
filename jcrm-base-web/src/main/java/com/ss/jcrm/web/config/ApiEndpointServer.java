@@ -1,13 +1,10 @@
 package com.ss.jcrm.web.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
+import org.jetbrains.annotations.NotNull;
 
-@Getter
-@ToString
-@AllArgsConstructor
+@Value
 public class ApiEndpointServer {
 
-    private final String contextPath;
+    @NotNull String contextPath;
 }

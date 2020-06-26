@@ -1,8 +1,9 @@
 package com.ss.jcrm.web.resources;
 
-import lombok.Data;
+import lombok.Value;
 
-public @Data class DataPageRequest {
-    private final int offset;
-    private final int pageSize;
+@Value
+public class DataPageRequest {
+    int offset;
+    int pageSize;
 }

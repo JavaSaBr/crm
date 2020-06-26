@@ -4,7 +4,6 @@ import com.ss.jcrm.web.customizer.UndertowWebServerFactorySslCustomizer;
 import com.ss.jcrm.web.exception.handler.DefaultWebExceptionHandler;
 import com.ss.rlib.common.concurrent.GroupThreadFactory;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
@@ -12,18 +11,22 @@ import org.springframework.boot.web.embedded.undertow.UndertowReactiveWebServerF
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.server.WebExceptionHandler;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-@Import({WebFluxAutoConfiguration.class, HttpHandlerAutoConfiguration.class, ReactiveWebServerFactoryAutoConfiguration.class,})
+@Lazy
+@Import({
+    WebFluxAutoConfiguration.class,
+    HttpHandlerAutoConfiguration.class,
+    ReactiveWebServerFactoryAutoConfiguration.class
+})
 @Configuration
 @PropertySource("classpath:com/ss/jcrm/web/base-web.properties")
 public class BaseWebConfig {
-
-    @Autowired
-    private Environment env;
 
     /*@Bean
     @NotNull WebFluxConfigurer webFluxConfigurer() {
@@ -37,7 +40,7 @@ public class BaseWebConfig {
     }*/
 
     @Bean
-    @NotNull ScheduledExecutorService reloadScheduler() {
+    @NotNull ScheduledExecutorService reloadScheduler(@NotNull Environment env) {
 
         var cores = Runtime.getRuntime().availableProcessors() * 2;
 
@@ -57,9 +60,10 @@ public class BaseWebConfig {
          );
      }
  */
-    @Lazy
     @Bean
-    @NotNull WebServerFactoryCustomizer<UndertowReactiveWebServerFactory> undertowWebServerFactoryCustomizer() {
+    @NotNull WebServerFactoryCustomizer<UndertowReactiveWebServerFactory> undertowWebServerFactoryCustomizer(
+        @NotNull Environment env
+    ) {
         return new UndertowWebServerFactorySslCustomizer(
             env.getRequiredProperty("web.server.ssl.keystore.path"),
             env.getRequiredProperty("web.server.ssl.keystore.password"),

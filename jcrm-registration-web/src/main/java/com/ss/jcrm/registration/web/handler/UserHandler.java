@@ -10,14 +10,17 @@ import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
+import com.ss.jcrm.user.contact.api.PhoneNumber;
+import com.ss.jcrm.user.contact.api.PhoneNumberType;
+import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.exception.ExceptionUtils;
 import com.ss.jcrm.web.resources.DataPageResponse;
 import com.ss.jcrm.web.util.RequestUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -136,6 +139,7 @@ public class UserHandler {
         var user = authorized.getUser();
         var resource = authorized.getResource();
 
+        //noinspection ConstantConditions
         return userDao.existByEmail(resource.getEmail())
             .filter(emailAlreadyExist -> !emailAlreadyExist)
             .flatMap(emailAlreadyExist -> userDao.create(resource.getEmail(),
@@ -146,11 +150,25 @@ public class UserHandler {
                 resource.getFirstName(),
                 resource.getSecondName(),
                 resource.getThirdName(),
-                resource.getPhoneNumber()
+                toPhoneNumber(resource.getPhoneNumber())
             ))
             .switchIfEmpty(Mono.error(() -> ExceptionUtils.toBadRequest(
                 RegistrationErrors.EMAIL_ALREADY_EXIST,
                 RegistrationErrors.EMAIL_ALREADY_EXIST_MESSAGE
             )));
+    }
+
+    private static @Nullable PhoneNumber toPhoneNumber(@Nullable PhoneNumberResource resource) {
+
+        if (resource == null) {
+            return null;
+        }
+
+        return new PhoneNumber(
+            resource.getCountryCode(),
+            resource.getRegionCode(),
+            resource.getPhoneNumber(),
+            PhoneNumberType.of(resource.getType())
+        );
     }
 }
