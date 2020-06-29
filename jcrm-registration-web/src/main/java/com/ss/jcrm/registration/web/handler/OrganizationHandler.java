@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public class OrganizationHandler {
+public class OrganizationHandler extends BaseRegistrationHandler {
 
     private final UserDao userDao;
     private final OrganizationDao organizationDao;
@@ -134,7 +134,8 @@ public class OrganizationHandler {
             resource.getFirstName(),
             resource.getSecondName(),
             resource.getThirdName(),
-            resource.getPhoneNumber()
+            toPhoneNumber(resource.getPhoneNumber())
         );
     }
+
 }

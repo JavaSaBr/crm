@@ -1,27 +1,48 @@
 package com.ss.jcrm.registration.web.resources;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.resources.RestResource;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@AllArgsConstructor(onConstructor_ = @JsonCreator)
 public class OrganizationRegisterInResource implements RestResource {
 
-    private String orgName;
-    private String email;
-    private String activationCode;
-    private char[] password;
-    private String firstName;
-    private String secondName;
-    private String thirdName;
-    private String phoneNumber;
+    @NotNull String orgName;
+    @NotNull String email;
+    @NotNull String activationCode;
+    @NotNull char[] password;
 
-    private boolean subscribe;
+    @Nullable String firstName;
+    @Nullable String secondName;
+    @Nullable String thirdName;
 
-    private long countryId;
+    @NotNull PhoneNumberResource phoneNumber;
+
+    boolean subscribe;
+
+    long countryId;
+
+    public OrganizationRegisterInResource(
+        @NotNull String orgName,
+        @NotNull String email,
+        @NotNull String activationCode,
+        @NotNull char[] password,
+        @NotNull PhoneNumberResource phoneNumber,
+        long countryId
+    ) {
+        this.orgName = orgName;
+        this.email = email;
+        this.activationCode = activationCode;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.countryId = countryId;
+        this.firstName = null;
+        this.secondName = null;
+        this.thirdName = null;
+        this.subscribe = false;
+    }
 }

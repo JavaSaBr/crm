@@ -46,6 +46,14 @@ public enum PhoneNumberType implements HasId {
         return StringUtils.isNotEmpty(name) && NAME_TO_PHONE_NUMBER_TYPE.containsKey(name);
     }
 
+    public static @NotNull PhoneNumberType of(@Nullable String name, @NotNull PhoneNumberType def) {
+        if (!isValid(name)) {
+            return def;
+        } else {
+            return NAME_TO_PHONE_NUMBER_TYPE.get(name);
+        }
+    }
+
     public static @NotNull PhoneNumberType of(@Nullable String name) {
         if (!isValid(name)) {
             throw new IllegalArgumentException("Unknown type: " + name);

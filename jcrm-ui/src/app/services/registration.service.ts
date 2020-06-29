@@ -9,6 +9,7 @@ import {AuthenticationInResource} from '../resources/authentication-in-resource'
 import {AuthenticationOutResource} from '../resources/authentication-out-resource';
 import {HttpClient} from '@angular/common/http';
 import {ErrorService} from '@app/service/error.service';
+import {PhoneNumberResource} from '@app/resource/phone-number-resource';
 
 @Injectable({
     providedIn: 'root'
@@ -41,7 +42,7 @@ export class RegistrationService {
             password,
             firstName,
             secondName,
-            phoneNumber.country.phoneCode + phoneNumber.phoneNumber,
+            PhoneNumberResource.of(phoneNumber),
             subscribe,
             country.id
         );

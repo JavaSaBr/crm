@@ -28,7 +28,7 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 
 @RequiredArgsConstructor
-public class UserHandler {
+public class UserHandler extends BaseRegistrationHandler {
 
     private static final AccessRole[] USER_VIEWERS = {
         AccessRole.SUPER_ADMIN,
@@ -156,19 +156,5 @@ public class UserHandler {
                 RegistrationErrors.EMAIL_ALREADY_EXIST,
                 RegistrationErrors.EMAIL_ALREADY_EXIST_MESSAGE
             )));
-    }
-
-    private static @Nullable PhoneNumber toPhoneNumber(@Nullable PhoneNumberResource resource) {
-
-        if (resource == null) {
-            return null;
-        }
-
-        return new PhoneNumber(
-            resource.getCountryCode(),
-            resource.getRegionCode(),
-            resource.getPhoneNumber(),
-            PhoneNumberType.of(resource.getType())
-        );
     }
 }

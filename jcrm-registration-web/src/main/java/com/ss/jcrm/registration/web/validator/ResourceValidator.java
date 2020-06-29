@@ -4,6 +4,8 @@ import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
 import com.ss.jcrm.registration.web.resources.UserInResource;
+import com.ss.jcrm.user.contact.api.PhoneNumber;
+import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.validator.BaseResourceValidator;
 import com.ss.rlib.common.util.StringUtils;
@@ -98,13 +100,7 @@ public class ResourceValidator extends BaseResourceValidator {
             INVALID_PASSWORD_MESSAGE
         );
 
-        validate(
-            resource.getPhoneNumber(),
-            phoneNumberMinLength,
-            phoneNumberMaxLength,
-            INVALID_PHONE_NUMBER,
-            INVALID_PHONE_NUMBER_MESSAGE
-        );
+        requirePhoneNumber(resource.getPhoneNumber());
     }
 
     public void validateOrgName(@Nullable String orgName) {
@@ -123,6 +119,35 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validateEmail(@Nullable String email) {
         validateEmail(email, emailMinLength, emailMaxLength, INVALID_EMAIL, INVALID_EMAIL_MESSAGE);
+    }
+
+    public void requirePhoneNumber(@Nullable PhoneNumberResource phoneNumber) {
+        if (phoneNumber == null) {
+            throw new BadRequestWebException(INVALID_PHONE_NUMBER_MESSAGE, INVALID_PHONE_NUMBER);
+        } else {
+            validatePhoneNumber(phoneNumber);
+        }
+    }
+
+    public void validatePhoneNumber(@Nullable PhoneNumberResource phoneNumber) {
+
+        if (phoneNumber == null) {
+            return;
+        }
+
+        var countryCode = phoneNumber.getCountryCode();
+        var regionCode = phoneNumber.getRegionCode();
+        var number = phoneNumber.getPhoneNumber();
+
+        if (countryCode == null || regionCode == null || number == null) {
+            throw new BadRequestWebException(INVALID_PHONE_NUMBER_MESSAGE, INVALID_PHONE_NUMBER);
+        }
+
+        var resultLength = countryCode.length() + regionCode.length() + number.length();
+
+        if (resultLength < phoneNumberMinLength || resultLength > phoneNumberMaxLength) {
+            throw new BadRequestWebException(INVALID_PHONE_NUMBER_MESSAGE, INVALID_PHONE_NUMBER);
+        }
     }
 
     public void validate(@NotNull UserInResource resource) {

@@ -1,20 +1,21 @@
 package com.ss.jcrm.user.contact.api.resource;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.ss.jcrm.user.contact.api.PhoneNumber;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@AllArgsConstructor(onConstructor_ = @JsonCreator)
 public class PhoneNumberResource {
 
-    private String countryCode;
-    private String regionCode;
-    private String phoneNumber;
-    private String type;
+    @NotNull String countryCode;
+    @NotNull String regionCode;
+    @NotNull String phoneNumber;
+
+    @Nullable String type;
 
     public PhoneNumberResource(@NotNull PhoneNumber phoneNumber) {
         this.countryCode = phoneNumber.getCountryCode();

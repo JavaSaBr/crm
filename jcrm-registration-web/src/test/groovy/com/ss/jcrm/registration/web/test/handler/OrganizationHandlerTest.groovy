@@ -3,7 +3,8 @@ package com.ss.jcrm.registration.web.test.handler
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao
-import org.hamcrest.Matchers
+import com.ss.jcrm.user.contact.api.PhoneNumberType
+import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource
 import org.springframework.beans.factory.annotation.Autowired
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.COUNTRY_NOT_FOUND
@@ -12,8 +13,6 @@ import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_ACTIVATION_CODE_MESSAGE
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
-import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_TOKEN
-import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_TOKEN_MESSAGE
 import static org.hamcrest.Matchers.is;
 
 class OrganizationHandlerTest extends RegistrationSpecification {
@@ -48,13 +47,14 @@ class OrganizationHandlerTest extends RegistrationSpecification {
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
-            def request = new OrganizationRegisterInResource()
-            request.setOrgName("test_org")
-            request.activationCode = confirmation.code
-            request.email = confirmation.email
-            request.countryId = country.id
-            request.password = '123456'.toCharArray()
-            request.phoneNumber = '+1234567'
+            def request = new OrganizationRegisterInResource(
+                "test_org",
+                confirmation.email,
+                confirmation.code,
+                '123456'.toCharArray(),
+                new PhoneNumberResource("+7", "23", "2311312", null),
+                country.id
+            )
         when:
             def response = client.post()
                 .body(request)
@@ -67,7 +67,10 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                     .jsonPath('$.user').isNotEmpty()
                     .jsonPath('$.user.id').isNotEmpty()
                     .jsonPath('$.user.email').value(is(confirmation.email))
-                    .jsonPath('$.user.phoneNumber').value(is(request.phoneNumber))
+                    .jsonPath('$.user.phoneNumber.countryCode').value(is(request.phoneNumber.countryCode))
+                    .jsonPath('$.user.phoneNumber.regionCode').value(is(request.phoneNumber.regionCode))
+                    .jsonPath('$.user.phoneNumber.phoneNumber').value(is(request.phoneNumber.phoneNumber))
+                    .jsonPath('$.user.phoneNumber.type').value(is(PhoneNumberType.UNKNOWN.name()))
     }
     
     def "should not register an organization with wrong activation code"() {
@@ -75,13 +78,14 @@ class OrganizationHandlerTest extends RegistrationSpecification {
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
-            def request = new OrganizationRegisterInResource()
-            request.setOrgName("test_org")
-            request.activationCode = confirmation.code + "111"
-            request.email = confirmation.email
-            request.countryId = country.id
-            request.password = '123456'.toCharArray()
-            request.phoneNumber = '+1234567'
+            def request = new OrganizationRegisterInResource(
+                "test_org",
+                confirmation.email,
+                confirmation.code + "111",
+                '123456'.toCharArray(),
+                new PhoneNumberResource("+7", "23", "2311312", null),
+                country.id
+            )
         when:
             def response = client.post()
                 .body(request)
@@ -97,13 +101,14 @@ class OrganizationHandlerTest extends RegistrationSpecification {
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
-            def request = new OrganizationRegisterInResource()
-            request.setOrgName("test_org")
-            request.activationCode = confirmation.code
-            request.email = confirmation.email
-            request.countryId = country.id + 100000
-            request.password = '123456'.toCharArray()
-            request.phoneNumber = '+1234567'
+            def request = new OrganizationRegisterInResource(
+                "test_org",
+                confirmation.email,
+                confirmation.code,
+                '123456'.toCharArray(),
+                new PhoneNumberResource("+7", "23", "2311312", null),
+                country.id + 100000
+            )
         when:
             def response = client.post()
                 .body(request)
@@ -119,13 +124,14 @@ class OrganizationHandlerTest extends RegistrationSpecification {
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
-            def request = new OrganizationRegisterInResource()
-            request.setOrgName("test_org")
-            request.activationCode = confirmation.code
-            request.email = "wrongemail11"
-            request.countryId = country.id
-            request.password = '123456'.toCharArray()
-            request.phoneNumber = '+1234567'
+            def request = new OrganizationRegisterInResource(
+                "test_org",
+                "wrongemail11",
+                confirmation.code,
+                '123456'.toCharArray(),
+                new PhoneNumberResource("+7", "23", "2311312", null),
+                country.id
+            )
         when:
             def response = client.post()
                 .body(request)
