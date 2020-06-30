@@ -1,10 +1,12 @@
 package com.ss.jcrm.registration.web.test.handler
 
+import com.ss.jcrm.registration.web.resources.UserInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import com.ss.jcrm.user.api.dao.UserDao
+import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
@@ -21,6 +23,78 @@ class UserHandlerTest extends RegistrationSpecification {
     
     @Autowired
     UserDao userDao
+    
+    def "should create a new user"() {
+        
+        given:
+            
+            def org = userTestHelper.newOrg()
+            def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
+            def token = unsafeTokenService.generateNewToken(user)
+        
+            def newUser = UserInResource.newResource(
+                "newuser@email.com",
+                "First name",
+                "Second name",
+                "Third name",
+                "password".toCharArray(),
+                new PhoneNumberResource(
+                
+                ),
+                AccessRole.ORG_ADMIN,
+                "1990-05-22"
+            )
+        
+        when:
+            def response = client.post()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .body(newUser)
+                .url("/user")
+                .exchange()
+        then:
+            response.expectStatus().isCreated()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath('$.id').isNotEmpty()
+                .jsonPath('$.assigner').isEqualTo((int) body.assigner)
+                .jsonPath('$.curators[*]').value(containsInAnyOrder(
+                (int) body.curators[0],
+                (int) body.curators[1]
+            ))
+                .jsonPath('$.firstName').isEqualTo(body.firstName)
+                .jsonPath('$.secondName').isEqualTo(body.secondName)
+                .jsonPath('$.thirdName').isEqualTo(body.thirdName)
+                .jsonPath('$.company').isEqualTo(body.company)
+                .jsonPath('$.birthday').isEqualTo(body.birthday)
+                .jsonPath('$.created').isNotEmpty()
+                .jsonPath('$.modified').isNotEmpty()
+                .jsonPath('$.phoneNumbers').value(hasSize(1))
+                .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers[0].countryCode)
+                .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers[0].regionCode)
+                .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers[0].phoneNumber)
+                .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers[0].type))
+                .jsonPath('$.emails').value(hasSize(1))
+                .jsonPath('$.emails[0].type').isEqualTo(body.emails[0].type)
+                .jsonPath('$.emails[0].email').isEqualTo(body.emails[0].email)
+                .jsonPath('$.sites').value(hasSize(2))
+                .jsonPath('$.sites[*].type').value(containsInAnyOrder(
+                body.sites[0].type,
+                body.sites[1].type
+            ))
+                .jsonPath('$.sites[*].url').value(containsInAnyOrder(
+                body.sites[0].url,
+                body.sites[1].url
+            ))
+                .jsonPath('$.messengers').value(hasSize(2))
+                .jsonPath('$.messengers[*].type').value(containsInAnyOrder(
+                body.messengers[0].type,
+                body.messengers[1].type
+            ))
+                .jsonPath('$.messengers[*].login').value(containsInAnyOrder(
+                body.messengers[0].login,
+                body.messengers[1].login
+            ))
+    }
     
     def "should found that user is exist"() {
 

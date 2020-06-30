@@ -4,8 +4,10 @@ import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.UserGroup;
+import com.ss.jcrm.user.contact.api.Messenger;
 import com.ss.jcrm.user.contact.api.PhoneNumber;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,31 +19,34 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @ToString(of = {"id", "email", "organization"})
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DefaultUser implements User {
 
-    private final long id;
-    private final Organization organization;
+    final long id;
 
-    private String email;
-    private String firstName;
-    private String secondName;
-    private String thirdName;
+    @NotNull final Organization organization;
+    @NotNull final Instant created;
 
-    private PhoneNumber phoneNumber;
+    @NotNull String email;
 
-    private Instant created;
-    private Instant modified;
+    @Nullable String firstName;
+    @Nullable String secondName;
+    @Nullable String thirdName;
 
-    private byte[] password;
-    private byte[] salt;
+    @NotNull Instant modified;
 
-    private Set<AccessRole> roles;
-    private Set<UserGroup> groups;
+    @NotNull byte[] password;
+    @NotNull byte[] salt;
 
-    private volatile int version;
-    private volatile int passwordVersion;
+    @NotNull Set<AccessRole> roles;
+    @NotNull Set<UserGroup> groups;
+    @NotNull Set<PhoneNumber> phoneNumbers;
+    @NotNull Set<Messenger> messengers;
 
-    private boolean emailConfirmed;
+    volatile int version;
+    volatile int passwordVersion;
+
+    boolean emailConfirmed;
 
     public DefaultUser(
         long id,
@@ -53,7 +58,8 @@ public class DefaultUser implements User {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
-        @Nullable PhoneNumber phoneNumber,
+        @NotNull Set<PhoneNumber> phoneNumbers,
+        @NotNull Set<Messenger> messengers,
         @NotNull Instant created,
         @NotNull Instant modified,
         int version,
@@ -71,7 +77,8 @@ public class DefaultUser implements User {
         this.firstName = firstName;
         this.secondName = secondName;
         this.thirdName = thirdName;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumbers = phoneNumbers;
+        this.messengers = messengers;
         this.groups = Set.of();
         this.passwordVersion = passwordVersion;
     }

@@ -19,6 +19,7 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.user.api.impl.DefaultUser;
+import com.ss.jcrm.user.contact.api.Messenger;
 import com.ss.jcrm.user.contact.api.PhoneNumber;
 import com.ss.rlib.common.util.StringUtils;
 import com.ss.rlib.common.util.array.Array;
@@ -38,7 +39,7 @@ import java.util.Set;
 public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
-        " \"second_name\", \"third_name\", \"phone_number\", \"phone_number_plain\", \"password\", \"salt\", \"roles\", \"groups\"," +
+        " \"second_name\", \"third_name\", \"phone_numbers\", \"messengers\", \"password\", \"salt\", \"roles\", \"groups\"," +
         " \"version\", \"email_confirmed\", \"password_version\", \"created\", \"modified\"";
 
     private static final String Q_SELECT_BY_EMAIL = "select " + FIELD_LIST +
@@ -48,14 +49,14 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         " from \"${schema}\".\"user\" where \"id\" = ?";
 
     private static final String Q_SELECT_BY_PHONE_NUMBER = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where \"phone_number_plain\" = ?";
+        " from \"${schema}\".\"user\" where \"phone_numbers\" like(?)";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"user\" (\"email\", \"password\", \"salt\", " +
-        "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_number\", " +
-        "\"phone_number_plain\", \"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?,?) returning id";
+        "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_numbers\", " +
+        "\"messengers\", \"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?,?) returning id";
 
     private static final String Q_UPDATE = "update \"${schema}\".\"user\" set \"first_name\" = ?, \"second_name\" = ?," +
-        " \"third_name\" = ?, \"phone_number\" = ?, \"phone_number_plain\" = ?, \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
+        " \"third_name\" = ?, \"phone_numbers\" = ?, \"messengers\" = ?, \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
         " \"email_confirmed\" = ?, \"password_version\" = ?, \"modified\" = ? where \"id\" = ? and \"version\" = ?";
 
     private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"${schema}\".\"user\" where \"email\" = ?";
@@ -128,7 +129,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
-        @Nullable PhoneNumber phoneNumber
+        @NotNull Set<PhoneNumber> phoneNumbers,
+        @NotNull Set<Messenger> messengers
     ) {
 
         var currentTime = Instant.now();
@@ -143,8 +145,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 StringUtils.emptyIfNull(firstName),
                 StringUtils.emptyIfNull(secondName),
                 StringUtils.emptyIfNull(thirdName),
-                JAsyncUtils.toJson(phoneNumber),
-                phoneNumber == null ? null : phoneNumber.plainView(),
+                JAsyncUtils.toJson(phoneNumbers),
+                JAsyncUtils.toJson(messengers),
                 toDateTime(currentTime),
                 toDateTime(currentTime)
             ),
@@ -158,7 +160,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 firstName,
                 secondName,
                 thirdName,
-                phoneNumber,
+                phoneNumbers,
+                messengers,
                 currentTime,
                 currentTime,
                 0,
@@ -211,7 +214,6 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     public @NotNull Mono<Boolean> update(@NotNull User user) {
 
         var now = Instant.now();
-        var phoneNumber = user.getPhoneNumber();
 
         user.setModified(now);
 
@@ -221,8 +223,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 StringUtils.emptyIfNull(user.getFirstName()),
                 StringUtils.emptyIfNull(user.getSecondName()),
                 StringUtils.emptyIfNull(user.getThirdName()),
-                JAsyncUtils.toJson(phoneNumber),
-                phoneNumber == null ? null : phoneNumber.plainView(),
+                JAsyncUtils.toJson(user.getPhoneNumbers()),
+                JAsyncUtils.toJson(user.getMessengers()),
                 JAsyncUtils.idsToJson(user.getRoles()),
                 JAsyncUtils.idsToJson(user.getGroups()),
                 user.getVersion() + 1,
@@ -243,7 +245,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     @Override
     public @NotNull Mono<@Nullable User> findByPhoneNumber(@NotNull String phoneNumber) {
-        return selectAsync(querySelectByPhoneNumber, List.of(phoneNumber), converter());
+        return selectAsync(querySelectByPhoneNumber, List.of("%\"fullPhoneNumber\":\"" + phoneNumber + "\"%"), converter());
     }
 
     @Override
@@ -272,11 +274,12 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         var version = notNull(data.getInt(12));
 
         var orgId = ifNull(data.getLong(1), 0L);
-        var email = data.getString(2);
+        var email = notNull(data.getString(2));
         var firstName = data.getString(3);
         var secondName = data.getString(4);
         var thirdName = data.getString(5);
-        var phoneNumber = JAsyncUtils.fromJson(data.getString(6), PhoneNumber.class);
+        var phoneNumbers = JAsyncUtils.fromJsonArrayToSet(data.getString(6), PhoneNumber[].class);
+        var messengers = JAsyncUtils.fromJsonArrayToSet(data.getString(7), Messenger[].class);
         var passwordVersion = ifNull(data.getInt(14), 0);
         var emailConfirmed = ifNull(data.getBoolean(13), Boolean.FALSE);
 
@@ -302,17 +305,18 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
             .last().map(ignore -> new DefaultUser(
                 id,
                 orgAsync.block(),
+                created,
                 email,
                 firstName,
                 secondName,
                 thirdName,
-                phoneNumber,
-                created,
                 modified,
                 password,
                 salt,
                 roles,
                 groupsAsync.block(),
+                phoneNumbers,
+                messengers,
                 version,
                 passwordVersion,
                 emailConfirmed

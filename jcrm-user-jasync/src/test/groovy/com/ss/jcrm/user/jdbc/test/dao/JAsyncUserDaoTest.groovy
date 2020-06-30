@@ -8,12 +8,14 @@ import com.ss.jcrm.user.api.User
 import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
+import com.ss.jcrm.user.contact.api.Messenger
+import com.ss.jcrm.user.contact.api.MessengerType
 import com.ss.jcrm.user.contact.api.PhoneNumber
+import com.ss.jcrm.user.contact.api.PhoneNumberType
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.time.Instant
-import java.util.concurrent.CompletionException
 
 class JAsyncUserDaoTest extends JAsyncUserSpecification {
 
@@ -38,7 +40,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             def hash = passwordService.hash(password, salt)
             def roles = userTestHelper.onlyOrgAdminRole()
         when:
-            def user = userDao.create("User1", hash, salt, org, roles, null, null, null, null).block()
+            def user = userDao.create("User1", hash, salt, org, roles).block()
         then:
             user != null
             user.getEmail() == "User1"
@@ -105,7 +107,14 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             loaded.firstName = "First name"
             loaded.secondName = "Second name"
             loaded.thirdName = "Third name"
-            loaded.phoneNumber = new PhoneNumber("+375", "25", "312333")
+            loaded.phoneNumbers = [
+                new PhoneNumber("+375", "25", "312333"),
+                new PhoneNumber("+375", "25", "123123", PhoneNumberType.MOBILE),
+            ]
+            loaded.messengers = [
+                new Messenger("userTelega", MessengerType.TELEGRAM),
+                new Messenger("userSkype", MessengerType.SKYPE)
+            ]
             loaded.roles = Set.of(AccessRole.SUPER_ADMIN, AccessRole.ORG_ADMIN)
             loaded.groups = Set.of(group1, group2)
             loaded.emailConfirmed = true
@@ -117,7 +126,8 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             reloaded.firstName == loaded.firstName
             reloaded.secondName == loaded.secondName
             reloaded.thirdName == loaded.thirdName
-            reloaded.phoneNumber == loaded.phoneNumber
+            reloaded.phoneNumbers == loaded.phoneNumbers
+            reloaded.messengers == loaded.messengers
             reloaded.modified.isAfter(reloaded.created)
             reloaded.modified.isAfter(prevModified)
             reloaded.version == 1
@@ -157,8 +167,16 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
     def "should load user by phone number"() {
     
         given:
-            def phoneNumber = new PhoneNumber("+24", "22", "3423")
-            userTestHelper.newUser("User1", phoneNumber)
+           
+            Set<PhoneNumber> phoneNumbers = [
+                new PhoneNumber("+24", "22", "3423"),
+                new PhoneNumber("+24", "22", "54342")
+            ]
+    
+            Set<Messenger> messengers = [new Messenger("userWatsUp", MessengerType.WHATS_UP)]
+        
+            userTestHelper.newUser("User1", phoneNumbers, messengers)
+        
         when:
             def user = userDao.findByPhoneNumber("+24223423").block()
         then:
@@ -167,7 +185,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             user.salt != null
             user.id != 0L
             user.organization != null
-            user.phoneNumber == phoneNumber
+            user.phoneNumbers == phoneNumbers
     }
 
     def "should found created user by email"() {

@@ -19,6 +19,8 @@ public class MinimalUserOutResource implements RestResource {
     @Nullable String firstName;
     @Nullable String secondName;
     @Nullable String thirdName;
+    @Nullable String birthday;
+
     @Nullable PhoneNumberResource phoneNumber;
 
     long id;
@@ -29,6 +31,7 @@ public class MinimalUserOutResource implements RestResource {
         this.secondName = user.getSecondName();
         this.thirdName = user.getThirdName();
         this.phoneNumber = user.getPhoneNumber() == null ? null : new PhoneNumberResource(user.getPhoneNumber());
+        this.birthday = null;
         this.id = user.getId();
     }
 }

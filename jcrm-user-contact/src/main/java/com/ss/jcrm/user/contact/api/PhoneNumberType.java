@@ -19,9 +19,9 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum PhoneNumberType implements HasId {
+    UNKNOWN(0, "Unknown"),
     WORK(1, "Work"),
-    MOBILE(2, "Mobile"),
-    UNKNOWN(3, "Unknown");
+    MOBILE(2, "Mobile"),;
 
     private static final PhoneNumberType[] ID_TO_PHONE_NUMBER_TYPE;
     private static final Map<String, PhoneNumberType> NAME_TO_PHONE_NUMBER_TYPE;

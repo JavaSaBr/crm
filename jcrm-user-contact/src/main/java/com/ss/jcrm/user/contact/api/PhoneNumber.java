@@ -1,7 +1,6 @@
 package com.ss.jcrm.user.contact.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +15,8 @@ public class PhoneNumber {
     @NotNull String regionCode;
     @NotNull String phoneNumber;
 
+    @NotNull String fullPhoneNumber;
+
     @NotNull PhoneNumberType type;
 
     public PhoneNumber(
@@ -26,8 +27,16 @@ public class PhoneNumber {
         this(countryCode, regionCode, phoneNumber, PhoneNumberType.UNKNOWN);
     }
 
-    @JsonIgnore
-    public @NotNull String plainView() {
-        return countryCode + regionCode + phoneNumber;
+    public PhoneNumber(
+        @NotNull String countryCode,
+        @NotNull String regionCode,
+        @NotNull String phoneNumber,
+        @NotNull PhoneNumberType type
+    ) {
+        this.countryCode = countryCode;
+        this.regionCode = regionCode;
+        this.phoneNumber = phoneNumber;
+        this.type = type;
+        this.fullPhoneNumber = countryCode + regionCode + phoneNumber;
     }
 }

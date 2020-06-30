@@ -3,9 +3,9 @@ package com.ss.jcrm.user.api.dao;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.user.api.MinimalUser;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
+import com.ss.jcrm.user.contact.api.Messenger;
 import com.ss.jcrm.user.contact.api.PhoneNumber;
 import com.ss.rlib.common.util.array.Array;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +22,53 @@ public interface UserDao extends Dao<User> {
     /**
      * @throws CompletionException -> DuplicateObjectDaoException if a user with the same name is already exist.
      */
+    default @NotNull Mono<@NotNull User> create(
+        @NotNull String email,
+        @NotNull byte[] password,
+        @NotNull byte[] salt,
+        @NotNull Organization organization,
+        @NotNull Set<AccessRole> roles
+    ) {
+        return create(
+            email,
+            password,
+            salt,
+            organization,
+            roles,
+            Set.of(),
+            Set.of()
+        );
+    }
+
+    /**
+     * @throws CompletionException -> DuplicateObjectDaoException if a user with the same name is already exist.
+     */
+    default @NotNull Mono<@NotNull User> create(
+        @NotNull String email,
+        @NotNull byte[] password,
+        @NotNull byte[] salt,
+        @NotNull Organization organization,
+        @NotNull Set<AccessRole> roles,
+        @NotNull Set<PhoneNumber> phoneNumbers,
+        @NotNull Set<Messenger> messengers
+    ) {
+        return create(
+            email,
+            password,
+            salt,
+            organization,
+            roles,
+            null,
+            null,
+            null,
+            phoneNumbers,
+            messengers
+        );
+    }
+
+    /**
+     * @throws CompletionException -> DuplicateObjectDaoException if a user with the same name is already exist.
+     */
     @NotNull Mono<@NotNull User> create(
         @NotNull String email,
         @NotNull byte[] password,
@@ -31,7 +78,8 @@ public interface UserDao extends Dao<User> {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
-        @Nullable PhoneNumber phoneNumber
+        @NotNull Set<PhoneNumber> phoneNumbers,
+        @NotNull Set<Messenger> messengers
     );
 
     /**

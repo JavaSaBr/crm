@@ -158,7 +158,7 @@ public class RegistrationWebConfig {
             .GET(contextPath + "/user/minimal/{id}", userHandler::findMinimalById)
             .POST(contextPath + "/users/minimal/ids", userHandler::findMinimalByIds)
             .GET(contextPath + "/user/{id}", userHandler::findById)
-            .GET(contextPath + "/user", userHandler::create)
+            .POST(contextPath + "/user", userHandler::create)
             .POST(contextPath + "/users/ids", userHandler::findByIds)
             .GET(contextPath + "/users/page", userHandler::findPage)
             .GET(contextPath + "/exist/user/email/{email}", userHandler::existByEmail)

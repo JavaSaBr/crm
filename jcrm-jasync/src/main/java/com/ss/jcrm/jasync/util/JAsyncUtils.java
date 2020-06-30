@@ -189,6 +189,23 @@ public class JAsyncUtils {
         }
     }
 
+    public static <T> @NotNull Set<T> fromJsonArrayToSet(
+        @Nullable String json,
+        @NotNull Class<T[]> type
+    ) {
+
+        if (StringUtils.isEmpty(json) || "[]".equals(json)) {
+            return Set.of();
+        }
+
+        try {
+            var array = OBJECT_MAPPER.readValue(json, type);
+            return Set.of(array);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static @Nullable String toJson(@Nullable Object object) {
 
         if (object == null) {

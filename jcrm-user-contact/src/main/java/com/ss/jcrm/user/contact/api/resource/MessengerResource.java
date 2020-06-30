@@ -1,21 +1,21 @@
 package com.ss.jcrm.user.contact.api.resource;
 
 import com.ss.jcrm.user.contact.api.Messenger;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.ss.jcrm.user.contact.api.MessengerType;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 public class MessengerResource {
 
-    private String login;
-    private String type;
+    public static @NotNull MessengerResource from(@NotNull Messenger messenger) {
+        return new MessengerResource(messenger.getLogin(), (int) messenger.getType().getId());
+    }
 
-    public MessengerResource(@NotNull Messenger messenger) {
-        this.login = messenger.getLogin();
-        this.type = messenger.getType().name();
+    @NotNull String login;
+    int type;
+
+    public @NotNull Messenger toMessenger() {
+        return new Messenger(login, MessengerType.require(type));
     }
 }

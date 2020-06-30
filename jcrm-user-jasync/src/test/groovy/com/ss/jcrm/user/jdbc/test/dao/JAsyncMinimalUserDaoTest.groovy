@@ -34,7 +34,7 @@ class JAsyncMinimalUserDaoTest extends JAsyncUserSpecification {
             def hash = passwordService.hash(password, salt)
             def roles = userTestHelper.onlyOrgAdminRole()
         when:
-            def user = userDao.create("User1", hash, salt, org, roles, null, null, null, null).block()
+            def user = userDao.create("User1", hash, salt, org, roles).block()
         then:
             user != null
             user.getEmail() == "User1"

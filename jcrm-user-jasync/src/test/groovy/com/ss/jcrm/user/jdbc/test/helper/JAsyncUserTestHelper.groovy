@@ -15,6 +15,7 @@ import com.ss.jcrm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.api.test.UserTestHelper
+import com.ss.jcrm.user.contact.api.Messenger
 import com.ss.jcrm.user.contact.api.PhoneNumber
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 
@@ -40,7 +41,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
         DictionaryTestHelper dictionaryTestHelper,
         EmailConfirmationDao emailConfirmationDao
     ) {
-        super(connectionPool, schema);
+        super(connectionPool, schema)
         this.userDao = userDao
         this.userGroupDao = userGroupDao
         this.organizationDao = organizationDao
@@ -118,23 +119,25 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
     }
     
     @Override
-    User newUser(String name, PhoneNumber phoneNumber) {
+    User newUser(String name, Set<PhoneNumber> phoneNumbers, Set<Messenger> messengers) {
         return newUser(
             name,
             passwordService.nextPassword(24),
             passwordService.nextSalt,
             getOrCreateDefaultOrg(),
-            phoneNumber
+            phoneNumbers,
+            messengers
         )
     }
     
-    User newUser(String name, PhoneNumber phoneNumber, String password) {
+    User newUser(String name, Set<PhoneNumber> phoneNumbers, Set<Messenger> messengers, String password) {
         return newUser(
             name,
             password,
             passwordService.nextSalt,
             getOrCreateDefaultOrg(),
-            phoneNumber
+            phoneNumbers,
+            messengers
         )
     }
     
@@ -172,7 +175,8 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             firstName,
             secondName,
             thirdName,
-            null
+            Collections.emptySet(),
+            Collections.emptySet()
         ).block()
     }
     
@@ -186,7 +190,8 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             null,
             null,
             null,
-            null
+            Collections.emptySet(),
+            Collections.emptySet(),
         ).block()
     }
     
@@ -200,11 +205,19 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             null,
             null,
             null,
-            null
+            Collections.emptySet(),
+            Collections.emptySet(),
         ).block()
     }
     
-    def newUser(String name, String password, byte[] salt, Organization organization, PhoneNumber phoneNumber) {
+    def newUser(
+        String name,
+        String password,
+        byte[] salt,
+        Organization organization,
+        Set<PhoneNumber> phoneNumbers,
+        Set<Messenger> messengers
+    ) {
         return userDao.create(
             name,
             passwordService.hash(password, salt),
@@ -214,7 +227,8 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             null,
             null,
             null,
-            phoneNumber
+            phoneNumbers,
+            messengers
         ).block()
     }
 
@@ -232,7 +246,8 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             null,
             null,
             null,
-            null
+            Collections.emptySet(),
+            Collections.emptySet()
         ).block()
     }
 
