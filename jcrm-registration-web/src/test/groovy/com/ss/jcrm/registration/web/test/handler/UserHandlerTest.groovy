@@ -6,7 +6,7 @@ import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import com.ss.jcrm.user.api.dao.UserDao
-import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource
+import com.ss.rlib.common.util.ArrayUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
@@ -31,6 +31,8 @@ class UserHandlerTest extends RegistrationSpecification {
             def org = userTestHelper.newOrg()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def token = unsafeTokenService.generateNewToken(user)
+            def phoneNumbers = generatePhoneNumbers()
+            def messengers = generateMessengers()
         
             def newUser = UserInResource.newResource(
                 "newuser@email.com",
@@ -38,63 +40,59 @@ class UserHandlerTest extends RegistrationSpecification {
                 "Second name",
                 "Third name",
                 "password".toCharArray(),
-                new PhoneNumberResource(
-                
-                ),
-                AccessRole.ORG_ADMIN,
+                phoneNumbers,
+                messengers,
+                ArrayUtils.toIntArray((int) AccessRole.ORG_ADMIN.id),
                 "1990-05-22"
             )
-        
+    
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
-                .url("/user")
+                .url("/registration/user")
                 .exchange()
         then:
-            response.expectStatus().isCreated()
+            response
+                .expectStatus().isCreated()
                 .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath('$.id').isNotEmpty()
-                .jsonPath('$.assigner').isEqualTo((int) body.assigner)
-                .jsonPath('$.curators[*]').value(containsInAnyOrder(
-                (int) body.curators[0],
-                (int) body.curators[1]
-            ))
-                .jsonPath('$.firstName').isEqualTo(body.firstName)
-                .jsonPath('$.secondName').isEqualTo(body.secondName)
-                .jsonPath('$.thirdName').isEqualTo(body.thirdName)
-                .jsonPath('$.company').isEqualTo(body.company)
-                .jsonPath('$.birthday').isEqualTo(body.birthday)
-                .jsonPath('$.created').isNotEmpty()
-                .jsonPath('$.modified').isNotEmpty()
-                .jsonPath('$.phoneNumbers').value(hasSize(1))
-                .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers[0].countryCode)
-                .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers[0].regionCode)
-                .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers[0].phoneNumber)
-                .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers[0].type))
-                .jsonPath('$.emails').value(hasSize(1))
-                .jsonPath('$.emails[0].type').isEqualTo(body.emails[0].type)
-                .jsonPath('$.emails[0].email').isEqualTo(body.emails[0].email)
-                .jsonPath('$.sites').value(hasSize(2))
-                .jsonPath('$.sites[*].type').value(containsInAnyOrder(
-                body.sites[0].type,
-                body.sites[1].type
-            ))
-                .jsonPath('$.sites[*].url').value(containsInAnyOrder(
-                body.sites[0].url,
-                body.sites[1].url
-            ))
+                .jsonPath('$.email').isEqualTo(newUser.email)
+                .jsonPath('$.firstName').isEqualTo(newUser.firstName)
+                .jsonPath('$.secondName').isEqualTo(newUser.secondName)
+                .jsonPath('$.thirdName').isEqualTo(newUser.thirdName)
+                .jsonPath('$.birthday').isEqualTo(newUser.birthday)
+                .jsonPath('$.phoneNumbers').value(hasSize(2))
+                .jsonPath('$.phoneNumbers[*].countryCode').value(containsInAnyOrder(
+                    phoneNumbers[0].countryCode,
+                    phoneNumbers[1].countryCode
+                ))
+                .jsonPath('$.phoneNumbers[*].regionCode').value(containsInAnyOrder(
+                    phoneNumbers[0].regionCode,
+                    phoneNumbers[1].regionCode
+                ))
+                .jsonPath('$.phoneNumbers[*].phoneNumber').value(containsInAnyOrder(
+                    phoneNumbers[0].phoneNumber,
+                    phoneNumbers[1].phoneNumber
+                ))
+                .jsonPath('$.phoneNumbers[*].type').value(containsInAnyOrder(
+                    phoneNumbers[0].type,
+                    phoneNumbers[1].type
+                ))
                 .jsonPath('$.messengers').value(hasSize(2))
-                .jsonPath('$.messengers[*].type').value(containsInAnyOrder(
-                body.messengers[0].type,
-                body.messengers[1].type
-            ))
                 .jsonPath('$.messengers[*].login').value(containsInAnyOrder(
-                body.messengers[0].login,
-                body.messengers[1].login
-            ))
+                    messengers[0].login,
+                    messengers[1].login
+                ))
+                .jsonPath('$.messengers[*].type').value(containsInAnyOrder(
+                    messengers[0].type,
+                    messengers[1].type
+                ))
     }
+    
+ 
     
     def "should found that user is exist"() {
 
@@ -129,7 +127,8 @@ class UserHandlerTest extends RegistrationSpecification {
                 .url("/registration/exist/user/email/$email")
                 .exchange()
         then:
-            response.expectStatus().isBadRequest()
+            response
+                .expectStatus().isBadRequest()
                 .verifyErrorResponse(INVALID_EMAIL, INVALID_EMAIL_MESSAGE)
     }
     
@@ -149,7 +148,8 @@ class UserHandlerTest extends RegistrationSpecification {
                 .url("/registration/search/user/name/first")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$').isNotEmpty()
                     .jsonPath('$').value(hasSize(3))
@@ -159,7 +159,8 @@ class UserHandlerTest extends RegistrationSpecification {
                 .url("/registration/search/user/name/first2 second")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$').isNotEmpty()
                     .jsonPath('$').value(hasSize(1))
@@ -171,7 +172,8 @@ class UserHandlerTest extends RegistrationSpecification {
                 .url("/registration/search/user/name/hird")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$').isNotEmpty()
                     .jsonPath('$').value(hasSize(3))
@@ -185,7 +187,8 @@ class UserHandlerTest extends RegistrationSpecification {
                 .url("/registration/search/user/name/first")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(NOT_PRESENTED_TOKEN, NOT_PRESENTED_TOKEN_MESSAGE)
         
     }
@@ -194,7 +197,6 @@ class UserHandlerTest extends RegistrationSpecification {
         
         given:
             def user = userTestHelper.newUser("Admin 1", AccessRole.USER_MANAGER)
-            user.phoneNumber = "testphonenumber"
             user.firstName = "First name"
             user.secondName = "Second name"
             user.thirdName = "Third name"
@@ -206,14 +208,14 @@ class UserHandlerTest extends RegistrationSpecification {
                 .url("/registration/user/$user.id")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$').isNotEmpty()
                     .jsonPath('$.email').isEqualTo(user.email)
                     .jsonPath('$.firstName').isEqualTo(user.firstName)
                     .jsonPath('$.secondName').isEqualTo(user.secondName)
                     .jsonPath('$.thirdName').isEqualTo(user.thirdName)
-                    .jsonPath('$.phoneNumber').isEqualTo(user.phoneNumber)
                     .jsonPath('$.created').isEqualTo(user.created.toEpochMilli())
                     .jsonPath('$.modified').isEqualTo(user.modified.toEpochMilli())
     }
@@ -222,7 +224,6 @@ class UserHandlerTest extends RegistrationSpecification {
         
         given:
             def user = userTestHelper.newUser("Not admin")
-            user.phoneNumber = "testphonenumber"
             user.firstName = "First name"
             user.secondName = "Second name"
             user.thirdName = "Third name"
@@ -234,14 +235,14 @@ class UserHandlerTest extends RegistrationSpecification {
                 .url("/registration/user/minimal/$user.id")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$').isNotEmpty()
                     .jsonPath('$.email').isEqualTo(user.email)
                     .jsonPath('$.firstName').isEqualTo(user.firstName)
                     .jsonPath('$.secondName').isEqualTo(user.secondName)
                     .jsonPath('$.thirdName').isEqualTo(user.thirdName)
-                    .jsonPath('$.phoneNumber').isEqualTo(user.phoneNumber)
         when:
             response = client.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
@@ -290,18 +291,20 @@ class UserHandlerTest extends RegistrationSpecification {
         
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/users/ids")
                 .body(ids)
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$').isNotEmpty()
                     .jsonPath('$').value(hasSize(3))
                     .jsonPath('$[*].id').value(containsInAnyOrder(
-                        (int) user1.id, (int) user2.id, (int) user3.id)
-                    )
+                        (int) user1.id, (int) user2.id, (int) user3.id
+                    ))
     }
     
     def "should load a page of contacts successfully"() {
@@ -327,7 +330,8 @@ class UserHandlerTest extends RegistrationSpecification {
                 .url("/registration/users/page?pageSize=5&offset=0")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
                     .jsonPath('$.totalSize').isEqualTo(20)
@@ -360,17 +364,19 @@ class UserHandlerTest extends RegistrationSpecification {
         
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/users/minimal/ids")
                 .body(ids)
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$').isNotEmpty()
                     .jsonPath('$').value(hasSize(3))
                     .jsonPath('$[*].id').value(containsInAnyOrder(
-                        (int) user1.id, (int) user2.id, (int) user3.id)
-            )
+                        (int) user1.id, (int) user2.id, (int) user3.id
+                    ))
     }
 }

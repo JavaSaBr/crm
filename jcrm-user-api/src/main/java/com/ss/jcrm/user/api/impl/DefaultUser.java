@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Setter
@@ -32,6 +33,7 @@ public class DefaultUser implements User {
     @Nullable String firstName;
     @Nullable String secondName;
     @Nullable String thirdName;
+    @Nullable LocalDate birthday;
 
     @NotNull Instant modified;
 
@@ -58,6 +60,7 @@ public class DefaultUser implements User {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
+        @Nullable LocalDate birthday,
         @NotNull Set<PhoneNumber> phoneNumbers,
         @NotNull Set<Messenger> messengers,
         @NotNull Instant created,
@@ -77,6 +80,7 @@ public class DefaultUser implements User {
         this.firstName = firstName;
         this.secondName = secondName;
         this.thirdName = thirdName;
+        this.birthday = birthday;
         this.phoneNumbers = phoneNumbers;
         this.messengers = messengers;
         this.groups = Set.of();

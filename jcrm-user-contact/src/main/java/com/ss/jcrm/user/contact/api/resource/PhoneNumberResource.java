@@ -23,7 +23,7 @@ public class PhoneNumberResource {
 
     int type;
 
-    @NotNull PhoneNumber toPhoneNumber() {
+    public @NotNull PhoneNumber toPhoneNumber() {
         return new PhoneNumber(
             countryCode,
             regionCode,

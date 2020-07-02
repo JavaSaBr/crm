@@ -6,6 +6,7 @@ import com.ss.jcrm.registration.web.resources.UserInResource;
 import com.ss.jcrm.registration.web.resources.UserOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.AccessRole;
+import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
@@ -18,6 +19,7 @@ import com.ss.jcrm.web.exception.ExceptionUtils;
 import com.ss.jcrm.web.resources.DataPageResponse;
 import com.ss.jcrm.web.util.RequestUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
+import com.ss.rlib.common.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +48,7 @@ public class UserHandler extends BaseRegistrationHandler {
     private final UserDao userDao;
     private final ResourceValidator resourceValidator;
     private final WebRequestSecurityService webRequestSecurityService;
+    private final PasswordService passwordService;
 
     public @NotNull Mono<ServerResponse> existByEmail(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("email"))
@@ -139,18 +142,24 @@ public class UserHandler extends BaseRegistrationHandler {
         var user = authorized.getUser();
         var resource = authorized.getResource();
 
+        var salt = passwordService.getNextSalt();
+        var hash = passwordService.hash(resource.getPassword(), salt);
+
         //noinspection ConstantConditions
         return userDao.existByEmail(resource.getEmail())
             .filter(emailAlreadyExist -> !emailAlreadyExist)
-            .flatMap(emailAlreadyExist -> userDao.create(resource.getEmail(),
-                null,
-                null,
+            .flatMap(emailAlreadyExist -> userDao.create(
+                resource.getEmail(),
+                hash,
+                salt,
                 user.getOrganization(),
                 Collections.emptySet(),
                 resource.getFirstName(),
                 resource.getSecondName(),
                 resource.getThirdName(),
-                toPhoneNumber(resource.getPhoneNumber())
+                DateUtils.toLocalDate(resource.getBirthday()),
+                toPhoneNumbers(resource.getPhoneNumbers()),
+                toMessengers(resource.getMessengers())
             ))
             .switchIfEmpty(Mono.error(() -> ExceptionUtils.toBadRequest(
                 RegistrationErrors.EMAIL_ALREADY_EXIST,

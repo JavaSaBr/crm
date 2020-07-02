@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 
 public interface User extends VersionedUniqEntity {
@@ -29,6 +30,10 @@ public interface User extends VersionedUniqEntity {
     @Nullable String getThirdName();
 
     void setThirdName(@Nullable String thirdName);
+
+    @Nullable LocalDate getBirthday();
+
+    void setBirthday(@Nullable LocalDate birthday);
 
     @NotNull byte[] getPassword();
 

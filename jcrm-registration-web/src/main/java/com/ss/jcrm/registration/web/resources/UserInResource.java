@@ -1,5 +1,6 @@
 package com.ss.jcrm.registration.web.resources;
 
+import com.ss.jcrm.user.contact.api.resource.MessengerResource;
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.resources.RestResource;
 import lombok.Value;
@@ -15,7 +16,8 @@ public class UserInResource implements RestResource {
         @Nullable String secondName,
         @Nullable String thirdName,
         @Nullable char[] password,
-        @Nullable PhoneNumberResource phoneNumber,
+        @Nullable PhoneNumberResource[] phoneNumbers,
+        @Nullable MessengerResource[] messengers,
         @Nullable int[] roles,
         @Nullable String birthday
     ) {
@@ -24,7 +26,8 @@ public class UserInResource implements RestResource {
             secondName,
             thirdName,
             password,
-            phoneNumber,
+            phoneNumbers,
+            messengers,
             roles,
             birthday,
             0
@@ -38,9 +41,11 @@ public class UserInResource implements RestResource {
 
     @Nullable char[] password;
 
-    @Nullable PhoneNumberResource phoneNumber;
+    @Nullable PhoneNumberResource[] phoneNumbers;
+    @Nullable MessengerResource[] messengers;
 
     @Nullable int[] roles;
+
     @Nullable String birthday;
 
     long id;

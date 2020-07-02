@@ -16,6 +16,7 @@ import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.time.Instant
+import java.time.LocalDate
 
 class JAsyncUserDaoTest extends JAsyncUserSpecification {
 
@@ -34,28 +35,59 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
     def "should create and load new user"() {
 
         given:
+           
             def org = userTestHelper.newOrg()
             def salt = passwordService.nextSalt
             def password = passwordService.nextPassword(24)
             def hash = passwordService.hash(password, salt)
             def roles = userTestHelper.onlyOrgAdminRole()
+            def birthday = LocalDate.of(1990, 5, 15)
+            
+            Set<PhoneNumber> phoneNumbers = [
+                new PhoneNumber("+375", "234", "6786786", PhoneNumberType.MOBILE),
+                new PhoneNumber("+375", "25", "2344", PhoneNumberType.WORK),
+            ]
+        
+            Set<Messenger> messengers = [
+                new Messenger("userTelega", MessengerType.TELEGRAM),
+                new Messenger("userSkype", MessengerType.SKYPE)
+            ]
+        
         when:
-            def user = userDao.create("User1", hash, salt, org, roles).block()
+            def user = userDao.create(
+                "User1",
+                hash,
+                salt,
+                org,
+                roles,
+                "F name",
+                "S name",
+                "T name",
+                birthday,
+                phoneNumbers,
+                messengers
+            ).block()
         then:
             user != null
-            user.getEmail() == "User1"
+            user.email == "User1"
             Arrays.equals(user.getSalt(), salt)
-            user.getId() != 0L
-            user.getOrganization() == org
-            user.getRoles().size() == 1
+            user.id != 0L
+            user.organization == org
+            user.roles.size() == 1
         when:
             def loaded = userDao.findById(user.getId()).block()
         then:
             loaded != null
-            loaded.getEmail() == "User1"
-            Arrays.equals(loaded.getSalt(), salt)
-            loaded.getOrganization() == org
-            loaded.getRoles().size() == 1
+            loaded.email == "User1"
+            Arrays.equals(loaded.salt, salt)
+            loaded.organization == org
+            loaded.roles.size() == 1
+            loaded.firstName == "F name"
+            loaded.secondName == "S name"
+            loaded.thirdName == "T name"
+            loaded.phoneNumbers == phoneNumbers
+            loaded.messengers == messengers
+            loaded.birthday == birthday
     }
 
     def "should prevent creating user with the same name"() {
@@ -93,6 +125,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             def group2 = userTestHelper.newGroup(org)
             def user = userTestHelper.newUser("User1", org)
             def timeAfterCreation = Instant.now()
+            def birthday = LocalDate.of(1990, 10, 10)
         when:
             def loaded = userDao.findById(user.id).block()
             def prevModified = loaded.modified
@@ -117,6 +150,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             ]
             loaded.roles = Set.of(AccessRole.SUPER_ADMIN, AccessRole.ORG_ADMIN)
             loaded.groups = Set.of(group1, group2)
+            loaded.birthday = birthday
             loaded.emailConfirmed = true
             loaded.passwordVersion = 3
             userDao.update(loaded).block()
@@ -128,6 +162,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             reloaded.thirdName == loaded.thirdName
             reloaded.phoneNumbers == loaded.phoneNumbers
             reloaded.messengers == loaded.messengers
+            reloaded.birthday == loaded.birthday
             reloaded.modified.isAfter(reloaded.created)
             reloaded.modified.isAfter(prevModified)
             reloaded.version == 1
@@ -282,9 +317,9 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             def loaded = userDao.findByIdAndOrgId(user.id, org1.id).block()
         then:
             loaded != null
-            loaded.getEmail() == user.email
-            loaded.getId() != 0L
-            loaded.getOrganization() == org1
+            loaded.email == user.email
+            loaded.id != 0L
+            loaded.organization == org1
         when:
             loaded = userDao.findByIdAndOrgId(loaded.id, org2.id).block()
         then:

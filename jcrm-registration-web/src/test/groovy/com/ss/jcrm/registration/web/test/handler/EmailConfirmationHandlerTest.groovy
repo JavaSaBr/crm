@@ -28,7 +28,8 @@ class EmailConfirmationHandlerTest extends RegistrationSpecification {
                 .url("/registration/email-confirmation/$email")
                 .exchange()
         then:
-            response.expectStatus().isBadRequest()
+            response
+                .expectStatus().isBadRequest()
                 .verifyErrorResponse(INVALID_EMAIL, INVALID_EMAIL_MESSAGE)
     }
 }

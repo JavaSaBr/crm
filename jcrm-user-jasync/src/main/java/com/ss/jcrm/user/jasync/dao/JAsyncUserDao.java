@@ -1,7 +1,6 @@
 package com.ss.jcrm.user.jasync.dao;
 
-import static com.ss.jcrm.jasync.util.JAsyncUtils.toDateTime;
-import static com.ss.jcrm.jasync.util.JAsyncUtils.toJavaInstant;
+import static com.ss.jcrm.jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.ifNull;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
@@ -26,10 +25,10 @@ import com.ss.rlib.common.util.array.Array;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +38,8 @@ import java.util.Set;
 public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
-        " \"second_name\", \"third_name\", \"phone_numbers\", \"messengers\", \"password\", \"salt\", \"roles\", \"groups\"," +
-        " \"version\", \"email_confirmed\", \"password_version\", \"created\", \"modified\"";
+        " \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"messengers\", \"password\", \"salt\"," +
+        " \"roles\", \"groups\", \"version\", \"email_confirmed\", \"password_version\", \"created\", \"modified\"";
 
     private static final String Q_SELECT_BY_EMAIL = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"email\" = ?";
@@ -52,12 +51,12 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         " from \"${schema}\".\"user\" where \"phone_numbers\" like(?)";
 
     private static final String Q_INSERT = "insert into \"${schema}\".\"user\" (\"email\", \"password\", \"salt\", " +
-        "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"phone_numbers\", " +
-        "\"messengers\", \"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?,?) returning id";
+        "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", " +
+        "\"messengers\", \"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?,?,?) returning id";
 
     private static final String Q_UPDATE = "update \"${schema}\".\"user\" set \"first_name\" = ?, \"second_name\" = ?," +
         " \"third_name\" = ?, \"phone_numbers\" = ?, \"messengers\" = ?, \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
-        " \"email_confirmed\" = ?, \"password_version\" = ?, \"modified\" = ? where \"id\" = ? and \"version\" = ?";
+        " \"email_confirmed\" = ?, \"password_version\" = ?, \"birthday\" = ?, \"modified\" = ? where \"id\" = ? and \"version\" = ?";
 
     private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"${schema}\".\"user\" where \"email\" = ?";
 
@@ -129,6 +128,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
+        @Nullable LocalDate birthday,
         @NotNull Set<PhoneNumber> phoneNumbers,
         @NotNull Set<Messenger> messengers
     ) {
@@ -145,6 +145,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 StringUtils.emptyIfNull(firstName),
                 StringUtils.emptyIfNull(secondName),
                 StringUtils.emptyIfNull(thirdName),
+                toDate(birthday),
                 JAsyncUtils.toJson(phoneNumbers),
                 JAsyncUtils.toJson(messengers),
                 toDateTime(currentTime),
@@ -160,6 +161,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 firstName,
                 secondName,
                 thirdName,
+                birthday,
                 phoneNumbers,
                 messengers,
                 currentTime,
@@ -230,6 +232,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 user.getVersion() + 1,
                 user.isEmailConfirmed(),
                 user.getPasswordVersion(),
+                toDate(user.getBirthday()),
                 toDateTime(now),
                 user.getId(),
                 user.getVersion()
@@ -271,50 +274,52 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     private @NotNull Mono<@NotNull User> toUser(@NotNull RowData data) {
 
         var id = notNull(data.getLong(0));
-        var version = notNull(data.getInt(12));
+        var version = notNull(data.getInt(13));
 
         var orgId = ifNull(data.getLong(1), 0L);
         var email = notNull(data.getString(2));
         var firstName = data.getString(3);
         var secondName = data.getString(4);
         var thirdName = data.getString(5);
-        var phoneNumbers = JAsyncUtils.fromJsonArrayToSet(data.getString(6), PhoneNumber[].class);
-        var messengers = JAsyncUtils.fromJsonArrayToSet(data.getString(7), Messenger[].class);
-        var passwordVersion = ifNull(data.getInt(14), 0);
-        var emailConfirmed = ifNull(data.getBoolean(13), Boolean.FALSE);
+        var birthday = toJavaDate(data.getAs(6));
+        var phoneNumbers = JAsyncUtils.fromJsonArrayToSet(data.getString(7), PhoneNumber[].class);
+        var messengers = JAsyncUtils.fromJsonArrayToSet(data.getString(8), Messenger[].class);
+        var passwordVersion = ifNull(data.getInt(15), 0);
+        var emailConfirmed = ifNull(data.getBoolean(14), Boolean.FALSE);
 
-        byte[] password = data.getAs(8);
-        byte[] salt = data.getAs(9);
+        byte[] password = data.getAs(9);
+        byte[] salt = data.getAs(10);
 
         var roles = JAsyncUtils.fromJsonIds(
-            data.getString(10),
+            data.getString(11),
             AccessRole::require
         );
 
         var orgAsync = organizationDao.requireById(orgId);
         var groupsAsync = JAsyncUtils.fromJsonIdsAsync(
-            data.getString(11),
+            data.getString(12),
             userGroupDao,
             Dao::requireById
         );
 
-        var created = toJavaInstant(data.getAs(15));
-        var modified = toJavaInstant(data.getAs(16));
+        var created = toJavaInstant(data.getAs(16));
+        var modified = toJavaInstant(data.getAs(17));
 
-        return Flux.concat(groupsAsync, orgAsync)
-            .last().map(ignore -> new DefaultUser(
+        return Mono.zip(groupsAsync, orgAsync)
+            .map(objects -> new DefaultUser(
                 id,
-                orgAsync.block(),
+                objects.getT2(),
                 created,
                 email,
                 firstName,
                 secondName,
                 thirdName,
+                birthday,
                 modified,
                 password,
                 salt,
                 roles,
-                groupsAsync.block(),
+                objects.getT1(),
                 phoneNumbers,
                 messengers,
                 version,

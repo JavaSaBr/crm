@@ -6,6 +6,7 @@ import com.ss.jcrm.user.api.dao.EmailConfirmationDao
 import com.ss.jcrm.user.contact.api.PhoneNumberType
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.COUNTRY_NOT_FOUND
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.COUNTRY_NOT_FOUND_MESSAGE
@@ -13,6 +14,7 @@ import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_ACTIVATION_CODE_MESSAGE
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
+import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is;
 
 class OrganizationHandlerTest extends RegistrationSpecification {
@@ -52,25 +54,28 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 confirmation.email,
                 confirmation.code,
                 '123456'.toCharArray(),
-                new PhoneNumberResource("+7", "23", "2311312", null),
+                new PhoneNumberResource("+7", "23", "2311312", 0),
                 country.id
             )
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .url("/registration/register/organization")
                 .exchange()
         then:
-            response.expectStatus().isCreated()
+            response
+                .expectStatus().isCreated()
                 .expectBody()
                     .jsonPath('$.token').isNotEmpty()
                     .jsonPath('$.user').isNotEmpty()
                     .jsonPath('$.user.id').isNotEmpty()
                     .jsonPath('$.user.email').value(is(confirmation.email))
-                    .jsonPath('$.user.phoneNumber.countryCode').value(is(request.phoneNumber.countryCode))
-                    .jsonPath('$.user.phoneNumber.regionCode').value(is(request.phoneNumber.regionCode))
-                    .jsonPath('$.user.phoneNumber.phoneNumber').value(is(request.phoneNumber.phoneNumber))
-                    .jsonPath('$.user.phoneNumber.type').value(is(PhoneNumberType.UNKNOWN.name()))
+                    .jsonPath('$.user.phoneNumbers').value(hasSize(1))
+                    .jsonPath('$.user.phoneNumbers[0].countryCode').isEqualTo(request.phoneNumber.countryCode)
+                    .jsonPath('$.user.phoneNumbers[0].regionCode').isEqualTo(request.phoneNumber.regionCode)
+                    .jsonPath('$.user.phoneNumbers[0].phoneNumber').isEqualTo(request.phoneNumber.phoneNumber)
+                    .jsonPath('$.user.phoneNumbers[0].type').isEqualTo((int) PhoneNumberType.UNKNOWN.id)
     }
     
     def "should not register an organization with wrong activation code"() {
@@ -83,16 +88,18 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 confirmation.email,
                 confirmation.code + "111",
                 '123456'.toCharArray(),
-                new PhoneNumberResource("+7", "23", "2311312", null),
+                new PhoneNumberResource("+7", "23", "2311312", 0),
                 country.id
             )
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .url("/registration/register/organization")
                 .exchange()
         then:
-            response.expectStatus().isBadRequest()
+            response
+                .expectStatus().isBadRequest()
                 .verifyErrorResponse(INVALID_ACTIVATION_CODE, INVALID_ACTIVATION_CODE_MESSAGE)
     }
     
@@ -106,16 +113,18 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 confirmation.email,
                 confirmation.code,
                 '123456'.toCharArray(),
-                new PhoneNumberResource("+7", "23", "2311312", null),
+                new PhoneNumberResource("+7", "23", "2311312", 0),
                 country.id + 100000
             )
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .url("/registration/register/organization")
                 .exchange()
         then:
-            response.expectStatus().isBadRequest()
+            response
+                .expectStatus().isBadRequest()
                 .verifyErrorResponse(COUNTRY_NOT_FOUND, COUNTRY_NOT_FOUND_MESSAGE)
     }
     
@@ -129,16 +138,18 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 "wrongemail11",
                 confirmation.code,
                 '123456'.toCharArray(),
-                new PhoneNumberResource("+7", "23", "2311312", null),
+                new PhoneNumberResource("+7", "23", "2311312", 0),
                 country.id
             )
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .url("/registration/register/organization")
                 .exchange()
         then:
-            response.expectStatus().isBadRequest()
+            response
+                .expectStatus().isBadRequest()
                 .verifyErrorResponse(INVALID_EMAIL, INVALID_EMAIL_MESSAGE)
     }
 }

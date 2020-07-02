@@ -80,9 +80,10 @@ public class RegistrationWebConfig {
     @NotNull UserHandler userHandler(
         @NotNull UserDao userDao,
         @NotNull ResourceValidator resourceValidator,
-        @NotNull WebRequestSecurityService webRequestSecurityService
+        @NotNull WebRequestSecurityService webRequestSecurityService,
+        @NotNull PasswordService passwordService
     ) {
-        return new UserHandler(userDao, resourceValidator, webRequestSecurityService);
+        return new UserHandler(userDao, resourceValidator, webRequestSecurityService, passwordService);
     }
 
     @Bean
@@ -156,10 +157,10 @@ public class RegistrationWebConfig {
         var contextPath = registrationApiEndpointServer.getContextPath();
         return RouterFunctions.route()
             .GET(contextPath + "/user/minimal/{id}", userHandler::findMinimalById)
-            .POST(contextPath + "/users/minimal/ids", userHandler::findMinimalByIds)
+            .POST(contextPath + "/users/minimal/ids", APP_JSON, userHandler::findMinimalByIds)
             .GET(contextPath + "/user/{id}", userHandler::findById)
-            .POST(contextPath + "/user", userHandler::create)
-            .POST(contextPath + "/users/ids", userHandler::findByIds)
+            .POST(contextPath + "/user", APP_JSON, userHandler::create)
+            .POST(contextPath + "/users/ids", APP_JSON, userHandler::findByIds)
             .GET(contextPath + "/users/page", userHandler::findPage)
             .GET(contextPath + "/exist/user/email/{email}", userHandler::existByEmail)
             .GET(contextPath + "/search/user/name/{name}", userHandler::searchByName)

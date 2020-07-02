@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.concurrent.CompletionException;
 
@@ -61,6 +62,7 @@ public interface UserDao extends Dao<User> {
             null,
             null,
             null,
+            null,
             phoneNumbers,
             messengers
         );
@@ -78,6 +80,7 @@ public interface UserDao extends Dao<User> {
         @Nullable String firstName,
         @Nullable String secondName,
         @Nullable String thirdName,
+        @Nullable LocalDate birthday,
         @NotNull Set<PhoneNumber> phoneNumbers,
         @NotNull Set<Messenger> messengers
     );

@@ -108,6 +108,16 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
     }
     
     @Override
+    User newUser(String name, String password) {
+        return newUser(
+            name,
+            password,
+            passwordService.nextSalt,
+            getOrCreateDefaultOrg()
+        )
+    }
+    
+    @Override
     User newUser(String name, AccessRole... roles) {
         return newUser(
             name,
@@ -175,6 +185,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             firstName,
             secondName,
             thirdName,
+            null,
             Collections.emptySet(),
             Collections.emptySet()
         ).block()
@@ -190,6 +201,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             null,
             null,
             null,
+            null,
             Collections.emptySet(),
             Collections.emptySet(),
         ).block()
@@ -202,6 +214,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             salt,
             organization,
             accessRoles,
+            null,
             null,
             null,
             null,
@@ -227,6 +240,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             null,
             null,
             null,
+            null,
             phoneNumbers,
             messengers
         ).block()
@@ -243,6 +257,7 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
             salt,
             getOrCreateDefaultOrg(),
             onlyOrgAdminRole(),
+            null,
             null,
             null,
             null,

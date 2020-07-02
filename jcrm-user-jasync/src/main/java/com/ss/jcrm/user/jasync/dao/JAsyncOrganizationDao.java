@@ -21,10 +21,10 @@ import com.ss.rlib.common.util.array.Array;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organization> implements OrganizationDao {
@@ -131,22 +131,32 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
         var email = data.getString(6);
         var phoneNumber = data.getString(7);
 
-        var asyncCountry = countryId > 0 ? countryDao.findById(countryId) : Mono.<Country>empty();
-        var asyncCity = cityId > 0 ? cityDao.findById(cityId) : Mono.<City>empty();
+        var asyncCountry = countryId > 0 ? countryDao.findById(countryId)
+            .map(Optional::of) : Mono.just(Optional.<Country>empty());
+        var asyncCity = cityId > 0 ? cityDao.findById(cityId)
+            .map(Optional::of) : Mono.just(Optional.<City>empty());
+
         var asyncIndustries = JAsyncUtils.fromJsonIdsAsync(data.getString(9), industryDao, Dao::requireById);
 
-        return Flux.concat(asyncCity, asyncCountry, asyncIndustries)
-            .last().map(ignore -> new DefaultOrganization(
-                id,
-                version,
-                name,
-                zipCode,
-                address,
-                email,
-                phoneNumber,
-                asyncCity.block(),
-                asyncCountry.block(),
-                asyncIndustries.block()
-            ));
+        return Mono.zip(asyncCountry, asyncCity, asyncIndustries)
+            .map(objects -> {
+
+                var country = objects.getT1().orElse(null);
+                var city = objects.getT2().orElse(null);
+                var industries = objects.getT3();
+
+                return new DefaultOrganization(
+                    id,
+                    version,
+                    name,
+                    zipCode,
+                    address,
+                    email,
+                    phoneNumber,
+                    city,
+                    country,
+                    industries
+                );
+            });
     }
 }

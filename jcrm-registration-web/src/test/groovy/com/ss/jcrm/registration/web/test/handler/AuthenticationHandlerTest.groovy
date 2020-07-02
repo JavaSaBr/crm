@@ -3,8 +3,8 @@ package com.ss.jcrm.registration.web.test.handler
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 import com.ss.jcrm.security.web.service.UnsafeTokenService
+import com.ss.jcrm.user.contact.api.PhoneNumber
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
 import java.time.ZonedDateTime
@@ -19,6 +19,7 @@ import static com.ss.jcrm.security.web.exception.SecurityErrors.INVALID_TOKEN
 import static com.ss.jcrm.security.web.exception.SecurityErrors.INVALID_TOKEN_MESSAGE
 import static com.ss.jcrm.security.web.exception.SecurityErrors.MAX_REFRESHED_TOKEN
 import static com.ss.jcrm.security.web.exception.SecurityErrors.MAX_REFRESHED_TOKEN_MESSAGE
+import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is
 
 class AuthenticationHandlerTest extends RegistrationSpecification {
@@ -31,14 +32,16 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
         given:
             def email = "test@test.com"
             def password = "pwdpwd"
-            userTestHelper.newUser(email, null, password)
+            userTestHelper.newUser(email, password)
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(new AuthenticationInResource(email, password.toCharArray()))
                 .url("/registration/authenticate")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$.token').isNotEmpty()
                     .jsonPath('$.user').isNotEmpty()
@@ -51,21 +54,33 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
         given:
             def email = "test@test.com"
             def password = "pwdpwd"
-            def phoneNumber = "+37533123123"
-            userTestHelper.newUser(email, phoneNumber, password)
+            def phoneNumber = new PhoneNumber("+375", "33", "123123")
+        
+            userTestHelper.newUser(
+                email,
+                Set.of(phoneNumber),
+                Set.of(),
+                password
+            )
+        
         when:
             def response = client.post()
-                .body(new AuthenticationInResource(phoneNumber, password.toCharArray()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new AuthenticationInResource(phoneNumber.getFullPhoneNumber(), password.toCharArray()))
                 .url("/registration/authenticate")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$.token').isNotEmpty()
                     .jsonPath('$.user').isNotEmpty()
                     .jsonPath('$.user.id').isNotEmpty()
-                    .jsonPath('$.user.email').value(is(email))
-                    .jsonPath('$.user.phoneNumber').value(is(phoneNumber))
+                    .jsonPath('$.user.email').isEqualTo(email)
+                    .jsonPath('$.user.phoneNumbers').value(hasSize(1))
+                    .jsonPath('$.user.phoneNumbers[0].countryCode').isEqualTo(phoneNumber.getCountryCode())
+                    .jsonPath('$.user.phoneNumbers[0].regionCode').isEqualTo(phoneNumber.getRegionCode())
+                    .jsonPath('$.user.phoneNumbers[0].phoneNumber').isEqualTo(phoneNumber.getPhoneNumber())
     }
     
     def "should authenticate a user by a token"() {
@@ -78,7 +93,8 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .url("/registration/authenticate/$token")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                 .jsonPath('$.token').isNotEmpty()
                 .jsonPath('$.user').isNotEmpty()
@@ -101,7 +117,8 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .url("/registration/token/refresh/$token")
                 .exchange()
         then:
-            response.expectStatus().isOk()
+            response
+                .expectStatus().isOk()
                 .expectBody()
                     .jsonPath('$.token').isNotEmpty()
                     .jsonPath('$.user').isNotEmpty()
@@ -124,7 +141,8 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .url("/registration/token/refresh/$token")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_TOKEN, INVALID_TOKEN_MESSAGE)
         when:
             token = unsafeTokenService.generateNewToken(
@@ -138,7 +156,8 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .url("/registration/token/refresh/$token")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(MAX_REFRESHED_TOKEN, MAX_REFRESHED_TOKEN_MESSAGE)
         when:
             token = unsafeTokenService.generateNewToken(
@@ -152,14 +171,16 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .url("/registration/token/refresh/$token")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_TOKEN, INVALID_TOKEN_MESSAGE)
         when:
             response = client.get()
                 .url("/registration/token/refresh/invalidtoken")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_TOKEN, INVALID_TOKEN_MESSAGE)
     }
     
@@ -179,7 +200,8 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .url("/registration/authenticate/$token")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(EXPIRED_TOKEN, EXPIRED_TOKEN_MESSAGE)
         when:
             token = unsafeTokenService.generateNewToken(
@@ -200,7 +222,8 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .url("/registration/authenticate/wefewfewfewf")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_TOKEN, INVALID_TOKEN_MESSAGE)
     }
     
@@ -209,32 +232,43 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
         given:
             def email = "test@test.com"
             def password = "pwdpwd"
-            def phoneNumber = "+37533123123"
-            userTestHelper.newUser(email, phoneNumber, password)
+            def phoneNumber = new PhoneNumber("+375", "33", "123123")
+    
+            userTestHelper.newUser(
+                email,
+                Set.of(phoneNumber),
+                Set.of(),
+                password
+            )
         when:
             def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(new AuthenticationInResource("+3751231212", password.toCharArray()))
                 .url("/registration/authenticate")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)
         when:
             response = client.post()
-                .body(new AuthenticationInResource(phoneNumber, "invalidpwd".toCharArray()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new AuthenticationInResource(phoneNumber.getFullPhoneNumber(), "invalidpwd".toCharArray()))
                 .url("/registration/authenticate")
                 .exchange()
         then:
-            response.expectStatus().isUnauthorized()
+            response
+                .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)
         when:
             response = client.post()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body("{}")
                 .url("/registration/authenticate")
                 .exchange()
         then:
-            response.expectStatus().isBadRequest()
+            response
+                .expectStatus().isBadRequest()
                 .verifyErrorResponse(EMPTY_LOGIN, EMPTY_LOGIN_MESSAGE)
     }
 }

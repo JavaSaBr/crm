@@ -17,6 +17,8 @@ interface UserTestHelper extends TestHelper {
     
     User newUser(String name);
     
+    User newUser(String name, String password);
+    
     User newUser(String name, AccessRole... roles);
     
     User newUser(String name, Organization organization);

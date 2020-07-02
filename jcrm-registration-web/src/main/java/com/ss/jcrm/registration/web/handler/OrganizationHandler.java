@@ -134,7 +134,9 @@ public class OrganizationHandler extends BaseRegistrationHandler {
             resource.getFirstName(),
             resource.getSecondName(),
             resource.getThirdName(),
-            toPhoneNumber(resource.getPhoneNumber())
+            null,
+            Set.of(resource.getPhoneNumber().toPhoneNumber()),
+            Set.of()
         );
     }
 

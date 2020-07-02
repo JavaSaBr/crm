@@ -1,11 +1,12 @@
 package com.ss.jcrm.registration.web.resources;
 
 import com.ss.jcrm.user.api.User;
+import com.ss.jcrm.user.contact.api.resource.MessengerResource;
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.resources.RestResource;
+import com.ss.rlib.common.util.DateUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +22,8 @@ public class MinimalUserOutResource implements RestResource {
     @Nullable String thirdName;
     @Nullable String birthday;
 
-    @Nullable PhoneNumberResource phoneNumber;
+    @Nullable PhoneNumberResource[] phoneNumbers;
+    @Nullable MessengerResource[] messengers;
 
     long id;
 
@@ -30,8 +32,15 @@ public class MinimalUserOutResource implements RestResource {
         this.firstName = user.getFirstName();
         this.secondName = user.getSecondName();
         this.thirdName = user.getThirdName();
-        this.phoneNumber = user.getPhoneNumber() == null ? null : new PhoneNumberResource(user.getPhoneNumber());
-        this.birthday = null;
+        this.phoneNumbers = user.getPhoneNumbers()
+            .stream()
+            .map(PhoneNumberResource::from)
+            .toArray(PhoneNumberResource[]::new);
+        this.messengers = user.getMessengers()
+            .stream()
+            .map(MessengerResource::from)
+            .toArray(MessengerResource[]::new);
+        this.birthday = DateUtils.toString(user.getBirthday());
         this.id = user.getId();
     }
 }
