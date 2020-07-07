@@ -192,16 +192,16 @@ export class ContactsComponent extends BaseWorkspaceComponent {
 
     buildPhoneNumbers(contact: Contact): string {
 
-        const contactPhoneNumbers = contact.phoneNumbers;
+        const phoneNumbers = contact.phoneNumbers;
 
-        if (contactPhoneNumbers.length < 1) {
+        if (phoneNumbers.length < 1) {
             return '';
         }
 
-        const phoneNumber = contactPhoneNumbers[0].phoneNumber;
-        const phoneNumberString = `${phoneNumber.country.phoneCode}(${phoneNumber.regionCode})${phoneNumber.phoneNumber}`;
+        const phoneNumber = phoneNumbers[0];
+        const phoneNumberString = `${phoneNumber.countryCode}(${phoneNumber.regionCode})${phoneNumber.phoneNumber}`;
 
-        if (contactPhoneNumbers.length == 1) {
+        if (phoneNumbers.length == 1) {
             return phoneNumberString;
         }
 

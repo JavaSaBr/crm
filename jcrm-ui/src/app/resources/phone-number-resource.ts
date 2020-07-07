@@ -4,16 +4,35 @@ export class PhoneNumberResource {
 
     public static of(phoneNumber: PhoneNumber): PhoneNumberResource {
         return new PhoneNumberResource(
-            phoneNumber.country.phoneCode,
+            phoneNumber.countryCode,
             phoneNumber.regionCode,
-            phoneNumber.phoneNumber
+            phoneNumber.phoneNumber,
+            PhoneNumber.getPhoneTypeId(phoneNumber.type)
         );
     }
 
+    public static toPhoneNumbers(resources: PhoneNumberResource[]): PhoneNumber[] | null {
+        if (resources == null || resources.length == 0) {
+            return null;
+        } else {
+            return resources.map(value => value.toPhoneNumber());
+        }
+    }
+
     constructor(
-        private readonly countryCode: string | null,
-        private readonly regionCode: string | null,
-        private readonly phoneNumber: string | null
+        public readonly countryCode: string,
+        public readonly regionCode: string,
+        public readonly phoneNumber: string,
+        public readonly type: number
     ) {
+    }
+
+    public toPhoneNumber(): PhoneNumber {
+        return new PhoneNumber(
+            this.countryCode,
+            this.regionCode,
+            this.phoneNumber,
+            PhoneNumber.getPhoneTypeById(this.type)
+        );
     }
 }

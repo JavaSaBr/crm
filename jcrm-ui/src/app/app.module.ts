@@ -31,12 +31,10 @@ import {ContactWorkspaceComponent} from '@app/component/contact/workspace-compon
 import {ContactViewComponent} from '@app/component/contact/view/contact-view.component';
 import {UserInput} from '@app/input/user/user-input';
 import {UsersInput} from '@app/input/users/users-input';
-import {ContactPhoneNumbersInput} from '@app/input/contact-phone-numbers/contact-phone-numbers-input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {ContactEmailsInput} from '@app/input/contact-emails/contact-emails-input';
 import {ContactSitesInput} from '@app/input/contact-sites-input/contact-sites-input';
-import {ContactMessengersInput} from '@app/input/contact-messengers-input/contact-messengers-input';
 import {UserProfileComponent} from '@app/component/user-profile/user-profile.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -69,6 +67,8 @@ import {MatDialogModule} from '@app/node-modules/@angular/material/dialog';
 import {MatTooltipModule} from '@app/node-modules/@angular/material/tooltip';
 import {UserWorkspaceComponent} from '@app/component/user/workspace/user-workspace.component';
 import {EntityFieldsViewBlockComponent} from '@app/component/entity-view/block/entity/fields/entity-fields-vew-block.component';
+import {PhoneNumbersInput} from '@app/input/phone-numbers/phone-numbers-input';
+import {MessengersInput} from '@app/input/messengers/messengers-input';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -100,10 +100,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         CountryInput,
         UserInput,
         UsersInput,
-        ContactPhoneNumbersInput,
         ContactEmailsInput,
         ContactSitesInput,
-        ContactMessengersInput,
         UserProfileComponent,
         SettingsComponent,
         GlobalLoadingComponent,
@@ -111,6 +109,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         UserViewComponent,
         UserWorkspaceComponent,
         EntityFieldsViewBlockComponent,
+        PhoneNumbersInput,
+        MessengersInput,
     ],
     imports: [
         BrowserModule,

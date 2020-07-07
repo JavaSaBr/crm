@@ -4,18 +4,16 @@ import {Contact} from '@app/entity/contact';
 import {ContactResource} from '@app/resource/contact-resource';
 import {SecurityService} from '@app/service/security.service';
 import {DatePipe} from '@angular/common';
-import {ContactPhoneNumberResource} from '@app/resource/contact-phone-number-resource';
 import {ContactEmailResource} from '@app/resource/contact-email-resource';
 import {ContactSiteResource} from '@app/resource/contact-site-resource';
-import {ContactMessengerResource} from '@app/resource/contact-messenger-resource';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {ContactSite, SiteType} from '@app/entity/contact-site';
-import {ContactMessenger, MessengerType} from '@app/entity/contact-messenger';
 import {ContactEmail, EmailType} from '@app/entity/contact-email';
 import {AsyncEntityRemoteRepository} from '@app/repository/async-entity-remote.repository';
 import {PhoneNumber} from '@app/entity/phone-number';
-import {ContactPhoneNumber, PhoneNumberType} from '@app/entity/contact-phone-number';
 import {ErrorService} from '@app/service/error.service';
+import {PhoneNumberResource} from '@app/resource/phone-number-resource';
+import {MessengerResource} from '@app/resource/messenger-resource';
 
 @Injectable({
     providedIn: 'root'
@@ -73,10 +71,10 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         body.thirdName = contact.thirdName;
         body.company = contact.company;
         body.birthday = this.datePipe.transform(contact.birthday, 'yyyy-MM-dd');
-        body.phoneNumbers = contact.phoneNumbers.map(value => ContactPhoneNumberResource.valueOf(value));
+        body.phoneNumbers = contact.phoneNumbers.map(value => PhoneNumberResource.of(value));
         body.emails = contact.emails.map(value => ContactEmailResource.valueOf(value));
         body.sites = contact.sites.map(value => ContactSiteResource.valueOf(value));
-        body.messengers = contact.messengers.map(value => ContactMessengerResource.valueOf(value));
+        body.messengers = contact.messengers.map(value => MessengerResource.of(value));
 
         if (contact.id && contact.id > 0) {
             body.id = contact.id;
@@ -106,7 +104,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         contact.sites = resource.sites
             .map(value => new ContactSite(value.url, value.type as SiteType));
         contact.messengers = resource.messengers
-            .map(value => new ContactMessenger(value.login, value.type as MessengerType));
+            .map(value => value.toMessenger());
         contact.emails = resource.emails
             .map(value => new ContactEmail(value.email, value.type as EmailType));
 
@@ -117,18 +115,10 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
             return Promise.resolve(contact);
         }
 
-        let asyncPhoneNumbers: Promise<ContactPhoneNumber>[] = [];
+        let asyncPhoneNumbers: Promise<PhoneNumber>[] = [];
 
         phoneNumberResources.forEach(resource => {
-            if (!resource.countryCode) {
-                const phoneNumber = new PhoneNumber(null, resource.regionCode, resource.phoneNumber);
-                const contactPhoneNumber = new ContactPhoneNumber(phoneNumber, resource.type as PhoneNumberType);
-                asyncPhoneNumbers.push(Promise.resolve(contactPhoneNumber));
-            } else {
-                asyncPhoneNumbers.push(this.countryRepository.findByPhoneCode(resource.countryCode)
-                    .then(country => new PhoneNumber(country, resource.regionCode, resource.phoneNumber))
-                    .then(phoneNumber => new ContactPhoneNumber(phoneNumber, resource.type as PhoneNumberType)));
-            }
+            asyncPhoneNumbers.push(Promise.resolve(resource.toPhoneNumber()));
         });
 
         return Promise.all(asyncPhoneNumbers)

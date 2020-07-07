@@ -98,16 +98,26 @@ export class PhoneNumberInput extends BaseInput<PhoneNumber | string> implements
         const phoneNumber = this.phoneNumberControl.value;
 
         if (country instanceof Country) {
-            return new PhoneNumber(country, phoneRegion, phoneNumber);
+            return new PhoneNumber(country.phoneCode, phoneRegion, phoneNumber, null);
         } else {
-            return new PhoneNumber(null, phoneRegion, phoneNumber);
+            return new PhoneNumber(null, phoneRegion, phoneNumber, null);
         }
     }
 
     set value(value: PhoneNumber | string | null) {
 
         if (value instanceof PhoneNumber) {
-            this.countryControl.setValue(value.country);
+
+            const countryCode = value.countryCode;
+
+            if (countryCode) {
+                this.countryRepository
+                    .findByPhoneCode(countryCode)
+                    .then(country => this.countryControl.setValue(country));
+            } else {
+                this.countryControl.setValue(null);
+            }
+
             this.phoneRegionControl.setValue(value.regionCode);
             this.phoneNumberControl.setValue(value.phoneNumber);
         } else {

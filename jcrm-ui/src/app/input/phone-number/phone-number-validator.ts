@@ -53,7 +53,7 @@ export class PhoneNumberValidator implements Validator {
 
             const phoneNumber: PhoneNumber = value;
 
-            if (phoneNumber.country == null) {
+            if (!phoneNumber.countryCode) {
                 return {'noCountry': true};
             } else if (!Utils.isNumber(phoneNumber.regionCode)) {
                 return {'invalidPhoneNumber': true};
@@ -64,7 +64,7 @@ export class PhoneNumberValidator implements Validator {
             const phoneNumberLength =
                 phoneNumber.regionCode.length +
                 phoneNumber.phoneNumber.length +
-                phoneNumber.country.phoneCode.length;
+                phoneNumber.countryCode.length;
 
             if (phoneNumberLength < environment.phoneNumberMinLength) {
                 return {'tooShort': true};

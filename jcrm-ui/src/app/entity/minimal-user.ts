@@ -1,10 +1,16 @@
 import {UniqEntity} from '@app/entity/uniq-entity';
-import {MinimalUserResource} from '@app/resource/minimal-user-resource';
 
 export class MinimalUser extends UniqEntity {
 
     public static create(): MinimalUser {
-        return new MinimalUser(null, null, null, null, null, null);
+        return new MinimalUser(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
     }
 
     public static copy(user?: MinimalUser): MinimalUser {
@@ -14,18 +20,7 @@ export class MinimalUser extends UniqEntity {
             user ? user.firstName : null,
             user ? user.secondName : null,
             user ? user.thirdName : null,
-            user ? user.phoneNumber : null,
-        );
-    }
-
-    public static from(resource: MinimalUserResource): MinimalUser {
-        return new MinimalUser(
-            resource.id,
-            resource.email,
-            resource.firstName,
-            resource.secondName,
-            resource.thirdName,
-            resource.phoneNumber
+            user ? user.birthday : null,
         );
     }
 
@@ -37,7 +32,7 @@ export class MinimalUser extends UniqEntity {
         public firstName: string | null,
         public secondName: string | null,
         public thirdName: string | null,
-        public phoneNumber: string | null,
+        public birthday: Date | null,
     ) {
         super(id);
     }

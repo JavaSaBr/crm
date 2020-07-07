@@ -1,8 +1,8 @@
-import {ContactPhoneNumberResource} from '@app/resource/contact-phone-number-resource';
 import {ContactEmailResource} from '@app/resource/contact-email-resource';
 import {ContactSiteResource} from '@app/resource/contact-site-resource';
-import {ContactMessengerResource} from '@app/resource/contact-messenger-resource';
 import {EntityResource} from '@app/resource/entity-resource';
+import {PhoneNumberResource} from '@app/resource/phone-number-resource';
+import {MessengerResource} from '@app/resource/messenger-resource';
 
 export class ContactResource extends EntityResource {
 
@@ -19,8 +19,8 @@ export class ContactResource extends EntityResource {
     company: string;
     birthday: string;
 
-    phoneNumbers: ContactPhoneNumberResource[];
+    phoneNumbers: PhoneNumberResource[];
     emails: ContactEmailResource[];
     sites: ContactSiteResource[];
-    messengers: ContactMessengerResource[];
+    messengers: MessengerResource[];
 }

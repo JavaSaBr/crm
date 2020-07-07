@@ -32,10 +32,10 @@
             <mat-datepicker-toggle matSuffix [for]="birthdayDatepicker"></mat-datepicker-toggle>
             <mat-datepicker #birthdayDatepicker></mat-datepicker>
           </mat-form-field>
-          <contact-phones-input formControlName="phoneNumbers"></contact-phones-input>
+          <phone-numbers-input formControlName="phoneNumbers"></phone-numbers-input>
           <contact-emails-input formControlName="emails"></contact-emails-input>
           <contact-sites-input formControlName="sites"></contact-sites-input>
-          <contact-messengers-input formControlName="messengers"></contact-messengers-input>
+          <messengers-input formControlName="messengers"></messengers-input>
           <mat-form-field class="form-field">
             <mat-label>{{ 'CONTACT.FIELD.COMPANY' | translate }}</mat-label>
             <input matInput formControlName="company" maxlength="{{contactCompanyMaxLength}}">

@@ -3,24 +3,55 @@
 </div>
 
 <form [formGroup]="entityFormGroup">
-  <mat-form-field *ngFor="let field of data.fields" class="form-field">
+  <div *ngFor="let field of data.fields">
+
+    <!-- string/email -->
+    <mat-form-field *ngIf="field.type == fieldType.STRING || field.type == fieldType.EMAIL" class="form-field">
+      <mat-label>{{ field.title | translate }}</mat-label>
+      <input *ngIf="!field.required" matInput formControlName="{{field.formControlName}}">
+      <input *ngIf="field.required" matInput formControlName="{{field.formControlName}}" required>
+    </mat-form-field>
+
+    <!-- date -->
+    <mat-form-field *ngIf="field.type == fieldType.DATE" class="form-field">
+      <mat-label>{{ field.title | translate }}</mat-label>
+      <input matInput [matDatepicker]="datepicker" formControlName="{{field.formControlName}}">
+      <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+      <mat-datepicker #datepicker></mat-datepicker>
+    </mat-form-field>
+
+    <phone-numbers-input *ngIf="field.type == fieldType.PHONE_NUMBERS" formControlName="{{field.formControlName}}"></phone-numbers-input>
+    <messengers-input *ngIf="field.type == fieldType.MESSENGERS" formControlName="{{field.formControlName}}"></messengers-input>
+  </div>
+
+  <!--<mat-form-field *ngFor="let field of data.fields" class="form-field">
     <mat-label>{{ field.title | translate }}</mat-label>
 
+    &lt;!&ndash; STRING &ndash;&gt;
     <input *ngIf="field.type == fieldType.STRING && !field.required" matInput
            formControlName="{{field.formControlName}}">
     <input *ngIf="field.type == fieldType.STRING && field.required" matInput formControlName="{{field.formControlName}}"
            required>
 
+    &lt;!&ndash; PHONE NUMBER &ndash;&gt;
     <phone-number-input *ngIf="field.type == fieldType.PHONE_NUMBER && !field.required" matInput
                         formControlName="{{field.formControlName}}"></phone-number-input>
     <phone-number-input *ngIf="field.type == fieldType.PHONE_NUMBER && field.required" matInput
                         formControlName="{{field.formControlName}}" required=""></phone-number-input>
 
+    &lt;!&ndash; EMAIL &ndash;&gt;
     <input *ngIf="field.type == fieldType.EMAIL && field.required" matInput formControlName="{{field.formControlName}}"
            required>
 
-    <!-- <mat-error *ngIf="phoneNumber.invalid">{{getPhoneNumberErrorMessage()}}</mat-error> -->
-  </mat-form-field>
+    &lt;!&ndash; DATE &ndash;&gt;
+    <div *ngIf="field.type == fieldType.DATE" fxLayout="row">
+      <input matInput [matDatepicker]="datepicker" formControlName="{{field.formControlName}}">
+      <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+      <mat-datepicker #datepicker></mat-datepicker>
+    </div>
+
+    &lt;!&ndash; <mat-error *ngIf="phoneNumber.invalid">{{getPhoneNumberErrorMessage()}}</mat-error> &ndash;&gt;
+  </mat-form-field>-->
 </form>
 
 <div fxLayout="row" fxFlex="100%" class="entity-info-button-container" fxLayoutAlign="end center">

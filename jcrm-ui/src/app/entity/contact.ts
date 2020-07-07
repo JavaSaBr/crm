@@ -1,8 +1,8 @@
 import {UniqEntity} from '@app/entity/uniq-entity';
-import {ContactPhoneNumber} from '@app/entity/contact-phone-number';
 import {ContactEmail} from '@app/entity/contact-email';
 import {ContactSite} from '@app/entity/contact-site';
-import {ContactMessenger} from '@app/entity/contact-messenger';
+import {PhoneNumber} from '@app/entity/phone-number';
+import {Messenger} from '@app/entity/messenger';
 
 export class Contact extends UniqEntity {
 
@@ -58,10 +58,10 @@ export class Contact extends UniqEntity {
         public birthday: Date | null,
         public created: Date | null,
         public modified: Date | null,
-        public phoneNumbers: ContactPhoneNumber[] | null,
+        public phoneNumbers: PhoneNumber[] | null,
         public emails: ContactEmail[] | null,
         public sites: ContactSite[] | null,
-        public messengers: ContactMessenger[] | null,
+        public messengers: Messenger[] | null,
         public company: string | null,
         public version: number | null
     ) {

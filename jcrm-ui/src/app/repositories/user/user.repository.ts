@@ -13,7 +13,7 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
 
     public findMinimalById(id: number): Promise<MinimalUser | null> {
         return this.securityService.getRequest<MinimalUserResource>(`${environment.registrationUrl}/user/minimal/${id}`)
-            .then(response => MinimalUser.from(response.body))
+            .then(response => response.body.toMinimalUser())
             .catch(reason => this.errorService.convertError(reason));
     }
 
@@ -22,14 +22,14 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
             return Promise.resolve([]);
         } else {
             return this.securityService.postRequest<MinimalUserResource[]>(`${environment.registrationUrl}/users/minimal/ids`, ids)
-                .then(response => response.body.map(resource => MinimalUser.from(resource)))
+                .then(response => response.body.map(resource => resource.toMinimalUser()))
                 .catch(reason => this.errorService.convertError(reason));
         }
     }
 
     public searchByName(name: string): Promise<MinimalUser[]> {
         return this.securityService.getRequest<MinimalUserResource[]>(`${environment.registrationUrl}/search/user/name/${name}`)
-            .then(value => value.body.map(resource => MinimalUser.from(resource)))
+            .then(value => value.body.map(resource => resource.toMinimalUser()))
             .catch(reason => this.errorService.convertError(reason));
     }
 
@@ -46,6 +46,6 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
     }
 
     protected convert(user: UserResource): User {
-        return User.from(user);
+        return user.toUser();
     }
 }

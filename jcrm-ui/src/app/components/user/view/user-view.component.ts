@@ -69,14 +69,25 @@ export class UserViewComponent extends EntityViewComponent<User> {
                     newValue => this.entity.email = newValue,
                     () => this.entity.email
                 ),
-                EntityFieldDescriptor.phoneNumber(
-                    'Phone Number',
-                    'phoneNumber',
-                    newValue => this.entity.phoneNumber = newValue,
-                    () => this.entity.phoneNumber
+                EntityFieldDescriptor.date(
+                    'Birthday',
+                    'birthday',
+                    newValue => this.entity.birthday = newValue,
+                    () => this.entity.birthday
                 ),
-            ]
-            )
+                EntityFieldDescriptor.phoneNumbers(
+                    'Phone numbers',
+                    'phoneNumbers',
+                    phoneNumbers => this.entity.phoneNumbers = phoneNumbers,
+                    () => this.entity.phoneNumbers
+                ),
+                EntityFieldDescriptor.messengers(
+                    'Messengers',
+                    'messengers',
+                    messengers => this.entity.messengers = messengers,
+                    () => this.entity.messengers
+                ),
+            ])
         );
     }
 

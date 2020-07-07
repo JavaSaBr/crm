@@ -2,26 +2,25 @@ import {Component, ElementRef} from '@angular/core';
 import {FormControl, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
-import {ContactPhoneNumber, PhoneNumberType} from '@app/entity/contact-phone-number';
 import {PhoneNumberValidator} from '../phone-number/phone-number-validator';
-import {PhoneNumber} from '@app/entity/phone-number';
+import {PhoneNumber, PhoneNumberType} from '@app/entity/phone-number';
 import {TranslateService} from '@ngx-translate/core';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {MatFormFieldControl} from '@app/node-modules/@angular/material/form-field';
 import {MatSelectChange} from '@app/node-modules/@angular/material/select';
 
 @Component({
-    selector: 'contact-phones-input',
-    templateUrl: './contact-phone-numbers-input.html',
-    styleUrls: ['./contact-phone-numbers-input.scss'],
-    providers: [{provide: MatFormFieldControl, useExisting: ContactPhoneNumbersInput}],
+    selector: 'phone-numbers-input',
+    templateUrl: './phone-numbers-input.html',
+    styleUrls: ['./phone-numbers-input.scss'],
+    providers: [{provide: MatFormFieldControl, useExisting: PhoneNumbersInput}],
     host: {
         '[id]': 'id',
         '[attr.aria-describedby]': 'describedBy',
         '(focusout)': 'onTouched()',
     }
 })
-export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<ContactPhoneNumber> {
+export class PhoneNumbersInput extends MultiFieldsMultiEntityInput<PhoneNumber> {
 
     readonly availablePhoneTypes: PhoneNumberType[] = [
         PhoneNumberType.MOBILE,
@@ -39,10 +38,10 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
     }
 
     get controlType(): string {
-        return 'contact-phone-numbers-input';
+        return 'phone-numbers-input';
     }
 
-    protected createFormControls(phoneNumber: ContactPhoneNumber): FormControl[] {
+    protected createFormControls(phoneNumber: PhoneNumber): FormControl[] {
 
         const phoneNumberControl = new FormControl(phoneNumber.phoneNumber, {
             validators: [
@@ -68,13 +67,10 @@ export class ContactPhoneNumbersInput extends MultiFieldsMultiEntityInput<Contac
     }
 
     addNew(): void {
-        this.addEntity(new ContactPhoneNumber(
-            new PhoneNumber(null, '', ''),
-            PhoneNumberType.WORK
-        ));
+        this.addEntity(new PhoneNumber(null, '', '', PhoneNumberType.WORK));
     }
 
-    changePhoneType(phoneNumber: ContactPhoneNumber, event: MatSelectChange): void {
+    changePhoneType(phoneNumber: PhoneNumber, event: MatSelectChange): void {
         phoneNumber.type = event.value as PhoneNumberType;
     }
 

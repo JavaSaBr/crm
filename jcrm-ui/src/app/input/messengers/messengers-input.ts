@@ -2,24 +2,24 @@ import {Component, ElementRef} from '@angular/core';
 import {FormControl, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {MultiFieldsMultiEntityInput} from '@app/input/multi-fields-multi-entity-input';
-import {ContactMessenger, MessengerType} from '@app/entity/contact-messenger';
 import {TranslateService} from '@ngx-translate/core';
 import {environment} from '@app/env/environment';
 import {MatFormFieldControl} from '@app/node-modules/@angular/material/form-field';
 import {MatSelectChange} from '@app/node-modules/@angular/material/select';
+import {Messenger, MessengerType} from '@app/entity/messenger';
 
 @Component({
-    selector: 'contact-messengers-input',
-    templateUrl: './contact-messengers-input.html',
-    styleUrls: ['./contact-messengers-input.scss'],
-    providers: [{provide: MatFormFieldControl, useExisting: ContactMessengersInput}],
+    selector: 'messengers-input',
+    templateUrl: './messengers-input.html',
+    styleUrls: ['./messengers-input.scss'],
+    providers: [{provide: MatFormFieldControl, useExisting: MessengersInput}],
     host: {
         '[id]': 'id',
         '[attr.aria-describedby]': 'describedBy',
         '(focusout)': 'onTouched()',
     }
 })
-export class ContactMessengersInput extends MultiFieldsMultiEntityInput<ContactMessenger> {
+export class MessengersInput extends MultiFieldsMultiEntityInput<Messenger> {
 
     readonly maxLength = environment.contactMessengerMaxLength;
 
@@ -40,10 +40,10 @@ export class ContactMessengersInput extends MultiFieldsMultiEntityInput<ContactM
     }
 
     get controlType(): string {
-        return 'contact-messengers-input';
+        return 'messengers-input';
     }
 
-    protected createFormControls(messenger: ContactMessenger): FormControl[] {
+    protected createFormControls(messenger: Messenger): FormControl[] {
 
         const loginControl = new FormControl(messenger.login, {
             validators: [
@@ -67,11 +67,11 @@ export class ContactMessengersInput extends MultiFieldsMultiEntityInput<ContactM
     }
 
     addNew(): void {
-        this.addEntity(new ContactMessenger('', MessengerType.SKYPE));
+        this.addEntity(new Messenger('', MessengerType.SKYPE));
     }
 
-    changeMessengerType(contactMessenger: ContactMessenger, event: MatSelectChange): void {
-        contactMessenger.type = event.value as MessengerType;
+    changeMessengerType(messenger: Messenger, event: MatSelectChange): void {
+        messenger.type = event.value as MessengerType;
     }
 
     getLoginErrorMessage(control: FormControl): string {

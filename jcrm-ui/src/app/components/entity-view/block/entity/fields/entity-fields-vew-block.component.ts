@@ -12,6 +12,8 @@ import {EntityViewBlockComponent} from '@app/component/entity-view/block/entity-
 import {PhoneNumberValidator} from '@app/input/phone-number/phone-number-validator';
 import {UniqEntity} from '@app/entity/uniq-entity';
 import {UserValidator} from '@app/util/validator/user-validator';
+import {PhoneNumber} from '@app/entity/phone-number';
+import {Messenger} from '@app/entity/messenger';
 
 export class EntityFieldsViewBlockData extends EntityViewBlockData {
 
@@ -35,7 +37,10 @@ export class EntityFieldsViewBlock extends EntityViewBlock<EntityFieldsViewBlock
 export enum EntityFieldType {
     STRING,
     PHONE_NUMBER,
-    EMAIL
+    EMAIL,
+    DATE,
+    PHONE_NUMBERS,
+    MESSENGERS
 }
 
 export class EntityFieldDescriptor {
@@ -74,6 +79,33 @@ export class EntityFieldDescriptor {
         getter: () => any
     ): EntityFieldDescriptor {
         return new EntityFieldDescriptor(title, formControlName, EntityFieldType.EMAIL, setter, getter, true);
+    }
+
+    public static date(
+        title: string,
+        formControlName: string,
+        setter: (newValue: any) => void,
+        getter: () => any
+    ): EntityFieldDescriptor {
+        return new EntityFieldDescriptor(title, formControlName, EntityFieldType.DATE, setter, getter, false);
+    }
+
+    public static phoneNumbers(
+        title: string,
+        formControlName: string,
+        setter: (phoneNumbers: PhoneNumber[]) => void,
+        getter: () => PhoneNumber[]
+    ): EntityFieldDescriptor {
+        return new EntityFieldDescriptor(title, formControlName, EntityFieldType.PHONE_NUMBERS, setter, getter, false);
+    }
+
+    public static messengers(
+        title: string,
+        formControlName: string,
+        setter: (phoneNumbers: Messenger[]) => void,
+        getter: () => Messenger[]
+    ): EntityFieldDescriptor {
+        return new EntityFieldDescriptor(title, formControlName, EntityFieldType.MESSENGERS, setter, getter, false);
     }
 
     title: string;
@@ -144,6 +176,12 @@ export class EntityFieldsViewBlockComponent extends EntityViewBlockComponent<Ent
             } else if (field.type == EntityFieldType.EMAIL) {
                 validatorOrOpts.push(Validators.pattern(UserValidator.emailPatter));
                 group[field.formControlName] = new FormControl(validatorOrOpts);
+            } else if (field.type == EntityFieldType.DATE) {
+                group[field.formControlName] = new FormControl(validatorOrOpts);
+            } else if (field.type == EntityFieldType.PHONE_NUMBERS) {
+                group[field.formControlName] = new FormControl(validatorOrOpts);
+            } else if (field.type == EntityFieldType.MESSENGERS) {
+                group[field.formControlName] = new FormControl(validatorOrOpts);
             }
         });
 
@@ -169,14 +207,17 @@ export class EntityFieldsViewBlockComponent extends EntityViewBlockComponent<Ent
             this.entityCreated = false;
             fields.forEach(field => {
                 const control = controls[field.formControlName];
-                control.setValue(null);
+                if (control) {
+                    control.setValue(null);
+                }
             });
         } else {
             this.entityCreated = entity.id != undefined;
-
             fields.forEach(field => {
                 const control = controls[field.formControlName];
-                control.setValue(field.currentValue());
+                if (control) {
+                    control.setValue(field.currentValue());
+                }
             });
         }
 
