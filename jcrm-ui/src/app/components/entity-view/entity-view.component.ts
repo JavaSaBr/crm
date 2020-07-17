@@ -1,4 +1,4 @@
-import {AfterViewInit} from '@angular/core';
+import {AfterViewInit, Directive} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ErrorService} from '@app/service/error.service';
 import {EntityViewTab} from '@app/component/entity-view/tab/entity-view-tab';
@@ -7,6 +7,7 @@ import {UniqEntity} from '@app/entity/uniq-entity';
 import {BehaviorSubject, Observable} from '@app/node-modules/rxjs';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
 
+@Directive()
 export abstract class EntityViewComponent<T extends UniqEntity> implements AfterViewInit, EntityControl {
 
     readonly viewBlockType = EntityViewBlockType;

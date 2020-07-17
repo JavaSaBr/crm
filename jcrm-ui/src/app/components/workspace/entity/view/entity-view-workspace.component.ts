@@ -3,11 +3,12 @@ import {WorkspaceService} from '@app/service/workspace.service';
 import {ActivatedRoute} from '@app/node-modules/@angular/router';
 import {GlobalLoadingService} from '@app/service/global-loading.service';
 import {ErrorService} from '@app/service/error.service';
-import {OnInit, ViewChild} from '@angular/core';
+import {Directive, OnInit, ViewChild} from '@angular/core';
 import {EntityViewComponent} from '@app/component/entity-view/entity-view.component';
 import {Utils} from '@app/util/utils';
 import {UniqEntity} from '@app/entity/uniq-entity';
 
+@Directive()
 export abstract class EntityViewWorkspaceComponent<E extends UniqEntity, T extends EntityViewComponent<E>>
     extends BaseWorkspaceComponent implements OnInit {
 

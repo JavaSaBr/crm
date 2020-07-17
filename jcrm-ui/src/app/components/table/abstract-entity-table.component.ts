@@ -9,8 +9,9 @@ import {EntityPage} from '@app/entity/entity-page';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatSort} from '@angular/material/sort';
-import {AfterViewInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Directive, ViewChild} from '@angular/core';
 
+@Directive()
 export abstract class AbstractEntityTableComponent<T extends UniqEntity> implements AfterViewInit {
 
     @ViewChild(MatSort, {static: true})

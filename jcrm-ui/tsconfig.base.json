@@ -1,0 +1,58 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "importHelpers": true,
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    //"strict": true,
+    "paths": {
+      "@app/component/*": [
+        "src/app/components/*"
+      ],
+      "@app/entity/*": [
+        "src/app/entity/*"
+      ],
+      "@app/input/*": [
+        "src/app/input/*"
+      ],
+      "@app/repository/*": [
+        "src/app/repositories/*"
+      ],
+      "@app/service/*": [
+        "src/app/services/*"
+      ],
+      "@app/resource/*": [
+        "src/app/resources/*"
+      ],
+      "@app/env/*": [
+        "src/environments/*"
+      ],
+      "@app/directive/*": [
+        "src/app/directives/*"
+      ],
+      "@app/util/*": [
+        "src/app/utils/*"
+      ],
+      "@app/error/*": [
+        "src/app/error/*"
+      ],
+      "@app/node-modules/*": [
+        "node_modules/*"
+      ]
+    }
+  }
+}
