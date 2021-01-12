@@ -4,10 +4,10 @@ import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
 import com.ss.jcrm.registration.web.resources.UserInResource;
-import com.ss.jcrm.user.contact.api.PhoneNumber;
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.validator.BaseResourceValidator;
+import com.ss.rlib.common.util.DateUtils;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
@@ -74,32 +74,17 @@ public class ResourceValidator extends BaseResourceValidator {
             );
         }
 
-        validate(
-            resource.getPassword(),
-            passwordMinLength,
-            passwordMaxLength,
-            INVALID_PASSWORD,
-            INVALID_PASSWORD_MESSAGE
-        );
+        validatePassword(resource.getPassword());
     }
 
     public void validate(@NotNull OrganizationRegisterInResource resource) {
-
         validateOrgName(resource.getOrgName());
         validateEmail(resource.getEmail());
         validateNotBlank(resource.getActivationCode(), INVALID_ACTIVATION_CODE, INVALID_OTHER_NAME_MESSAGE);
         validateOtherName(resource.getFirstName());
         validateOtherName(resource.getSecondName());
         validateOtherName(resource.getThirdName());
-
-        validate(
-            resource.getPassword(),
-            passwordMinLength,
-            passwordMaxLength,
-            INVALID_PASSWORD,
-            INVALID_PASSWORD_MESSAGE
-        );
-
+        validatePassword(resource.getPassword());
         requirePhoneNumber(resource.getPhoneNumber());
     }
 
@@ -119,6 +104,10 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validateEmail(@Nullable String email) {
         validateEmail(email, emailMinLength, emailMaxLength, INVALID_EMAIL, INVALID_EMAIL_MESSAGE);
+    }
+
+    public void validatePassword(@Nullable char[] password) {
+        validate(password, passwordMinLength, passwordMaxLength, INVALID_PASSWORD, INVALID_PASSWORD_MESSAGE);
     }
 
     public void requirePhoneNumber(@Nullable PhoneNumberResource phoneNumber) {
@@ -152,5 +141,14 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validate(@NotNull UserInResource resource) {
 
+        validateEmail(resource.getEmail());
+        validatePassword(resource.getPassword());
+
+        var birthday = DateUtils.toLocalDate(resource.getBirthday());
+
+        if (birthday == null) {
+            log.warn("Invalid birthday: {}", resource.getBirthday());
+            throw new BadRequestWebException(INVALID_BIRTHDAY_MESSAGE, INVALID_BIRTHDAY);
+        }
     }
 }

@@ -5,7 +5,7 @@ import {BaseLazyAsyncValidator} from './base-lazy-async-validator';
 import {TranslateService} from '@ngx-translate/core';
 import {ContactEmailValidator} from '@app/util/validator/contact-email-validator';
 
-export class UserValidator extends BaseLazyAsyncValidator<boolean> {
+export class UserEmailValidator extends BaseLazyAsyncValidator<boolean> {
 
     public static readonly emailPatter = ContactEmailValidator.EMAIL_PATTERN;
 
@@ -15,11 +15,11 @@ export class UserValidator extends BaseLazyAsyncValidator<boolean> {
             return translateService.instant('FORMS.ERROR.USER.EMAIL.REQUIRED');
         } else if (control.hasError('pattern')) {
             return translateService.instant('FORMS.ERROR.USER.EMAIL.INVALID');
-        } else if (UserValidator.isTooShort(control)) {
+        } else if (UserEmailValidator.isTooShort(control)) {
             return translateService.instant('FORMS.ERROR.USER.EMAIL.TOO_SHORT');
-        } else if (UserValidator.isTooLong(control)) {
+        } else if (UserEmailValidator.isTooLong(control)) {
             return translateService.instant('FORMS.ERROR.USER.EMAIL.TOO_LONG');
-        } else if (UserValidator.isAlreadyExist(control)) {
+        } else if (UserEmailValidator.isAlreadyExist(control)) {
             return translateService.instant('FORMS.ERROR.USER.EMAIL.ALREADY_EXIST');
         }
 
@@ -53,8 +53,7 @@ export class UserValidator extends BaseLazyAsyncValidator<boolean> {
     validateSync(value): ValidationErrors {
         if (value.length < environment.emailMinLength) {
             return {'tooShort': true};
-        }
-        if (value.length > environment.emailMaxLength) {
+        } else if (value.length > environment.emailMaxLength) {
             return {'tooLong': true};
         } else {
             return null;
@@ -62,6 +61,6 @@ export class UserValidator extends BaseLazyAsyncValidator<boolean> {
     }
 
     validateAsync(value): Promise<boolean> {
-        return this.registrationService.userExistByName(value);
+        return this.registrationService.userExistByEmail(value);
     }
 }

@@ -12,4 +12,5 @@ dependencies {
     testCompile ("com.spaceshift:rlib.testcontainers:$rlibVersion") {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
+    testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
 }

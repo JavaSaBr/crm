@@ -3,6 +3,7 @@ package com.ss.jcrm.web.validator;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.rlib.common.util.StringUtils;
 import com.ss.rlib.common.util.Utils;
+import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@Log4j2
 public class BaseResourceValidator {
 
     private static final DateTimeFormatter ISO_LOCAL_DATE = DateTimeFormatter.ISO_LOCAL_DATE;
@@ -159,6 +161,7 @@ public class BaseResourceValidator {
             email.length() < minLength ||
             email.length() > maxLength
         ) {
+            log.warn("Invalid email: {}", email);
             throw new BadRequestWebException(message, code);
         }
     }

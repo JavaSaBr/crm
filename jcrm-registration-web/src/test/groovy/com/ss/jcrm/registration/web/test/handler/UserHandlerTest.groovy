@@ -10,8 +10,12 @@ import com.ss.rlib.common.util.ArrayUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
+import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_BIRTHDAY
+import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_BIRTHDAY_MESSAGE
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
+import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_PASSWORD
+import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_PASSWORD_MESSAGE
 import static com.ss.jcrm.security.web.exception.SecurityErrors.NOT_PRESENTED_TOKEN
 import static com.ss.jcrm.security.web.exception.SecurityErrors.NOT_PRESENTED_TOKEN_MESSAGE
 import static org.hamcrest.Matchers.*
@@ -92,7 +96,112 @@ class UserHandlerTest extends RegistrationSpecification {
                 ))
     }
     
- 
+    def "should not create a new user without required fields"() {
+        
+        given:
+            
+            def org = userTestHelper.newOrg()
+            def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
+            def token = unsafeTokenService.generateNewToken(user)
+            def phoneNumbers = generatePhoneNumbers()
+            def messengers = generateMessengers()
+            
+            def newUser = UserInResource.newResource(
+                "newuser@email.com",
+                "First name",
+                "Second name",
+                "Third name",
+                "password".toCharArray(),
+                phoneNumbers,
+                messengers,
+                ArrayUtils.toIntArray((int) AccessRole.ORG_ADMIN.id),
+                "wefqwefw"
+            )
+        
+        when:
+            def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .body(newUser)
+                .url("/registration/user")
+                .exchange()
+        then:
+            response
+                .expectStatus().isBadRequest()
+                .verifyErrorResponse(INVALID_BIRTHDAY, INVALID_BIRTHDAY_MESSAGE)
+        when:
+    
+            newUser = UserInResource.newResource(
+                "newuser@email.com",
+                "First name",
+                "Second name",
+                "Third name",
+                "password".toCharArray(),
+                phoneNumbers,
+                messengers,
+                ArrayUtils.toIntArray((int) AccessRole.ORG_ADMIN.id),
+                null
+            )
+            
+            response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .body(newUser)
+                .url("/registration/user")
+                .exchange()
+        then:
+            response
+                .expectStatus().isBadRequest()
+                .verifyErrorResponse(INVALID_BIRTHDAY, INVALID_BIRTHDAY_MESSAGE)
+        when:
+        
+            newUser = UserInResource.newResource(
+                "newuser@email.com",
+                "First name",
+                "Second name",
+                "Third name",
+                null,
+                phoneNumbers,
+                messengers,
+                ArrayUtils.toIntArray((int) AccessRole.ORG_ADMIN.id),
+                "1990-05-22"
+            )
+        
+            response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .body(newUser)
+                .url("/registration/user")
+                .exchange()
+        then:
+            response
+                .expectStatus().isBadRequest()
+                .verifyErrorResponse(INVALID_PASSWORD, INVALID_PASSWORD_MESSAGE)
+        when:
+        
+            newUser = UserInResource.newResource(
+                null,
+                "First name",
+                "Second name",
+                "Third name",
+                "password".toCharArray(),
+                phoneNumbers,
+                messengers,
+                ArrayUtils.toIntArray((int) AccessRole.ORG_ADMIN.id),
+                "1990-05-22"
+            )
+        
+            response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .body(newUser)
+                .url("/registration/user")
+                .exchange()
+        then:
+            response
+                .expectStatus().isBadRequest()
+                .verifyErrorResponse(INVALID_EMAIL, INVALID_EMAIL_MESSAGE)
+    }
     
     def "should found that user is exist"() {
 

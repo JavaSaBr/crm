@@ -5,7 +5,7 @@
       <div *ngFor="let entityViewBlock of entityViewTab.blocks" fxLayout="column" fxFlex="100%">
 
         <app-entity-view-entity-fields fxLayout="column" fxFlex="100%"
-            *ngIf="entityViewBlock.type == viewBlockType.entityFieldForm"
+            *ngIf="entityViewBlock.type == viewBlockType.ENTITY_FIELD_FORM"
             [data]="entityViewBlock.data">
         </app-entity-view-entity-fields>
 

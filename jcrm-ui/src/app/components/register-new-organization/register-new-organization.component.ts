@@ -8,7 +8,7 @@ import {Country} from '@app/entity/country';
 import {PhoneNumber} from '@app/entity/phone-number';
 import {OrganizationValidator} from '@app/util/validator/organization-validator';
 import {OtherUserNameValidator} from '@app/util/validator/other-user-name-validator';
-import {UserValidator} from '@app/util/validator/user-validator';
+import {UserEmailValidator} from '@app/util/validator/user-email-validator';
 import {ErrorService} from '@app/service/error.service';
 import {TranslateService} from '@ngx-translate/core';
 import {CountryRepository} from '@app/repository/country/country.repository';
@@ -81,9 +81,9 @@ export class RegisterNewOrganizationComponent implements OnInit {
             ]],
             email: ['', [
                 Validators.required,
-                Validators.pattern(UserValidator.emailPatter)
+                Validators.pattern(UserEmailValidator.emailPatter)
             ], [
-                new UserValidator(registrationService)
+                new UserEmailValidator(registrationService)
             ]],
             password: ['', [
                 Validators.required,
@@ -207,7 +207,7 @@ export class RegisterNewOrganizationComponent implements OnInit {
     }
 
     getEmailErrorMessage(): string {
-        return UserValidator.getEmailErrorDescription(this.email, this.translateService);
+        return UserEmailValidator.getEmailErrorDescription(this.email, this.translateService);
     }
 
     getPhoneNumberErrorMessage(): string {

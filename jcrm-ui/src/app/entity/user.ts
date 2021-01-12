@@ -15,6 +15,7 @@ export class User extends MinimalUser {
             null,
             null,
             null,
+            null,
             null
         );
     }
@@ -29,6 +30,7 @@ export class User extends MinimalUser {
             user ? user.birthday : null,
             user ? user.phoneNumbers : null,
             user ? user.messengers : null,
+            user ? user.password : null,
             user ? user.created : null,
             user ? user.modified : null,
         );
@@ -43,6 +45,7 @@ export class User extends MinimalUser {
         birthday: Date | null,
         public phoneNumbers: PhoneNumber[] | null,
         public messengers: Messenger[] | null,
+        public password: string | null,
         public created: Date | null,
         public modified: Date | null,
     ) {

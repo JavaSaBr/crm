@@ -34,4 +34,7 @@ public interface RegistrationErrors {
 
     int INVALID_CREDENTIALS = 1010;
     String INVALID_CREDENTIALS_MESSAGE = "Invalid credentials";
+
+    int INVALID_BIRTHDAY = 1011;
+    String INVALID_BIRTHDAY_MESSAGE = "Invalid birthday";
 }

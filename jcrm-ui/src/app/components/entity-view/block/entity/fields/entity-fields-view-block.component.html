@@ -2,11 +2,13 @@
   <p>{{ data.title | translate }}</p>
 </div>
 
+<p>Editing state: {{editing}}</p>
+
 <form [formGroup]="entityFormGroup">
   <div *ngFor="let field of data.fields">
 
     <!-- string/email -->
-    <mat-form-field *ngIf="field.type == fieldType.STRING || field.type == fieldType.EMAIL" class="form-field">
+    <mat-form-field *ngIf="field.type == fieldType.STRING || field.type == fieldType.USER_EMAIL" class="form-field">
       <mat-label>{{ field.title | translate }}</mat-label>
       <input *ngIf="!field.required" matInput formControlName="{{field.formControlName}}">
       <input *ngIf="field.required" matInput formControlName="{{field.formControlName}}" required>
@@ -22,6 +24,14 @@
 
     <phone-numbers-input *ngIf="field.type == fieldType.PHONE_NUMBERS" formControlName="{{field.formControlName}}"></phone-numbers-input>
     <messengers-input *ngIf="field.type == fieldType.MESSENGERS" formControlName="{{field.formControlName}}"></messengers-input>
+  </div>
+
+  <div *ngFor="let field of data.onCreationFields">
+    <!-- password -->
+    <mat-form-field *ngIf="!entityCreated && field.type == fieldType.PASSWORD" class="form-field">
+      <mat-label>{{ field.title | translate }}</mat-label>
+      <input *ngIf="field.required" matInput type="password" formControlName="{{field.formControlName}}" required>
+    </mat-form-field>
   </div>
 
   <!--<mat-form-field *ngFor="let field of data.fields" class="form-field">
@@ -58,6 +68,10 @@
   <button *ngIf="!editing && entityCreated" class="entity-info-button"
           mat-raised-button color="primary" (click)="startEditing()">
     {{ 'CONTACT.VIEW.ACTIONS.EDIT' | translate }}
+  </button>
+  <button *ngIf="editing && entityCreated" class="entity-info-button"
+          mat-raised-button color="primary" (click)="cancelEditing()">
+    {{ 'CONTACT.VIEW.ACTIONS.CANCEL' | translate }}
   </button>
   <button *ngIf="editing"
           [disabled]="disabled || !entityFormGroup.valid || !hasChanges" class="contact-info-button"

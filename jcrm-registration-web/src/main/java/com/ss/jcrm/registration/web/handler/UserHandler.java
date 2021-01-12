@@ -27,7 +27,9 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class UserHandler extends BaseRegistrationHandler {
@@ -139,8 +141,9 @@ public class UserHandler extends BaseRegistrationHandler {
 
     private @NotNull Mono<? extends @NotNull User> createUser(@NotNull AuthorizedResource<UserInResource> authorized) {
 
-        var user = authorized.getUser();
+        var creator = authorized.getUser();
         var resource = authorized.getResource();
+        var birthday = DateUtils.toLocalDate(resource.getBirthday());
 
         var salt = passwordService.getNextSalt();
         var hash = passwordService.hash(resource.getPassword(), salt);
@@ -152,12 +155,12 @@ public class UserHandler extends BaseRegistrationHandler {
                 resource.getEmail(),
                 hash,
                 salt,
-                user.getOrganization(),
-                Collections.emptySet(),
+                creator.getOrganization(),
+                Set.of(),
                 resource.getFirstName(),
                 resource.getSecondName(),
                 resource.getThirdName(),
-                DateUtils.toLocalDate(resource.getBirthday()),
+                birthday,
                 toPhoneNumbers(resource.getPhoneNumbers()),
                 toMessengers(resource.getMessengers())
             ))

@@ -31,30 +31,31 @@ allprojects {
     }
 
     ext {
-        angularVersion = "9.1.7"
-        annotationVersion = "19.0.0"
+        angularVersion = "11.0.6"
+        annotationVersion = "20.1.0"
         rlibVersion = "9.9.0"
-        lombokVersion = '1.18.12'
-        springbootVersion = '2.3.0.RELEASE'
-        springVersion = '5.2.6.RELEASE'
+        lombokVersion = '1.18.16'
+        springbootVersion = '2.4.1'
+        springVersion = '5.3.2'
         junitJupiterVersion = "5.6.2"
         hikariCPVersion = "2.7.8"
-        flywayVersion = "6.4.2"
-        testcontainersVersion = "1.14.3"
-        groovyVersion = "3.0.4"
-        spockVersion = "2.0-M2-groovy-3.0"
+        flywayVersion = "7.4.0"
+        testcontainersVersion = "1.15.1"
+        groovyVersion = "3.0.7"
+        spockVersion = "2.0-M4-groovy-3.0"
         postgresqlVersion = "42.1.1"
         javassistVersion = "3.27.0-GA"
-        jsonwebtokenVersion = "0.11.1"
+        jsonwebtokenVersion = "0.11.2"
         hamcrestVersion = "1.3"
         jsonpathVersion = "2.4.0"
-        jasyncVersion = "1.1.3"
-        projectReactorVersion = "3.3.5.RELEASE"
-        jacksonVersion = "2.11.0"
+        jasyncVersion = "1.1.5"
+        projectReactorVersion = "3.4.1"
+        jacksonVersion = "2.12.1"
     }
 
     dependencies {
         compileOnly "org.jetbrains:annotations:$annotationVersion"
+        testCompileOnly "org.jetbrains:annotations:$annotationVersion"
     }
 
     afterEvaluate { Project project ->

@@ -2,7 +2,7 @@ import {UniqEntity} from '@app/entity/uniq-entity';
 import {Observable} from '@app/node-modules/rxjs';
 
 export enum EntityViewBlockType {
-    entityFieldForm
+    ENTITY_FIELD_FORM
 }
 
 export interface EntityControl {
@@ -20,8 +20,8 @@ export class EntityViewBlockData {
 
     readonly entityControl: EntityControl;
 
-    constructor(entityControl1: EntityControl) {
-        this.entityControl = entityControl1;
+    constructor(entityControl: EntityControl) {
+        this.entityControl = entityControl;
     }
 }
 

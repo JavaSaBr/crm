@@ -35,6 +35,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -214,6 +215,19 @@ public class JAsyncUtils {
 
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static @Nullable String toJson(@Nullable Collection<?> collection) {
+
+        if (collection == null || collection.isEmpty()) {
+            return null;
+        }
+
+        try {
+            return OBJECT_MAPPER.writeValueAsString(collection);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

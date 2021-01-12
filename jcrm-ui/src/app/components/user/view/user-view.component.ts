@@ -19,9 +19,6 @@ import {GlobalLoadingService} from '@app/service/global-loading.service';
 })
 export class UserViewComponent extends EntityViewComponent<User> {
 
-    //readonly contactNameMaxLength = environment.contactNameMaxLength;
-    //readonly contactCompanyMaxLength = environment.contactCompanyMaxLength;
-
     constructor(
         private readonly userRepository: UserRepository,
         translateService: TranslateService,
@@ -45,48 +42,16 @@ export class UserViewComponent extends EntityViewComponent<User> {
             this,
             'ABOUT USER',
             [
-                EntityFieldDescriptor.requiredString(
-                    'First name',
-                    'firstName',
-                    newValue => this.entity.firstName = newValue,
-                    () => this.entity.firstName
-                ),
-                EntityFieldDescriptor.requiredString(
-                    'Second name',
-                    'secondName',
-                    newValue => this.entity.secondName = newValue,
-                    () => this.entity.secondName
-                ),
-                EntityFieldDescriptor.string(
-                    'Third name',
-                    'thirdName',
-                    newValue => this.entity.thirdName = newValue,
-                    () => this.entity.thirdName
-                ),
-                EntityFieldDescriptor.requiredEmail(
-                    'Email',
-                    'userEmail',
-                    newValue => this.entity.email = newValue,
-                    () => this.entity.email
-                ),
-                EntityFieldDescriptor.date(
-                    'Birthday',
-                    'birthday',
-                    newValue => this.entity.birthday = newValue,
-                    () => this.entity.birthday
-                ),
-                EntityFieldDescriptor.phoneNumbers(
-                    'Phone numbers',
-                    'phoneNumbers',
-                    phoneNumbers => this.entity.phoneNumbers = phoneNumbers,
-                    () => this.entity.phoneNumbers
-                ),
-                EntityFieldDescriptor.messengers(
-                    'Messengers',
-                    'messengers',
-                    messengers => this.entity.messengers = messengers,
-                    () => this.entity.messengers
-                ),
+                EntityFieldDescriptor.requiredString('First name', 'firstName'),
+                EntityFieldDescriptor.requiredString('Second name', 'secondName'),
+                EntityFieldDescriptor.string('Third name', 'thirdName'),
+                EntityFieldDescriptor.requiredUserEmail('Email', 'email'),
+                EntityFieldDescriptor.date('Birthday', 'birthday'),
+                EntityFieldDescriptor.phoneNumbers('Phone numbers', 'phoneNumbers'),
+                EntityFieldDescriptor.messengers('Messengers', 'messengers'),
+            ],
+            [
+                EntityFieldDescriptor.password("Password", "password")
             ])
         );
     }
@@ -96,17 +61,14 @@ export class UserViewComponent extends EntityViewComponent<User> {
     }
 
     createEntity(): void {
-        this.disabledProperty.next(true)
+        this.disabledProperty.next(true);
         this.globalLoadingService.increaseLoading();
-
-        const entity = this.entity;
-
-        console.log(entity);
-
-        /*this.contactRepository.create(this.syncContactWithForm(this.contact))
+        this.userRepository.create(this.entity)
             .then(result => this.reloadEntity(result))
             .catch(reason => this.errorService.showError(reason))
-            .finally(() => this.disabled = false);*/
+            .finally(() => {
+                this.globalLoadingService.decreaseLoading();
+            });
     }
 
     saveEntity(): void {

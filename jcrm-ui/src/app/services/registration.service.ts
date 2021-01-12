@@ -107,4 +107,12 @@ export class RegistrationService {
             .then(value => value.ok)
             .catch(() => false);
     }
+
+    userExistByEmail(name: string): Promise<boolean> {
+        const url = `${environment.registrationUrl}/exist/user/email/${name}`;
+        return this.httpClient.get<{}>(url, {observe: 'response'})
+            .toPromise()
+            .then(value => value.ok)
+            .catch(() => false);
+    }
 }

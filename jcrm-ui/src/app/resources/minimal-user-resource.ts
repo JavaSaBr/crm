@@ -8,7 +8,7 @@ export class MinimalUserResource {
         public firstName: string | null,
         public secondName: string | null,
         public thirdName: string | null,
-        public birthday: Date | null,
+        public birthday: string | null,
     ) {
     }
 
@@ -19,7 +19,7 @@ export class MinimalUserResource {
             this.firstName,
             this.secondName,
             this.thirdName,
-            this.birthday
+            new Date(this.birthday)
         );
     }
 }

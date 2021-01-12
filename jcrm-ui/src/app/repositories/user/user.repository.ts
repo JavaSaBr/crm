@@ -5,11 +5,34 @@ import {RemoteRepository} from '@app/repository/remote.repository';
 import {MinimalUser} from '@app/entity/minimal-user';
 import {MinimalUserResource} from '@app/resource/minimal-user-resource';
 import {UserResource} from '@app/resource/user-resource';
+import {PhoneNumberResource} from '@app/resource/phone-number-resource';
+import {MessengerResource} from '@app/resource/messenger-resource';
+import {SecurityService} from '@app/service/security.service';
+import {ErrorService} from '@app/service/error.service';
+import {DatePipe} from '@app/node-modules/@angular/common';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserRepository extends RemoteRepository<User, UserResource> {
+
+    constructor(
+        private readonly datePipe: DatePipe,
+        securityService: SecurityService,
+        errorService: ErrorService)
+    {
+        super(securityService, errorService);
+    }
+
+    public create(user: User): Promise<User> {
+
+        const body = this.convertToResource(user);
+        const url = `${environment.registrationUrl}/user`;
+
+        return this.securityService.postRequest<UserResource>(url, body)
+            .then(response => this.convert(response.body))
+            .catch(reason => this.errorService.convertError(reason));
+    }
 
     public findMinimalById(id: number): Promise<MinimalUser | null> {
         return this.securityService.getRequest<MinimalUserResource>(`${environment.registrationUrl}/user/minimal/${id}`)
@@ -46,6 +69,23 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
     }
 
     protected convert(user: UserResource): User {
-        return user.toUser();
+        return UserResource.toUser(user);
+    }
+
+
+    private convertToResource(user: User): UserResource {
+        return new UserResource(
+            user.id,
+            user.email,
+            user.firstName,
+            user.secondName,
+            user.thirdName,
+            this.datePipe.transform(user.birthday, 'yyyy-MM-dd'),
+            user.phoneNumbers ? user.phoneNumbers.map(value => PhoneNumberResource.of(value)) : null,
+            user.messengers ? user.messengers.map(value => MessengerResource.of(value)) : null,
+            user.password,
+            user.created ? user.created.getTime() : null,
+            user.modified ? user.modified.getTime() : null
+        );
     }
 }
