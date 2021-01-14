@@ -1,17 +1,21 @@
 package com.ss.jcrm.registration.web.resources;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ss.jcrm.web.resources.RestResource;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
+import org.jetbrains.annotations.Nullable;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 public class AuthenticationInResource implements RestResource {
 
-    private String login;
-    private char[] password;
+    @Nullable String login;
+    @Nullable char[] password;
+
+    public AuthenticationInResource(
+        @JsonProperty("login") @Nullable String login,
+        @JsonProperty("password") @Nullable char[] password
+    ) {
+        this.login = login;
+        this.password = password;
+    }
 }

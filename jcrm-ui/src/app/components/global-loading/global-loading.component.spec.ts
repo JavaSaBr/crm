@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {GlobalLoadingComponent} from './global-loading.component';
 
@@ -6,7 +6,7 @@ describe('RootComponent', () => {
     let component: GlobalLoadingComponent;
     let fixture: ComponentFixture<GlobalLoadingComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [GlobalLoadingComponent]
         })

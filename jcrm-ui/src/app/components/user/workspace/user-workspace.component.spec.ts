@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {UserWorkspaceComponent} from './user-workspace.component';
 
@@ -6,7 +6,7 @@ describe('RootComponent', () => {
     let component: UserWorkspaceComponent;
     let fixture: ComponentFixture<UserWorkspaceComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [UserWorkspaceComponent]
         })

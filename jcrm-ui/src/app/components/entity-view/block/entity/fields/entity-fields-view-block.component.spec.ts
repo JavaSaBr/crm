@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {EntityFieldsViewBlockComponent} from './entity-fields-vew-block.component';
 
 describe('EntityFieldsViewBlockComponent', () => {
@@ -6,7 +6,7 @@ describe('EntityFieldsViewBlockComponent', () => {
     let component: EntityFieldsViewBlockComponent;
     let fixture: ComponentFixture<EntityFieldsViewBlockComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [EntityFieldsViewBlockComponent]
         })

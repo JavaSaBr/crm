@@ -1,7 +1,7 @@
 package com.ss.jcrm.registration.web.handler;
 
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
-import com.ss.jcrm.registration.web.resources.UserRegisterResource;
+import com.ss.jcrm.registration.web.resources.UserRegisterInResource;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
@@ -31,7 +31,7 @@ public class RegistrationHandler {
     )
     @NotNull CompletableFuture<?> register(
         @RequestHeader("token") @NotNull String token,
-        @NotNull @RequestBody UserRegisterResource resource
+        @NotNull @RequestBody UserRegisterInResource resource
     ) {
 
         String name = resource.getName();

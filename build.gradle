@@ -19,8 +19,8 @@ allprojects {
     apply plugin: "java"
     apply plugin: "groovy"
 
-    sourceCompatibility = JavaVersion.VERSION_14
-    targetCompatibility = JavaVersion.VERSION_14
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
 
     repositories {
         jcenter()
@@ -175,6 +175,6 @@ task buildSingleArtifactWithoutTests(type: GradleBuild) {
 }
 
 wrapper {
-    gradleVersion = '6.4.1'
+    gradleVersion = '6.8'
     distributionType = Wrapper.DistributionType.ALL
 }

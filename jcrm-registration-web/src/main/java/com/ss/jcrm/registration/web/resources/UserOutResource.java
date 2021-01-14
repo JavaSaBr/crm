@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserOutResource extends MinimalUserOutResource {
 
-    int[] roles;
+    @NotNull int[] roles;
 
     long created;
     long modified;
