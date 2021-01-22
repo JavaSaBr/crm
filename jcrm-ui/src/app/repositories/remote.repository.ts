@@ -42,11 +42,24 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
     public findEntityPage(pageSize: number, offset: number): Promise<EntityPage<T>> {
         return this.securityService.getRequest<DataPageResource<R>>(this.buildEntityPageFetchUrl(pageSize, offset))
             .then(value => {
+
                 const resource = value.body;
-                const entities = resource.resources.map(resource => this.convert(resource));
+                const entities = resource.resources
+                    .map(resource => this.safeConvert(resource))
+                    .filter(object => object != null);
+
                 return new EntityPage(entities, resource.totalSize);
             })
             .catch(reason => this.errorService.convertError(reason));
+    }
+
+    protected safeConvert(resource: R): T | null {
+        try {
+            return this.convert(resource);
+        } catch (e: unknown) {
+            console.error(`Cannot convert resource: ${resource} by reason: ${e}`);
+            return null;
+        }
     }
 
     protected convert(resource: R): T {

@@ -14,6 +14,7 @@ import {PhoneNumber} from '@app/entity/phone-number';
 import {ErrorService} from '@app/service/error.service';
 import {PhoneNumberResource} from '@app/resource/phone-number-resource';
 import {MessengerResource} from '@app/resource/messenger-resource';
+import {UserRepository} from '@app/repository/user/user.repository';
 
 @Injectable({
     providedIn: 'root'
@@ -104,7 +105,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         contact.sites = resource.sites
             .map(value => new ContactSite(value.url, value.type as SiteType));
         contact.messengers = resource.messengers
-            .map(value => value.toMessenger());
+            .map(value => UserRepository.toMessenger(value));
         contact.emails = resource.emails
             .map(value => new ContactEmail(value.email, value.type as EmailType));
 
@@ -118,7 +119,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         let asyncPhoneNumbers: Promise<PhoneNumber>[] = [];
 
         phoneNumberResources.forEach(resource => {
-            asyncPhoneNumbers.push(Promise.resolve(resource.toPhoneNumber()));
+            asyncPhoneNumbers.push(Promise.resolve(UserRepository.toPhoneNumber(resource)));
         });
 
         return Promise.all(asyncPhoneNumbers)

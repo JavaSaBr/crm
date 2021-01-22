@@ -51,6 +51,7 @@ allprojects {
         jasyncVersion = "1.1.5"
         projectReactorVersion = "3.4.1"
         jacksonVersion = "2.12.1"
+        betterStringVersion = "0.5"
     }
 
     dependencies {
@@ -64,6 +65,17 @@ allprojects {
             project.dependencies {
                 it.compileOnly "org.projectlombok:lombok:$lombokVersion"
                 it.annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+                it.testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+                it.testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+            }
+        }
+    
+        if (project.ext.has("betterStrings") && project.ext["betterStrings"] == "true") {
+            project.dependencies {
+                it.compileOnly "com.antkorwin:better-strings:$betterStringVersion"
+                it.annotationProcessor "com.antkorwin:better-strings:$betterStringVersion"
+                it.testCompileOnly "com.antkorwin:better-strings:$betterStringVersion"
+                it.testAnnotationProcessor "com.antkorwin:better-strings:$betterStringVersion"
             }
         }
 

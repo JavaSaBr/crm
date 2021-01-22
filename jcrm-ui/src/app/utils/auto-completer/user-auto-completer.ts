@@ -20,7 +20,7 @@ export class UserAutoCompleter extends BaseAutoCompleter<MinimalUser> {
 
     protected searchByString(value: string): void {
         this.userRepository.searchByName(value as string)
-            .then(users => this._filteredElements.next(users))
-            .catch(() => this._filteredElements.next([]));
+            .then(users => this.applyNewElements(users))
+            .catch(() => this.resetToDefault());
     }
 }

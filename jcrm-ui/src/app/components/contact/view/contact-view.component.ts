@@ -5,9 +5,9 @@ import {Contact} from '@app/entity/contact';
 import {ContactRepository} from '@app/repository/contact/contact.repository';
 import {Utils} from '@app/util/utils';
 import {UserRepository} from '@app/repository/user/user.repository';
-import {User} from '@app/entity/user';
 import {ErrorService} from '@app/service/error.service';
 import {environment} from '@app/env/environment';
+import {UniqEntity} from '@app/entity/uniq-entity';
 
 @Component({
     selector: 'app-contact-view',
@@ -35,7 +35,7 @@ export class ContactViewComponent implements AfterViewInit {
 
     contact: Contact | null;
 
-    @Input("startEditableState")
+    @Input('startEditableState')
     startEditableState: boolean;
 
     editContactInfo: boolean;
@@ -117,7 +117,7 @@ export class ContactViewComponent implements AfterViewInit {
                 .then(() => this.hasChangesInContactInfo = false);
         }
 
-        if(curatorIds != null) {
+        if (curatorIds != null) {
             this.userRepository.findMinimalByIds(curatorIds)
                 .then(users => this.curators.setValue(users))
                 .then(() => this.hasChangesInContactInfo = false);
@@ -133,7 +133,7 @@ export class ContactViewComponent implements AfterViewInit {
                 this.switchEditContactInfo(false);
             }
 
-            this.reload(this.contact)
+            this.reload(this.contact);
         });
     }
 
@@ -172,9 +172,9 @@ export class ContactViewComponent implements AfterViewInit {
     syncContactWithForm(contact: Contact): Contact {
 
         const assigner = this.assigner.value;
-        const curators = this.curators.value as User[];
+        const curators = this.curators.value as UniqEntity[];
 
-        contact.assigner = assigner instanceof User ? assigner.id : null;
+        contact.assigner = assigner instanceof UniqEntity ? assigner.id : null;
         contact.curators = curators != null && curators.length > 0 ? curators.map(value => value.id) : [];
         contact.firstName = this.firstName.value;
         contact.secondName = this.secondName.value;

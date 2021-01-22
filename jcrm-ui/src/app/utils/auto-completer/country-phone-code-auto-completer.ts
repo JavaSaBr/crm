@@ -24,7 +24,7 @@ export class CountryPhoneCodeAutoCompleter extends BaseAutoCompleter<Country> {
             .then(countries => this._filteredElements.next(countries));
     }
 
-    protected getSearchTimeout(): number {
+    protected searchTimeout(): number {
         return 0;
     }
 

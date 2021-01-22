@@ -8,7 +8,7 @@ import {MatAutocompleteSelectedEvent} from '@app/node-modules/@angular/material/
 @Directive()
 export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnInit {
 
-    readonly entityControl: FormControl;
+    private readonly _entityControl: FormControl;
 
     protected _availableEntities: Observable<T[]>;
     protected _entity: T | null;
@@ -21,7 +21,7 @@ export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnIni
         super(ngControl, focusMonitor, elementRef);
         this._entity = null;
         this._availableEntities = null;
-        this.entityControl = new FormControl();
+        this._entityControl = new FormControl();
     }
 
     set entity(entity: T | null) {
@@ -34,11 +34,15 @@ export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnIni
     }
 
     get empty(): boolean {
-        return !this.entityControl.value;
+        return !this._entityControl.value;
     }
 
     get availableEntities(): Observable<T[]> {
         return this._availableEntities;
+    }
+
+    get entityControl(): FormControl {
+        return this._entityControl;
     }
 
     @Input()
@@ -49,9 +53,9 @@ export abstract class SingleEntityInput<T> extends BaseInput<T> implements OnIni
     set value(entity: T | null) {
 
         if (entity != null) {
-            this.entityControl.setValue(entity);
+            this._entityControl.setValue(entity);
         } else {
-            this.entityControl.setValue(null);
+            this._entityControl.setValue(null);
         }
 
         this._entity = entity;
