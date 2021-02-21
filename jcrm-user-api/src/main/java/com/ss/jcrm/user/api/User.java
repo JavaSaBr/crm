@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public interface User extends VersionedUniqEntity {
 
@@ -45,9 +46,17 @@ public interface User extends VersionedUniqEntity {
 
     @NotNull Set<AccessRole> getRoles();
 
+    default @NotNull Stream<AccessRole> streamRoles() {
+        return getRoles().stream();
+    }
+
     void setRoles(@NotNull Set<AccessRole> roles);
 
     @NotNull Set<UserGroup> getGroups();
+
+    default @NotNull Stream<UserGroup> streamGroups() {
+        return getGroups().stream();
+    }
 
     void setGroups(@NotNull Set<UserGroup> groups);
 

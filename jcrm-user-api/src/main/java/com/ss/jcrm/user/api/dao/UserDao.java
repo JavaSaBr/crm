@@ -5,6 +5,7 @@ import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.User;
+import com.ss.jcrm.user.api.UserGroup;
 import com.ss.jcrm.user.contact.api.Messenger;
 import com.ss.jcrm.user.contact.api.PhoneNumber;
 import com.ss.rlib.common.util.array.Array;
@@ -118,4 +119,8 @@ public interface UserDao extends Dao<User> {
     }
 
     @NotNull Mono<@NotNull EntityPage<User>> findPageByOrg(long offset, long size, long orgId);
+
+    @NotNull Mono<Boolean> containsAll(@NotNull long[] ids, long orgId);
+
+    @NotNull Mono<@NotNull User> addGroup(@NotNull User user, @NotNull UserGroup userGroup);
 }

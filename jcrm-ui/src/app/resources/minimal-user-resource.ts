@@ -1,5 +1,17 @@
+import {MinimalUser} from '@app/entity/minimal-user';
 
 export class MinimalUserResource {
+
+    public static toMinimalUser(resource: MinimalUserResource): MinimalUser {
+        return new MinimalUser(
+            resource.id,
+            resource.email,
+            resource.firstName,
+            resource.secondName,
+            resource.thirdName,
+            new Date(resource.birthday)
+        );
+    }
 
     constructor(
         public id: number | null,

@@ -33,7 +33,7 @@ allprojects {
     ext {
         angularVersion = "11.0.6"
         annotationVersion = "20.1.0"
-        rlibVersion = "9.9.0"
+        rlibVersion = "9.10.0"
         lombokVersion = '1.18.16'
         springbootVersion = '2.4.1'
         springVersion = '5.3.2'

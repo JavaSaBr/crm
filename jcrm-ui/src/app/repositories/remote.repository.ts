@@ -19,13 +19,13 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
 
     public findAll(): Promise<T[]> {
         return this.securityService.getRequest<R[]>(this.buildFetchUrl())
-            .then(value => value.body.map(resource => this.convert(resource)))
+            .then(value => value.body.map(resource => this.convertFromResource(resource)))
             .catch(reason => this.errorService.convertError(reason));
     }
 
     public findById(id: number): Promise<T | null> {
         return this.securityService.getRequest<R>(this.buildFetchUrlById(id))
-            .then(value => this.convert(value.body))
+            .then(value => this.convertFromResource(value.body))
             .catch(reason => this.errorService.convertError(reason));
     }
 
@@ -34,7 +34,7 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
             return Promise.resolve([]);
         } else {
             return this.securityService.postRequest<R[]>(this.buildFetchUrlByIds(), ids)
-                .then(value => value.body.map(entity => this.convert(entity)))
+                .then(value => value.body.map(entity => this.convertFromResource(entity)))
                 .catch(reason => this.errorService.convertError(reason));
         }
     }
@@ -45,7 +45,7 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
 
                 const resource = value.body;
                 const entities = resource.resources
-                    .map(resource => this.safeConvert(resource))
+                    .map(resource => this.safeConvertFromResource(resource))
                     .filter(object => object != null);
 
                 return new EntityPage(entities, resource.totalSize);
@@ -53,16 +53,16 @@ export class RemoteRepository<T extends UniqEntity, R> implements Repository<T> 
             .catch(reason => this.errorService.convertError(reason));
     }
 
-    protected safeConvert(resource: R): T | null {
+    protected safeConvertFromResource(resource: R): T | null {
         try {
-            return this.convert(resource);
+            return this.convertFromResource(resource);
         } catch (e: unknown) {
             console.error(`Cannot convert resource: ${resource} by reason: ${e}`);
             return null;
         }
     }
 
-    protected convert(resource: R): T {
+    protected convertFromResource(resource: R): T {
         throw new Error('`convert` is not yet implemented');
     }
 

@@ -10,56 +10,11 @@ import {MessengerResource} from '@app/resource/messenger-resource';
 import {SecurityService} from '@app/service/security.service';
 import {ErrorService} from '@app/service/error.service';
 import {DatePipe} from '@app/node-modules/@angular/common';
-import {PhoneNumber} from '@app/entity/phone-number';
-import {Messenger} from '@app/entity/messenger';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserRepository extends RemoteRepository<User, UserResource> {
-
-    private static toPhoneNumbers(resources: PhoneNumberResource[]): PhoneNumber[] | null {
-        if (resources == null || resources.length == 0) {
-            return null;
-        } else {
-            return resources.map(value => UserRepository.toPhoneNumber(value));
-        }
-    }
-
-    public static toPhoneNumber(resource: PhoneNumberResource): PhoneNumber {
-        return new PhoneNumber(
-            resource.countryCode,
-            resource.regionCode,
-            resource.phoneNumber,
-            PhoneNumber.getPhoneTypeById(resource.type)
-        );
-    }
-
-    private static toMessengers(resources: MessengerResource[]): Messenger[] | null {
-        if (resources == null || resources.length == 0) {
-            return null;
-        } else {
-            return resources.map(value => UserRepository.toMessenger(value));
-        }
-    }
-
-    public static toMessenger(resource: MessengerResource): Messenger {
-        return new Messenger(
-            resource.login,
-            Messenger.getMessengerTypeById(resource.type)
-        );
-    }
-
-    public static toMinimalUser(resource: MinimalUserResource): MinimalUser {
-        return new MinimalUser(
-            resource.id,
-            resource.email,
-            resource.firstName,
-            resource.secondName,
-            resource.thirdName,
-            new Date(resource.birthday)
-        );
-    }
 
     constructor(
         private readonly datePipe: DatePipe,
@@ -75,13 +30,13 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
         const url = `${environment.registrationUrl}/user`;
 
         return this.securityService.postRequest<UserResource>(url, body)
-            .then(response => this.convert(response.body))
+            .then(response => this.convertFromResource(response.body))
             .catch(reason => this.errorService.convertError(reason));
     }
 
     public findMinimalById(id: number): Promise<MinimalUser | null> {
         return this.securityService.getRequest<MinimalUserResource>(`${environment.registrationUrl}/user/minimal/${id}`)
-            .then(response => UserRepository.toMinimalUser(response.body))
+            .then(response => MinimalUserResource.toMinimalUser(response.body))
             .catch(reason => this.errorService.convertError(reason));
     }
 
@@ -90,14 +45,14 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
             return Promise.resolve([]);
         } else {
             return this.securityService.postRequest<MinimalUserResource[]>(`${environment.registrationUrl}/users/minimal/ids`, ids)
-                .then(response => response.body.map(resource => UserRepository.toMinimalUser(resource)))
+                .then(response => response.body.map(resource => MinimalUserResource.toMinimalUser(resource)))
                 .catch(reason => this.errorService.convertError(reason));
         }
     }
 
     public searchByName(name: string): Promise<MinimalUser[]> {
         return this.securityService.getRequest<MinimalUserResource[]>(`${environment.registrationUrl}/search/user/name/${name}`)
-            .then(value => value.body.map(resource => UserRepository.toMinimalUser(resource)))
+            .then(value => value.body.map(resource => MinimalUserResource.toMinimalUser(resource)))
             .catch(reason => this.errorService.convertError(reason));
     }
 
@@ -113,7 +68,7 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
         return `${environment.registrationUrl}/users/page?pageSize=${pageSize}&offset=${offset}`;
     }
 
-    protected convert(resource: UserResource): User {
+    protected convertFromResource(resource: UserResource): User {
         return new User(
             resource.id,
             resource.email,
@@ -121,8 +76,10 @@ export class UserRepository extends RemoteRepository<User, UserResource> {
             resource.secondName,
             resource.thirdName,
             resource.birthday ? new Date(resource.birthday) : null,
-            UserRepository.toPhoneNumbers(resource.phoneNumbers),
-            UserRepository.toMessengers(resource.messengers),
+            resource.phoneNumbers
+                .map(value => PhoneNumberResource.toPhoneNumber(value)),
+            resource.messengers
+                .map(value => MessengerResource.toMessenger(value)),
             resource.password,
             resource.created ? new Date(resource.created) : null,
             resource.modified ? new Date(resource.modified) : null

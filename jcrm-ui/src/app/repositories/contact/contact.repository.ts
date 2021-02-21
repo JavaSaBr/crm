@@ -9,17 +9,15 @@ import {ContactSiteResource} from '@app/resource/contact-site-resource';
 import {CountryRepository} from '@app/repository/country/country.repository';
 import {ContactSite, SiteType} from '@app/entity/contact-site';
 import {ContactEmail, EmailType} from '@app/entity/contact-email';
-import {AsyncEntityRemoteRepository} from '@app/repository/async-entity-remote.repository';
-import {PhoneNumber} from '@app/entity/phone-number';
 import {ErrorService} from '@app/service/error.service';
 import {PhoneNumberResource} from '@app/resource/phone-number-resource';
 import {MessengerResource} from '@app/resource/messenger-resource';
-import {UserRepository} from '@app/repository/user/user.repository';
+import {RemoteRepository} from '@app/repository/remote.repository';
 
 @Injectable({
     providedIn: 'root'
 })
-export class ContactRepository extends AsyncEntityRemoteRepository<Contact, ContactResource> {
+export class ContactRepository extends RemoteRepository<Contact, ContactResource> {
 
     constructor(
         private readonly countryRepository: CountryRepository,
@@ -36,7 +34,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         const url = `${environment.clientUrl}/contact`;
 
         return this.securityService.postRequest<ContactResource>(url, body)
-            .then(response => this.convertAsync(response.body))
+            .then(response => this.convertFromResource(response.body))
             .catch(reason => this.errorService.convertError(reason));
     }
 
@@ -46,7 +44,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         const url = `${environment.clientUrl}/contact`;
 
         return this.securityService.putRequest<ContactResource>(url, body)
-            .then(response => this.convertAsync(response.body))
+            .then(response => this.convertFromResource(response.body))
             .catch(reason => this.errorService.convertError(reason));
     }
 
@@ -88,7 +86,7 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         return body;
     }
 
-    protected convertAsync(resource: ContactResource): Promise<Contact> {
+    protected convertFromResource(resource: ContactResource): Contact {
 
         const contact = Contact.create();
         contact.id = resource.id;
@@ -105,28 +103,13 @@ export class ContactRepository extends AsyncEntityRemoteRepository<Contact, Cont
         contact.sites = resource.sites
             .map(value => new ContactSite(value.url, value.type as SiteType));
         contact.messengers = resource.messengers
-            .map(value => UserRepository.toMessenger(value));
+            .map(value => MessengerResource.toMessenger(value));
+        contact.phoneNumbers = resource.phoneNumbers
+            .map(value => PhoneNumberResource.toPhoneNumber(value));
         contact.emails = resource.emails
             .map(value => new ContactEmail(value.email, value.type as EmailType));
 
-        const phoneNumberResources = resource.phoneNumbers;
-
-        if (!phoneNumberResources || phoneNumberResources.length < 1) {
-            contact.phoneNumbers = [];
-            return Promise.resolve(contact);
-        }
-
-        let asyncPhoneNumbers: Promise<PhoneNumber>[] = [];
-
-        phoneNumberResources.forEach(resource => {
-            asyncPhoneNumbers.push(Promise.resolve(UserRepository.toPhoneNumber(resource)));
-        });
-
-        return Promise.all(asyncPhoneNumbers)
-            .then(phoneNumbers => {
-                contact.phoneNumbers = phoneNumbers;
-                return contact;
-            })
+        return contact;
     }
 }
 

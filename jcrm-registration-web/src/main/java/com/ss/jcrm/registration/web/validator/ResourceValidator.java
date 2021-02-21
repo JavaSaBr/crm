@@ -3,18 +3,20 @@ package com.ss.jcrm.registration.web.validator;
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
+import com.ss.jcrm.registration.web.resources.UserGroupInResource;
 import com.ss.jcrm.registration.web.resources.UserInResource;
+import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.validator.BaseResourceValidator;
 import com.ss.rlib.common.util.DateUtils;
 import com.ss.rlib.common.util.StringUtils;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.env.Environment;
 
-@Log4j2
+@Slf4j
 public class ResourceValidator extends BaseResourceValidator {
 
     private final int emailMinLength;
@@ -32,6 +34,9 @@ public class ResourceValidator extends BaseResourceValidator {
     private final int otherUserNameMinLength;
     private final int otherUserNameMaxLength;
 
+    private final int userGroupNameMinLength;
+    private final int userGroupNameMaxLength;
+
     public ResourceValidator(@NotNull Environment env) {
         this.emailMinLength = env.getProperty("registration.web.email.min.length", int.class, 6);
         this.emailMaxLength = env.getProperty("registration.web.email.max.length", int.class, 45);
@@ -43,6 +48,8 @@ public class ResourceValidator extends BaseResourceValidator {
         this.passwordMaxLength = env.getProperty("registration.web.password.max.length", int.class, 25);
         this.otherUserNameMinLength = env.getProperty("registration.web.other.user.name.min.length", int.class, 2);
         this.otherUserNameMaxLength = env.getProperty("registration.web.other.user.name.max.length", int.class, 45);
+        this.userGroupNameMinLength = env.getProperty("registration.web.user.group.name.min.length", int.class, 6);
+        this.userGroupNameMaxLength = env.getProperty("registration.web.user.group.name.max.length", int.class, 45);
 
         log.info("Resource validator settings:");
         log.info("Email min length : {}", emailMinLength);
@@ -90,6 +97,10 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validateOrgName(@Nullable String orgName) {
         validate(orgName, orgNameMinLength, orgNameMaxLength, ORG_NAME_WRONG_LENGTH, ORG_NAME_WRONG_LENGTH_MESSAGE);
+    }
+
+    public void validateUserGroupName(@Nullable String orgName) {
+        validate(orgName, userGroupNameMinLength, userGroupNameMaxLength, ORG_NAME_WRONG_LENGTH, ORG_NAME_WRONG_LENGTH_MESSAGE);
     }
 
     public void validateOtherName(@Nullable String userName) {
@@ -149,6 +160,29 @@ public class ResourceValidator extends BaseResourceValidator {
         if (birthday == null) {
             log.warn("Invalid birthday: {}", resource.getBirthday());
             throw new BadRequestWebException(INVALID_BIRTHDAY_MESSAGE, INVALID_BIRTHDAY);
+        }
+    }
+
+    public void validate(@NotNull UserGroupInResource resource) {
+
+        validateUserGroupName(resource.getName());
+        validateAccessRoles(resource.getRoles());
+    }
+
+    public void validateAccessRoles(@Nullable int[] roles) {
+
+        if (roles == null) {
+            return;
+        }
+
+        for (int roleId : roles) {
+
+            var accessRole = AccessRole.of(roleId);
+
+            if (accessRole == null) {
+                log.warn("Invalid access role id: {}", roleId);
+                throw new BadRequestWebException(INVALID_ACCESS_ROLE_MESSAGE, INVALID_ACCESS_ROLE);
+            }
         }
     }
 }

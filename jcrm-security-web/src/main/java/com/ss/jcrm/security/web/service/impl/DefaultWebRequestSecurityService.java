@@ -7,15 +7,22 @@ import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.User;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultWebRequestSecurityService implements WebRequestSecurityService {
 
-    private final TokenService tokenService;
+    @NotNull TokenService tokenService;
 
     @Override
     public @NotNull Mono<@NotNull User> isAuthorized(@NotNull ServerRequest request, @NotNull AccessRole accessRole) {
@@ -56,9 +63,35 @@ public class DefaultWebRequestSecurityService implements WebRequestSecurityServi
             .orElseThrow(() -> toUnauthorized(NOT_PRESENTED_TOKEN, NOT_PRESENTED_TOKEN_MESSAGE)));
     }
 
+    @Override
+    public @NotNull Set<AccessRole> resolveAllRoles(@NotNull User user) {
+
+        var ownedRoles = new HashSet<AccessRole>();
+
+        resolveAllRoles(ownedRoles, user.getRoles());
+
+        for (var group : user.getGroups()) {
+            resolveAllRoles(ownedRoles, group.getRoles());
+        }
+
+        return ownedRoles;
+    }
+
+    private void resolveAllRoles(@NotNull Set<AccessRole> ownedRoles, @NotNull Set<AccessRole> roles) {
+
+        if (roles.isEmpty()) {
+            return;
+        }
+
+        for (var role : roles) {
+            ownedRoles.add(role);
+            Collections.addAll(ownedRoles, role.getSubRoles());
+        }
+    }
+
     private boolean hasOne(@NotNull AccessRole[] accessRoles, @NotNull User user) {
 
-        var roles = user.getRoles();
+        var roles = resolveAllRoles(user);
 
         if (roles.isEmpty()) {
             return false;

@@ -37,4 +37,16 @@ public interface RegistrationErrors {
 
     int INVALID_BIRTHDAY = 1011;
     String INVALID_BIRTHDAY_MESSAGE = "Invalid birthday";
+
+    int USER_GROUP_NAME_WRONG_LENGTH = 1012;
+    String USER_GROUP_NAME_WRONG_LENGTH_MESSAGE = "Invalid user group name";
+
+    int INVALID_ACCESS_ROLE = 1013;
+    String INVALID_ACCESS_ROLE_MESSAGE = "Invalid access role";
+
+    int USER_GROUP_IS_ALREDY_EXIST = 1014;
+    String USER_GROUP_IS_ALREDY_EXIST_MESSAGE = "User group is already exist";
+
+    int INVALID_USER_LIST = 1015;
+    String INVALID_USER_LIST_MESSAGE = "Invalid user list";
 }

@@ -9,6 +9,13 @@ export class MessengerResource {
         );
     }
 
+    public static toMessenger(resource: MessengerResource): Messenger {
+        return new Messenger(
+            resource.login,
+            Messenger.getMessengerTypeById(resource.type)
+        );
+    }
+
     constructor(
         public readonly login: string | null,
         public readonly type: number | null,
