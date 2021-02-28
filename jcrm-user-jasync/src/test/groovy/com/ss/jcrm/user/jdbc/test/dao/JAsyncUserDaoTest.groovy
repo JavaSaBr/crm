@@ -174,7 +174,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             reloaded.version == 2
     }
 
-    def "should throw NotActualObjectDaoException during upating outdated user"() {
+    def "should throw NotActualObjectDaoException during updating outdated user"() {
 
         given:
             def user = userTestHelper.newUser("User1")
@@ -386,5 +386,38 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             page.totalSize == firstOrgUsersCount
             page.entities.size() == 3
             !page.entities.stream().anyMatch({ loadedUsers.contains(it) })
+    }
+    
+    def "should return true when all users are in the same organization"() {
+        
+        given:
+            
+            def org = userTestHelper.newOrg()
+            def user1 = userTestHelper.newUser("user1@mail.com", org)
+            def user2 = userTestHelper.newUser("user2@mail.com", org)
+            def user3 = userTestHelper.newUser("user3@mail.com", org)
+           
+            long[] ids = [user1.id, user2.id, user3.id]
+        
+        when:
+            def result = userDao.containsAll(ids, org.id).block()
+        then:
+            result
+    }
+    
+    def "should return false when all users are in different organizations"() {
+        
+        given:
+            def org1 = userTestHelper.newOrg()
+            def org2 = userTestHelper.newOrg()
+            def user1 = userTestHelper.newUser("user1@mail.com", org1)
+            def user2 = userTestHelper.newUser("user2@mail.com", org1)
+            def user3 = userTestHelper.newUser("user3@mail.com", org1)
+            def user4 = userTestHelper.newUser("user4@mail.com", org2)
+            long[] ids = [user1.id, user2.id, user3.id, user4.id]
+        when:
+            def result = userDao.containsAll(ids, org1.id).block()
+        then:
+            !result
     }
 }

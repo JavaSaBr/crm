@@ -16,7 +16,8 @@ import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.array.ArrayFactory;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,10 +26,60 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletionException;
 
-@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> {
 
-    protected final ConnectionPool<? extends ConcreteConnection> connectionPool;
+    protected static final String VAR_ID_LIST = "${id-list}";
+
+    private static final String[] ID_LIST_CACHE;
+
+    static {
+
+        var cacheSize = 100;
+        var cache = new String[cacheSize];
+
+        for (int i = 0; i < cacheSize; i++) {
+            cache[i] = JAsyncUtils.buildQueryIdList(i);
+        }
+
+        ID_LIST_CACHE = cache;
+    }
+
+    @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool;
+    @NotNull String schema;
+    @NotNull String fieldList;
+
+    @Deprecated
+    protected AbstractJAsyncDao(@NotNull ConnectionPool<? extends ConcreteConnection> connectionPool) {
+        this.connectionPool = connectionPool;
+        this.schema = null;
+        this.fieldList = null;
+    }
+
+    protected AbstractJAsyncDao(
+        @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
+        @NotNull String schema,
+        @NotNull String fieldList
+    ) {
+        this.connectionPool = connectionPool;
+        this.schema = schema;
+        this.fieldList = fieldList.trim();
+    }
+
+    protected @NotNull String prepareQuery(@NotNull String query) {
+        return query
+            .replace("${schema}", schema)
+            .replace("${field-list}", fieldList);
+    }
+
+    protected @NotNull String injectIdList(@NotNull String query, @NotNull long[] ids) {
+
+        if (ID_LIST_CACHE.length > ids.length) {
+            return query.replace(VAR_ID_LIST, ID_LIST_CACHE[ids.length]);
+        }
+
+        return query.replace(VAR_ID_LIST, JAsyncUtils.buildQueryIdList(ids));
+    }
 
     protected abstract @NotNull Class<T> getEntityType();
 
@@ -63,7 +114,7 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
             );
     }
 
-    protected @NotNull Mono<Boolean> update(
+    protected @NotNull Mono<T> update(
         @NotNull String query,
         @NotNull List<?> args,
         @NotNull T entity
@@ -84,7 +135,7 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
                     versioned.setVersion(versioned.getVersion() + 1);
                 }
 
-                return Boolean.TRUE;
+                return entity;
             }));
     }
 

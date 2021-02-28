@@ -18,7 +18,9 @@ import com.ss.jcrm.user.api.Organization;
 import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.impl.DefaultOrganization;
 import com.ss.rlib.common.util.array.Array;
-import lombok.extern.log4j.Log4j2;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
@@ -26,7 +28,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Optional;
 
-@Log4j2
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organization> implements OrganizationDao {
 
     private static final String FIELD_LIST = "\"id\", \"name\", \"country_id\", \"version\", \"zip_code\"," +
@@ -45,16 +48,16 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
 
     private static final String Q_DELETE_BY_ID = "delete from \"${schema}\".\"organization\" where \"id\" = ?";
 
-    private final String querySelectById;
-    private final String querySelectByName;
-    private final String querySelectAll;
-    private final String queryInsert;
-    private final String queryDeleteById;
-    private final String queryExistByName;
+    @NotNull String querySelectById;
+    @NotNull String querySelectByName;
+    @NotNull String querySelectAll;
+    @NotNull String queryInsert;
+    @NotNull String queryDeleteById;
+    @NotNull String queryExistByName;
 
-    private final CityDao cityDao;
-    private final IndustryDao industryDao;
-    private final CountryDao countryDao;
+    @NotNull CityDao cityDao;
+    @NotNull IndustryDao industryDao;
+    @NotNull CountryDao countryDao;
 
     public JAsyncOrganizationDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,

@@ -28,27 +28,27 @@ public class DefaultUser implements User {
     @NotNull final Organization organization;
     @NotNull final Instant created;
 
-    @NotNull String email;
+    volatile @NotNull String email;
 
-    @Nullable String firstName;
-    @Nullable String secondName;
-    @Nullable String thirdName;
-    @Nullable LocalDate birthday;
+    volatile @Nullable String firstName;
+    volatile @Nullable String secondName;
+    volatile @Nullable String thirdName;
+    volatile @Nullable LocalDate birthday;
 
-    @NotNull Instant modified;
+    volatile @NotNull Instant modified;
 
-    @NotNull byte[] password;
-    @NotNull byte[] salt;
+    volatile @NotNull byte[] password;
+    volatile @NotNull byte[] salt;
 
-    @NotNull Set<AccessRole> roles;
-    @NotNull Set<UserGroup> groups;
-    @NotNull Set<PhoneNumber> phoneNumbers;
-    @NotNull Set<Messenger> messengers;
+    volatile @NotNull Set<AccessRole> roles;
+    volatile @NotNull Set<UserGroup> groups;
+    volatile @NotNull Set<PhoneNumber> phoneNumbers;
+    volatile @NotNull Set<Messenger> messengers;
 
     volatile int version;
     volatile int passwordVersion;
 
-    boolean emailConfirmed;
+    volatile boolean emailConfirmed;
 
     public DefaultUser(
         long id,

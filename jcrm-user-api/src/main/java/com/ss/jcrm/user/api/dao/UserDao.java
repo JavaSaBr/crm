@@ -89,7 +89,7 @@ public interface UserDao extends Dao<User> {
     /**
      * @throws CompletionException -> NotActualObjectDaoException if the user was changed in another thread/server.
      */
-    @NotNull Mono<Boolean> update(@NotNull User user);
+    @NotNull Mono<User> update(@NotNull User user);
 
     @NotNull Mono<Boolean> existByEmail(@NotNull String email);
 
@@ -121,6 +121,4 @@ public interface UserDao extends Dao<User> {
     @NotNull Mono<@NotNull EntityPage<User>> findPageByOrg(long offset, long size, long orgId);
 
     @NotNull Mono<Boolean> containsAll(@NotNull long[] ids, long orgId);
-
-    @NotNull Mono<@NotNull User> addGroup(@NotNull User user, @NotNull UserGroup userGroup);
 }

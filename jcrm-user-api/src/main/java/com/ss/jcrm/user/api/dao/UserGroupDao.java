@@ -26,9 +26,11 @@ public interface UserGroupDao extends Dao<UserGroup> {
         @NotNull Organization organization
     );
 
+    @NotNull Mono<@NotNull UserGroup> update(@NotNull UserGroup userGroup);
+
     @NotNull Mono<@NotNull Set<UserGroup>> findAll(@NotNull Organization organization);
 
-    @NotNull Mono<Boolean> existByName(@NotNull String email, long orgId);
+    @NotNull Mono<Boolean> existByName(@NotNull String name, long orgId);
 
     @NotNull Mono<@NotNull Array<UserGroup>> searchByName(@NotNull String name, long orgId);
 

@@ -12,11 +12,14 @@ import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.user.api.MinimalUser;
 import com.ss.jcrm.user.api.dao.MinimalUserDao;
 import com.ss.jcrm.user.api.impl.DefaultMinimalUser;
-import lombok.extern.log4j.Log4j2;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
-@Log4j2
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> implements MinimalUserDao {
 
     private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"roles\"";
@@ -24,7 +27,7 @@ public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> impleme
     private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST +
         " from \"${schema}\".\"user\" where \"id\" = ?";
 
-    private final String querySelectById;
+    @NotNull String querySelectById;
 
     public JAsyncMinimalUserDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,

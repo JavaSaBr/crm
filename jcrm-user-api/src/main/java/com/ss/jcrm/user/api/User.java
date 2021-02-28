@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -59,6 +60,14 @@ public interface User extends VersionedUniqEntity {
     }
 
     void setGroups(@NotNull Set<UserGroup> groups);
+
+    default void addGroup(@NotNull UserGroup userGroup) {
+
+        var newGroups = new HashSet<>(getGroups());
+        newGroups.add(userGroup);
+
+        setGroups(Set.copyOf(newGroups));
+    }
 
     @NotNull Set<PhoneNumber> getPhoneNumbers();
 

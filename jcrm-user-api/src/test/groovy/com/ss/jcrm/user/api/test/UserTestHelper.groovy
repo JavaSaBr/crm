@@ -31,6 +31,12 @@ interface UserTestHelper extends TestHelper {
     
     User newUser(String name, Set<PhoneNumber> phoneNumbers, Set<Messenger> messengers, String password);
     
+    UserGroup newGroup(Organization organization);
+    
+    UserGroup newGroup(String name, Organization organization);
+    
+    UserGroup newGroup(String name, Organization organization, Set<AccessRole> roles);
+    
     EmailConfirmation newEmailConfirmation();
 
     String nextUId()
@@ -39,5 +45,4 @@ interface UserTestHelper extends TestHelper {
     
     Set<AccessRole> onlyOrgAdminRole();
     
-    UserGroup newGroup(Organization organization);
 }

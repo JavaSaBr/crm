@@ -77,16 +77,22 @@ class JAsyncUserTestHelper extends JAsyncTestHelper implements UserTestHelper {
     def newOrg(String name) {
         return organizationDao.create(name, dictionaryTestHelper.newCountry()).block()
     }
-
-    def newGroup(String name, Organization organization) {
-        return userGroupDao.create(name, organization).block()
-    }
     
     @Override
     UserGroup newGroup(Organization organization) {
-        return userGroupDao.create(nextUId(), organization).block()
+        return userGroupDao.create(nextUId(), Set.of(), organization).block()
     }
-
+    
+    @Override
+    UserGroup newGroup(String name, Organization organization) {
+        return userGroupDao.create(name, Set.of(), organization).block()
+    }
+    
+    @Override
+    UserGroup newGroup(String name, Organization organization, Set<AccessRole> roles) {
+        return userGroupDao.create(name, roles, organization).block()
+    }
+    
     @Override
     User newUser() {
         return newUser(

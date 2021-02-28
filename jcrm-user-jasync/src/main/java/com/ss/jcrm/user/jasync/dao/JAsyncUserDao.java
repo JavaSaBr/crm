@@ -22,19 +22,19 @@ import com.ss.jcrm.user.contact.api.Messenger;
 import com.ss.jcrm.user.contact.api.PhoneNumber;
 import com.ss.rlib.common.util.StringUtils;
 import com.ss.rlib.common.util.array.Array;
-import lombok.extern.log4j.Log4j2;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-@Log4j2
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
     private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
@@ -76,20 +76,24 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     private static final String Q_COUNT_BY_ORG_ID = "select count(\"id\") from \"${schema}\".\"user\"" +
         " where \"organization_id\" = ?";
 
-    private final String querySelectById;
-    private final String querySelectByEmail;
-    private final String querySelectByPhoneNumber;
-    private final String querySelectByIdAndOrgId;
-    private final String querySelectByIdsAndOrgId;
-    private final String queryExistByEmail;
-    private final String querySearchByName;
-    private final String queryInsert;
-    private final String queryUpdate;
-    private final String queryPageByOrgId;
-    private final String queryCountByOrgId;
+    private static final String Q_COUNT_BY_USERS_WHICH_NOT_IN_ORG = "select count(\"id\") from \"${schema}\".\"user\"" +
+        " where \"organization_id\" != ? and \"id\" in (${id_list})";
 
-    private final OrganizationDao organizationDao;
-    private final UserGroupDao userGroupDao;
+    @NotNull String querySelectById;
+    @NotNull String querySelectByEmail;
+    @NotNull String querySelectByPhoneNumber;
+    @NotNull String querySelectByIdAndOrgId;
+    @NotNull String querySelectByIdsAndOrgId;
+    @NotNull String queryExistByEmail;
+    @NotNull String querySearchByName;
+    @NotNull String queryInsert;
+    @NotNull String queryUpdate;
+    @NotNull String queryPageByOrgId;
+    @NotNull String queryCountByOrgId;
+    @NotNull String queryCountByUsersWhichNotInOrg;
+
+    @NotNull OrganizationDao organizationDao;
+    @NotNull UserGroupDao userGroupDao;
 
     public JAsyncUserDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
@@ -109,6 +113,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         this.queryInsert = Q_INSERT.replace("${schema}", schema);
         this.queryUpdate = Q_UPDATE.replace("${schema}", schema);
         this.queryCountByOrgId = Q_COUNT_BY_ORG_ID.replace("${schema}", schema);
+        this.queryCountByUsersWhichNotInOrg = Q_COUNT_BY_USERS_WHICH_NOT_IN_ORG.replace("${schema}", schema);
         this.organizationDao = organizationDao;
         this.userGroupDao = userGroupDao;
     }
@@ -213,11 +218,9 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     }
 
     @Override
-    public @NotNull Mono<Boolean> update(@NotNull User user) {
+    public @NotNull Mono<User> update(@NotNull User user) {
 
-        var now = Instant.now();
-
-        user.setModified(now);
+        user.setModified(Instant.now());
 
         return update(
             queryUpdate,
@@ -233,7 +236,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 user.isEmailConfirmed(),
                 user.getPasswordVersion(),
                 toDate(user.getBirthday()),
-                toDateTime(now),
+                toDateTime(user.getModified()),
                 user.getId(),
                 user.getVersion()
             ),
@@ -269,6 +272,28 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     public @NotNull Mono<@NotNull EntityPage<User>> findPageByOrg(long offset, long size, long orgId) {
         return selectAllAsync(queryPageByOrgId, List.of(orgId, size, offset), converter())
             .zipWith(count(queryCountByOrgId, orgId), EntityPage::new);
+    }
+
+    @Override
+    public @NotNull Mono<Boolean> containsAll(@NotNull long[] ids, long orgId) {
+
+        if (ids == null || ids.length == 0) {
+            return Mono.just(true);
+        }
+
+        var args = new ArrayList<>(ids.length + 1);
+        args.add(orgId);
+
+        for (var id : ids) {
+            args.add(id);
+        }
+
+        var query = queryCountByUsersWhichNotInOrg.replace(
+            "${id_list}",
+            JAsyncUtils.buildQueryIdList(ids)
+        );
+
+        return count(query, args).map(count -> count < 1);
     }
 
     private @NotNull Mono<@NotNull User> toUser(@NotNull RowData data) {

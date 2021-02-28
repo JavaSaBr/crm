@@ -8,18 +8,19 @@ import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
-import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.jcrm.user.api.EmailConfirmation;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.user.api.impl.DefaultEmailConfirmation;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joda.time.LocalDateTime;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.List;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmation> implements EmailConfirmationDao {
 
     private static final String FIELD_LIST = "\"id\", \"code\", \"email\", \"expiration\"";
@@ -34,10 +35,10 @@ public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmat
 
     private static final String Q_DELETE_BY_ID = "delete from \"${schema}\".\"email_confirmation\" where \"id\" = ?";
 
-    private final String querySelectById;
-    private final String querySelectByCodeAndEmail;
-    private final String queryInsert;
-    private final String queryDeleteById;
+    @NotNull String querySelectById;
+    @NotNull String querySelectByCodeAndEmail;
+    @NotNull String queryInsert;
+    @NotNull String queryDeleteById;
 
     public JAsyncEmailConfirmationDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,

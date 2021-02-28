@@ -384,6 +384,20 @@ public class JAsyncUtils {
         }
     }
 
+    public static @NotNull String buildQueryIdList(int count) {
+
+        var condition = new StringBuilder(count * 2);
+
+        for (int i = 0, last = count - 1; i < count; i++) {
+            condition.append('?');
+            if (i != last) {
+                condition.append(',');
+            }
+        }
+
+        return condition.toString();
+    }
+
     public static @NotNull String buildQueryIdList(@NotNull long[] ids) {
 
         var condition = new StringBuilder(ids.length * 2);
