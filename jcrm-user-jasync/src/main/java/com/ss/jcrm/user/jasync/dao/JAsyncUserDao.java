@@ -37,47 +37,67 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
-    private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"first_name\"," +
-        " \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", \"messengers\", \"password\", \"salt\"," +
-        " \"roles\", \"groups\", \"version\", \"email_confirmed\", \"password_version\", \"created\", \"modified\"";
+    private static final String FIELD_LIST = """
+        "id", "organization_id", "email", "first_name", "second_name", "third_name", "birthday", "phone_numbers", 
+        "messengers", "password", "salt", "roles", "groups", "version", "email_confirmed", "password_version", 
+        "created", "modified"
+        """;
 
-    private static final String Q_SELECT_BY_EMAIL = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where \"email\" = ?";
+    private static final String Q_SELECT_BY_EMAIL = """
+        select ${field-list} from "${schema}"."user" where "email" = ?
+        """;
 
-    private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where \"id\" = ?";
+    private static final String Q_SELECT_BY_ID = """
+        select ${field-list} from "${schema}"."user" where "id" = ?
+        """;
 
-    private static final String Q_SELECT_BY_PHONE_NUMBER = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where \"phone_numbers\" like(?)";
+    private static final String Q_SELECT_BY_PHONE_NUMBER = """
+        select ${field-list} from "${schema}"."user" where "phone_numbers" like(?)
+        """;
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"user\" (\"email\", \"password\", \"salt\", " +
-        "\"organization_id\", \"roles\", \"first_name\", \"second_name\", \"third_name\", \"birthday\", \"phone_numbers\", " +
-        "\"messengers\", \"created\", \"modified\") values (?,?,?,?,?,?,?,?,?,?,?,?,?) returning id";
+    private static final String Q_INSERT = """
+        insert into "${schema}"."user" 
+          ("email", "password", "salt", "organization_id", "roles", "first_name", "second_name", "third_name", 
+          "birthday", "phone_numbers", "messengers", "created", "modified") 
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?) returning id
+        """;
 
-    private static final String Q_UPDATE = "update \"${schema}\".\"user\" set \"first_name\" = ?, \"second_name\" = ?," +
-        " \"third_name\" = ?, \"phone_numbers\" = ?, \"messengers\" = ?, \"roles\" = ?, \"groups\" = ?, \"version\" = ?," +
-        " \"email_confirmed\" = ?, \"password_version\" = ?, \"birthday\" = ?, \"modified\" = ? where \"id\" = ? and \"version\" = ?";
+    private static final String Q_UPDATE = """
+        update "${schema}"."user" set 
+          "first_name" = ?, "second_name" = ?, "third_name" = ?, "phone_numbers" = ?,  "messengers" = ?, "roles" = ?, 
+          "groups" = ?, "version" = ?, "email_confirmed" = ?, "password_version" = ?, "birthday" = ?, "modified" = ? 
+        where "id" = ? and "version" = ?
+        """;
 
-    private static final String Q_EXIST_BY_EMAIL = "select \"id\" from \"${schema}\".\"user\" where \"email\" = ?";
+    private static final String Q_EXIST_BY_EMAIL = """
+        select "id" from "${schema}"."user" where "email" = ?
+        """;
 
-    private static final String Q_SEARCH_BY_NAME = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where ((\"first_name\" || ' ' || \"second_name\" || ' ' ||" +
-        " \"third_name\" ilike (?)) OR \"email\" ilike (?)) AND \"organization_id\" = ?";
+    private static final String Q_SEARCH_BY_NAME = """
+        select ${field-list} from "${schema}"."user" 
+        where (("first_name" || ' ' || "second_name" || ' ' || "third_name" ilike (?)) OR "email" ilike (?)) 
+          AND "organization_id" = ?
+        """;
 
-    private static final String Q_SELECT_BY_ID_AND_ORG_ID = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where \"id\" = ? AND \"organization_id\" = ?";
+    private static final String Q_SELECT_BY_ID_AND_ORG_ID = """
+        select ${field-list} from "${schema}"."user" where "id" = ? AND "organization_id" = ?
+        """;
 
-    private static final String Q_SELECT_BY_IDS_AND_ORG_ID = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where \"id\" in (${id_list}) AND \"organization_id\" = ?";
+    private static final String Q_SELECT_BY_IDS_AND_ORG_ID = """
+        select ${field-list} from "${schema}"."user" where "id" in (${id-list}) AND "organization_id" = ?
+        """;
 
-    private static final String Q_SELECT_PAGE_BY_ORG_ID = "select " + FIELD_LIST + " from \"${schema}\".\"user\"" +
-        " where \"organization_id\" = ? order by \"id\" limit ? offset ?";
+    private static final String Q_SELECT_PAGE_BY_ORG_ID = """
+        select ${field-list} from "${schema}"."user" where "organization_id" = ? order by "id" limit ? offset ?
+        """;
 
-    private static final String Q_COUNT_BY_ORG_ID = "select count(\"id\") from \"${schema}\".\"user\"" +
-        " where \"organization_id\" = ?";
+    private static final String Q_COUNT_BY_ORG_ID = """
+        select count("id") from "${schema}"."user" where "organization_id" = ?
+        """;
 
-    private static final String Q_COUNT_BY_USERS_WHICH_NOT_IN_ORG = "select count(\"id\") from \"${schema}\".\"user\"" +
-        " where \"organization_id\" != ? and \"id\" in (${id_list})";
+    private static final String Q_COUNT_BY_USERS_WHICH_NOT_IN_ORG = """
+        select count("id") from "${schema}"."user" where "organization_id" != ? and "id" in (${id-list})
+        """;
 
     @NotNull String querySelectById;
     @NotNull String querySelectByEmail;
@@ -101,19 +121,19 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         @NotNull OrganizationDao organizationDao,
         @NotNull UserGroupDao userGroupDao
     ) {
-        super(connectionPool);
-        this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
-        this.querySelectByEmail = Q_SELECT_BY_EMAIL.replace("${schema}", schema);
-        this.querySelectByPhoneNumber = Q_SELECT_BY_PHONE_NUMBER.replace("${schema}", schema);
-        this.querySelectByIdAndOrgId = Q_SELECT_BY_ID_AND_ORG_ID.replace("${schema}", schema);
-        this.querySelectByIdsAndOrgId = Q_SELECT_BY_IDS_AND_ORG_ID.replace("${schema}", schema);
-        this.querySearchByName = Q_SEARCH_BY_NAME.replace("${schema}", schema);
-        this.queryExistByEmail = Q_EXIST_BY_EMAIL.replace("${schema}", schema);
-        this.queryPageByOrgId = Q_SELECT_PAGE_BY_ORG_ID.replace("${schema}", schema);
-        this.queryInsert = Q_INSERT.replace("${schema}", schema);
-        this.queryUpdate = Q_UPDATE.replace("${schema}", schema);
-        this.queryCountByOrgId = Q_COUNT_BY_ORG_ID.replace("${schema}", schema);
-        this.queryCountByUsersWhichNotInOrg = Q_COUNT_BY_USERS_WHICH_NOT_IN_ORG.replace("${schema}", schema);
+        super(connectionPool, schema, FIELD_LIST);
+        this.querySelectById = prepareQuery(Q_SELECT_BY_ID);
+        this.querySelectByEmail = prepareQuery(Q_SELECT_BY_EMAIL);
+        this.querySelectByPhoneNumber = prepareQuery(Q_SELECT_BY_PHONE_NUMBER);
+        this.querySelectByIdAndOrgId = prepareQuery(Q_SELECT_BY_ID_AND_ORG_ID);
+        this.querySelectByIdsAndOrgId = prepareQuery(Q_SELECT_BY_IDS_AND_ORG_ID);
+        this.querySearchByName = prepareQuery(Q_SEARCH_BY_NAME);
+        this.queryExistByEmail = prepareQuery(Q_EXIST_BY_EMAIL);
+        this.queryPageByOrgId = prepareQuery(Q_SELECT_PAGE_BY_ORG_ID);
+        this.queryInsert = prepareQuery(Q_INSERT);
+        this.queryUpdate = prepareQuery(Q_UPDATE);
+        this.queryCountByOrgId = prepareQuery(Q_COUNT_BY_ORG_ID);
+        this.queryCountByUsersWhichNotInOrg = prepareQuery(Q_COUNT_BY_USERS_WHICH_NOT_IN_ORG);
         this.organizationDao = organizationDao;
         this.userGroupDao = userGroupDao;
     }
@@ -209,10 +229,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
 
         args.add(orgId);
 
-        var query = querySelectByIdsAndOrgId.replace(
-            "${id_list}",
-            JAsyncUtils.buildQueryIdList(ids)
-        );
+        var query = injectIdList(querySelectByIdsAndOrgId, ids);
 
         return selectAllAsync(User.class, query, args, converter());
     }
@@ -288,10 +305,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
             args.add(id);
         }
 
-        var query = queryCountByUsersWhichNotInOrg.replace(
-            "${id_list}",
-            JAsyncUtils.buildQueryIdList(ids)
-        );
+        var query = injectIdList(queryCountByUsersWhichNotInOrg, ids);
 
         return count(query, args).map(count -> count < 1);
     }
