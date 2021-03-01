@@ -9,7 +9,16 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractNamedObjectJAsyncDao<T extends NamedUniqEntity> extends AbstractJAsyncDao<T> implements
     NamedObjectDao<T> {
 
-    public AbstractNamedObjectJAsyncDao(@NotNull ConnectionPool<? extends ConcreteConnection> connectionPool) {
+    @Deprecated
+    protected AbstractNamedObjectJAsyncDao(@NotNull ConnectionPool<? extends ConcreteConnection> connectionPool) {
         super(connectionPool);
+    }
+
+    protected AbstractNamedObjectJAsyncDao(
+        @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
+        @NotNull String schema,
+        @NotNull String fieldList
+    ) {
+        super(connectionPool, schema, fieldList);
     }
 }

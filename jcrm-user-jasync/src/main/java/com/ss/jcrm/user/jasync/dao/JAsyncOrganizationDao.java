@@ -32,21 +32,33 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organization> implements OrganizationDao {
 
-    private static final String FIELD_LIST = "\"id\", \"name\", \"country_id\", \"version\", \"zip_code\"," +
-        " \"address\", \"email\", \"phone_number\", \"city_id\", \"industries\"";
+    private static final String FIELD_LIST = """
+        "id", "name", "country_id", "version", "zip_code", "address", "email", "phone_number", "city_id", "industries"
+        """;
 
-    private static final String Q_SELECT_ALL = "select " + FIELD_LIST + " from \"${schema}\".\"organization\"";
-    private static final String Q_SELECT_BY_NAME = "select " + FIELD_LIST + " from \"${schema}\".\"organization\"" +
-        " where \"name\" = ?";
-    private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST + " from \"${schema}\".\"organization\"" +
-        " where \"id\" = ?";
+    private static final String Q_SELECT_ALL = """
+        select ${field-list} from "${schema}"."organization"
+        """;
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"organization\" (\"name\", \"country_id\")" +
-        " values (?, ?) RETURNING id";
+    private static final String Q_SELECT_BY_NAME = """
+        select ${field-list} from "${schema}"."organization" where "name" = ?
+        """;
 
-    private static final String Q_EXIST_BY_NAME = "select \"id\" from \"${schema}\".\"organization\" where \"name\" = ?";
+    private static final String Q_SELECT_BY_ID = """
+        select ${field-list} from "${schema}"."organization" where "id" = ?
+        """;
 
-    private static final String Q_DELETE_BY_ID = "delete from \"${schema}\".\"organization\" where \"id\" = ?";
+    private static final String Q_INSERT = """
+        insert into "${schema}"."organization" ("name", "country_id") values (?, ?) returning "id"
+        """;
+
+    private static final String Q_EXIST_BY_NAME = """
+        select "id" from "${schema}"."organization" where "name" = ?
+        """;
+
+    private static final String Q_DELETE_BY_ID = """
+        delete from "${schema}"."organization" where "id" = ?
+        """;
 
     @NotNull String querySelectById;
     @NotNull String querySelectByName;
@@ -66,16 +78,16 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
         @NotNull IndustryDao industryDao,
         @NotNull CountryDao countryDao
     ) {
-        super(connectionPool);
+        super(connectionPool, schema, FIELD_LIST);
         this.cityDao = cityDao;
         this.industryDao = industryDao;
         this.countryDao = countryDao;
-        this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
-        this.querySelectByName = Q_SELECT_BY_NAME.replace("${schema}", schema);
-        this.querySelectAll = Q_SELECT_ALL.replace("${schema}", schema);
-        this.queryInsert = Q_INSERT.replace("${schema}", schema);
-        this.queryDeleteById = Q_DELETE_BY_ID.replace("${schema}", schema);
-        this.queryExistByName = Q_EXIST_BY_NAME.replace("${schema}", schema);
+        this.querySelectById = prepareQuery(Q_SELECT_BY_ID);
+        this.querySelectByName = prepareQuery(Q_SELECT_BY_NAME);
+        this.querySelectAll = prepareQuery(Q_SELECT_ALL);
+        this.queryInsert = prepareQuery(Q_INSERT);
+        this.queryDeleteById = prepareQuery(Q_DELETE_BY_ID);
+        this.queryExistByName = prepareQuery(Q_EXIST_BY_NAME);
     }
 
     @Override

@@ -22,10 +22,13 @@ import reactor.core.publisher.Mono;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> implements MinimalUserDao {
 
-    private static final String FIELD_LIST = "\"id\", \"organization_id\", \"email\", \"roles\"";
+    private static final String FIELD_LIST = """
+        "id", "organization_id", "email", "roles"
+        """;
 
-    private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST +
-        " from \"${schema}\".\"user\" where \"id\" = ?";
+    private static final String Q_SELECT_BY_ID = """
+        select ${field-list} from "${schema}"."user" where "id" = ?
+        """;
 
     @NotNull String querySelectById;
 
@@ -33,8 +36,8 @@ public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> impleme
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
         @NotNull String schema
     ) {
-        super(connectionPool);
-        this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
+        super(connectionPool, schema, FIELD_LIST);
+        this.querySelectById = prepareQuery(Q_SELECT_BY_ID);
     }
 
     @Override

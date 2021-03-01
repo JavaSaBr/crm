@@ -23,17 +23,25 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmation> implements EmailConfirmationDao {
 
-    private static final String FIELD_LIST = "\"id\", \"code\", \"email\", \"expiration\"";
+    private static final String FIELD_LIST = """
+        "id", "code", "email", "expiration"
+        """;
 
-    private static final String Q_SELECT_BY_ID = "select " + FIELD_LIST +
-        " from \"${schema}\".\"email_confirmation\" where \"id\" = ?";
-    private static final String Q_SELECT_BY_CODE_AND_EMAIL = "select " + FIELD_LIST +
-        " from \"${schema}\".\"email_confirmation\" where \"code\" = ? and \"email\" = ?";
+    private static final String Q_SELECT_BY_ID = """
+        select ${field-list} from "${schema}"."email_confirmation" where "id" = ?
+        """;
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"email_confirmation\"" +
-        " (\"code\", \"email\", \"expiration\") values (?, ?, ?) returning id";
+    private static final String Q_SELECT_BY_CODE_AND_EMAIL = """
+        select ${field-list} from "${schema}"."email_confirmation" where "code" = ? and "email" = ?
+        """;
 
-    private static final String Q_DELETE_BY_ID = "delete from \"${schema}\".\"email_confirmation\" where \"id\" = ?";
+    private static final String Q_INSERT = """
+        insert into "${schema}"."email_confirmation" ("code", "email", "expiration") values (?, ?, ?) returning id
+        """;
+
+    private static final String Q_DELETE_BY_ID = """
+        delete from "${schema}"."email_confirmation" where "id" = ?
+        """;
 
     @NotNull String querySelectById;
     @NotNull String querySelectByCodeAndEmail;
@@ -44,11 +52,11 @@ public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmat
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
         @NotNull String schema
     ) {
-        super(connectionPool);
-        this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
-        this.querySelectByCodeAndEmail = Q_SELECT_BY_CODE_AND_EMAIL.replace("${schema}", schema);
-        this.queryInsert = Q_INSERT.replace("${schema}", schema);
-        this.queryDeleteById = Q_DELETE_BY_ID.replace("${schema}", schema);
+        super(connectionPool, schema, FIELD_LIST);
+        this.querySelectById = prepareQuery(Q_SELECT_BY_ID);
+        this.querySelectByCodeAndEmail = prepareQuery(Q_SELECT_BY_CODE_AND_EMAIL);
+        this.queryInsert = prepareQuery(Q_INSERT);
+        this.queryDeleteById = prepareQuery(Q_DELETE_BY_ID);
     }
 
     @Override
