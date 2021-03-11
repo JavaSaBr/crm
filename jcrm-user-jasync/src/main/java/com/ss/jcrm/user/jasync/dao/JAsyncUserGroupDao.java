@@ -22,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joda.time.LocalDateTime;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
@@ -38,7 +39,8 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
         """;
 
     private static final String Q_INSERT = """
-        insert into "${schema}"."user_group" ("name", "organization_id", "roles") values (?, ?, ?) returning id
+        insert into "${schema}"."user_group" ("name", "organization_id", "roles", "modified", "created") 
+        values (?, ?, ?, ?, ?) returning id
         """;
 
     private static final String Q_SELECT_ALL_BY_ORG = """
@@ -122,13 +124,16 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
     ) {
 
         var created = Instant.now();
+        var createdDateTime = toDateTime(created);
 
         return insert(
             queryInsert,
             Arrays.asList(
                 name,
                 organization.getId(),
-                JAsyncUtils.idsToJson(roles)
+                JAsyncUtils.idsToJson(roles),
+                createdDateTime,
+                createdDateTime
             ),
             id -> new DefaultUserGroup(id, name, roles, organization, created, created, 0)
         );

@@ -140,7 +140,7 @@ public class JAsyncSimpleContactDao extends AbstractJAsyncDao<SimpleContact> imp
     }
 
     @Override
-    public @NotNull Mono<Boolean> update(@NotNull SimpleContact contact) {
+    public @NotNull Mono<SimpleContact> update(@NotNull SimpleContact contact) {
         contact.setModified(Instant.now());
         return update(
             queryUpdate,

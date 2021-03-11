@@ -61,6 +61,8 @@ class UserGroupHandlerTest extends RegistrationSpecification {
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
                     .jsonPath('$.name').isEqualTo("group1")
+                    .jsonPath('$.modified').exists()
+                    .jsonPath('$.created').exists()
                     .jsonPath('$.roles[*]').value(containsInAnyOrder(
                         AccessRole.USER_GROUP_MANAGER.id as int,
                         AccessRole.USER_MANAGER.id as int
@@ -68,6 +70,8 @@ class UserGroupHandlerTest extends RegistrationSpecification {
                 .returnResult()
         when:
     
+            print(new String(content.responseBody))
+        
             def resource = objectMapper.readValue(content.responseBody, UserGroupOutResource)
         
             response = client.get()
@@ -85,6 +89,39 @@ class UserGroupHandlerTest extends RegistrationSpecification {
                     .jsonPath('$.resources[*].id').value(containsInAnyOrder(
                         user1.id as int,
                         user2.id as int
+                    ))
+    }
+    
+    def "should load group by id"() {
+        
+        given:
+            
+            def org = userTestHelper.newOrg()
+            def user = userTestHelper.newUser("User1", org, AccessRole.VIEW_USER_GROUPS)
+            def group = userTestHelper.newGroup("Group1", org, Set.of(
+                AccessRole.CREATE_USER,
+                AccessRole.VIEW_USERS
+            ))
+            def token = unsafeTokenService.generateNewToken(user)
+        
+        when:
+            def response = client.get()
+                .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
+                .url("/registration/user-group/$group.id")
+                .exchange()
+        then:
+            response
+                .expectStatus().isOk()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
+                .expectBody()
+                    .jsonPath('$.id').isEqualTo(group.id)
+                    .jsonPath('$.name').isEqualTo(group.name)
+                    .jsonPath('$.modified').isEqualTo(group.modified.toEpochMilli())
+                    .jsonPath('$.created').isEqualTo(group.created.toEpochMilli())
+                    .jsonPath('$.roles').value(hasSize(2))
+                    .jsonPath('$.roles[*]').value(containsInAnyOrder(
+                        AccessRole.CREATE_USER.id as int,
+                        AccessRole.VIEW_USERS.id as int,
                     ))
     }
     

@@ -55,7 +55,7 @@ public interface SimpleContactDao extends Dao<SimpleContact> {
     /**
      * @throws NotActualObjectDaoException if the contact was changed in another thread/server.
      */
-    @NotNull Mono<Boolean> update(@NotNull SimpleContact contact);
+    @NotNull Mono<SimpleContact> update(@NotNull SimpleContact contact);
 
     @NotNull Mono<@NotNull Array<SimpleContact>> findByOrg(long orgId);
 

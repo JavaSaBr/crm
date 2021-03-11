@@ -69,6 +69,9 @@ import {UserWorkspaceComponent} from '@app/component/user/workspace/user-workspa
 import {EntityFieldsViewBlockComponent} from '@app/component/entity-view/block/entity/fields/entity-fields-vew-block.component';
 import {PhoneNumbersInput} from '@app/input/phone-numbers/phone-numbers-input';
 import {MessengersInput} from '@app/input/messengers/messengers-input';
+import {UserGroupsComponent} from '@app/component/user-groups/user-groups.component';
+import {UserGroupViewComponent} from '@app/component/user-group/view/user-group-view.component';
+import {UserGroupWorkspaceComponent} from '@app/component/user-group/workspace/user-group-workspace.component';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -108,6 +111,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         UsersComponent,
         UserViewComponent,
         UserWorkspaceComponent,
+        UserGroupsComponent,
+        UserGroupViewComponent,
+        UserGroupWorkspaceComponent,
         EntityFieldsViewBlockComponent,
         PhoneNumbersInput,
         MessengersInput,

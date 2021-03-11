@@ -225,6 +225,7 @@ public class RegistrationWebConfig {
         return RouterFunctions.route()
             .POST(contextPath + "/user-group", APP_JSON, userGroupHandler::create)
             .POST(contextPath + "/user-groups/ids", APP_JSON, userGroupHandler::findByIds)
+            .GET(contextPath + "/user-group/{id}", userGroupHandler::findById)
             .GET(contextPath + "/user-groups/page", userGroupHandler::findPage)
             .GET(contextPath + "/user-group/{id}/users/page", userGroupHandler::findUsersPage)
             .GET(contextPath + "/exist/user-group/name/{name}", userGroupHandler::existByName)
