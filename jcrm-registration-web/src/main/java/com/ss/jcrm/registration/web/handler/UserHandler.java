@@ -34,14 +34,14 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserHandler extends BaseRegistrationHandler {
 
-    private static final AccessRole[] USER_VIEWERS = {
+    public static final AccessRole[] USER_VIEWERS = {
         AccessRole.SUPER_ADMIN,
         AccessRole.ORG_ADMIN,
         AccessRole.USER_MANAGER,
         AccessRole.VIEW_USERS
     };
 
-    private static final AccessRole[] USER_CREATORS = {
+    public static final AccessRole[] USER_CREATORS = {
         AccessRole.SUPER_ADMIN,
         AccessRole.ORG_ADMIN,
         AccessRole.USER_MANAGER,

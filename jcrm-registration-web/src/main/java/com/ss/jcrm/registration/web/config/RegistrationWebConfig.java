@@ -5,19 +5,14 @@ import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig;
 import com.ss.jcrm.mail.MailConfig;
 import com.ss.jcrm.mail.service.MailService;
 import com.ss.jcrm.registration.web.exception.handler.RegistrationWebExceptionHandler;
-import com.ss.jcrm.registration.web.handler.AuthenticationHandler;
-import com.ss.jcrm.registration.web.handler.EmailConfirmationHandler;
-import com.ss.jcrm.registration.web.handler.OrganizationHandler;
-import com.ss.jcrm.registration.web.handler.UserHandler;
+import com.ss.jcrm.registration.web.handler.*;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
-import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
-import com.ss.jcrm.user.api.dao.UserDao;
+import com.ss.jcrm.user.api.dao.*;
 import com.ss.jcrm.user.jasync.config.JAsyncUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
@@ -139,6 +134,24 @@ public class RegistrationWebConfig {
     }
 
     @Bean
+    @NotNull UserGroupHandler userGroupHandler(
+        @NotNull UserDao userDao,
+        @NotNull UserGroupDao userGroupDao,
+        @NotNull MinimalUserDao minimalUserDao,
+        @NotNull ResourceValidator resourceValidator,
+        @NotNull WebRequestSecurityService webRequestSecurityService
+    ) {
+
+        return new UserGroupHandler(
+            userDao,
+            userGroupDao,
+            minimalUserDao,
+            resourceValidator,
+            webRequestSecurityService
+        );
+    }
+
+    @Bean
     @NotNull RouterFunction<ServerResponse> registrationStatusRouterFunction(
         @NotNull ApiEndpointServer registrationApiEndpointServer
     ) {
@@ -200,6 +213,21 @@ public class RegistrationWebConfig {
         return RouterFunctions.route()
             .POST(contextPath + "/register/organization", APP_JSON, organizationHandler::register)
             .GET(contextPath + "/exist/organization/name/{name}", organizationHandler::existByName)
+            .build();
+    }
+
+    @Bean
+    @NotNull RouterFunction<ServerResponse> userGroupRouterFunction(
+        @NotNull ApiEndpointServer registrationApiEndpointServer,
+        @NotNull UserGroupHandler userGroupHandler
+    ) {
+        var contextPath = registrationApiEndpointServer.getContextPath();
+        return RouterFunctions.route()
+            .POST(contextPath + "/user-group", APP_JSON, userGroupHandler::create)
+            .POST(contextPath + "/user-groups/ids", APP_JSON, userGroupHandler::findByIds)
+            .GET(contextPath + "/user-groups/page", userGroupHandler::findPage)
+            .GET(contextPath + "/user-group/{id}/users/page", userGroupHandler::findUsersPage)
+            .GET(contextPath + "/exist/user-group/name/{name}", userGroupHandler::existByName)
             .build();
     }
 }

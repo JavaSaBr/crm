@@ -5,6 +5,7 @@ import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
+import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
@@ -18,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> implements MinimalUserDao {
@@ -30,7 +33,19 @@ public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> impleme
         select ${field-list} from "${schema}"."user" where "id" = ?
         """;
 
+    private static final String Q_SELECT_PAGE_BY_ORG_AND_GROUP = """
+        select ${field-list} from "${schema}"."user" 
+        where "organization_id" = ? and "groups" is not null and "groups" @> to_jsonb(?) order by "id" limit ? offset ?
+        """;
+
+    private static final String Q_COUNT_BY_ORG_AND_GROUP = """
+        select count("id") from "${schema}"."user" 
+        where "organization_id" = ? and "groups" is not null and "groups" @> to_jsonb(?)
+        """;
+
     @NotNull String querySelectById;
+    @NotNull String querySelectPageByOrgAndGroup;
+    @NotNull String queryCountByOrgAndGroup;
 
     public JAsyncMinimalUserDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
@@ -38,6 +53,8 @@ public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> impleme
     ) {
         super(connectionPool, schema, FIELD_LIST);
         this.querySelectById = prepareQuery(Q_SELECT_BY_ID);
+        this.querySelectPageByOrgAndGroup = prepareQuery(Q_SELECT_PAGE_BY_ORG_AND_GROUP);
+        this.queryCountByOrgAndGroup = prepareQuery(Q_COUNT_BY_ORG_AND_GROUP);
     }
 
     @Override
@@ -52,6 +69,17 @@ public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> impleme
 
     private @NotNull JAsyncConverter<@NotNull JAsyncMinimalUserDao, @NotNull MinimalUser> converter() {
         return JAsyncMinimalUserDao::toMinimalUser;
+    }
+
+    @Override
+    public @NotNull Mono<@NotNull EntityPage<MinimalUser>> findPageByOrgAndGroup(
+        long offset,
+        long size,
+        long orgId,
+        long groupId
+    ) {
+        return selectAll(querySelectPageByOrgAndGroup, List.of(orgId, groupId, size, offset), converter())
+            .zipWith(count(queryCountByOrgAndGroup, List.of(orgId, groupId)), EntityPage::new);
     }
 
     private @NotNull MinimalUser toMinimalUser(@NotNull RowData data) {

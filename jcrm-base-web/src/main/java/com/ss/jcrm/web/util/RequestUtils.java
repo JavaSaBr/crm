@@ -4,6 +4,7 @@ import com.ss.jcrm.web.exception.IdNotPresentedWebException;
 import com.ss.jcrm.web.exception.OffsetNotPresentedWebException;
 import com.ss.jcrm.web.exception.PageSizeNotPresentedWebException;
 import com.ss.jcrm.web.resources.DataPageRequest;
+import com.ss.jcrm.web.resources.IdBasedDataPageRequest;
 import com.ss.rlib.common.util.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -23,6 +24,27 @@ public class RequestUtils {
                 .orElseThrow(PageSizeNotPresentedWebException::new);
 
             return new DataPageRequest(offset, pageSize);
+        });
+    }
+
+    public static @NotNull Mono<IdBasedDataPageRequest> idBasedPageRequest(@NotNull ServerRequest request) {
+        return Mono.fromSupplier(() -> {
+
+            var id = NumberUtils.safeToLong(request.pathVariable("id"));
+
+            if (id == null) {
+                throw new IdNotPresentedWebException();
+            }
+
+            int offset = request.queryParam("offset")
+                .map(NumberUtils::safeToInt)
+                .orElseThrow(OffsetNotPresentedWebException::new);
+
+            int pageSize = request.queryParam("pageSize")
+                .map(NumberUtils::safeToInt)
+                .orElseThrow(PageSizeNotPresentedWebException::new);
+
+            return new IdBasedDataPageRequest(id, offset, pageSize);
         });
     }
 

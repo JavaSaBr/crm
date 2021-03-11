@@ -1,5 +1,7 @@
 package com.ss.jcrm.registration.web.resources;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ss.jcrm.user.api.MinimalUser;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.contact.api.resource.MessengerResource;
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
@@ -12,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MinimalUserOutResource implements RestResource {
 
@@ -26,6 +29,17 @@ public class MinimalUserOutResource implements RestResource {
     @Nullable MessengerResource[] messengers;
 
     long id;
+
+    public MinimalUserOutResource(@NotNull MinimalUser user) {
+        this.email = user.getEmail();
+        this.id = user.getId();
+        this.firstName = null;
+        this.secondName = null;
+        this.thirdName = null;
+        this.birthday = null;
+        this.phoneNumbers = null;
+        this.messengers = null;
+    }
 
     public MinimalUserOutResource(@NotNull User user) {
         this.email = user.getEmail();

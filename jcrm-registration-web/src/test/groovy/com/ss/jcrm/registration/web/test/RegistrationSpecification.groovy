@@ -1,5 +1,6 @@
 package com.ss.jcrm.registration.web.test
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
 import com.ss.jcrm.user.api.test.UserTestHelper
@@ -20,7 +21,10 @@ class RegistrationSpecification extends WebSpecification {
 
     @Autowired
     DictionaryTestHelper dictionaryTestHelper
-
+    
+    @Autowired
+    ObjectMapper objectMapper
+    
     def setup() {
         userTestHelper.clearAllData()
         dictionaryTestHelper.clearAllData()

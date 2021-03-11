@@ -13,11 +13,13 @@ import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.UserGroup;
+import com.ss.jcrm.user.api.dao.MinimalUserDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.web.resources.DataPageResponse;
 import com.ss.jcrm.web.util.RequestUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
+import com.ss.rlib.common.util.ArrayUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,7 +35,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserGroupHandler extends BaseRegistrationHandler {
 
-    private static final AccessRole[] USER_GROUP_VIEWERS = {
+    public static final AccessRole[] USER_GROUP_VIEWERS = {
         AccessRole.SUPER_ADMIN,
         AccessRole.ORG_ADMIN,
         AccessRole.USER_GROUP_MANAGER,
@@ -43,15 +45,21 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         AccessRole.DELETE_USER_GROUP,
     };
 
-    private static final AccessRole[] USER_GROUP_CREATORS = {
+    public static final AccessRole[] USER_GROUP_CREATORS = {
         AccessRole.SUPER_ADMIN,
         AccessRole.ORG_ADMIN,
         AccessRole.USER_GROUP_MANAGER,
         AccessRole.CREATE_USER_GROUP,
     };
 
+    public static final AccessRole[] USER_GROUP_AND_USERS_VIEWERS = ArrayUtils.combineUniq(
+        USER_GROUP_VIEWERS,
+        UserHandler.USER_VIEWERS
+    );
+
     @NotNull UserDao userDao;
     @NotNull UserGroupDao userGroupDao;
+    @NotNull MinimalUserDao minimalUserDao;
     @NotNull ResourceValidator resourceValidator;
     @NotNull WebRequestSecurityService webRequestSecurityService;
 
@@ -79,6 +87,28 @@ public class UserGroupHandler extends BaseRegistrationHandler {
                 entityPage.getEntities(),
                 UserGroupOutResource::new,
                 UserGroupOutResource[]::new
+            ))
+            .flatMap(ResponseUtils::ok)
+            .switchIfEmpty(ResponseUtils.lazyNotFound());
+    }
+
+    public @NotNull Mono<ServerResponse> findUsersPage(@NotNull ServerRequest request) {
+        return RequestUtils.idBasedPageRequest(request)
+            .zipWith(webRequestSecurityService.isAuthorized(request, USER_GROUP_AND_USERS_VIEWERS), AuthorizedParam::new)
+            .flatMap(authorized -> {
+                var pageRequest = authorized.getParam();
+                return minimalUserDao.findPageByOrgAndGroup(
+                    pageRequest.getOffset(),
+                    pageRequest.getPageSize(),
+                    authorized.getOrgId(),
+                    pageRequest.getId()
+                );
+            })
+            .map(entityPage -> DataPageResponse.from(
+                entityPage.getTotalSize(),
+                entityPage.getEntities(),
+                MinimalUserOutResource::new,
+                MinimalUserOutResource[]::new
             ))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
@@ -153,9 +183,11 @@ public class UserGroupHandler extends BaseRegistrationHandler {
                 organization
             ))
             .flatMap(userGroup -> userDao.findByIdsAndOrgId(users, organization.getId())
-            .flatMapMany(Flux::fromIterable)
-            .flatMap(user -> userDao.addGroup(user, userGroup))
-                .last().map(user -> userGroup));
+                .flatMapMany(Flux::fromIterable)
+                .doOnNext(user -> user.addGroup(userGroup))
+                .flatMap(userDao::update)
+                .last()
+                .map(user -> userGroup));
     }
 
     private void verifyRoles(@NotNull User creator, @NotNull Set<AccessRole> roles) {

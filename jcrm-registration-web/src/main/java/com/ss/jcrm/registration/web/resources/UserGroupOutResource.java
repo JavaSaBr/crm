@@ -1,5 +1,7 @@
 package com.ss.jcrm.registration.web.resources;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ss.jcrm.user.api.UserGroup;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,6 +18,17 @@ public class UserGroupOutResource {
     @NotNull int[] roles;
 
     long id;
+
+    @JsonCreator
+    public UserGroupOutResource(
+        @JsonProperty("name") @NotNull String name,
+        @JsonProperty("roles") @NotNull int[] roles,
+        @JsonProperty("id") long id
+    ) {
+        this.name = name;
+        this.roles = roles;
+        this.id = id;
+    }
 
     public UserGroupOutResource(@NotNull UserGroup userGroup) {
         this.id = userGroup.getId();

@@ -37,17 +37,61 @@ class JAsyncMinimalUserDaoTest extends JAsyncUserSpecification {
             def user = userDao.create("User1", hash, salt, org, roles).block()
         then:
             user != null
-            user.getEmail() == "User1"
+            user.email == "User1"
             Arrays.equals(user.getSalt(), salt)
-            user.getId() != 0L
-            user.getOrganization() == org
-            user.getRoles().size() == 1
+            user.id != 0L
+            user.organization == org
+            user.roles.size() == 1
         when:
             def loaded = minimalUserDao.findById(user.getId()).block()
         then:
             loaded != null
-            loaded.getEmail() == "User1"
-            loaded.getOrganizationId() == org.getId()
-            loaded.getRoles().size() == 1
+            loaded.email == "User1"
+            loaded.organizationId == org.getId()
+            loaded.roles.size() == 1
+    }
+    
+    def "should load page of minimal users which are in target user group"() {
+        
+        given:
+            def org = userTestHelper.newOrg()
+            def group1 = userTestHelper.newGroup(org)
+            def group2 = userTestHelper.newGroup(org)
+            def user1 = userTestHelper.newUser("User1", org)
+            def user2 = userTestHelper.newUser("User2", org)
+            def user3 = userTestHelper.newUser("User3", org)
+            def user4 = userTestHelper.newUser("User4", org)
+        when:
+            def page = minimalUserDao.findPageByOrgAndGroup(0, 10, org.id, group1.id).block()
+        then:
+            page.entities.isEmpty()
+            page.totalSize == 0
+        when:
+            
+            user1.addGroup(group1)
+            user2.addGroup(group1)
+            user3.addGroup(group2)
+            user4.addGroup(group1)
+    
+            userDao.update(user1).block()
+            userDao.update(user2).block()
+            userDao.update(user3).block()
+            userDao.update(user4).block()
+    
+            page = minimalUserDao.findPageByOrgAndGroup(0, 10, org.id, group1.id).block()
+        then:
+            page.totalSize == 3
+            page.entities.containsAll(List.of(
+                minimalUserDao.requireById(user1.id).block(),
+                minimalUserDao.requireById(user2.id).block(),
+                minimalUserDao.requireById(user4.id).block()
+            ))
+        when:
+            page = minimalUserDao.findPageByOrgAndGroup(0, 10, org.id, group2.id).block()
+        then:
+            page.totalSize == 1
+            page.entities.containsAll(List.of(
+                minimalUserDao.requireById(user3.id).block()
+            ))
     }
 }
