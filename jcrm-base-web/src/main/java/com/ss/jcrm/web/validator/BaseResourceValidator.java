@@ -3,7 +3,7 @@ package com.ss.jcrm.web.validator;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.rlib.common.util.StringUtils;
 import com.ss.rlib.common.util.Utils;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-@Log4j2
+@Slf4j
 public class BaseResourceValidator {
 
     private static final DateTimeFormatter ISO_LOCAL_DATE = DateTimeFormatter.ISO_LOCAL_DATE;
@@ -92,7 +92,7 @@ public class BaseResourceValidator {
         }
     }
 
-    protected void validate(@Nullable char[] string, int minLength, int maxLength, int code) {
+    protected void validate(char @Nullable [] string, int minLength, int maxLength, int code) {
         if (string == null ||
             string.length < minLength ||
             string.length > maxLength
@@ -101,7 +101,7 @@ public class BaseResourceValidator {
         }
     }
 
-    protected void validate(@Nullable char[] string, int minLength, int maxLength, int code, @NotNull String message) {
+    protected void validate(char @Nullable [] string, int minLength, int maxLength, int code, @NotNull String message) {
         if (string == null ||
             string.length < minLength ||
             string.length > maxLength

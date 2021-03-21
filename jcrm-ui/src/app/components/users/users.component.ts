@@ -25,7 +25,7 @@ export class UsersComponent extends AbstractEntityTableComponent<User> {
     private static readonly fabActions: FabButtonElement[] = [
         {
             routerLink: `../${UserWorkspaceComponent.componentName}/${UserWorkspaceComponent.modeNew}`,
-            icon: 'perm_identity',
+            icon: 'person_add',
             tooltip: 'Add new user',
             callback: null
         },

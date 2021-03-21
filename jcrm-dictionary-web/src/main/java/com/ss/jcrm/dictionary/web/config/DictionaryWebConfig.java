@@ -48,7 +48,7 @@ public class DictionaryWebConfig {
     @Bean
     @NotNull CachedDictionaryService<CountryOutResource, CountryOutResource[]> countryDictionaryService(
         @NotNull CountryDao countryDao,
-        @NotNull ScheduledExecutorService reloadScheduler
+        @NotNull ScheduledExecutorService mainScheduler
     ) {
 
         var service = new DefaultCachedDictionaryService<>(
@@ -60,7 +60,7 @@ public class DictionaryWebConfig {
 
         int interval = env.getProperty("dictionary.web.cache.reload.interval", int.class, 600);
 
-        reloadScheduler.scheduleAtFixedRate(service::reloadAsync, interval, interval, TimeUnit.SECONDS);
+        mainScheduler.scheduleAtFixedRate(service::reloadAsync, interval, interval, TimeUnit.SECONDS);
 
         return service;
     }
@@ -81,10 +81,9 @@ public class DictionaryWebConfig {
     @NotNull RouterFunction<ServerResponse> dictionaryStatusRouterFunction(
         @NotNull ApiEndpointServer dictionaryApiEndpointServer
     ) {
-        var contextPath = dictionaryApiEndpointServer.getContextPath();
+        var contextPath = dictionaryApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .GET(contextPath + "/status", request -> ServerResponse.ok()
-                .build())
+            .GET("${contextPath}/status", request -> ServerResponse.ok().build())
             .build();
     }
 
@@ -93,11 +92,11 @@ public class DictionaryWebConfig {
         @NotNull ApiEndpointServer dictionaryApiEndpointServer,
         @NotNull CountryHandler countryHandler
     ) {
-        var contextPath = dictionaryApiEndpointServer.getContextPath();
+        var contextPath = dictionaryApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .GET(contextPath + "/countries", countryHandler::getAll)
-            .GET(contextPath + "/country/id/{id}", countryHandler::getById)
-            .GET(contextPath + "/country/name/{name}", countryHandler::getByName)
+            .GET("${contextPath}/countries", countryHandler::getAll)
+            .GET("${contextPath}/country/id/{id}", countryHandler::getById)
+            .GET("${contextPath}/country/name/{name}", countryHandler::getByName)
             .build();
     }
 }

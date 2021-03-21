@@ -3,13 +3,16 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {UserGroupWorkspaceComponent} from './user-group-workspace.component';
 
 describe('RootComponent', () => {
+
     let component: UserGroupWorkspaceComponent;
     let fixture: ComponentFixture<UserGroupWorkspaceComponent>;
 
     beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [UserGroupWorkspaceComponent]
-        })
+
+        TestBed
+            .configureTestingModule({
+                declarations: [UserGroupWorkspaceComponent]
+            })
             .compileComponents();
     }));
 

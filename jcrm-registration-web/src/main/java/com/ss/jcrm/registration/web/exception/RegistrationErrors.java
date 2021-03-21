@@ -44,9 +44,12 @@ public interface RegistrationErrors {
     int INVALID_ACCESS_ROLE = 1013;
     String INVALID_ACCESS_ROLE_MESSAGE = "Invalid access role";
 
-    int USER_GROUP_IS_ALREDY_EXIST = 1014;
-    String USER_GROUP_IS_ALREDY_EXIST_MESSAGE = "User group is already exist";
+    int USER_GROUP_IS_ALREADY_EXIST = 1014;
+    String USER_GROUP_IS_ALREADY_EXIST_MESSAGE = "User group is already exist";
 
     int INVALID_USER_LIST = 1015;
     String INVALID_USER_LIST_MESSAGE = "Invalid user list";
+
+    int USER_GROUP_IS_NOT_EXIST = 1016;
+    String USER_GROUP_IS_NOT_EXIST_MESSAGE = "User group is not exist";
 }

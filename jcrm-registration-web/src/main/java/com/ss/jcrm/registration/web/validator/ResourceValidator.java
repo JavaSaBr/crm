@@ -66,7 +66,7 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validate(@NotNull AuthenticationInResource resource) {
 
-        var login = resource.getLogin();
+        var login = resource.login();
 
         if (StringUtils.isEmpty(login)) {
             throw new BadRequestWebException(EMPTY_LOGIN_MESSAGE, EMPTY_LOGIN);
@@ -81,18 +81,18 @@ public class ResourceValidator extends BaseResourceValidator {
             );
         }
 
-        validatePassword(resource.getPassword());
+        validatePassword(resource.password());
     }
 
     public void validate(@NotNull OrganizationRegisterInResource resource) {
-        validateOrgName(resource.getOrgName());
-        validateEmail(resource.getEmail());
-        validateNotBlank(resource.getActivationCode(), INVALID_ACTIVATION_CODE, INVALID_OTHER_NAME_MESSAGE);
-        validateOtherName(resource.getFirstName());
-        validateOtherName(resource.getSecondName());
-        validateOtherName(resource.getThirdName());
-        validatePassword(resource.getPassword());
-        requirePhoneNumber(resource.getPhoneNumber());
+        validateOrgName(resource.orgName());
+        validateEmail(resource.email());
+        validateNotBlank(resource.activationCode(), INVALID_ACTIVATION_CODE, INVALID_OTHER_NAME_MESSAGE);
+        validateOtherName(resource.firstName());
+        validateOtherName(resource.secondName());
+        validateOtherName(resource.thirdName());
+        validatePassword(resource.password());
+        requirePhoneNumber(resource.phoneNumber());
     }
 
     public void validateOrgName(@Nullable String orgName) {
@@ -117,7 +117,7 @@ public class ResourceValidator extends BaseResourceValidator {
         validateEmail(email, emailMinLength, emailMaxLength, INVALID_EMAIL, INVALID_EMAIL_MESSAGE);
     }
 
-    public void validatePassword(@Nullable char[] password) {
+    public void validatePassword(char @Nullable [] password) {
         validate(password, passwordMinLength, passwordMaxLength, INVALID_PASSWORD, INVALID_PASSWORD_MESSAGE);
     }
 
@@ -152,30 +152,30 @@ public class ResourceValidator extends BaseResourceValidator {
 
     public void validate(@NotNull UserInResource resource) {
 
-        validateEmail(resource.getEmail());
-        validatePassword(resource.getPassword());
+        validateEmail(resource.email());
+        validatePassword(resource.password());
 
-        var birthday = DateUtils.toLocalDate(resource.getBirthday());
+        var birthday = DateUtils.toLocalDate(resource.birthday());
 
         if (birthday == null) {
-            log.warn("Invalid birthday: {}", resource.getBirthday());
+            log.warn("Invalid birthday: {}", resource.birthday());
             throw new BadRequestWebException(INVALID_BIRTHDAY_MESSAGE, INVALID_BIRTHDAY);
         }
     }
 
     public void validate(@NotNull UserGroupInResource resource) {
 
-        validateUserGroupName(resource.getName());
-        validateAccessRoles(resource.getRoles());
+        validateUserGroupName(resource.name());
+        validateAccessRoles(resource.roles());
     }
 
-    public void validateAccessRoles(@Nullable int[] roles) {
+    public void validateAccessRoles(long @Nullable [] roles) {
 
         if (roles == null) {
             return;
         }
 
-        for (int roleId : roles) {
+        for (var roleId : roles) {
 
             var accessRole = AccessRole.of(roleId);
 

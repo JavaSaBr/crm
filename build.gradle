@@ -34,13 +34,13 @@ allprojects {
         angularVersion = "11.0.6"
         annotationVersion = "20.1.0"
         rlibVersion = "9.10.0"
-        lombokVersion = '1.18.16'
-        springbootVersion = '2.4.1'
-        springVersion = '5.3.2'
+        lombokVersion = '1.18.18'
+        springbootVersion = '2.4.4'
+        springVersion = '5.3.5'
         junitJupiterVersion = "5.6.2"
         hikariCPVersion = "2.7.8"
         flywayVersion = "7.4.0"
-        testcontainersVersion = "1.15.1"
+        testcontainersVersion = "1.15.2"
         groovyVersion = "3.0.7"
         spockVersion = "2.0-M4-groovy-3.0"
         postgresqlVersion = "42.1.1"
@@ -48,9 +48,9 @@ allprojects {
         jsonwebtokenVersion = "0.11.2"
         hamcrestVersion = "1.3"
         jsonpathVersion = "2.4.0"
-        jasyncVersion = "1.1.5"
+        jasyncVersion = "1.1.7"
         projectReactorVersion = "3.4.1"
-        jacksonVersion = "2.12.1"
+        jacksonVersion = "2.12.2"
         betterStringVersion = "0.5"
     }
 

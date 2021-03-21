@@ -19,7 +19,9 @@ import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.exception.ExceptionUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -32,15 +34,16 @@ import java.util.Set;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrganizationHandler extends BaseRegistrationHandler {
 
-    private final UserDao userDao;
-    private final OrganizationDao organizationDao;
-    private final CountryDao countryDao;
-    private final PasswordService passwordService;
-    private final ResourceValidator resourceValidator;
-    private final EmailConfirmationDao emailConfirmationDao;
-    private final TokenService tokenService;
+    @NotNull UserDao userDao;
+    @NotNull OrganizationDao organizationDao;
+    @NotNull CountryDao countryDao;
+    @NotNull PasswordService passwordService;
+    @NotNull ResourceValidator resourceValidator;
+    @NotNull EmailConfirmationDao emailConfirmationDao;
+    @NotNull TokenService tokenService;
 
     public @NotNull Mono<ServerResponse> register(@NotNull ServerRequest request) {
         return request.bodyToMono(OrganizationRegisterInResource.class)
@@ -68,8 +71,8 @@ public class OrganizationHandler extends BaseRegistrationHandler {
 
     private @NotNull Mono<EmailConfirmation> findEmailConfirmation(@NotNull OrganizationRegisterInResource resource) {
         return emailConfirmationDao.findByEmailAndCode(
-            resource.getEmail(),
-            resource.getActivationCode()
+            resource.email(),
+            resource.activationCode()
         );
     }
 
@@ -82,14 +85,14 @@ public class OrganizationHandler extends BaseRegistrationHandler {
     }
 
     private @NotNull Mono<@Nullable Country> findCountry(@NotNull OrganizationRegisterInResource resource) {
-        return countryDao.findById(resource.getCountryId());
+        return countryDao.findById(resource.countryId());
     }
 
     private @NotNull Mono<AuthenticationOutResource> createOrganization(
         @NotNull OrganizationRegisterInResource resource,
         @NotNull Country country
     ) {
-        return organizationDao.create(resource.getOrgName(), country)
+        return organizationDao.create(resource.orgName(), country)
             .onErrorResume(throwable -> Mono.error(ExceptionUtils.toBadRequest(throwable,
                 DuplicateObjectDaoException.class::isInstance,
                 ORG_ALREADY_EXIST,
@@ -104,9 +107,9 @@ public class OrganizationHandler extends BaseRegistrationHandler {
     ) {
 
         var salt = passwordService.getNextSalt();
-        var hash = passwordService.hash(resource.getPassword(), salt);
+        var hash = passwordService.hash(resource.password(), salt);
 
-        Arrays.fill(resource.getPassword(), ' ');
+        Arrays.fill(resource.password(), ' ');
 
         return createOrgAdmin(resource, organization, salt, hash)
             .onErrorResume(throwable -> organizationDao.delete(organization.getId())
@@ -116,26 +119,26 @@ public class OrganizationHandler extends BaseRegistrationHandler {
                     EMAIL_ALREADY_EXIST,
                     EMAIL_ALREADY_EXIST_MESSAGE
                 ))))
-            .map(user -> new AuthenticationOutResource(user, tokenService.generateNewToken(user)));
+            .map(user -> AuthenticationOutResource.from(tokenService.generateNewToken(user), user));
     }
 
     private @NotNull Mono<@NotNull User> createOrgAdmin(
         @NotNull OrganizationRegisterInResource resource,
         @NotNull Organization organization,
-        @NotNull byte[] salt,
-        @NotNull byte[] hash
+        byte @NotNull [] salt,
+        byte @NotNull [] hash
     ) {
         return userDao.create(
-            resource.getEmail(),
+            resource.email(),
             hash,
             salt,
             organization,
             Set.of(AccessRole.ORG_ADMIN),
-            resource.getFirstName(),
-            resource.getSecondName(),
-            resource.getThirdName(),
+            resource.firstName(),
+            resource.secondName(),
+            resource.thirdName(),
             null,
-            Set.of(resource.getPhoneNumber().toPhoneNumber()),
+            Set.of(resource.phoneNumber().toPhoneNumber()),
             Set.of()
         );
     }

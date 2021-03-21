@@ -8,6 +8,7 @@ import {ContactsComponent} from '@app/component/contacts/contacts.component';
 import {ContactWorkspaceComponent} from '@app/component/contact/workspace-component/contact-workspace.component';
 import {SettingsComponent} from '@app/component/settings/settings.component';
 import {UserWorkspaceComponent} from '@app/component/user/workspace/user-workspace.component';
+import {UserGroupWorkspaceComponent} from '@app/component/user-group/workspace/user-group-workspace.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/' + WorkspaceComponent.COMPONENT_NAME, pathMatch: 'full'},
@@ -43,6 +44,15 @@ const routes: Routes = [
             {
                 path: `${SettingsComponent.componentName}/${UserWorkspaceComponent.componentName}/${UserWorkspaceComponent.modeView}/:id`,
                 component: UserWorkspaceComponent
+            },
+            // user-group
+            {
+                path: `${SettingsComponent.componentName}/${UserGroupWorkspaceComponent.componentName}/${UserGroupWorkspaceComponent.modeNew}`,
+                component: UserGroupWorkspaceComponent
+            },
+            {
+                path: `${SettingsComponent.componentName}/${UserGroupWorkspaceComponent.componentName}/${UserGroupWorkspaceComponent.modeView}/:id`,
+                component: UserGroupWorkspaceComponent
             },
         ]
     },

@@ -1,14 +1,15 @@
 package com.ss.jcrm.web.resources;
 
 import com.ss.rlib.common.util.array.Array;
-import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
-@Value
-public class DataPageResponse<T> {
+public record DataPageResponse<T>(
+    T @NotNull [] resources,
+    long totalSize
+) {
 
     public static <T, R> @NotNull DataPageResponse<R> from(
         long totalSize,
@@ -22,8 +23,4 @@ public class DataPageResponse<T> {
             totalSize
         );
     }
-
-    @NotNull T[] resources;
-
-    long totalSize;
 }

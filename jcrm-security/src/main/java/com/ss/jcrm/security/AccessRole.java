@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 @Getter
@@ -69,6 +70,10 @@ public enum AccessRole implements HasId {
         }
     }
 
+    public static @Nullable AccessRole of(long id) {
+        return of((int) id);
+    }
+
     public static @Nullable AccessRole of(int id) {
 
         if (id < 0 || id >= ID_TO_ROLE.length) {
@@ -92,12 +97,12 @@ public enum AccessRole implements HasId {
             new IllegalStateException("Can't find an access role by the id " + integer));
     }
 
-    public static @NotNull Set<AccessRole> toSet(@Nullable int[] roles) {
+    public static @NotNull Set<AccessRole> toSet(@Nullable long[] roles) {
 
         if (ArrayUtils.isEmpty(roles)) {
             return Set.of();
         } else {
-            return IntStream.of(roles)
+            return LongStream.of(roles)
                 .mapToObj(AccessRole::require)
                 .collect(toUnmodifiableSet());
         }

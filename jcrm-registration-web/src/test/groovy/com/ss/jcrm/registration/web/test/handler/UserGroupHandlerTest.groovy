@@ -1,7 +1,6 @@
 package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.resources.UserGroupInResource
-import com.ss.jcrm.registration.web.resources.UserGroupOutResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
@@ -30,19 +29,13 @@ class UserGroupHandlerTest extends RegistrationSpecification {
             
             def org = userTestHelper.newOrg()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
-            def user1 = userTestHelper.newUser("User1inGroup", org, AccessRole.CREATE_USER)
-            def user2 = userTestHelper.newUser("User2inGroup", org, AccessRole.DELETE_USER)
         
-            def newUserGroup = UserGroupInResource.newResource(
+            def newUserGroup = UserGroupInResource.from(
                 "group1",
                 [
                     AccessRole.USER_GROUP_MANAGER.id,
                     AccessRole.USER_MANAGER.id
-                ] as int[],
-                [
-                    user1.id,
-                    user2.id
-                ] as long[],
+                ] as long[]
             )
     
             def token = unsafeTokenService.generateNewToken(user)
@@ -55,7 +48,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
                 .url("/registration/user-group")
                 .exchange()
         then:
-            def content = response
+            response
                 .expectStatus().isCreated()
                 .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
                 .expectBody()
@@ -67,29 +60,36 @@ class UserGroupHandlerTest extends RegistrationSpecification {
                         AccessRole.USER_GROUP_MANAGER.id as int,
                         AccessRole.USER_MANAGER.id as int
                     ))
-                .returnResult()
-        when:
+    }
     
-            print(new String(content.responseBody))
+    def "should create new user group without users and roles"() {
         
-            def resource = objectMapper.readValue(content.responseBody, UserGroupOutResource)
+        given:
+            
+            def org = userTestHelper.newOrg()
+            def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
+            
+            def newUserGroup = UserGroupInResource.from("group1", [] as long[])
+            def token = unsafeTokenService.generateNewToken(user)
         
-            response = client.get()
+        when:
+            def response = client.post()
+                .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/user-group/${resource.id}/users/page?pageSize=2&offset=0")
+                .body(newUserGroup)
+                .url("/registration/user-group")
                 .exchange()
-        
         then:
             response
-                .expectStatus().isOk()
+                .expectStatus().isCreated()
                 .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath('$.totalSize').isEqualTo(2)
-                    .jsonPath('$.resources').value(hasSize(2))
-                    .jsonPath('$.resources[*].id').value(containsInAnyOrder(
-                        user1.id as int,
-                        user2.id as int
-                    ))
+                    .jsonPath('$.id').isNotEmpty()
+                    .jsonPath('$.name').isEqualTo("group1")
+                    .jsonPath('$.modified').exists()
+                    .jsonPath('$.created').exists()
+                    .jsonPath('$.roles').value(hasSize(0))
+                .returnResult()
     }
     
     def "should load group by id"() {

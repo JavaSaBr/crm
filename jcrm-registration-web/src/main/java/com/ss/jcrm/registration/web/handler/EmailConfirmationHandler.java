@@ -8,7 +8,9 @@ import com.ss.jcrm.user.api.EmailConfirmation;
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.StringUtils;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -17,19 +19,20 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EmailConfirmationHandler {
 
-    private final EmailConfirmationDao emailConfirmationDao;
-    private final TokenService tokenService;
-    private final ResourceValidator resourceValidator;
-    private final TemplateRegistry emailConfirmationTemplate;
-    private final MailService mailService;
+    @NotNull EmailConfirmationDao emailConfirmationDao;
+    @NotNull TokenService tokenService;
+    @NotNull ResourceValidator resourceValidator;
+    @NotNull TemplateRegistry emailConfirmationTemplate;
+    @NotNull MailService mailService;
 
-    private final String emailConfirmationSubject;
+    @NotNull String emailConfirmationSubject;
 
-    private final int activateCodeLength;
-    private final int emailConfirmationExpiration;
+    int activateCodeLength;
+    int emailConfirmationExpiration;
 
     public @NotNull Mono<ServerResponse> emailConfirmation(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("email"))

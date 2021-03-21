@@ -45,8 +45,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RegistrationWebConfig {
 
-    private static final RequestPredicate APP_JSON =
-        RequestPredicates.contentType(MediaType.APPLICATION_JSON);
+    private static final RequestPredicate APP_JSON = RequestPredicates.contentType(MediaType.APPLICATION_JSON);
 
     private final Environment env;
     private final List<? extends Flyway> flyways;
@@ -155,9 +154,9 @@ public class RegistrationWebConfig {
     @NotNull RouterFunction<ServerResponse> registrationStatusRouterFunction(
         @NotNull ApiEndpointServer registrationApiEndpointServer
     ) {
-        var contextPath = registrationApiEndpointServer.getContextPath();
+        var contextPath = registrationApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .GET(contextPath + "/status", request -> ServerResponse.ok()
+            .GET("${contextPath}/status", request -> ServerResponse.ok()
                 .build())
             .build();
     }
@@ -167,16 +166,16 @@ public class RegistrationWebConfig {
         @NotNull ApiEndpointServer registrationApiEndpointServer,
         @NotNull UserHandler userHandler
     ) {
-        var contextPath = registrationApiEndpointServer.getContextPath();
+        var contextPath = registrationApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .GET(contextPath + "/user/minimal/{id}", userHandler::findMinimalById)
-            .POST(contextPath + "/users/minimal/ids", APP_JSON, userHandler::findMinimalByIds)
-            .GET(contextPath + "/user/{id}", userHandler::findById)
-            .POST(contextPath + "/user", APP_JSON, userHandler::create)
-            .POST(contextPath + "/users/ids", APP_JSON, userHandler::findByIds)
-            .GET(contextPath + "/users/page", userHandler::findPage)
-            .GET(contextPath + "/exist/user/email/{email}", userHandler::existByEmail)
-            .GET(contextPath + "/search/user/name/{name}", userHandler::searchByName)
+            .GET("${contextPath}/user/minimal/{id}", userHandler::findMinimalById)
+            .POST("${contextPath}/users/minimal/ids", APP_JSON, userHandler::findMinimalByIds)
+            .GET("${contextPath}/user/{id}", userHandler::findById)
+            .POST("${contextPath}/user", APP_JSON, userHandler::create)
+            .POST("${contextPath}/users/ids", APP_JSON, userHandler::findByIds)
+            .GET("${contextPath}/users/page", userHandler::findPage)
+            .GET("${contextPath}/exist/user/email/{email}", userHandler::existByEmail)
+            .GET("${contextPath}/search/user/name/{name}", userHandler::searchByName)
             .build();
     }
 
@@ -185,9 +184,9 @@ public class RegistrationWebConfig {
         @NotNull ApiEndpointServer registrationApiEndpointServer,
         @NotNull EmailConfirmationHandler emailConfirmationHandler
     ) {
-        var contextPath = registrationApiEndpointServer.getContextPath();
+        var contextPath = registrationApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .GET(contextPath + "/email-confirmation/{email}", emailConfirmationHandler::emailConfirmation)
+            .GET("${contextPath}/email-confirmation/{email}", emailConfirmationHandler::emailConfirmation)
             .build();
     }
 
@@ -196,11 +195,11 @@ public class RegistrationWebConfig {
         @NotNull ApiEndpointServer registrationApiEndpointServer,
         @NotNull AuthenticationHandler authenticationHandler
     ) {
-        var contextPath = registrationApiEndpointServer.getContextPath();
+        var contextPath = registrationApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .POST(contextPath + "/authenticate", APP_JSON, authenticationHandler::authenticate)
-            .GET(contextPath + "/authenticate/{token}", authenticationHandler::authenticateByToken)
-            .GET(contextPath + "/token/refresh/{token}", authenticationHandler::refreshToken)
+            .POST("${contextPath}/authenticate", APP_JSON, authenticationHandler::authenticate)
+            .GET("${contextPath}/authenticate/{token}", authenticationHandler::authenticateByToken)
+            .GET("${contextPath}/token/refresh/{token}", authenticationHandler::refreshToken)
             .build();
     }
 
@@ -209,10 +208,10 @@ public class RegistrationWebConfig {
         @NotNull ApiEndpointServer registrationApiEndpointServer,
         @NotNull OrganizationHandler organizationHandler
     ) {
-        var contextPath = registrationApiEndpointServer.getContextPath();
+        var contextPath = registrationApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .POST(contextPath + "/register/organization", APP_JSON, organizationHandler::register)
-            .GET(contextPath + "/exist/organization/name/{name}", organizationHandler::existByName)
+            .POST("${contextPath}/register/organization", APP_JSON, organizationHandler::register)
+            .GET("${contextPath}/exist/organization/name/{name}", organizationHandler::existByName)
             .build();
     }
 
@@ -221,14 +220,15 @@ public class RegistrationWebConfig {
         @NotNull ApiEndpointServer registrationApiEndpointServer,
         @NotNull UserGroupHandler userGroupHandler
     ) {
-        var contextPath = registrationApiEndpointServer.getContextPath();
+        var contextPath = registrationApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .POST(contextPath + "/user-group", APP_JSON, userGroupHandler::create)
-            .POST(contextPath + "/user-groups/ids", APP_JSON, userGroupHandler::findByIds)
-            .GET(contextPath + "/user-group/{id}", userGroupHandler::findById)
-            .GET(contextPath + "/user-groups/page", userGroupHandler::findPage)
-            .GET(contextPath + "/user-group/{id}/users/page", userGroupHandler::findUsersPage)
-            .GET(contextPath + "/exist/user-group/name/{name}", userGroupHandler::existByName)
+            .POST("${contextPath}/user-group", APP_JSON, userGroupHandler::create)
+            .POST("${contextPath}/user-groups/ids", APP_JSON, userGroupHandler::findByIds)
+            .GET("${contextPath}/user-group/{id}", userGroupHandler::findById)
+            .PUT("${contextPath}/user-group/{id}", userGroupHandler::update)
+            .GET("${contextPath}/user-groups/page", userGroupHandler::findPage)
+            .GET("${contextPath}/user-group/{id}/users/page", userGroupHandler::findUsersPage)
+            .GET("${contextPath}/exist/user-group/name/{name}", userGroupHandler::existByName)
             .build();
     }
 }

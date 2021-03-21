@@ -6,9 +6,9 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import com.ss.rlib.common.util.FileUtils;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,12 +26,10 @@ import java.util.List;
 
 @Configuration
 @Import(BaseWebConfig.class)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UiServerConfig {
 
-    @AllArgsConstructor
-    public static class AngularWebFilter implements WebFilter {
-
-        private final String[] apiEndpoints;
+    public static record AngularWebFilter(String @NotNull [] apiEndpoints) implements WebFilter {
 
         @Override
         public @NotNull Mono<Void> filter(@NotNull ServerWebExchange exchange, @NotNull WebFilterChain chain) {
@@ -57,12 +55,11 @@ public class UiServerConfig {
         }
     }
 
-    private final String[] apiEndpoints;
+    String @NotNull [] apiEndpoints;
 
-    @Autowired
     public UiServerConfig(@NotNull List<ApiEndpointServer> servers) {
         this.apiEndpoints = servers.stream()
-            .map(ApiEndpointServer::getContextPath)
+            .map(ApiEndpointServer::contextPath)
             .toArray(String[]::new);
     }
 

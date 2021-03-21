@@ -1,9 +1,13 @@
 package com.ss.jcrm.web.config;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.ss.jcrm.web.customizer.UndertowWebServerFactorySslCustomizer;
 import com.ss.jcrm.web.exception.handler.DefaultWebExceptionHandler;
 import com.ss.rlib.common.concurrent.GroupThreadFactory;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
@@ -11,8 +15,6 @@ import org.springframework.boot.web.embedded.undertow.UndertowReactiveWebServerF
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.server.WebExceptionHandler;
 
 import java.util.concurrent.Executors;
@@ -28,38 +30,25 @@ import java.util.concurrent.ScheduledExecutorService;
 @PropertySource("classpath:com/ss/jcrm/web/base-web.properties")
 public class BaseWebConfig {
 
-    /*@Bean
-    @NotNull WebFluxConfigurer webFluxConfigurer() {
-        return new WebFluxConfigurer() {
-
-            @Override
-            public void configureHttpMessageCodecs(@NotNull ServerCodecConfigurer configurer) {
-                configurer.defaultCodecs().jackson2JsonEncoder(new JsoniterHttpMessageEncoder());
-            }
-        };
-    }*/
-
     @Bean
-    @NotNull ScheduledExecutorService reloadScheduler(@NotNull Environment env) {
+    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+        return builder -> builder.modules(
+            new BlackbirdModule(),
+            new ParameterNamesModule(),
+            new JavaTimeModule()
+        );
+    }
+    @Bean
+    @NotNull ScheduledExecutorService mainScheduler(@NotNull Environment env) {
 
         var cores = Runtime.getRuntime().availableProcessors() * 2;
 
         return Executors.newScheduledThreadPool(
-            env.getProperty("reloading.executor.threads", int.class, cores),
-            new GroupThreadFactory("reloading-thread")
+            env.getProperty("main.scheduler.threads", int.class, cores),
+            new GroupThreadFactory("main-scheduler-thread")
         );
     }
 
-    /* @Lazy
-     @Bean
-     @NotNull WebServerFactoryCustomizer<NettyReactiveWebServerFactory> nettyWebServerFactoryCustomizer() {
-         return new NettyWebServerFactorySslCustomizer(
-             env.getRequiredProperty("web.server.ssl.keystore.path"),
-             env.getRequiredProperty("web.server.ssl.keystore.password"),
-             env.getRequiredProperty("web.server.ssl.key.alias")
-         );
-     }
- */
     @Bean
     @NotNull WebServerFactoryCustomizer<UndertowReactiveWebServerFactory> undertowWebServerFactoryCustomizer(
         @NotNull Environment env
@@ -75,4 +64,15 @@ public class BaseWebConfig {
     @NotNull WebExceptionHandler defaultWebExceptionHandler() {
         return new DefaultWebExceptionHandler();
     }
+
+    /* @Lazy
+     @Bean
+     @NotNull WebServerFactoryCustomizer<NettyReactiveWebServerFactory> nettyWebServerFactoryCustomizer() {
+         return new NettyWebServerFactorySslCustomizer(
+             env.getRequiredProperty("web.server.ssl.keystore.path"),
+             env.getRequiredProperty("web.server.ssl.keystore.password"),
+             env.getRequiredProperty("web.server.ssl.key.alias")
+         );
+     }
+ */
 }

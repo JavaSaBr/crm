@@ -70,7 +70,9 @@ public class ClientWebConfig {
         @NotNull ApiEndpointServer clientApiEndpointServer,
         @NotNull ContactHandler contactHandler
     ) {
-        var contextPath = clientApiEndpointServer.getContextPath();
+
+        var contextPath = clientApiEndpointServer.contextPath();
+
         return RouterFunctions.route()
             .GET(contextPath + "/status", request -> ServerResponse.ok()
                 .build())

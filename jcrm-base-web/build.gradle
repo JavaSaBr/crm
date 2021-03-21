@@ -4,8 +4,6 @@ ext {
 
 dependencies {
     compile project(":jcrm-base")
-    //compile "com.jsoniter:jsoniter:$jsointerVersion"
-    //compile "org.javassist:javassist:$javassistVersion"
     compile "org.springframework.boot:spring-boot-starter-webflux:$springbootVersion"
     compile "org.springframework.boot:spring-boot-starter-undertow:$springbootVersion"
 }

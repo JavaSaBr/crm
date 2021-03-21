@@ -6,7 +6,9 @@ import com.ss.jcrm.user.api.dao.OrganizationDao;
 import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.api.dao.UserGroupDao;
 import com.ss.rlib.common.util.StringUtils;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RegistrationHandler {
 
     private final UserDao userDao;
@@ -34,14 +37,14 @@ public class RegistrationHandler {
         @NotNull @RequestBody UserRegisterInResource resource
     ) {
 
-        String name = resource.getName();
-        String password = resource.getPassword();
+        String name = resource.name();
+        String password = resource.password();
 
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(password)) {
 
         }
 
-        long[] roles = resource.getRoles();
+        long[] roles = resource.roles();
 
         return CompletableFuture.completedFuture(ResponseEntity.ok());
     }

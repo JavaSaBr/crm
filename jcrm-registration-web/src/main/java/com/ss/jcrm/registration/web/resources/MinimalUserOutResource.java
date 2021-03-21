@@ -1,60 +1,57 @@
 package com.ss.jcrm.registration.web.resources;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.ss.jcrm.user.api.MinimalUser;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.contact.api.resource.MessengerResource;
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.resources.RestResource;
 import com.ss.rlib.common.util.DateUtils;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class MinimalUserOutResource implements RestResource {
+@JsonInclude(Include.NON_NULL)
+public record MinimalUserOutResource(
+    @NotNull String email,
+    @Nullable String firstName,
+    @Nullable String secondName,
+    @Nullable String thirdName,
+    @Nullable String birthday,
+    PhoneNumberResource @Nullable [] phoneNumbers,
+    MessengerResource @Nullable [] messengers,
+    long id
+) implements RestResource {
 
-    @NotNull String email;
-
-    @Nullable String firstName;
-    @Nullable String secondName;
-    @Nullable String thirdName;
-    @Nullable String birthday;
-
-    @Nullable PhoneNumberResource[] phoneNumbers;
-    @Nullable MessengerResource[] messengers;
-
-    long id;
-
-    public MinimalUserOutResource(@NotNull MinimalUser user) {
-        this.email = user.getEmail();
-        this.id = user.getId();
-        this.firstName = null;
-        this.secondName = null;
-        this.thirdName = null;
-        this.birthday = null;
-        this.phoneNumbers = null;
-        this.messengers = null;
+    public static @NotNull MinimalUserOutResource from(@NotNull MinimalUser user) {
+        return new MinimalUserOutResource(
+            user.getEmail(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            user.getId()
+        );
     }
 
-    public MinimalUserOutResource(@NotNull User user) {
-        this.email = user.getEmail();
-        this.firstName = user.getFirstName();
-        this.secondName = user.getSecondName();
-        this.thirdName = user.getThirdName();
-        this.phoneNumbers = user.getPhoneNumbers()
-            .stream()
-            .map(PhoneNumberResource::from)
-            .toArray(PhoneNumberResource[]::new);
-        this.messengers = user.getMessengers()
-            .stream()
-            .map(MessengerResource::from)
-            .toArray(MessengerResource[]::new);
-        this.birthday = DateUtils.toString(user.getBirthday());
-        this.id = user.getId();
+    public static @NotNull MinimalUserOutResource from(@NotNull User user) {
+        return new MinimalUserOutResource(
+            user.getEmail(),
+            user.getFirstName(),
+            user.getSecondName(),
+            user.getThirdName(),
+            DateUtils.toString(user.getBirthday()),
+            user.getPhoneNumbers()
+                .stream()
+                .map(PhoneNumberResource::from)
+                .toArray(PhoneNumberResource[]::new),
+            user.getMessengers()
+                .stream()
+                .map(MessengerResource::from)
+                .toArray(MessengerResource[]::new),
+            user.getId()
+        );
     }
 }

@@ -1,12 +1,9 @@
 package com.ss.jcrm.dao;
 
 import com.ss.rlib.common.util.array.Array;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
-public class EntityPage<T extends Entity> {
-
-    private final @Getter Array<T> entities;
-    private final @Getter long totalSize;
-}
+public record EntityPage<T extends Entity>(
+    @NotNull Array<T> entities,
+    long totalSize
+) {}

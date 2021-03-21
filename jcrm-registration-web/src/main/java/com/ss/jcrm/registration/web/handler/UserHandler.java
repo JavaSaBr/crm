@@ -12,26 +12,23 @@ import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.user.api.User;
 import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.contact.api.PhoneNumber;
-import com.ss.jcrm.user.contact.api.PhoneNumberType;
-import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.exception.ExceptionUtils;
 import com.ss.jcrm.web.resources.DataPageResponse;
 import com.ss.jcrm.web.util.RequestUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.DateUtils;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Set;
 
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserHandler extends BaseRegistrationHandler {
 
     public static final AccessRole[] USER_VIEWERS = {
@@ -47,10 +44,10 @@ public class UserHandler extends BaseRegistrationHandler {
         AccessRole.USER_MANAGER,
     };
 
-    private final UserDao userDao;
-    private final ResourceValidator resourceValidator;
-    private final WebRequestSecurityService webRequestSecurityService;
-    private final PasswordService passwordService;
+    @NotNull UserDao userDao;
+    @NotNull ResourceValidator resourceValidator;
+    @NotNull WebRequestSecurityService webRequestSecurityService;
+    @NotNull PasswordService passwordService;
 
     public @NotNull Mono<ServerResponse> existByEmail(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("email"))
@@ -63,7 +60,7 @@ public class UserHandler extends BaseRegistrationHandler {
         return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(param -> userDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
-            .map(MinimalUserOutResource::new)
+            .map(MinimalUserOutResource::from)
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
@@ -73,7 +70,7 @@ public class UserHandler extends BaseRegistrationHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
             .map(users -> users.stream()
-                .map(MinimalUserOutResource::new)
+                .map(MinimalUserOutResource::from)
                 .toArray(MinimalUserOutResource[]::new))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
@@ -84,7 +81,7 @@ public class UserHandler extends BaseRegistrationHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(res -> userDao.searchByName(res.getParam(), res.getOrgId()))
             .map(users -> users.stream()
-                .map(MinimalUserOutResource::new)
+                .map(MinimalUserOutResource::from)
                 .toArray(MinimalUserOutResource[]::new))
             .flatMap(ResponseUtils::ok);
     }
@@ -95,15 +92,15 @@ public class UserHandler extends BaseRegistrationHandler {
             .flatMap(authorized -> {
                 var pageRequest = authorized.getParam();
                 return userDao.findPageByOrg(
-                    pageRequest.getOffset(),
-                    pageRequest.getPageSize(),
+                    pageRequest.offset(),
+                    pageRequest.pageSize(),
                     authorized.getOrgId()
                 );
             })
             .map(entityPage -> DataPageResponse.from(
-                entityPage.getTotalSize(),
-                entityPage.getEntities(),
-                UserOutResource::new,
+                entityPage.totalSize(),
+                entityPage.entities(),
+                UserOutResource::from,
                 UserOutResource[]::new
             ))
             .flatMap(ResponseUtils::ok)
@@ -114,7 +111,7 @@ public class UserHandler extends BaseRegistrationHandler {
         return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
             .flatMap(param -> userDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
-            .map(UserOutResource::new)
+            .map(UserOutResource::from)
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
@@ -124,7 +121,7 @@ public class UserHandler extends BaseRegistrationHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
             .flatMap(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
             .map(users -> users.stream()
-                .map(UserOutResource::new)
+                .map(UserOutResource::from)
                 .toArray(UserOutResource[]::new))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
@@ -135,7 +132,7 @@ public class UserHandler extends BaseRegistrationHandler {
             .zipWhen(user -> request.bodyToMono(UserInResource.class), AuthorizedResource::new)
             .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
             .flatMap(this::createUser)
-            .map(UserOutResource::new)
+            .map(UserOutResource::from)
             .flatMap(ResponseUtils::created);
     }
 
@@ -143,26 +140,26 @@ public class UserHandler extends BaseRegistrationHandler {
 
         var creator = authorized.getUser();
         var resource = authorized.getResource();
-        var birthday = DateUtils.toLocalDate(resource.getBirthday());
+        var birthday = DateUtils.toLocalDate(resource.birthday());
 
         var salt = passwordService.getNextSalt();
-        var hash = passwordService.hash(resource.getPassword(), salt);
+        var hash = passwordService.hash(resource.password(), salt);
 
         //noinspection ConstantConditions
-        return userDao.existByEmail(resource.getEmail())
+        return userDao.existByEmail(resource.email())
             .filter(emailAlreadyExist -> !emailAlreadyExist)
             .flatMap(emailAlreadyExist -> userDao.create(
-                resource.getEmail(),
+                resource.email(),
                 hash,
                 salt,
                 creator.getOrganization(),
                 Set.of(),
-                resource.getFirstName(),
-                resource.getSecondName(),
-                resource.getThirdName(),
+                resource.firstName(),
+                resource.secondName(),
+                resource.thirdName(),
                 birthday,
-                toPhoneNumbers(resource.getPhoneNumbers()),
-                toMessengers(resource.getMessengers())
+                toPhoneNumbers(resource.phoneNumbers()),
+                toMessengers(resource.messengers())
             ))
             .switchIfEmpty(Mono.error(() -> ExceptionUtils.toBadRequest(
                 RegistrationErrors.EMAIL_ALREADY_EXIST,

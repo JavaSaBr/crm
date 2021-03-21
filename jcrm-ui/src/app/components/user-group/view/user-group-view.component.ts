@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {User} from '@app/entity/user';
 import {ErrorService} from '@app/service/error.service';
 import {EntityViewComponent} from '@app/component/entity-view/entity-view.component';
 import {EntityViewTab} from '@app/component/entity-view/tab/entity-view-tab';
@@ -46,7 +45,7 @@ export class UserGroupViewComponent extends EntityViewComponent<UserGroup> {
                 EntityFieldDescriptor.requiredString('Name', 'name'),
             ],
             [
-                EntityFieldDescriptor.password("Password", "password")
+                //EntityFieldDescriptor.password("Password", "password")
             ])
         );
     }
@@ -68,13 +67,12 @@ export class UserGroupViewComponent extends EntityViewComponent<UserGroup> {
 
     saveEntity(): void {
         this.disabledProperty.next(true)
-        /*this.contactRepository.update(this.syncContactWithForm(this.contact))
+        this.globalLoadingService.increaseLoading();
+        this.userGroupRepository.update(this.entity)
             .then(result => this.reloadEntity(result))
             .catch(reason => this.errorService.showError(reason))
-            .finally(() => this.disabled = false);*/
-    }
-
-    protected syncEntityWithForm(user: User): User {
-        return user;
+            .finally(() => {
+                this.globalLoadingService.decreaseLoading();
+            });
     }
 }

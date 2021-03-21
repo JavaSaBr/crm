@@ -82,14 +82,14 @@ public class ContactHandler {
             .flatMap(authorized -> {
                 var pageRequest = authorized.getParam();
                 return simpleContactDao.findPageByOrg(
-                    pageRequest.getOffset(),
-                    pageRequest.getPageSize(),
+                    pageRequest.offset(),
+                    pageRequest.pageSize(),
                     authorized.getOrgId()
                 );
             })
             .map(entityPage -> DataPageResponse.from(
-                entityPage.getTotalSize(),
-                entityPage.getEntities(),
+                entityPage.totalSize(),
+                entityPage.entities(),
                 ContactOutResource::new,
                 ContactOutResource[]::new
             ))

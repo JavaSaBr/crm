@@ -26,7 +26,6 @@ import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
@@ -50,6 +49,13 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         AccessRole.ORG_ADMIN,
         AccessRole.USER_GROUP_MANAGER,
         AccessRole.CREATE_USER_GROUP,
+    };
+
+    public static final AccessRole[] USER_GROUP_CHANGERS = {
+        AccessRole.SUPER_ADMIN,
+        AccessRole.ORG_ADMIN,
+        AccessRole.USER_GROUP_MANAGER,
+        AccessRole.CHANGE_USER_GROUP,
     };
 
     public static final AccessRole[] USER_GROUP_AND_USERS_VIEWERS = ArrayUtils.combineUniq(
@@ -77,15 +83,15 @@ public class UserGroupHandler extends BaseRegistrationHandler {
             .flatMap(authorized -> {
                 var pageRequest = authorized.getParam();
                 return userGroupDao.findPageByOrg(
-                    pageRequest.getOffset(),
-                    pageRequest.getPageSize(),
+                    pageRequest.offset(),
+                    pageRequest.pageSize(),
                     authorized.getOrgId()
                 );
             })
             .map(entityPage -> DataPageResponse.from(
-                entityPage.getTotalSize(),
-                entityPage.getEntities(),
-                UserGroupOutResource::new,
+                entityPage.totalSize(),
+                entityPage.entities(),
+                UserGroupOutResource::from,
                 UserGroupOutResource[]::new
             ))
             .flatMap(ResponseUtils::ok)
@@ -98,16 +104,16 @@ public class UserGroupHandler extends BaseRegistrationHandler {
             .flatMap(authorized -> {
                 var pageRequest = authorized.getParam();
                 return minimalUserDao.findPageByOrgAndGroup(
-                    pageRequest.getOffset(),
-                    pageRequest.getPageSize(),
+                    pageRequest.offset(),
+                    pageRequest.pageSize(),
                     authorized.getOrgId(),
-                    pageRequest.getId()
+                    pageRequest.id()
                 );
             })
             .map(entityPage -> DataPageResponse.from(
-                entityPage.getTotalSize(),
-                entityPage.getEntities(),
-                MinimalUserOutResource::new,
+                entityPage.totalSize(),
+                entityPage.entities(),
+                MinimalUserOutResource::from,
                 MinimalUserOutResource[]::new
             ))
             .flatMap(ResponseUtils::ok)
@@ -118,7 +124,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_GROUP_VIEWERS), AuthorizedParam::new)
             .flatMap(param -> userGroupDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
-            .map(UserGroupOutResource::new)
+            .map(UserGroupOutResource::from)
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
@@ -128,7 +134,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_GROUP_VIEWERS), AuthorizedParam::new)
             .flatMap(param -> userGroupDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
             .map(users -> users.stream()
-                .map(UserGroupOutResource::new)
+                .map(UserGroupOutResource::from)
                 .toArray(UserGroupOutResource[]::new))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
@@ -139,8 +145,17 @@ public class UserGroupHandler extends BaseRegistrationHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_GROUP_VIEWERS), AuthorizedParam::new)
             .flatMap(res -> userGroupDao.searchByName(res.getParam(), res.getOrgId()))
             .map(users -> users.stream()
-                .map(UserGroupOutResource::new)
+                .map(UserGroupOutResource::from)
                 .toArray(UserGroupOutResource[]::new))
+            .flatMap(ResponseUtils::ok);
+    }
+
+    public @NotNull Mono<ServerResponse> update(@NotNull ServerRequest request) {
+        return webRequestSecurityService.isAuthorized(request, USER_GROUP_CHANGERS)
+            .zipWhen(user -> request.bodyToMono(UserGroupInResource.class), AuthorizedResource::new)
+            .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
+            .flatMap(this::updateUserGroup)
+            .map(UserGroupOutResource::from)
             .flatMap(ResponseUtils::ok);
     }
 
@@ -149,8 +164,29 @@ public class UserGroupHandler extends BaseRegistrationHandler {
             .zipWhen(user -> request.bodyToMono(UserGroupInResource.class), AuthorizedResource::new)
             .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
             .flatMap(this::createUserGroup)
-            .map(UserGroupOutResource::new)
+            .map(UserGroupOutResource::from)
             .flatMap(ResponseUtils::created);
+    }
+
+    private @NotNull Mono<? extends @NotNull UserGroup> updateUserGroup(
+        @NotNull AuthorizedResource<UserGroupInResource> authorized
+    ) {
+
+        var creator = authorized.getUser();
+        var organization = creator.getOrganization();
+
+        var resource = authorized.getResource();
+        var roles = AccessRole.toSet(resource.roles());
+
+        verifyRoles(creator, roles);
+
+        return userGroupDao
+            .findByIdAndOrgId(resource.id(), organization.getId())
+            .switchIfEmpty(Mono.error(() -> toBadRequest(
+                RegistrationErrors.USER_GROUP_IS_NOT_EXIST,
+                RegistrationErrors.USER_GROUP_IS_NOT_EXIST_MESSAGE
+            )))
+            .flatMap(userGroupDao::update);
     }
 
     private @NotNull Mono<? extends @NotNull UserGroup> createUserGroup(
@@ -161,33 +197,21 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         var organization = creator.getOrganization();
 
         var resource = authorized.getResource();
-        var users = resource.getUsers();
-
-        var roles = AccessRole.toSet(resource.getRoles());
+        var roles = AccessRole.toSet(resource.roles());
 
         verifyRoles(creator, roles);
 
-        return userGroupDao.existByName(resource.getName(), organization.getId())
+        return userGroupDao
+            .existByName(resource.name(), organization.getId())
             .filter(throwIfTrue(() -> toBadRequest(
-                RegistrationErrors.USER_GROUP_IS_ALREDY_EXIST,
-                RegistrationErrors.USER_GROUP_IS_ALREDY_EXIST_MESSAGE
-            )))
-            .flatMap(skip -> userDao.containsAll(users, organization.getId()))
-            .filter(throwIfFalse(() -> toBadRequest(
-                RegistrationErrors.INVALID_USER_LIST,
-                RegistrationErrors.INVALID_USER_LIST_MESSAGE
+                RegistrationErrors.USER_GROUP_IS_ALREADY_EXIST,
+                RegistrationErrors.USER_GROUP_IS_ALREADY_EXIST_MESSAGE
             )))
             .flatMap(skip -> userGroupDao.create(
-                resource.getName(),
+                resource.name(),
                 roles,
                 organization
-            ))
-            .flatMap(userGroup -> userDao.findByIdsAndOrgId(users, organization.getId())
-                .flatMapMany(Flux::fromIterable)
-                .doOnNext(user -> user.addGroup(userGroup))
-                .flatMap(userDao::update)
-                .last()
-                .map(user -> userGroup));
+            ));
     }
 
     private void verifyRoles(@NotNull User creator, @NotNull Set<AccessRole> roles) {

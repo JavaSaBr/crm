@@ -11,6 +11,7 @@ import {WorkspaceComponent} from '@app/component/workspace/workspace.component';
 import {SettingsComponent} from '@app/component/settings/settings.component';
 import {UserGroup} from '@app/entity/user-group';
 import {UserGroupRepository} from '@app/repository/user-group/user-group-repository.service';
+import {UserGroupWorkspaceComponent} from '@app/component/user-group/workspace/user-group-workspace.component';
 
 @Component({
     selector: 'app-user-groups',
@@ -24,8 +25,8 @@ export class UserGroupsComponent extends AbstractEntityTableComponent<UserGroup>
 
     private static readonly fabActions: FabButtonElement[] = [
         {
-            routerLink: `../${UserWorkspaceComponent.componentName}/${UserWorkspaceComponent.modeNew}`,
-            icon: 'perm_identity',
+            routerLink: `../${UserGroupWorkspaceComponent.componentName}/${UserGroupWorkspaceComponent.modeNew}`,
+            icon: 'group_add',
             tooltip: 'Add new group',
             callback: null
         },
@@ -35,6 +36,7 @@ export class UserGroupsComponent extends AbstractEntityTableComponent<UserGroup>
         'select',
         'creation_date',
         'name',
+        'modified_date',
         'actions',
     ];
 
@@ -60,18 +62,16 @@ export class UserGroupsComponent extends AbstractEntityTableComponent<UserGroup>
         return this.userGroupRepository.findEntityPage(pageSize, offset);
     }
 
-    createdToString(userGroup: UserGroup): string {
+    dateToString(date: Date): string {
 
         const now = new Date();
         const currentDate = now.getDate();
-
-        const created = userGroup.created;
-        const createdDate = created.getDate();
+        const createdDate = date.getDate();
 
         if (currentDate === createdDate) {
-            return `Today ${this.datePipe.transform(created, 'HH:mm')}`;
+            return `Today ${this.datePipe.transform(date, 'HH:mm')}`;
         } else {
-            return `${this.datePipe.transform(created, 'yyyy/mm/dd HH:mm')}`;
+            return `${this.datePipe.transform(date, 'yyyy/mm/dd HH:mm')}`;
         }
     }
 
@@ -79,8 +79,8 @@ export class UserGroupsComponent extends AbstractEntityTableComponent<UserGroup>
         this.router.navigate([
             WorkspaceComponent.COMPONENT_NAME,
             SettingsComponent.componentName,
-            UserWorkspaceComponent.componentName,
-            UserWorkspaceComponent.modeView,
+            UserGroupWorkspaceComponent.componentName,
+            UserGroupWorkspaceComponent.modeView,
             userGroup.id
         ]);
     }

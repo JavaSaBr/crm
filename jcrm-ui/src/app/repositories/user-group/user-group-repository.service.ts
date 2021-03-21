@@ -28,6 +28,16 @@ export class UserGroupRepository extends RemoteRepository<UserGroup, UserGroupRe
             .catch(reason => this.errorService.convertError(reason));
     }
 
+    update(userGroup: UserGroup): Promise<UserGroup> {
+
+        const body = this.convertToResource(userGroup);
+        const url = `${environment.clientUrl}/user-group`;
+
+        return this.securityService.putRequest<UserGroupResource>(url, body)
+            .then(response => this.convertFromResource(response.body))
+            .catch(reason => this.errorService.convertError(reason));
+    }
+
     protected buildFetchUrlById(id: number): string {
         return `${environment.registrationUrl}/user-group/${id}`;
     }

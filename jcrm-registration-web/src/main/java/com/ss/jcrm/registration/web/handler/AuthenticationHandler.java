@@ -14,7 +14,9 @@ import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.UnauthorizedWebException;
 import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.StringUtils;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -24,27 +26,25 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationHandler {
 
-    private final TokenService tokenService;
-    private final UserDao userDao;
-    private final PasswordService passwordService;
-    private final ResourceValidator resourceValidator;
+    @NotNull TokenService tokenService;
+    @NotNull UserDao userDao;
+    @NotNull PasswordService passwordService;
+    @NotNull ResourceValidator resourceValidator;
 
     public @NotNull Mono<ServerResponse> authenticate(@NotNull ServerRequest request) {
         return request.bodyToMono(AuthenticationInResource.class)
             .doOnNext(resourceValidator::validate)
             .zipWhen(this::loadUserByLogin, this::authenticate)
-            .switchIfEmpty(Mono.error(() -> toUnauthorized(
-                INVALID_CREDENTIALS,
-                INVALID_CREDENTIALS_MESSAGE
-            )))
+            .switchIfEmpty(Mono.error(() -> toUnauthorized(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)))
             .flatMap(ResponseUtils::ok);
     }
 
     public @NotNull Mono<ServerResponse> authenticateByToken(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("token"))
-            .zipWhen(tokenService::findUserIfNotExpired, AuthenticationOutResource::new)
+            .zipWhen(tokenService::findUserIfNotExpired, AuthenticationOutResource::from)
             .switchIfEmpty(Mono.error(() -> toUnauthorized(
                 SecurityErrors.INVALID_TOKEN,
                 SecurityErrors.INVALID_TOKEN_MESSAGE
@@ -57,38 +57,35 @@ public class AuthenticationHandler {
             .zipWhen(tokenService::findUser, this::refreshToken)
             .switchIfEmpty(Mono.error(() -> toUnauthorized(
                 SecurityErrors.INVALID_TOKEN,
-                SecurityErrors.INVALID_TOKEN_MESSAGE)))
+                SecurityErrors.INVALID_TOKEN_MESSAGE
+            )))
             .flatMap(ResponseUtils::ok);
     }
 
     private @NotNull AuthenticationOutResource refreshToken(@NotNull String token, @NotNull User user) {
-        return new AuthenticationOutResource(tokenService.refresh(user, token), user);
+        return AuthenticationOutResource.from(tokenService.refresh(user, token), user);
     }
 
     private @NotNull AuthenticationOutResource authenticate(
-        @NotNull AuthenticationInResource resource,
-        @NotNull User user
+        @NotNull AuthenticationInResource resource, @NotNull User user
     ) {
 
-        var password = resource.getPassword();
+        var password = resource.password();
         try {
 
             if (!passwordService.isCorrect(password, user.getSalt(), user.getPassword())) {
-               throw new UnauthorizedWebException(
-                    INVALID_CREDENTIALS_MESSAGE,
-                    INVALID_CREDENTIALS
-                );
+                throw new UnauthorizedWebException(INVALID_CREDENTIALS_MESSAGE, INVALID_CREDENTIALS);
             }
 
         } finally {
             Arrays.fill(password, ' ');
         }
 
-        return new AuthenticationOutResource(user, tokenService.generateNewToken(user));
+        return AuthenticationOutResource.from(tokenService.generateNewToken(user), user);
     }
 
     private @NotNull Mono<? extends @Nullable User> loadUserByLogin(@NotNull AuthenticationInResource resource) {
-        var login = resource.getLogin();
+        var login = resource.login();
         return StringUtils.isEmail(login) ?
             userDao.findByEmail(login) : userDao.findByPhoneNumber(login);
     }

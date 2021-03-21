@@ -38,7 +38,7 @@ class UserHandlerTest extends RegistrationSpecification {
             def phoneNumbers = generatePhoneNumbers()
             def messengers = generateMessengers()
         
-            def newUser = UserInResource.newResource(
+            def newUser = UserInResource.from(
                 "newuser@email.com",
                 "First name",
                 "Second name",
@@ -106,7 +106,7 @@ class UserHandlerTest extends RegistrationSpecification {
             def phoneNumbers = generatePhoneNumbers()
             def messengers = generateMessengers()
             
-            def newUser = UserInResource.newResource(
+            def newUser = UserInResource.from(
                 "newuser@email.com",
                 "First name",
                 "Second name",
@@ -131,7 +131,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 .verifyErrorResponse(INVALID_BIRTHDAY, INVALID_BIRTHDAY_MESSAGE)
         when:
     
-            newUser = UserInResource.newResource(
+            newUser = UserInResource.from(
                 "newuser@email.com",
                 "First name",
                 "Second name",
@@ -155,7 +155,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 .verifyErrorResponse(INVALID_BIRTHDAY, INVALID_BIRTHDAY_MESSAGE)
         when:
         
-            newUser = UserInResource.newResource(
+            newUser = UserInResource.from(
                 "newuser@email.com",
                 "First name",
                 "Second name",
@@ -179,7 +179,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 .verifyErrorResponse(INVALID_PASSWORD, INVALID_PASSWORD_MESSAGE)
         when:
         
-            newUser = UserInResource.newResource(
+            newUser = UserInResource.from(
                 null,
                 "First name",
                 "Second name",
