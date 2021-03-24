@@ -31,7 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class BaseWebConfig {
 
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+    @NotNull Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
         return builder -> builder.modules(
             new BlackbirdModule(),
             new ParameterNamesModule(),
@@ -40,11 +40,8 @@ public class BaseWebConfig {
     }
     @Bean
     @NotNull ScheduledExecutorService mainScheduler(@NotNull Environment env) {
-
-        var cores = Runtime.getRuntime().availableProcessors() * 2;
-
         return Executors.newScheduledThreadPool(
-            env.getProperty("main.scheduler.threads", int.class, cores),
+            env.getProperty("main.scheduler.threads", int.class, 1),
             new GroupThreadFactory("main-scheduler-thread")
         );
     }

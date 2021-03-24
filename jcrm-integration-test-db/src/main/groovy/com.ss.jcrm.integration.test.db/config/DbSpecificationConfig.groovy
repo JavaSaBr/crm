@@ -9,21 +9,21 @@ import org.testcontainers.containers.PostgreSQLContainer
 
 import static org.testcontainers.containers.PostgreSQLContainer.POSTGRESQL_PORT
 
-@Configuration
 @Import(DefaultSpecificationConfig)
+@Configuration(proxyBeanMethods = false)
 class DbSpecificationConfig {
 
-    static final String DB_NAME = "test-db"
-    static final String USER = "test-root"
-    static final String PWD = "test-root"
+    static final String dbName = "test-db"
+    static final String dbUser = "test-root"
+    static final String dbPassword = "test-root"
 
     @Bean(destroyMethod = "stop")
     @NotNull PostgreSQLContainer postgreSQLContainer() {
 
         def container = new PostgreSQLContainer("postgres:12")
-            .withDatabaseName(DB_NAME)
-            .withUsername(USER)
-            .withPassword(PWD)
+            .withDatabaseName(dbName)
+            .withUsername(dbUser)
+            .withPassword(dbPassword)
 
         container.start()
 
@@ -33,9 +33,9 @@ class DbSpecificationConfig {
     
         def mappedPort = container.getMappedPort(POSTGRESQL_PORT)
         
-        System.setProperty("db.test.url", "jdbc:postgresql://${container.getContainerIpAddress()}:${mappedPort}/$DB_NAME")
-        System.setProperty("db.test.username", USER)
-        System.setProperty("db.test.password", PWD)
+        System.setProperty("db.test.url", "jdbc:postgresql://${container.getContainerIpAddress()}:${mappedPort}/$dbName")
+        System.setProperty("db.test.username", dbUser)
+        System.setProperty("db.test.password", dbPassword)
 
         return container
     }

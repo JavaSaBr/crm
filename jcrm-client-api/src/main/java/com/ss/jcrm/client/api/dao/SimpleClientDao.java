@@ -13,9 +13,9 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
-public interface SimpleContactDao extends Dao<SimpleContact> {
+public interface SimpleClientDao extends Dao<SimpleClient> {
 
-    default @NotNull Mono<@NotNull SimpleContact> create(
+    default @NotNull Mono<@NotNull SimpleClient> create(
         @NotNull User assigner,
         @NotNull Organization organization,
         @NotNull String firstName,
@@ -37,7 +37,7 @@ public interface SimpleContactDao extends Dao<SimpleContact> {
         );
     }
 
-    @NotNull Mono<@NotNull SimpleContact> create(
+    @NotNull Mono<@NotNull SimpleClient> create(
         @NotNull User assigner,
         @Nullable Array<User> curators,
         @NotNull Organization organization,
@@ -45,29 +45,29 @@ public interface SimpleContactDao extends Dao<SimpleContact> {
         @NotNull String secondName,
         @Nullable String thirdName,
         @Nullable LocalDate birthday,
-        @Nullable ContactPhoneNumber[] phoneNumbers,
-        @Nullable ContactEmail[] emails,
-        @Nullable ContactSite[] sites,
-        @Nullable ContactMessenger[] messengers,
+        @Nullable ClientPhoneNumber[] phoneNumbers,
+        @Nullable ClientEmail[] emails,
+        @Nullable ClientSite[] sites,
+        @Nullable ClientMessenger[] messengers,
         @Nullable String company
     );
 
     /**
      * @throws NotActualObjectDaoException if the contact was changed in another thread/server.
      */
-    @NotNull Mono<SimpleContact> update(@NotNull SimpleContact contact);
+    @NotNull Mono<SimpleClient> update(@NotNull SimpleClient contact);
 
-    @NotNull Mono<@NotNull Array<SimpleContact>> findByOrg(long orgId);
+    @NotNull Mono<@NotNull Array<SimpleClient>> findByOrg(long orgId);
 
-    default @NotNull Mono<@NotNull Array<SimpleContact>> findByOrg(@NotNull Organization organization) {
+    default @NotNull Mono<@NotNull Array<SimpleClient>> findByOrg(@NotNull Organization organization) {
         return findByOrg(organization.getId());
     }
 
-    @NotNull Mono<@NotNull SimpleContact> findByIdAndOrg(long id, long orgId);
+    @NotNull Mono<@NotNull SimpleClient> findByIdAndOrg(long id, long orgId);
 
-    default @NotNull Mono<@NotNull SimpleContact> findByIdAndOrg(long id, @NotNull Organization organization) {
+    default @NotNull Mono<@NotNull SimpleClient> findByIdAndOrg(long id, @NotNull Organization organization) {
         return findByIdAndOrg(id, organization.getId());
     }
 
-    @NotNull Mono<@NotNull EntityPage<SimpleContact>> findPageByOrg(long offset, long size, long orgId);
+    @NotNull Mono<@NotNull EntityPage<SimpleClient>> findPageByOrg(long offset, long size, long orgId);
 }

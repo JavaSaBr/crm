@@ -179,7 +179,8 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
     public @NotNull Mono<@NotNull Array<UserGroup>> searchByName(@NotNull String name, long orgId) {
         var pattern = "%" + name + "%";
         return selectAllAsync(
-            UserGroup.class, querySearchByNameAndOrg,
+            UserGroup.class,
+            querySearchByNameAndOrg,
             List.of(pattern, orgId),
             converter()
         );

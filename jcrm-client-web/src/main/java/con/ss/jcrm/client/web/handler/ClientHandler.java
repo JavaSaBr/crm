@@ -2,10 +2,10 @@ package con.ss.jcrm.client.web.handler;
 
 import com.ss.jcrm.base.utils.HasId;
 import com.ss.jcrm.client.api.*;
-import com.ss.jcrm.client.api.dao.SimpleContactDao;
-import com.ss.jcrm.client.api.impl.DefaultContactEmail;
-import com.ss.jcrm.client.api.impl.DefaultContactMessenger;
-import com.ss.jcrm.client.api.impl.DefaultContactPhoneNumber;
+import com.ss.jcrm.client.api.dao.SimpleClientDao;
+import com.ss.jcrm.client.api.impl.DefaultClientEmail;
+import com.ss.jcrm.client.api.impl.DefaultClientMessenger;
+import com.ss.jcrm.client.api.impl.DefaultClientPhoneNumber;
 import com.ss.jcrm.client.api.impl.DefaultContactSite;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
 import com.ss.jcrm.security.AccessRole;
@@ -25,53 +25,53 @@ import com.ss.rlib.common.util.DateUtils;
 import con.ss.jcrm.client.web.exception.ClientErrors;
 import con.ss.jcrm.client.web.resource.*;
 import con.ss.jcrm.client.web.validator.ResourceValidator;
-import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-@AllArgsConstructor
-public class ContactHandler {
+@Value
+public class ClientHandler {
 
-    private final ResourceValidator resourceValidator;
-    private final WebRequestSecurityService webRequestSecurityService;
-    private final SimpleContactDao simpleContactDao;
-    private final UserDao userDao;
+    @NotNull ResourceValidator resourceValidator;
+    @NotNull WebRequestSecurityService webRequestSecurityService;
+    @NotNull SimpleClientDao simpleClientDao;
+    @NotNull UserDao userDao;
 
     public @NotNull Mono<ServerResponse> create(@NotNull ServerRequest request) {
         return webRequestSecurityService.isAuthorized(request, AccessRole.ORG_ADMIN)
-            .zipWhen(user -> request.bodyToMono(ContactInResource.class), AuthorizedResource::new)
+            .zipWhen(user -> request.bodyToMono(ClientInResource.class), AuthorizedResource::new)
             .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
             .flatMap(this::createContact)
-            .map(ContactOutResource::new)
+            .map(ClientOutResource::new)
             .flatMap(ResponseUtils::created);
     }
 
     public @NotNull Mono<ServerResponse> update(@NotNull ServerRequest request) {
         return webRequestSecurityService.isAuthorized(request, AccessRole.ORG_ADMIN)
-            .zipWhen(user -> request.bodyToMono(ContactInResource.class), AuthorizedResource::new)
+            .zipWhen(user -> request.bodyToMono(ClientInResource.class), AuthorizedResource::new)
             .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
             .flatMap(this::updateContact)
-            .map(ContactOutResource::new)
+            .map(ClientOutResource::new)
             .flatMap(ResponseUtils::ok);
     }
 
     public @NotNull Mono<ServerResponse> list(@NotNull ServerRequest request) {
         return webRequestSecurityService.isAuthorized(request)
-            .flatMap(user -> simpleContactDao.findByOrg(user.getOrganization()))
+            .flatMap(user -> simpleClientDao.findByOrg(user.getOrganization()))
             .map(contacts -> contacts.stream()
-                .map(ContactOutResource::new)
-                .toArray(ContactOutResource[]::new))
+                .map(ClientOutResource::new)
+                .toArray(ClientOutResource[]::new))
             .flatMap(ResponseUtils::ok);
     }
 
     public @NotNull Mono<ServerResponse> findById(@NotNull ServerRequest request) {
         return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
-            .flatMap(authorized -> simpleContactDao.findByIdAndOrg(authorized.getParam(), authorized.getOrgId()))
-            .map(ContactOutResource::new)
+            .flatMap(authorized -> simpleClientDao.findByIdAndOrg(authorized.getParam(), authorized.getOrgId()))
+            .map(ClientOutResource::new)
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
@@ -81,7 +81,7 @@ public class ContactHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(authorized -> {
                 var pageRequest = authorized.getParam();
-                return simpleContactDao.findPageByOrg(
+                return simpleClientDao.findPageByOrg(
                     pageRequest.offset(),
                     pageRequest.pageSize(),
                     authorized.getOrgId()
@@ -90,15 +90,15 @@ public class ContactHandler {
             .map(entityPage -> DataPageResponse.from(
                 entityPage.totalSize(),
                 entityPage.entities(),
-                ContactOutResource::new,
-                ContactOutResource[]::new
+                ClientOutResource::new,
+                ClientOutResource[]::new
             ))
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
 
-    private @NotNull Mono<? extends @NotNull SimpleContact> createContact(
-        @NotNull AuthorizedResource<ContactInResource> authorized
+    private @NotNull Mono<? extends @NotNull SimpleClient> createContact(
+        @NotNull AuthorizedResource<ClientInResource> authorized
     ) {
 
         var user = authorized.getUser();
@@ -111,7 +111,7 @@ public class ContactHandler {
                 var assigner = args.getT1();
                 var curators = args.getT2();
 
-                return simpleContactDao.create(
+                return simpleClientDao.create(
                     assigner,
                     curators,
                     assigner.getOrganization(),
@@ -128,15 +128,15 @@ public class ContactHandler {
             });
     }
 
-    private @NotNull Mono<? extends @NotNull SimpleContact> updateContact(
-        @NotNull AuthorizedResource<ContactInResource> authorized
+    private @NotNull Mono<? extends @NotNull SimpleClient> updateContact(
+        @NotNull AuthorizedResource<ClientInResource> authorized
     ) {
 
         var user = authorized.getUser();
         var org = user.getOrganization();
         var resource = authorized.getResource();
 
-        return simpleContactDao.findByIdAndOrg(resource.getId(), org)
+        return simpleClientDao.findByIdAndOrg(resource.getId(), org)
             .switchIfEmpty(Mono.error(IdNotPresentedWebException::new))
             .zipWhen(contact -> {
                 if (contact.getVersion() != resource.getVersion()) {
@@ -170,46 +170,46 @@ public class ContactHandler {
                     .mapToLong(HasId::getId)
                     .toArray());
 
-                return simpleContactDao.update(contact)
+                return simpleClientDao.update(contact)
                     .onErrorMap(NotActualObjectDaoException.class, ResourceIsAlreadyChangedWebException::new)
                     .map(result -> contact);
             });
     }
 
-    private @NotNull ContactPhoneNumber[] toPhoneNumbers(@Nullable ContactPhoneNumberResource[] resources) {
+    private @NotNull ClientPhoneNumber[] toPhoneNumbers(@Nullable ClientPhoneNumberResource[] resources) {
         return ArrayUtils.map(
             resources,
-            res -> new DefaultContactPhoneNumber(
+            res -> new DefaultClientPhoneNumber(
                 res.getCountryCode(),
                 res.getRegionCode(),
                 res.getPhoneNumber(),
                 PhoneNumberType.of(res.getType())
             ),
-            ContactPhoneNumber.EMPTY_ARRAY
+            ClientPhoneNumber.EMPTY_ARRAY
         );
     }
 
-    private @NotNull ContactEmail[] toEmails(@Nullable ContactEmailResource[] resources) {
+    private @NotNull ClientEmail[] toEmails(@Nullable ClientEmailResource[] resources) {
         return ArrayUtils.map(
             resources,
-            res -> new DefaultContactEmail(res.getEmail(), EmailType.of(res.getType())),
-            ContactEmail.EMPTY_ARRAY
+            res -> new DefaultClientEmail(res.getEmail(), EmailType.of(res.getType())),
+            ClientEmail.EMPTY_ARRAY
         );
     }
 
-    private @NotNull ContactSite[] toSites(@Nullable ContactSiteResource[] resources) {
+    private @NotNull ClientSite[] toSites(@Nullable ClientSiteResource[] resources) {
         return ArrayUtils.map(
             resources,
             res -> new DefaultContactSite(res.getUrl(), SiteType.of(res.getType())),
-            ContactSite.EMPTY_ARRAY
+            ClientSite.EMPTY_ARRAY
         );
     }
 
-    private @NotNull ContactMessenger[] toMessengers(@Nullable ContactMessengerResource[] resources) {
+    private @NotNull ClientMessenger[] toMessengers(@Nullable ClientMessengerResource[] resources) {
         return ArrayUtils.map(
             resources,
-            res -> new DefaultContactMessenger(res.getLogin(), MessengerType.of(res.getType())),
-            ContactMessenger.EMPTY_ARRAY
+            res -> new DefaultClientMessenger(res.getLogin(), MessengerType.of(res.getType())),
+            ClientMessenger.EMPTY_ARRAY
         );
     }
 }

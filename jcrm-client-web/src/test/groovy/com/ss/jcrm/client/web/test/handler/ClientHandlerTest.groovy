@@ -3,18 +3,17 @@ package com.ss.jcrm.client.web.test.handler
 import com.ss.jcrm.client.api.EmailType
 import com.ss.jcrm.client.api.MessengerType
 import com.ss.jcrm.client.api.PhoneNumberType
-import com.ss.jcrm.client.api.SimpleContact
 import com.ss.jcrm.client.api.SiteType
 import com.ss.jcrm.client.web.test.ClientSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import com.ss.rlib.common.util.StringUtils
-import con.ss.jcrm.client.web.resource.ContactEmailResource
-import con.ss.jcrm.client.web.resource.ContactInResource
-import con.ss.jcrm.client.web.resource.ContactMessengerResource
-import con.ss.jcrm.client.web.resource.ContactPhoneNumberResource
-import con.ss.jcrm.client.web.resource.ContactSiteResource
+import con.ss.jcrm.client.web.resource.ClientEmailResource
+import con.ss.jcrm.client.web.resource.ClientInResource
+import con.ss.jcrm.client.web.resource.ClientMessengerResource
+import con.ss.jcrm.client.web.resource.ClientPhoneNumberResource
+import con.ss.jcrm.client.web.resource.ClientSiteResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -22,33 +21,33 @@ import org.springframework.test.web.reactive.server.WebTestClient
 
 import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED
 import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_ASSIGNER_NOT_PRESENTED
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_ASSIGNER_NOT_PRESENTED_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_BIRTHDAY_INVALID
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_BIRTHDAY_INVALID_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_COMPANY_TOO_LONG
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_COMPANY_TOO_LONG_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_EMAIL_INVALID
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_EMAIL_INVALID_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_FIRST_NAME_INVALID_LENGTH
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_FIRST_NAME_INVALID_LENGTH_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_MESSENGER_INVALID
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_MESSENGER_INVALID_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_PHONE_NUMBER_INVALID
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_PHONE_NUMBER_INVALID_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SECOND_NAME_INVALID_LENGTH
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SECOND_NAME_INVALID_LENGTH_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SITE_INVALID
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_SITE_INVALID_MESSAGE
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_THIRD_NAME_TOO_LONG
-import static con.ss.jcrm.client.web.exception.ClientErrors.CONTACT_THIRD_NAME_TOO_LONG_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_ASSIGNER_NOT_PRESENTED
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_ASSIGNER_NOT_PRESENTED_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_BIRTHDAY_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_BIRTHDAY_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_COMPANY_TOO_LONG
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_COMPANY_TOO_LONG_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_EMAIL_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_EMAIL_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_FIRST_NAME_INVALID_LENGTH
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_FIRST_NAME_INVALID_LENGTH_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_MESSENGER_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_MESSENGER_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_PHONE_NUMBER_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_PHONE_NUMBER_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_SECOND_NAME_INVALID_LENGTH
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_SECOND_NAME_INVALID_LENGTH_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_SITE_INVALID
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_SITE_INVALID_MESSAGE
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_THIRD_NAME_TOO_LONG
+import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_THIRD_NAME_TOO_LONG_MESSAGE
 import static con.ss.jcrm.client.web.exception.ClientErrors.INVALID_ASSIGNER
 import static con.ss.jcrm.client.web.exception.ClientErrors.INVALID_ASSIGNER_MESSAGE
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is
 
-class ContactHandlerTest extends ClientSpecification {
+class ClientHandlerTest extends ClientSpecification {
     
     @Autowired
     UnsafeTokenService unsafeTokenService
@@ -64,7 +63,7 @@ class ContactHandlerTest extends ClientSpecification {
             def curator2 = userTestHelper.newUser("Curator2", org)
             
             def token = unsafeTokenService.generateNewToken(user)
-            def body = new ContactInResource(
+            def body = new ClientInResource(
                 assigner: assigner.id,
                 curators: [curator1.id, curator2.id],
                 firstName: "First name",
@@ -72,15 +71,15 @@ class ContactHandlerTest extends ClientSpecification {
                 thirdName: "Third name",
                 company: "Company",
                 birthday: "1990-05-22",
-                phoneNumbers: [new ContactPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())],
-                emails: [new ContactEmailResource("Test@test.com", EmailType.HOME.name())],
+                phoneNumbers: [new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())],
+                emails: [new ClientEmailResource("Test@test.com", EmailType.HOME.name())],
                 sites: [
-                    new ContactSiteResource("work.site.com", SiteType.WORK.name()),
-                    new ContactSiteResource("home.site.com", SiteType.HOME.name())
+                    new ClientSiteResource("work.site.com", SiteType.WORK.name()),
+                    new ClientSiteResource("home.site.com", SiteType.HOME.name())
                 ],
                 messengers: [
-                    new ContactMessengerResource("misterX", MessengerType.TELEGRAM.name()),
-                    new ContactMessengerResource("misterX", MessengerType.SKYPE.name())
+                    new ClientMessengerResource("misterX", MessengerType.TELEGRAM.name()),
+                    new ClientMessengerResource("misterX", MessengerType.SKYPE.name())
                 ]
             )
         
@@ -92,7 +91,7 @@ class ContactHandlerTest extends ClientSpecification {
                 .exchange()
         then:
             response.expectStatus().isCreated()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
                     .jsonPath('$.assigner').isEqualTo((int) body.assigner)
@@ -140,9 +139,9 @@ class ContactHandlerTest extends ClientSpecification {
         given:
             def user = userTestHelper.newUser("User2", AccessRole.ORG_ADMIN)
             def token = unsafeTokenService.generateNewToken(user)
-            def contact1 = clientTestHelper.newSimpleContact(user)
-            def contact2 = clientTestHelper.newSimpleContact(user)
-            def contact3 = clientTestHelper.newSimpleContact(user)
+            def contact1 = clientTestHelper.newSimpleClient(user)
+            def contact2 = clientTestHelper.newSimpleClient(user)
+            def contact3 = clientTestHelper.newSimpleClient(user)
         when:
             def response = client.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
@@ -150,7 +149,7 @@ class ContactHandlerTest extends ClientSpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$').value(hasSize(3))
                     .jsonPath('$[*].id').value(containsInAnyOrder(
@@ -168,7 +167,7 @@ class ContactHandlerTest extends ClientSpecification {
         given:
             def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
             def token = unsafeTokenService.generateNewToken(user)
-            def contact = clientTestHelper.newSimpleContact(user)
+            def contact = clientTestHelper.newSimpleClient(user)
         when:
             def response = client.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
@@ -176,7 +175,7 @@ class ContactHandlerTest extends ClientSpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
                     .jsonPath('$.firstName').isEqualTo(contact.firstName)
@@ -207,73 +206,73 @@ class ContactHandlerTest extends ClientSpecification {
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def assigner = userTestHelper.newUser("Assigner1", org)
             def token = unsafeTokenService.generateNewToken(user)
-            def body = new ContactInResource()
+            def body = new ClientInResource()
         
         when:
             def response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_ASSIGNER_NOT_PRESENTED, CONTACT_ASSIGNER_NOT_PRESENTED_MESSAGE)
+                .verifyErrorResponse(CLIENT_ASSIGNER_NOT_PRESENTED, CLIENT_ASSIGNER_NOT_PRESENTED_MESSAGE)
         when:
             body.setAssigner(assigner.id)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_FIRST_NAME_INVALID_LENGTH, CONTACT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
+                .verifyErrorResponse(CLIENT_FIRST_NAME_INVALID_LENGTH, CLIENT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
         when:
             body.setFirstName(StringUtils.generate(1000))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_FIRST_NAME_INVALID_LENGTH, CONTACT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
+                .verifyErrorResponse(CLIENT_FIRST_NAME_INVALID_LENGTH, CLIENT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
         when:
             body.setFirstName("First Name")
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_SECOND_NAME_INVALID_LENGTH, CONTACT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
+                .verifyErrorResponse(CLIENT_SECOND_NAME_INVALID_LENGTH, CLIENT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
         when:
             body.setSecondName(StringUtils.generate(1000))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_SECOND_NAME_INVALID_LENGTH, CONTACT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
+                .verifyErrorResponse(CLIENT_SECOND_NAME_INVALID_LENGTH, CLIENT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
         when:
             body.setSecondName("Second name")
             body.setThirdName(StringUtils.generate(1000))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_THIRD_NAME_TOO_LONG, CONTACT_THIRD_NAME_TOO_LONG_MESSAGE)
+                .verifyErrorResponse(CLIENT_THIRD_NAME_TOO_LONG, CLIENT_THIRD_NAME_TOO_LONG_MESSAGE)
         when:
             body.setThirdName(null)
             body.setCompany(StringUtils.generate(1000))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_COMPANY_TOO_LONG, CONTACT_COMPANY_TOO_LONG_MESSAGE)
+                .verifyErrorResponse(CLIENT_COMPANY_TOO_LONG, CLIENT_COMPANY_TOO_LONG_MESSAGE)
         when:
             body.setCompany(null)
             body.setBirthday("invaliddate")
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_BIRTHDAY_INVALID, CONTACT_BIRTHDAY_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
             body.setBirthday("1700-05-10")
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_BIRTHDAY_INVALID, CONTACT_BIRTHDAY_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
             body.setBirthday("2500-05-10")
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_BIRTHDAY_INVALID, CONTACT_BIRTHDAY_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
             body.setBirthday("1950-04-22")
-            body.setPhoneNumbers(new ContactPhoneNumberResource(
+            body.setPhoneNumbers(new ClientPhoneNumberResource(
                 countryCode: "+7",
                 regionCode: "234",
                 phoneNumber:  "123132",
@@ -282,9 +281,9 @@ class ContactHandlerTest extends ClientSpecification {
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_PHONE_NUMBER_INVALID, CONTACT_PHONE_NUMBER_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_PHONE_NUMBER_INVALID, CLIENT_PHONE_NUMBER_INVALID_MESSAGE)
         when:
-            body.setPhoneNumbers(new ContactPhoneNumberResource(
+            body.setPhoneNumbers(new ClientPhoneNumberResource(
                 countryCode: "+7",
                 regionCode: StringUtils.generate(100),
                 phoneNumber:  "123132",
@@ -293,76 +292,76 @@ class ContactHandlerTest extends ClientSpecification {
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_PHONE_NUMBER_INVALID, CONTACT_PHONE_NUMBER_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_PHONE_NUMBER_INVALID, CLIENT_PHONE_NUMBER_INVALID_MESSAGE)
         when:
             body.setPhoneNumbers(null)
-            body.setEmails(new ContactEmailResource(
+            body.setEmails(new ClientEmailResource(
                 email: "Test@test.com",
                 type: "invalid"
             ))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_EMAIL_INVALID, CONTACT_EMAIL_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
-            body.setEmails(new ContactEmailResource(
+            body.setEmails(new ClientEmailResource(
                 email: "invalid",
                 type: EmailType.HOME.name()
             ))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_EMAIL_INVALID, CONTACT_EMAIL_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
-            body.setEmails(new ContactEmailResource(
+            body.setEmails(new ClientEmailResource(
                 email: StringUtils.generate(1000),
                 type: EmailType.HOME.name()
             ))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_EMAIL_INVALID, CONTACT_EMAIL_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
             body.setEmails(null)
-            body.setSites(new ContactSiteResource(
+            body.setSites(new ClientSiteResource(
                 url: "work.site.com",
                 type: "invalid"
             ))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_SITE_INVALID, CONTACT_SITE_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_SITE_INVALID, CLIENT_SITE_INVALID_MESSAGE)
         when:
-            body.setSites(new ContactSiteResource(
+            body.setSites(new ClientSiteResource(
                 url: StringUtils.generate(1000),
                 type: SiteType.WORK.name()
             ))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_SITE_INVALID, CONTACT_SITE_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_SITE_INVALID, CLIENT_SITE_INVALID_MESSAGE)
         when:
             body.setSites(null)
-            body.setMessengers(new ContactMessengerResource(
+            body.setMessengers(new ClientMessengerResource(
                 login: "misterX",
                 type: "invalid"
             ))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_MESSENGER_INVALID, CONTACT_MESSENGER_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_MESSENGER_INVALID, CLIENT_MESSENGER_INVALID_MESSAGE)
         when:
-            body.setMessengers(new ContactMessengerResource(
+            body.setMessengers(new ClientMessengerResource(
                 login: StringUtils.generate(1000),
                 type: MessengerType.TELEGRAM.name()
             ))
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
-                .verifyErrorResponse(CONTACT_MESSENGER_INVALID, CONTACT_MESSENGER_INVALID_MESSAGE)
+                .verifyErrorResponse(CLIENT_MESSENGER_INVALID, CLIENT_MESSENGER_INVALID_MESSAGE)
     }
     
-    private WebTestClient.ResponseSpec sendCreateRequest(String token, ContactInResource body) {
+    private WebTestClient.ResponseSpec sendCreateRequest(String token, ClientInResource body) {
         client.post()
             .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
             .body(body)
@@ -383,11 +382,11 @@ class ContactHandlerTest extends ClientSpecification {
             def secondUser = userTestHelper.newUser("User2", secondOrg)
     
             firstOrgContactsCount.times {
-                clientTestHelper.newSimpleContact(firstUser)
+                clientTestHelper.newSimpleClient(firstUser)
             }
     
             secondOrgContactsCount.times {
-                clientTestHelper.newSimpleContact(secondUser)
+                clientTestHelper.newSimpleClient(secondUser)
             }
     
             def token = unsafeTokenService.generateNewToken(firstUser)
@@ -399,7 +398,7 @@ class ContactHandlerTest extends ClientSpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.totalSize').isEqualTo(20)
                     .jsonPath('$.resources').value(hasSize(5))
@@ -410,7 +409,7 @@ class ContactHandlerTest extends ClientSpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.totalSize').isEqualTo(20)
                     .jsonPath('$.resources').value(hasSize(8))
@@ -425,10 +424,10 @@ class ContactHandlerTest extends ClientSpecification {
             def assigner = userTestHelper.newUser("Assigner1", org)
             def curator1 = userTestHelper.newUser("Curator1", org)
             def curator2 = userTestHelper.newUser("Curator2", org)
-            def contact = clientTestHelper.newSimpleContact(user)
+            def contact = clientTestHelper.newSimpleClient(user)
     
             def token = unsafeTokenService.generateNewToken(user)
-            def body = new ContactInResource(
+            def body = new ClientInResource(
                 id: contact.id,
                 assigner: assigner.id,
                 curators: [curator1.id, curator2.id],
@@ -438,15 +437,15 @@ class ContactHandlerTest extends ClientSpecification {
                 company: "Company",
                 birthday: "1990-05-22",
                 version: contact.version,
-                phoneNumbers: [new ContactPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())],
-                emails: [new ContactEmailResource("Test@test.com", EmailType.HOME.name())],
+                phoneNumbers: [new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())],
+                emails: [new ClientEmailResource("Test@test.com", EmailType.HOME.name())],
                 sites: [
-                    new ContactSiteResource("work.site.com", SiteType.WORK.name()),
-                    new ContactSiteResource("home.site.com", SiteType.HOME.name())
+                    new ClientSiteResource("work.site.com", SiteType.WORK.name()),
+                    new ClientSiteResource("home.site.com", SiteType.HOME.name())
                 ],
                 messengers: [
-                    new ContactMessengerResource("misterX", MessengerType.TELEGRAM.name()),
-                    new ContactMessengerResource("misterX", MessengerType.SKYPE.name())
+                    new ClientMessengerResource("misterX", MessengerType.TELEGRAM.name()),
+                    new ClientMessengerResource("misterX", MessengerType.SKYPE.name())
                 ]
             )
         
@@ -458,7 +457,7 @@ class ContactHandlerTest extends ClientSpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
                     .jsonPath('$.assigner').isEqualTo((int) body.assigner)
@@ -508,10 +507,10 @@ class ContactHandlerTest extends ClientSpecification {
             def org = userTestHelper.newOrg()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def assigner = userTestHelper.newUser("Assigner1", org)
-            def contact = clientTestHelper.newSimpleContact(user)
+            def contact = clientTestHelper.newSimpleClient(user)
             
             def token = unsafeTokenService.generateNewToken(user)
-            def body = new ContactInResource(
+            def body = new ClientInResource(
                 id: contact.id,
                 assigner: assigner.id,
                 firstName: "First name",
@@ -530,7 +529,7 @@ class ContactHandlerTest extends ClientSpecification {
             response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
         when:
     
-            body = new ContactInResource(
+            body = new ClientInResource(
                 id: contact.id,
                 assigner: (assigner.id + 100),
                 firstName: "First name",

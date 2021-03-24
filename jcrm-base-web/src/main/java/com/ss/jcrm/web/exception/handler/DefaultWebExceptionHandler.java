@@ -47,11 +47,9 @@ public class DefaultWebExceptionHandler implements WebExceptionHandler, Ordered 
             throwable = throwable.getCause();
         }
 
-        if (!(throwable instanceof WebException)) {
+        if (!(throwable instanceof WebException webException)) {
             return Mono.empty();
         }
-
-        var webException = (WebException) throwable;
 
         return buildError(
             webException.getStatus(),
@@ -72,8 +70,8 @@ public class DefaultWebExceptionHandler implements WebExceptionHandler, Ordered 
         return ServerResponse.status(status == 0 ? HttpStatus.INTERNAL_SERVER_ERROR.value() : status)
             .header(WebException.HEADER_ERROR_CODE, String.valueOf(errorCode))
             .header(WebException.HEADER_ERROR_MESSAGE, message)
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
-            .syncBody("{\n\t\"errorCode\": " + errorCode + ",\n\t\"errorMessage\": \"" + message + "\"\n}");
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .bodyValue("{\n\t\"errorCode\": " + errorCode + ",\n\t\"errorMessage\": \"" + message + "\"\n}");
     }
 
     @RequiredArgsConstructor

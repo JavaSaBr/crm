@@ -1,8 +1,8 @@
 package com.ss.jcrm.web.customizer;
 
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.embedded.undertow.UndertowReactiveWebServerFactory;
 import org.springframework.boot.web.server.Http2;
 import org.springframework.boot.web.server.Ssl;
@@ -11,13 +11,14 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public record UndertowWebServerFactorySslCustomizer(
-    @NotNull String keystore,
-    @NotNull String password,
-    @NotNull String keyAlias
-) implements WebServerFactoryCustomizer<UndertowReactiveWebServerFactory> {
+@Slf4j
+@Value
+public class UndertowWebServerFactorySslCustomizer implements
+    WebServerFactoryCustomizer<UndertowReactiveWebServerFactory> {
 
-    private static final Logger log = LoggerFactory.getLogger(UndertowWebServerFactorySslCustomizer.class);
+    @NotNull String keystore;
+    @NotNull String password;
+    @NotNull String keyAlias;
 
     @Override
     public void customize(@NotNull UndertowReactiveWebServerFactory serverFactory) {

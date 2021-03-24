@@ -5,5 +5,5 @@ import org.jetbrains.annotations.Nullable;
 
 public record AuthenticationInResource(
     @Nullable String login,
-    @Nullable char[] password
+    char @Nullable [] password
 ) implements RestResource {}

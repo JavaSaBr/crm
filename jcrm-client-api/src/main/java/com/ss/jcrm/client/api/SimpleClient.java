@@ -6,14 +6,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public interface SimpleContact extends VersionedUniqEntity {
+public interface SimpleClient extends VersionedUniqEntity {
 
-    ContactPhoneNumber[] EMPTY_PHONE_NUMBERS = new ContactPhoneNumber[0];
-    ContactEmail[] EMPTY_EMAILS = new ContactEmail[0];
-    ContactSite[] EMPTY_SITES = new ContactSite[0];
-    ContactMessenger[] EMPTY_MESSENGERS = new ContactMessenger[0];
+    ClientPhoneNumber[] EMPTY_PHONE_NUMBERS = new ClientPhoneNumber[0];
+    ClientEmail[] EMPTY_EMAILS = new ClientEmail[0];
+    ClientSite[] EMPTY_SITES = new ClientSite[0];
+    ClientMessenger[] EMPTY_MESSENGERS = new ClientMessenger[0];
 
     long getAssignerId();
 
@@ -43,21 +42,21 @@ public interface SimpleContact extends VersionedUniqEntity {
 
     void setBirthday(@Nullable LocalDate birthday);
 
-    @NotNull ContactPhoneNumber[] getPhoneNumbers();
+    @NotNull ClientPhoneNumber[] getPhoneNumbers();
 
-    void setPhoneNumbers(@NotNull ContactPhoneNumber[] phoneNumbers);
+    void setPhoneNumbers(@NotNull ClientPhoneNumber[] phoneNumbers);
 
-    @NotNull ContactEmail[] getEmails();
+    @NotNull ClientEmail[] getEmails();
 
-    void setEmails(@NotNull ContactEmail[] emails);
+    void setEmails(@NotNull ClientEmail[] emails);
 
-    @NotNull ContactSite[] getSites();
+    @NotNull ClientSite[] getSites();
 
-    void setSites(@NotNull ContactSite[] sites);
+    void setSites(@NotNull ClientSite[] sites);
 
-    @NotNull ContactMessenger[] getMessengers();
+    @NotNull ClientMessenger[] getMessengers();
 
-    void setMessengers(@NotNull ContactMessenger[] messengers);
+    void setMessengers(@NotNull ClientMessenger[] messengers);
 
     @Nullable String getCompany();
 

@@ -2,9 +2,9 @@ package com.ss.jcrm.client.api;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface ContactMessenger {
+public interface ClientMessenger {
 
-    @NotNull ContactMessenger[] EMPTY_ARRAY = new ContactMessenger[0];
+    @NotNull ClientMessenger[] EMPTY_ARRAY = new ClientMessenger[0];
 
     @NotNull String getLogin();
 

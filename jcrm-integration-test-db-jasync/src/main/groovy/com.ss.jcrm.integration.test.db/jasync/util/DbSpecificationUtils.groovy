@@ -34,8 +34,8 @@ class DbSpecificationUtils {
         def port = container.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
         
         def configuration = JAsyncUtils.buildConfiguration(
-            DbSpecificationConfig.USER,
-            DbSpecificationConfig.PWD,
+            DbSpecificationConfig.dbUser,
+            DbSpecificationConfig.dbPassword,
             address,
             port,
             database,

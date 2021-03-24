@@ -2,9 +2,9 @@ package com.ss.jcrm.client.api;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface ContactSite {
+public interface ClientSite {
 
-    @NotNull ContactSite[] EMPTY_ARRAY = new ContactSite[0];
+    @NotNull ClientSite[] EMPTY_ARRAY = new ClientSite[0];
 
     @NotNull String getUrl();
 

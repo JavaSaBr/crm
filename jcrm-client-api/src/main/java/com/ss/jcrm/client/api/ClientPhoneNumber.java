@@ -2,9 +2,9 @@ package com.ss.jcrm.client.api;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface ContactPhoneNumber {
+public interface ClientPhoneNumber {
 
-    @NotNull ContactPhoneNumber[] EMPTY_ARRAY = new ContactPhoneNumber[0];
+    @NotNull ClientPhoneNumber[] EMPTY_ARRAY = new ClientPhoneNumber[0];
 
     @NotNull String getCountryCode();
 

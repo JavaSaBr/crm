@@ -1,6 +1,6 @@
 package con.ss.jcrm.client.web.config;
 
-import com.ss.jcrm.client.api.dao.SimpleContactDao;
+import com.ss.jcrm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.jasync.config.JAsyncClientConfig;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
@@ -8,12 +8,11 @@ import com.ss.jcrm.user.api.dao.UserDao;
 import com.ss.jcrm.user.jasync.config.JAsyncUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
-import con.ss.jcrm.client.web.handler.ContactHandler;
+import con.ss.jcrm.client.web.handler.ClientHandler;
 import con.ss.jcrm.client.web.validator.ResourceValidator;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -39,11 +38,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientWebConfig {
 
-    @Autowired
-    private final Environment env;
-
-    @Autowired
-    private List<? extends Flyway> flyways;
+    private final List<? extends Flyway> flyways;
 
     @Bean
     @NotNull ApiEndpointServer clientApiEndpointServer() {
@@ -51,36 +46,34 @@ public class ClientWebConfig {
     }
 
     @Bean
-    @NotNull ResourceValidator clientResourceValidator() {
+    @NotNull ResourceValidator clientResourceValidator(@NotNull Environment env) {
         return new ResourceValidator(env);
     }
 
     @Bean
-    @NotNull ContactHandler contactHandler(
+    @NotNull ClientHandler contactHandler(
         @NotNull ResourceValidator resourceValidator,
         @NotNull WebRequestSecurityService webRequestSecurityService,
-        @NotNull SimpleContactDao simpleContactDao,
+        @NotNull SimpleClientDao simpleClientDao,
         @NotNull UserDao userDao
     ) {
-        return new ContactHandler(resourceValidator, webRequestSecurityService, simpleContactDao, userDao);
+        return new ClientHandler(resourceValidator, webRequestSecurityService, simpleClientDao, userDao);
     }
 
     @Bean
     @NotNull RouterFunction<ServerResponse> clientStatusRouterFunction(
         @NotNull ApiEndpointServer clientApiEndpointServer,
-        @NotNull ContactHandler contactHandler
+        @NotNull ClientHandler clientHandler
     ) {
 
         var contextPath = clientApiEndpointServer.contextPath();
-
         return RouterFunctions.route()
-            .GET(contextPath + "/status", request -> ServerResponse.ok()
-                .build())
-            .GET(contextPath + "/contacts", contactHandler::list)
-            .GET(contextPath + "/contacts/page", contactHandler::findPage)
-            .POST(contextPath + "/contact", contactHandler::create)
-            .PUT(contextPath + "/contact", contactHandler::update)
-            .GET(contextPath + "/contact/{id}", contactHandler::findById)
+            .GET("${contextPath}/status", request -> ServerResponse.ok().build())
+            .GET("${contextPath}/contacts", clientHandler::list)
+            .GET("${contextPath}/contacts/page", clientHandler::findPage)
+            .POST("${contextPath}/contact", clientHandler::create)
+            .PUT("${contextPath}/contact", clientHandler::update)
+            .GET("${contextPath}/contact/{id}", clientHandler::findById)
             .build();
     }
 }

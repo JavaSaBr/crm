@@ -64,7 +64,7 @@ class JAsyncUserSpecificationConfig {
         
         return DbSpecificationUtils.newConnectionPool(
             postgreSQLContainer,
-            DbSpecificationConfig.DB_NAME
+            DbSpecificationConfig.dbName
         )
     }
 

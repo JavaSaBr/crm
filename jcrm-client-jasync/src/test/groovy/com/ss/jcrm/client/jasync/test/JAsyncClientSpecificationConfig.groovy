@@ -2,7 +2,7 @@ package com.ss.jcrm.client.jasync.test
 
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
-import com.ss.jcrm.client.api.dao.SimpleContactDao
+import com.ss.jcrm.client.api.dao.SimpleClientDao
 import com.ss.jcrm.client.api.test.ClientTestHelper
 import com.ss.jcrm.client.jasync.config.JAsyncClientConfig
 import com.ss.jcrm.client.jasync.test.helper.JAsyncClientTestHelper
@@ -34,10 +34,7 @@ class JAsyncClientSpecificationConfig {
     UserTestHelper userTestHelper
     
     @Autowired @Lazy
-    SimpleContactDao simpleContactDao
-    
-    @Autowired
-    Environment env
+    SimpleClientDao simpleContactDao
     
     @Bean
     ConnectionPool<? extends ConcreteConnection> clientConnectionPool() {
@@ -48,12 +45,12 @@ class JAsyncClientSpecificationConfig {
         
         return DbSpecificationUtils.newConnectionPool(
             postgreSQLContainer,
-            DbSpecificationConfig.DB_NAME
+            DbSpecificationConfig.dbName
         )
     }
     
     @Bean
-    ClientTestHelper taskTestHelper() {
+    ClientTestHelper taskTestHelper(Environment env) {
         return new JAsyncClientTestHelper(
             clientConnectionPool(),
             env.getRequiredProperty("jdbc.client.db.schema"),

@@ -1,6 +1,7 @@
 
 ext {
     lombok = "true"
+    betterStrings = "true"
     //springboot = "true"
 }
 

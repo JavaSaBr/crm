@@ -35,7 +35,7 @@ class CountryHandlerTest extends DictionarySpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$').value(hasSize(3))
                     .jsonPath('$[*].name').value(containsInAnyOrder(
@@ -88,7 +88,7 @@ class CountryHandlerTest extends DictionarySpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.name').value(is(country.name))
                     .jsonPath('$.id').value(is((int) country.id))
@@ -105,7 +105,7 @@ class CountryHandlerTest extends DictionarySpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.name').value(is(country.name))
                     .jsonPath('$.id').value(is((int) country.id))
@@ -128,7 +128,7 @@ class CountryHandlerTest extends DictionarySpecification {
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectHeader().exists("Access-Control-Allow-Origin")
                 .expectBody()
                     .jsonPath('$').value(hasSize(3))

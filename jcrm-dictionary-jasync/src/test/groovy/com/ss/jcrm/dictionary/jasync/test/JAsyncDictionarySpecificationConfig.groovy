@@ -39,7 +39,7 @@ class JAsyncDictionarySpecificationConfig {
         
         return DbSpecificationUtils.newConnectionPool(
             postgreSQLContainer,
-            DbSpecificationConfig.DB_NAME
+            DbSpecificationConfig.dbName
         )
     }
     

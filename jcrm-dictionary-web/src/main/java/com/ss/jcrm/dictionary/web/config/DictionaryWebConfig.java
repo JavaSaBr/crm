@@ -12,7 +12,6 @@ import com.ss.jcrm.web.config.BaseWebConfig;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -39,16 +38,13 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class DictionaryWebConfig {
 
-    @Autowired
-    private final Environment env;
-
-    @Autowired
-    private List<? extends Flyway> flyways;
+    private final @NotNull List<? extends Flyway> flyways;
 
     @Bean
     @NotNull CachedDictionaryService<CountryOutResource, CountryOutResource[]> countryDictionaryService(
         @NotNull CountryDao countryDao,
-        @NotNull ScheduledExecutorService mainScheduler
+        @NotNull ScheduledExecutorService mainScheduler,
+        @NotNull Environment env
     ) {
 
         var service = new DefaultCachedDictionaryService<>(

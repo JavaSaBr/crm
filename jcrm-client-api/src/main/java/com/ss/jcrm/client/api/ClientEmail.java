@@ -3,9 +3,9 @@ package com.ss.jcrm.client.api;
 import com.ss.jcrm.dao.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public interface ContactEmail extends Entity {
+public interface ClientEmail extends Entity {
 
-    @NotNull ContactEmail[] EMPTY_ARRAY = new ContactEmail[0];
+    @NotNull ClientEmail[] EMPTY_ARRAY = new ClientEmail[0];
 
     @NotNull String getEmail();
 

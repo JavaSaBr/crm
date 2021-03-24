@@ -13,13 +13,13 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(classes = JAsyncClientSpecificationConfig)
 class JAsyncClientSpecification extends DefaultSpecification {
     
-    static final String TABLE_CONTACT = "contact"
+    static final String tableClient = "client"
     
     def static clearAllTables(
         ConnectionPool<? extends ConcreteConnection> connectionPool,
         String schema
     ) {
-        DbSpecificationUtils.clearTable(connectionPool, schema, TABLE_CONTACT)
+        DbSpecificationUtils.clearTable(connectionPool, schema, tableClient)
     }
     
     @Autowired

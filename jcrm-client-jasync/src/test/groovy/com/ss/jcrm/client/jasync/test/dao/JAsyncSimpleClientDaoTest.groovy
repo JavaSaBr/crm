@@ -1,10 +1,10 @@
 package com.ss.jcrm.client.jasync.test.dao
 
 import com.ss.jcrm.client.api.*
-import com.ss.jcrm.client.api.dao.SimpleContactDao
-import com.ss.jcrm.client.api.impl.DefaultContactEmail
-import com.ss.jcrm.client.api.impl.DefaultContactMessenger
-import com.ss.jcrm.client.api.impl.DefaultContactPhoneNumber
+import com.ss.jcrm.client.api.dao.SimpleClientDao
+import com.ss.jcrm.client.api.impl.DefaultClientEmail
+import com.ss.jcrm.client.api.impl.DefaultClientMessenger
+import com.ss.jcrm.client.api.impl.DefaultClientPhoneNumber
 import com.ss.jcrm.client.api.impl.DefaultContactSite
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
@@ -17,10 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
 import java.time.LocalDate
 
-class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
+class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
     
     @Autowired
-    SimpleContactDao simpleContactDao
+    SimpleClientDao simpleContactDao
     
     def "should create and load a simple contact"() {
         
@@ -33,20 +33,20 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
                 userTestHelper.newUser("Curator1"),
                 userTestHelper.newUser("Curator2")
             )
-            ContactPhoneNumber[] phoneNumbers = [
-                new DefaultContactPhoneNumber("+7", "123", "456789", PhoneNumberType.WORK),
-                new DefaultContactPhoneNumber("+7", "123", "098765", PhoneNumberType.MOBILE)
+            ClientPhoneNumber[] phoneNumbers = [
+                new DefaultClientPhoneNumber("+7", "123", "456789", PhoneNumberType.WORK),
+                new DefaultClientPhoneNumber("+7", "123", "098765", PhoneNumberType.MOBILE)
             ]
-            ContactEmail[] emails = [
-                new DefaultContactEmail("test@test.com", EmailType.WORK),
-                new DefaultContactEmail("test2@test2.com", EmailType.HOME),
+            ClientEmail[] emails = [
+                new DefaultClientEmail("test@test.com", EmailType.WORK),
+                new DefaultClientEmail("test2@test2.com", EmailType.HOME),
             ]
-            ContactSite[] sites = [
+            ClientSite[] sites = [
                 new DefaultContactSite("google.com", SiteType.HOME),
             ]
-            ContactMessenger[] messengers = [
-                new DefaultContactMessenger("user1", MessengerType.SKYPE),
-                new DefaultContactMessenger("user2", MessengerType.TELEGRAM),
+            ClientMessenger[] messengers = [
+                new DefaultClientMessenger("user1", MessengerType.SKYPE),
+                new DefaultClientMessenger("user2", MessengerType.TELEGRAM),
             ]
             def birthday = LocalDate.of(1900, 3, 12)
         when:
@@ -105,7 +105,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
     def "should load a simple contact"() {
         
         given:
-            def contact = clientTestHelper.newSimpleContact()
+            def contact = clientTestHelper.newSimpleClient()
         when:
             def loaded = simpleContactDao.findById(contact.id).block()
         then:
@@ -119,7 +119,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
     def "should load a simple contact only under its organization"() {
         
         given:
-            def contact = clientTestHelper.newSimpleContact()
+            def contact = clientTestHelper.newSimpleClient()
         when:
             def loaded = simpleContactDao.findByIdAndOrg(contact.id, contact.organizationId).block()
         then:
@@ -138,7 +138,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
         
         given:
             def assigner = userTestHelper.newUser()
-            def contact = clientTestHelper.newSimpleContact(assigner)
+            def contact = clientTestHelper.newSimpleClient(assigner)
             def curator = userTestHelper.newUser("Curator2", assigner.organization)
             def timeAfterCreation = Instant.now()
         when:
@@ -163,10 +163,10 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
         when:
             Thread.sleep(1000)
             loaded.company = "New Company"
-            loaded.messengers = [new DefaultContactMessenger("test", MessengerType.SKYPE)]
+            loaded.messengers = [new DefaultClientMessenger("test", MessengerType.SKYPE)]
             loaded.sites = [new DefaultContactSite("google.com", SiteType.HOME)]
-            loaded.emails = [new DefaultContactEmail("test@test.com", EmailType.WORK)]
-            loaded.phoneNumbers = [new DefaultContactPhoneNumber("+375", "25", "124124", PhoneNumberType.WORK)]
+            loaded.emails = [new DefaultClientEmail("test@test.com", EmailType.WORK)]
+            loaded.phoneNumbers = [new DefaultClientPhoneNumber("+375", "25", "124124", PhoneNumberType.WORK)]
             loaded.thirdName = "Third name"
             loaded.birthday = LocalDate.of(1900, 04, 11)
             loaded.curatorIds = [curator.id]
@@ -196,7 +196,7 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
         
         given:
             def assigner = userTestHelper.newUser()
-            def contact = clientTestHelper.newSimpleContact(assigner)
+            def contact = clientTestHelper.newSimpleClient(assigner)
         when:
             def loaded = simpleContactDao.findById(contact.id).block()
         then:
@@ -223,14 +223,14 @@ class JAsyncSimpleContactDaoTest extends JAsyncClientSpecification {
             def secondUser = userTestHelper.newUser("User2", secondOrg)
     
             firstOrgContactsCount.times {
-                clientTestHelper.newSimpleContact(firstUser)
+                clientTestHelper.newSimpleClient(firstUser)
             }
     
             secondOrgContactsCount.times {
-                clientTestHelper.newSimpleContact(secondUser)
+                clientTestHelper.newSimpleClient(secondUser)
             }
         
-            List<SimpleContact> loadedContacts = []
+            List<SimpleClient> loadedContacts = []
     
         when:
             def page = simpleContactDao.findPageByOrg(0, 5, firstOrg.id).block()

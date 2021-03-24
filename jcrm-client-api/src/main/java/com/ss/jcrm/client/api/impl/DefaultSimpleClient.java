@@ -5,14 +5,13 @@ import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class DefaultSimpleContact implements SimpleContact {
+public class DefaultSimpleClient implements SimpleClient {
 
     private final long id;
 
@@ -29,14 +28,14 @@ public class DefaultSimpleContact implements SimpleContact {
     private Instant created;
     private Instant modified;
 
-    private ContactPhoneNumber[] phoneNumbers;
-    private ContactEmail[] emails;
-    private ContactSite[] sites;
-    private ContactMessenger[] messengers;
+    private ClientPhoneNumber[] phoneNumbers;
+    private ClientEmail[] emails;
+    private ClientSite[] sites;
+    private ClientMessenger[] messengers;
 
     private volatile int version;
 
-    public DefaultSimpleContact(long id) {
+    public DefaultSimpleClient(long id) {
         this.id = id;
         this.phoneNumbers = EMPTY_PHONE_NUMBERS;
         this.emails = EMPTY_EMAILS;

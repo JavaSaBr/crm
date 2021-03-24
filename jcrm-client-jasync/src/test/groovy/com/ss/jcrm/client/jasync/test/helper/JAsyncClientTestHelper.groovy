@@ -2,8 +2,8 @@ package com.ss.jcrm.client.jasync.test.helper
 
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
-import com.ss.jcrm.client.api.SimpleContact
-import com.ss.jcrm.client.api.dao.SimpleContactDao
+import com.ss.jcrm.client.api.SimpleClient
+import com.ss.jcrm.client.api.dao.SimpleClientDao
 import com.ss.jcrm.client.api.test.ClientTestHelper
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper
@@ -13,13 +13,13 @@ import com.ss.jcrm.user.api.test.UserTestHelper
 class JAsyncClientTestHelper extends JAsyncTestHelper implements ClientTestHelper {
     
     private final UserTestHelper userTestHelper
-    private final SimpleContactDao simpleContactDao
+    private final SimpleClientDao simpleContactDao
     
     JAsyncClientTestHelper(
         ConnectionPool<? extends ConcreteConnection> connectionPool,
         String schema,
         UserTestHelper userTestHelper,
-        SimpleContactDao simpleContactDao
+        SimpleClientDao simpleContactDao
     ) {
         super(connectionPool, schema)
         this.userTestHelper = userTestHelper
@@ -27,7 +27,7 @@ class JAsyncClientTestHelper extends JAsyncTestHelper implements ClientTestHelpe
     }
     
     @Override
-    SimpleContact newSimpleContact() {
+    SimpleClient newSimpleClient() {
         def user = userTestHelper.newUser()
         return simpleContactDao.create(
             user,
@@ -38,7 +38,7 @@ class JAsyncClientTestHelper extends JAsyncTestHelper implements ClientTestHelpe
     }
     
     @Override
-    SimpleContact newSimpleContact(User assigner) {
+    SimpleClient newSimpleClient(User assigner) {
         return simpleContactDao.create(
             assigner,
             assigner.organization,
