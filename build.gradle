@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.4.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.4.5"
     }
 }
 
@@ -16,41 +16,26 @@ group = "com.spaceshift"
 
 allprojects {
 
-    apply plugin: "java"
     apply plugin: "groovy"
 
     sourceCompatibility = JavaVersion.VERSION_15
     targetCompatibility = JavaVersion.VERSION_15
 
     repositories {
-        jcenter()
-        mavenCentral()
         mavenLocal()
-        maven { url "https://dl.bintray.com/javasabr/maven" }
-        maven { url "https://dl.bintray.com/jasync-sql/jasync-sql" }
+        mavenCentral()
+        maven {
+            url "https://dl.bintray.com/javasabr/maven"
+        }
+        maven {
+            url "https://dl.bintray.com/jasync-sql/jasync-sql"
+        }
     }
 
     ext {
         angularVersion = "11.0.6"
         annotationVersion = "20.1.0"
-        rlibVersion = "9.10.0"
         lombokVersion = '1.18.18'
-        springbootVersion = '2.4.4'
-        springVersion = '5.3.5'
-        junitJupiterVersion = "5.6.2"
-        hikariCPVersion = "2.7.8"
-        flywayVersion = "7.4.0"
-        testcontainersVersion = "1.15.2"
-        groovyVersion = "3.0.7"
-        spockVersion = "2.0-M4-groovy-3.0"
-        postgresqlVersion = "42.1.1"
-        javassistVersion = "3.27.0-GA"
-        jsonwebtokenVersion = "0.11.2"
-        hamcrestVersion = "1.3"
-        jsonpathVersion = "2.4.0"
-        jasyncVersion = "1.1.7"
-        projectReactorVersion = "3.4.1"
-        jacksonVersion = "2.12.2"
         betterStringVersion = "0.5"
     }
 
@@ -78,10 +63,6 @@ allprojects {
                 it.testAnnotationProcessor "com.antkorwin:better-strings:$betterStringVersion"
             }
         }
-
-        if (project.ext.has("springboot") && project.ext["springboot"] == "true") {
-            project.apply (plugin: "org.springframework.boot")
-        }
     }
 
     sourceSets {
@@ -98,7 +79,7 @@ allprojects {
     }
 
     configurations {
-        testArtifacts.extendsFrom testRuntime
+        testArtifacts.extendsFrom testImplementation
     }
 
     task testJar(type: Jar) {
@@ -187,6 +168,6 @@ task buildSingleArtifactWithoutTests(type: GradleBuild) {
 }
 
 wrapper {
-    gradleVersion = '6.8'
+    gradleVersion = '7.0'
     distributionType = Wrapper.DistributionType.ALL
 }

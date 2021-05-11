@@ -1,9 +1,10 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base")
-    compile ("org.springframework.boot:spring-boot-starter:$springbootVersion")
+    api projects.jcrmBase
+    api libs.springboot.starter.core
 }

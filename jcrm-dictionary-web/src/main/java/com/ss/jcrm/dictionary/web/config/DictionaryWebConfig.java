@@ -49,7 +49,7 @@ public class DictionaryWebConfig {
 
         var service = new DefaultCachedDictionaryService<>(
             countryDao,
-            CountryOutResource::new,
+            CountryOutResource::from,
             objects -> objects.toArray(CountryOutResource[]::new)
         );
         service.reload();

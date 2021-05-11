@@ -1,3 +1,4 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
@@ -5,9 +6,10 @@ ext {
 }
 
 dependencies {
-    compile project(":jcrm-client-jasync")
-    compile project(":jcrm-user-jasync")
-    compile project(":jcrm-security-web")
-    testCompile project(path: ":jcrm-client-jasync", configuration: "testArtifacts")
-    testCompile project(":jcrm-integration-test-web")
+    api projects.jcrmClientJasync
+    api projects.jcrmUserJasync
+    api projects.jcrmSecurityWeb
+
+    testImplementation project(path: ":jcrm-client-jasync", configuration: "testArtifacts")
+    testImplementation projects.jcrmIntegrationTestWeb
 }

@@ -1,18 +1,19 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base")
-    compile project(":jcrm-dao")
-    compile project(":jcrm-base-spring")
+    api projects.jcrmBase
+    api projects.jcrmDao
+    api projects.jcrmBaseSpring
     
     //compile "com.jsoniter:jsoniter:$jsointerVersion"
     //compile "org.javassist:javassist:$javassistVersion"
-    compile "org.postgresql:postgresql:$postgresqlVersion"
-    compile "com.github.jasync-sql:jasync-postgresql:$jasyncVersion"
-    compile "com.github.jasync-sql:jasync-common:$jasyncVersion"
-    compile "org.flywaydb:flyway-core:$flywayVersion"
-    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+
+    api libs.postgresql.driver
+    api libs.bundles.jasync
+    api libs.flyway.core
+    api libs.jackson.databind
 }

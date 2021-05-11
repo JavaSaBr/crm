@@ -1,14 +1,15 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base-spring")
-    compile project(":jcrm-jasync")
-    compile project(":jcrm-client-api")
-    
-    testCompile project(":jcrm-integration-test-db-jasync")
-    testCompile project(path: ":jcrm-user-jasync", configuration: "testArtifacts")
-    testCompile project(path: ":jcrm-client-api", configuration: "testArtifacts")
+    api projects.jcrmBaseSpring
+    api projects.jcrmJasync
+    api projects.jcrmClientApi
+
+    testImplementation project(path: ":jcrm-user-jasync", configuration: "testArtifacts")
+    testImplementation project(path: ":jcrm-client-api", configuration: "testArtifacts")
+    testImplementation projects.jcrmIntegrationTestDbJasync
 }

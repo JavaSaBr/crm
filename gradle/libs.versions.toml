@@ -1,0 +1,69 @@
+[versions]
+groovy = "3.0.5"
+rlib = "9.10.0"
+reactor = "3.4.1"
+jackson = "2.12.2"
+testcontainers = "1.15.2"
+postgresql-driver = "42.1.1"
+jasync = "1.1.7"
+flyway = "7.4.0"
+springboot = "2.4.4"
+spock = "2.0-M5-groovy-3.0"
+spring = '5.3.5'
+groovy = "3.0.7"
+hamcrest = "1.3"
+jsonpath = "2.4.0"
+jsonwebtoken = "0.11.2"
+
+[libraries]
+rlib-common = { module = "com.spaceshift:rlib.common", version.ref = "rlib" }
+rlib-logger-slf4j = { module = "com.spaceshift:rlib.logger.slf4j", version.ref = "rlib" }
+rlib-mail = { module = "com.spaceshift:rlib.mail", version.ref = "rlib" }
+rlib-testcontainers = { module = "com.spaceshift:rlib.testcontainers", version.ref = "rlib" }
+
+reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
+
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-datatype-jdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "jackson" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+jackson-module-parameter-names = { module = "com.fasterxml.jackson.module:jackson-module-parameter-names", version.ref = "jackson" }
+jackson-module-blackbird = { module = "com.fasterxml.jackson.module:jackson-module-blackbird", version.ref = "jackson" }
+
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+
+postgresql-driver = { module = "org.postgresql:postgresql", version.ref = "postgresql-driver" }
+
+jasync-common = { module = "com.github.jasync-sql:jasync-common", version.ref = "jasync" }
+jasync-postgresql = { module = "com.github.jasync-sql:jasync-postgresql", version.ref = "jasync" }
+
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+
+springboot-starter-core = { module = "org.springframework.boot:spring-boot-starter", version.ref = "springboot" }
+springboot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "springboot" }
+springboot-starter-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "springboot" }
+springboot-starter-reactor-netty = { module = "org.springframework.boot:spring-boot-starter-reactor-netty", version.ref = "springboot" }
+springboot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springboot" }
+
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
+spock-spring = { module = "org.spockframework:spock-spring", version.ref = "spock" }
+
+spring-test = { module = "org.springframework:spring-test", version.ref = "spring" }
+
+groovy-all = { module = "org.codehaus.groovy:groovy-all", version.ref = "groovy" }
+
+hamcrest-library = { module = "org.hamcrest:hamcrest-library", version.ref = "hamcrest" }
+
+json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "jsonpath" }
+
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jsonwebtoken" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jsonwebtoken" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jsonwebtoken" }
+
+[bundles]
+jackson = ["jackson-annotations", "jackson-databind", "jackson-datatype-jdk8", "jackson-datatype-jsr310", "jackson-module-parameter-names", "jackson-module-blackbird"]
+jasync = ["jasync-common", "jasync-postgresql"]
+springboot-starter-reactive = ["springboot-starter-webflux", "springboot-starter-undertow"]
+spock = ["spock-core", "spock-spring"]
+jjwt = ["jjwt-api", "jjwt-impl", "jjwt-jackson"]

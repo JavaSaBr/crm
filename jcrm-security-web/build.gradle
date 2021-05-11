@@ -1,16 +1,16 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-security")
-    compile project(":jcrm-base-web")
-    compile project(":jcrm-user-api")
-    compile "io.jsonwebtoken:jjwt-api:$jsonwebtokenVersion"
-    runtime "io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion"
-    runtime "io.jsonwebtoken:jjwt-jackson:$jsonwebtokenVersion"
-    testCompile project(":jcrm-integration-test-web")
-    testCompile project(path: ":jcrm-security", configuration: "testArtifacts")
-    testCompile project(path: ":jcrm-user-jasync", configuration: "testArtifacts")
+    api projects.jcrmSecurity
+    api projects.jcrmBaseWeb
+    api projects.jcrmUserApi
+    api libs.bundles.jjwt
+
+    testImplementation project(path: ":jcrm-security", configuration: "testArtifacts")
+    testImplementation project(path: ":jcrm-user-jasync", configuration: "testArtifacts")
+    testImplementation projects.jcrmIntegrationTestWeb
 }

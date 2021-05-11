@@ -1,13 +1,14 @@
+apply plugin: "java-library"
+
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base")
-    compile "org.springframework.boot:spring-boot-starter-webflux:$springbootVersion"
-    compile "org.springframework.boot:spring-boot-starter-undertow:$springbootVersion"
+    api projects.jcrmBase
+    api libs.bundles.springboot.starter.reactive
 }
 
 configurations {
-    compile.exclude module: 'spring-boot-starter-reactor-netty'
+    api.exclude module: 'spring-boot-starter-reactor-netty'
 }

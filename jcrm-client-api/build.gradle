@@ -1,11 +1,13 @@
+apply plugin: "java-library"
+
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base")
-    compile project(":jcrm-dictionary-api")
-    compile project(":jcrm-user-api")
+    api projects.jcrmBase
+    api projects.jcrmDictionaryApi
+    api projects.jcrmUserApi
     
-    testCompile project(":jcrm-integration-test-db")
+    testImplementation projects.jcrmIntegrationTestDb
 }

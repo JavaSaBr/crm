@@ -45,7 +45,7 @@ public class ClientHandler {
             .zipWhen(user -> request.bodyToMono(ClientInResource.class), AuthorizedResource::new)
             .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
             .flatMap(this::createContact)
-            .map(ClientOutResource::new)
+            .map(ClientOutResource::from)
             .flatMap(ResponseUtils::created);
     }
 
@@ -54,7 +54,7 @@ public class ClientHandler {
             .zipWhen(user -> request.bodyToMono(ClientInResource.class), AuthorizedResource::new)
             .doOnNext(authorized -> resourceValidator.validate(authorized.getResource()))
             .flatMap(this::updateContact)
-            .map(ClientOutResource::new)
+            .map(ClientOutResource::from)
             .flatMap(ResponseUtils::ok);
     }
 
@@ -62,7 +62,7 @@ public class ClientHandler {
         return webRequestSecurityService.isAuthorized(request)
             .flatMap(user -> simpleClientDao.findByOrg(user.getOrganization()))
             .map(contacts -> contacts.stream()
-                .map(ClientOutResource::new)
+                .map(ClientOutResource::from)
                 .toArray(ClientOutResource[]::new))
             .flatMap(ResponseUtils::ok);
     }
@@ -71,7 +71,7 @@ public class ClientHandler {
         return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
             .flatMap(authorized -> simpleClientDao.findByIdAndOrg(authorized.getParam(), authorized.getOrgId()))
-            .map(ClientOutResource::new)
+            .map(ClientOutResource::from)
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
     }
@@ -90,7 +90,7 @@ public class ClientHandler {
             .map(entityPage -> DataPageResponse.from(
                 entityPage.totalSize(),
                 entityPage.entities(),
-                ClientOutResource::new,
+                ClientOutResource::from,
                 ClientOutResource[]::new
             ))
             .flatMap(ResponseUtils::ok)
@@ -104,8 +104,8 @@ public class ClientHandler {
         var user = authorized.getUser();
         var resource = authorized.getResource();
 
-        return userDao.findByIdAndOrg(resource.getAssigner(), user.getOrganization())
-            .zipWhen(assigner -> userDao.findByIdsAndOrg(resource.getCurators(), assigner.getOrganization()))
+        return userDao.findByIdAndOrg(resource.assigner(), user.getOrganization())
+            .zipWhen(assigner -> userDao.findByIdsAndOrg(resource.curators(), assigner.getOrganization()))
             .flatMap(args -> {
 
                 var assigner = args.getT1();
@@ -115,15 +115,15 @@ public class ClientHandler {
                     assigner,
                     curators,
                     assigner.getOrganization(),
-                    resource.getFirstName(),
-                    resource.getSecondName(),
-                    resource.getThirdName(),
-                    DateUtils.toLocalDate(resource.getBirthday()),
-                    toPhoneNumbers(resource.getPhoneNumbers()),
-                    toEmails(resource.getEmails()),
-                    toSites(resource.getSites()),
-                    toMessengers(resource.getMessengers()),
-                    resource.getCompany()
+                    resource.firstName(),
+                    resource.secondName(),
+                    resource.thirdName(),
+                    DateUtils.toLocalDate(resource.birthday()),
+                    toPhoneNumbers(resource.phoneNumbers()),
+                    toEmails(resource.emails()),
+                    toSites(resource.sites()),
+                    toMessengers(resource.messengers()),
+                    resource.company()
                 );
             });
     }
@@ -136,20 +136,20 @@ public class ClientHandler {
         var org = user.getOrganization();
         var resource = authorized.getResource();
 
-        return simpleClientDao.findByIdAndOrg(resource.getId(), org)
+        return simpleClientDao.findByIdAndOrg(resource.id(), org)
             .switchIfEmpty(Mono.error(IdNotPresentedWebException::new))
             .zipWhen(contact -> {
-                if (contact.getVersion() != resource.getVersion()) {
+                if (contact.getVersion() != resource.version()) {
                     return Mono.error(new ResourceIsAlreadyChangedWebException());
                 } else {
-                    return userDao.findByIdAndOrg(resource.getAssigner(), org);
+                    return userDao.findByIdAndOrg(resource.assigner(), org);
                 }
             })
             .switchIfEmpty(Mono.error(() -> ExceptionUtils.toBadRequest(
                 ClientErrors.INVALID_ASSIGNER,
                 ClientErrors.INVALID_ASSIGNER_MESSAGE
             )))
-            .zipWhen(tuple -> userDao.findByIdsAndOrg(resource.getCurators(), org), TupleUtils::merge)
+            .zipWhen(tuple -> userDao.findByIdsAndOrg(resource.curators(), org), TupleUtils::merge)
             .flatMap(tuple -> {
 
                 var contact = tuple.getT1();
@@ -157,15 +157,15 @@ public class ClientHandler {
                 var curators = tuple.getT3();
 
                 contact.setAssignerId(assigner.getId());
-                contact.setBirthday(DateUtils.toLocalDate(resource.getBirthday()));
-                contact.setCompany(resource.getCompany());
-                contact.setFirstName(resource.getFirstName());
-                contact.setSecondName(resource.getSecondName());
-                contact.setThirdName(resource.getThirdName());
-                contact.setEmails(toEmails(resource.getEmails()));
-                contact.setPhoneNumbers(toPhoneNumbers(resource.getPhoneNumbers()));
-                contact.setSites(toSites(resource.getSites()));
-                contact.setMessengers(toMessengers(resource.getMessengers()));
+                contact.setBirthday(DateUtils.toLocalDate(resource.birthday()));
+                contact.setCompany(resource.company());
+                contact.setFirstName(resource.firstName());
+                contact.setSecondName(resource.secondName());
+                contact.setThirdName(resource.thirdName());
+                contact.setEmails(toEmails(resource.emails()));
+                contact.setPhoneNumbers(toPhoneNumbers(resource.phoneNumbers()));
+                contact.setSites(toSites(resource.sites()));
+                contact.setMessengers(toMessengers(resource.messengers()));
                 contact.setCuratorIds(curators.stream()
                     .mapToLong(HasId::getId)
                     .toArray());
@@ -176,39 +176,39 @@ public class ClientHandler {
             });
     }
 
-    private @NotNull ClientPhoneNumber[] toPhoneNumbers(@Nullable ClientPhoneNumberResource[] resources) {
+    private @NotNull ClientPhoneNumber[] toPhoneNumbers(ClientPhoneNumberResource @Nullable [] resources) {
         return ArrayUtils.map(
             resources,
             res -> new DefaultClientPhoneNumber(
-                res.getCountryCode(),
-                res.getRegionCode(),
-                res.getPhoneNumber(),
-                PhoneNumberType.of(res.getType())
+                res.countryCode(),
+                res.regionCode(),
+                res.phoneNumber(),
+                PhoneNumberType.of(res.type())
             ),
             ClientPhoneNumber.EMPTY_ARRAY
         );
     }
 
-    private @NotNull ClientEmail[] toEmails(@Nullable ClientEmailResource[] resources) {
+    private ClientEmail @NotNull [] toEmails(ClientEmailResource @Nullable [] resources) {
         return ArrayUtils.map(
             resources,
-            res -> new DefaultClientEmail(res.getEmail(), EmailType.of(res.getType())),
+            res -> new DefaultClientEmail(res.email(), EmailType.of(res.type())),
             ClientEmail.EMPTY_ARRAY
         );
     }
 
-    private @NotNull ClientSite[] toSites(@Nullable ClientSiteResource[] resources) {
+    private ClientSite @NotNull [] toSites(ClientSiteResource @Nullable [] resources) {
         return ArrayUtils.map(
             resources,
-            res -> new DefaultContactSite(res.getUrl(), SiteType.of(res.getType())),
+            res -> new DefaultContactSite(res.url(), SiteType.of(res.type())),
             ClientSite.EMPTY_ARRAY
         );
     }
 
-    private @NotNull ClientMessenger[] toMessengers(@Nullable ClientMessengerResource[] resources) {
+    private ClientMessenger @NotNull [] toMessengers(ClientMessengerResource @Nullable [] resources) {
         return ArrayUtils.map(
             resources,
-            res -> new DefaultClientMessenger(res.getLogin(), MessengerType.of(res.getType())),
+            res -> new DefaultClientMessenger(res.login(), MessengerType.of(res.type())),
             ClientMessenger.EMPTY_ARRAY
         );
     }

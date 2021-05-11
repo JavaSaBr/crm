@@ -1,9 +1,10 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base-spring")
-    testCompile project(":jcrm-integration-test")
+    api projects.jcrmBaseSpring
+    testImplementation projects.jcrmIntegrationTest
 }

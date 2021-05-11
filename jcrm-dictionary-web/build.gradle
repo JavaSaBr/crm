@@ -1,3 +1,4 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
@@ -6,11 +7,12 @@ ext {
 }
 
 dependencies {
-    compile project(":jcrm-dictionary-jasync")
-    compile project(":jcrm-security-web")
-    testCompile project(path: ":jcrm-dictionary-jasync", configuration: "testArtifacts")
-    testCompile project(":jcrm-integration-test-db")
-    testCompile project(":jcrm-integration-test-web")
+    api projects.jcrmDictionaryJasync
+    api projects.jcrmSecurityWeb
+
+    testImplementation project(path: ":jcrm-dictionary-jasync", configuration: "testArtifacts")
+    testImplementation projects.jcrmIntegrationTestDb
+    testImplementation projects.jcrmIntegrationTestWeb
 }
 /*
 afterEvaluate {

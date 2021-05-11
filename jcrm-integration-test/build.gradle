@@ -1,8 +1,9 @@
+apply plugin: "java-library"
+
 dependencies {
-    compile project(":jcrm-base")
-    compile project(":jcrm-base-spring")
-    compile "org.springframework:spring-test:$springVersion"
-    compile "org.spockframework:spock-core:$spockVersion"
-    compile "org.spockframework:spock-spring:$spockVersion"
-    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    api projects.jcrmBase
+    api projects.jcrmBaseSpring
+    api libs.spring.test
+    api libs.bundles.spock
+    api libs.groovy.all
 }

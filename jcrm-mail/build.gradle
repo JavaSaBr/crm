@@ -1,16 +1,21 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base-spring")
-    compile ("com.spaceshift:rlib.mail:$rlibVersion") {
+
+    api projects.jcrmBaseSpring
+
+    api (libs.rlib.mail) {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
-    testCompile project(":jcrm-integration-test")
-    testCompile ("com.spaceshift:rlib.testcontainers:$rlibVersion") {
+
+    testImplementation projects.jcrmIntegrationTest
+    testImplementation (libs.rlib.testcontainers) {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
-    testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
+
+    testImplementation libs.testcontainers.core
 }

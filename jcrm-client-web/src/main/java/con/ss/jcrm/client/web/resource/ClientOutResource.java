@@ -41,7 +41,7 @@ public record ClientOutResource(
             client.getCompany(),
             DateUtils.toString(client.getBirthday()),
             ArrayUtils.mapNullable(client.getPhoneNumbers(),
-                ClientPhoneNumberResource::new,
+                ClientPhoneNumberResource::from,
                 ClientPhoneNumberResource.class
             ),
             ArrayUtils.mapNullable(

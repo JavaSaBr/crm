@@ -1,4 +1,6 @@
+apply plugin: "java-library"
+
 dependencies {
-    compile project(":jcrm-integration-test")
-    compile "org.testcontainers:postgresql:$testcontainersVersion"
+    api projects.jcrmIntegrationTest
+    api libs.testcontainers.postgresql
 }

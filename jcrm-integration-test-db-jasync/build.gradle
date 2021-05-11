@@ -1,4 +1,6 @@
+apply plugin: "java-library"
+
 dependencies {
-    compile project(":jcrm-jasync")
-    compile project(":jcrm-integration-test-db")
+    api projects.jcrmJasync
+    api projects.jcrmIntegrationTestDb
 }

@@ -1,10 +1,11 @@
+apply plugin: "java-library"
 
 dependencies {
-    compile project(":jcrm-integration-test")
-    compile project(":jcrm-base-spring")
-    compile project(":jcrm-base-web")
-    compile "org.springframework.boot:spring-boot-starter-test:$springbootVersion"
-    compile "org.springframework.boot:spring-boot-starter-reactor-netty:$springbootVersion"
-    compile "org.hamcrest:hamcrest-library:$hamcrestVersion"
-    compile "com.jayway.jsonpath:json-path:$jsonpathVersion"
+    api projects.jcrmIntegrationTest
+    api projects.jcrmBaseSpring
+    api projects.jcrmBaseWeb
+    api libs.springboot.starter.reactor.netty
+    api libs.springboot.starter.test
+    api libs.hamcrest.library
+    api libs.json.path
 }

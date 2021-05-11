@@ -1,11 +1,12 @@
+apply plugin: "java-library"
 
 ext {
     lombok = "true"
 }
 
 dependencies {
-    compile project(":jcrm-base-web")
-    compile project(":jcrm-ui")
+    api projects.jcrmBaseWeb
+    api projects.jcrmUi
 }
 
 task deleteOldFrontEnd(type: Delete) {

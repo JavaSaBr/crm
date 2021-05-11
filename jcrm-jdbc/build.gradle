@@ -4,12 +4,12 @@ ext {
 }
 
 dependencies {
-    compile project(":jcrm-base")
-    compile project(":jcrm-base-spring")
-    compile project(":jcrm-base-web")
-    compile project(":jcrm-dao")
-    compile "org.flywaydb:flyway-core:$flywayVersion"
-    compile "com.zaxxer:HikariCP:$hikariCPVersion"
-    compile "com.jsoniter:jsoniter:$jsointerVersion"
-    compile "org.postgresql:postgresql:$postgresqlVersion"
+    api projects.jcrmBase
+    api projects.jcrmBaseSpring
+    api projects.jcrmBaseWeb
+    api projects.jcrmDao
+    api "org.flywaydb:flyway-core:$flywayVersion"
+    api "com.zaxxer:HikariCP:$hikariCPVersion"
+    api "com.jsoniter:jsoniter:$jsointerVersion"
+    api "org.postgresql:postgresql:$postgresqlVersion"
 }

@@ -1,4 +1,4 @@
 dependencies {
-    compile project(":jcrm-jdbc")
-    compile project(":jcrm-integration-test-db")
+    api projects.jcrmJdbc")
+    api projects.jcrmIntegrationTestDb")
 }

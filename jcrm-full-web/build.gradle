@@ -1,14 +1,15 @@
+apply plugin: "java"
+apply plugin: "org.springframework.boot"
 
 ext {
     lombok = "true"
-    springboot = "true"
 }
 
 dependencies {
-    compile project(":jcrm-registration-web")
-    compile project(":jcrm-dictionary-web")
-    compile project(":jcrm-client-web")
-    compile project(":jcrm-ui-server")
+    implementation projects.jcrmRegistrationWeb
+    implementation projects.jcrmDictionaryWeb
+    implementation projects.jcrmClientWeb
+    implementation projects.jcrmUiServer
 }
 
 afterEvaluate {
