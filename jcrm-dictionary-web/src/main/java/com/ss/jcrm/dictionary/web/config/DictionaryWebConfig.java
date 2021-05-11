@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
     WebSecurityConfig.class,
     BaseWebConfig.class
 })
-@Configuration
 @PropertySources({
     @PropertySource("classpath:com/ss/jcrm/dictionary/web/dictionary-web.properties"),
     @PropertySource(
@@ -36,6 +35,7 @@ import java.util.concurrent.TimeUnit;
     )
 })
 @RequiredArgsConstructor
+@Configuration(proxyBeanMethods = false)
 public class DictionaryWebConfig {
 
     private final @NotNull List<? extends Flyway> flyways;
@@ -54,7 +54,11 @@ public class DictionaryWebConfig {
         );
         service.reload();
 
-        int interval = env.getProperty("dictionary.web.cache.reload.interval", int.class, 600);
+        var interval = env.getProperty(
+            "dictionary.web.cache.reload.interval",
+            int.class,
+            600
+        );
 
         mainScheduler.scheduleAtFixedRate(service::reloadAsync, interval, interval, TimeUnit.SECONDS);
 

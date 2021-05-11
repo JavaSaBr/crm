@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.github.jasync.sql.db.Configuration;
 import com.github.jasync.sql.db.ConnectionPoolConfiguration;
@@ -52,7 +53,7 @@ public class JAsyncUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
         .registerModule(new ParameterNamesModule())
-        .registerModule(new Jdk8Module())
+        .registerModule(new BlackbirdModule())
         .registerModule(new JavaTimeModule());
 
     private static final JavaType LONG_ARRAY_TYPE = OBJECT_MAPPER.constructType(long[].class);
@@ -83,7 +84,6 @@ public class JAsyncUtils {
 
         var errorMessage = exception.getErrorMessage();
         var fields = errorMessage.getFields();
-
 
         switch (fields.get('C')) {
             case "23505": {

@@ -15,13 +15,11 @@ import com.ss.jcrm.jasync.util.JAsyncUtils;
 import io.netty.channel.EventLoopGroup;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 import java.util.concurrent.ExecutorService;
 
-@Configuration
 @PropertySources({
     @PropertySource("classpath:com/ss/jcrm/dictionary/jasync/dictionary-jasync.properties"),
     @PropertySource(
@@ -30,23 +28,12 @@ import java.util.concurrent.ExecutorService;
     )
 })
 @Import(JAsyncConfig.class)
+@Configuration(proxyBeanMethods = false)
 public class JAsyncDictionaryConfig {
-
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    private PoolConfiguration dbPoolConfiguration;
-
-    @Autowired
-    private EventLoopGroup dbEventLoopGroup;
-
-    @Autowired
-    private ExecutorService dbExecutor;
 
     @Bean
     @DependsOn("dictionaryConnectionPool")
-    @NotNull Flyway dictionaryFlyway() {
+    @NotNull Flyway dictionaryFlyway(@NotNull Environment env) {
 
         var flyway = Flyway.configure()
             .locations("classpath:com/ss/jcrm/dictionary/db/migration")
@@ -67,7 +54,17 @@ public class JAsyncDictionaryConfig {
     }
 
     @Bean
-    @NotNull ConnectionPool<? extends ConcreteConnection> dictionaryConnectionPool() {
+    @NotNull String dictionaryDbSchema(@NotNull Environment env) {
+        return env.getRequiredProperty("jdbc.dictionary.db.schema");
+    }
+
+    @Bean
+    @NotNull ConnectionPool<? extends ConcreteConnection> dictionaryConnectionPool(
+        @NotNull Environment env,
+        @NotNull EventLoopGroup dbEventLoopGroup,
+        @NotNull PoolConfiguration dbPoolConfiguration,
+        @NotNull ExecutorService dbExecutor
+    ) {
 
         var configuration = JAsyncUtils.buildConfiguration(
             env.getRequiredProperty("jdbc.dictionary.db.username"),
@@ -91,27 +88,37 @@ public class JAsyncDictionaryConfig {
     }
 
     @Bean
-    @NotNull CountryDao countryDao() {
+    @NotNull CountryDao countryDao(
+        @NotNull ConnectionPool<? extends ConcreteConnection> dictionaryConnectionPool,
+        @NotNull String dictionaryDbSchema
+    ) {
         return new JAsyncCountryDao(
-            dictionaryConnectionPool(),
-            env.getRequiredProperty("jdbc.dictionary.db.schema")
+            dictionaryConnectionPool,
+            dictionaryDbSchema
         );
     }
 
     @Bean
-    @NotNull CityDao cityDao() {
+    @NotNull CityDao cityDao(
+        @NotNull ConnectionPool<? extends ConcreteConnection> dictionaryConnectionPool,
+        @NotNull String dictionaryDbSchema,
+        @NotNull CountryDao countryDao
+    ) {
         return new JAsyncCityDao(
-            dictionaryConnectionPool(),
-            env.getRequiredProperty("jdbc.dictionary.db.schema"),
-            countryDao()
+            dictionaryConnectionPool,
+            dictionaryDbSchema,
+            countryDao
         );
     }
 
     @Bean
-    @NotNull IndustryDao industryDao() {
+    @NotNull IndustryDao industryDao(
+        @NotNull ConnectionPool<? extends ConcreteConnection> dictionaryConnectionPool,
+        @NotNull String dictionaryDbSchema
+    ) {
         return new JAsyncIndustryDao(
-            dictionaryConnectionPool(),
-            env.getRequiredProperty("jdbc.dictionary.db.schema")
+            dictionaryConnectionPool,
+            dictionaryDbSchema
         );
     }
 }

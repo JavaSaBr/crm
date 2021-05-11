@@ -1,21 +1,24 @@
 package com.ss.jcrm.dictionary.api.impl;
 
 import com.ss.jcrm.dictionary.api.Country;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 @ToString
-@Getter(onMethod_ = @NotNull)
 @EqualsAndHashCode(of = "id")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultCountry implements Country {
 
-    private final String name;
-    private final String flagCode;
-    private final String phoneCode;
+    @NotNull String name;
+    @NotNull String flagCode;
+    @NotNull String phoneCode;
 
-    private final long id;
+    long id;
 
     public DefaultCountry(@NotNull String name, @NotNull String flagCode, @NotNull String phoneCode, long id) {
         this.name = name;

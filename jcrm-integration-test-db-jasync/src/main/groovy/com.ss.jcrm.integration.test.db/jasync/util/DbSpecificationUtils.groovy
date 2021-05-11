@@ -17,7 +17,7 @@ class DbSpecificationUtils {
         String... tableNames
     ) {
         tableNames.each {
-            executeQuery(connectionPool, "DELETE FROM \"$schema\".\"$it\"")
+            executeQuery(connectionPool, "delete from \"$schema\".\"$it\"")
         }
     }
     

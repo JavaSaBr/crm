@@ -10,39 +10,50 @@ import com.ss.jcrm.dictionary.api.impl.DefaultCountry;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.rlib.common.util.array.Array;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncCountryDao extends AbstractDictionaryDao<Country> implements CountryDao {
 
-    private static final String Q_SELECT_BY_NAME = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " from \"${schema}\".\"country\" where \"name\" = ?";
+    private static final String FIELD_LIST = """
+        "id", "name", "flag_code", "phone_code"
+        """;
 
-    private static final String Q_SELECT_BY_ID = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " from \"${schema}\".\"country\" where \"id\" = ?";
+    private static final String Q_SELECT_BY_NAME = """
+        select ${field-list} from "${schema}"."country" where "name" = ?
+        """;
 
-    private static final String Q_SELECT_ALL = "select \"id\", \"name\", \"flag_code\", \"phone_code\" " +
-        " from \"${schema}\".\"country\"";
+    private static final String Q_SELECT_BY_ID = """
+        select ${field-list} from "${schema}"."country" where "id" = ?
+        """;
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"country\" (\"name\", \"flag_code\"," +
-        " \"phone_code\") values (?, ?, ?) returning id";
+    private static final String Q_SELECT_ALL = """
+        select ${field-list} from "${schema}"."country"
+        """;
 
-    private final String querySelectByName;
-    private final String querySelectById;
-    private final String querySelectAll;
-    private final String queryInsert;
+    private static final String Q_INSERT = """
+        insert into "${schema}"."country" ("name", "flag_code", "phone_code") values (?, ?, ?) returning "id"
+        """;
+
+    @NotNull String querySelectByName;
+    @NotNull String querySelectById;
+    @NotNull String querySelectAll;
+    @NotNull String queryInsert;
 
     public JAsyncCountryDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
         @NotNull String schema
     ) {
-        super(connectionPool);
-        this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
-        this.querySelectAll = Q_SELECT_ALL.replace("${schema}", schema);
-        this.queryInsert = Q_INSERT.replace("${schema}", schema);
-        this.querySelectByName = Q_SELECT_BY_NAME.replace("${schema}", schema);
+        super(connectionPool, schema, FIELD_LIST);
+        this.querySelectById = prepareQuery(Q_SELECT_BY_ID);
+        this.querySelectAll = prepareQuery(Q_SELECT_ALL);
+        this.queryInsert = prepareQuery(Q_INSERT);
+        this.querySelectByName = prepareQuery(Q_SELECT_BY_NAME);
     }
 
     @Override

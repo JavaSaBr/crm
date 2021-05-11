@@ -10,11 +10,15 @@ import com.ss.rlib.common.util.dictionary.LongDictionary;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
-public abstract class AbstractDictionaryDao<T extends NamedUniqEntity> extends AbstractNamedObjectJAsyncDao<T> implements
-    DictionaryDao<T> {
+public abstract class AbstractDictionaryDao<T extends NamedUniqEntity> extends AbstractNamedObjectJAsyncDao<T>
+    implements DictionaryDao<T> {
 
-    public AbstractDictionaryDao(@NotNull ConnectionPool<? extends ConcreteConnection> connectionPool) {
-        super(connectionPool);
+    protected AbstractDictionaryDao(
+        @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
+        @NotNull String schema,
+        @NotNull String fieldList
+    ) {
+        super(connectionPool, schema, fieldList);
     }
 
     @Override

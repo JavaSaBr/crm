@@ -26,7 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
     HttpHandlerAutoConfiguration.class,
     ReactiveWebServerFactoryAutoConfiguration.class
 })
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @PropertySource("classpath:com/ss/jcrm/web/base-web.properties")
 public class BaseWebConfig {
 

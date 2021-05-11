@@ -72,7 +72,7 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
             .replace("${field-list}", fieldList);
     }
 
-    protected @NotNull String injectIdList(@NotNull String query, @NotNull long[] ids) {
+    protected @NotNull String injectIdList(@NotNull String query, long @NotNull [] ids) {
 
         if (ID_LIST_CACHE.length > ids.length) {
             return query.replace(VAR_ID_LIST, ID_LIST_CACHE[ids.length]);
@@ -123,9 +123,7 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
             .handle(JAsyncUtils.handleException())
             .thenApply(queryResult -> {
 
-                if (entity instanceof VersionedUniqEntity) {
-
-                    var versioned = (VersionedUniqEntity) entity;
+                if (entity instanceof VersionedUniqEntity versioned) {
 
                     if (queryResult.getRowsAffected() < 1) {
                         throw new NotActualObjectDaoException(

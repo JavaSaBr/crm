@@ -6,18 +6,16 @@ import com.ss.jcrm.web.exception.IdNotPresentedWebException;
 import com.ss.jcrm.web.exception.NameNotPresentedWebException;
 import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.NumberUtils;
-import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
-@AllArgsConstructor
+@Value
 public class CountryHandler {
 
-    private final CachedDictionaryService<CountryOutResource, CountryOutResource[]> countryDictionaryService;
+    @NotNull CachedDictionaryService<CountryOutResource, CountryOutResource[]> countryDictionaryService;
 
     public @NotNull Mono<ServerResponse> getAll(@NotNull ServerRequest request) {
         return ResponseUtils.ok(countryDictionaryService.getAll());
@@ -25,8 +23,8 @@ public class CountryHandler {
 
     public @NotNull Mono<ServerResponse> getById(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("id"))
-            .map(NumberUtils::toOptionalLong)
-            .map(optional -> optional.orElseThrow(IdNotPresentedWebException::new))
+            .map(NumberUtils::safeToLong)
+            .switchIfEmpty(Mono.error(IdNotPresentedWebException::new))
             .map(countryDictionaryService::getByIdOptional)
             .flatMap(ResponseUtils::optionalResource);
     }

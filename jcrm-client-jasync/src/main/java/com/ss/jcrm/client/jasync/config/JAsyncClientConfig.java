@@ -16,7 +16,6 @@ import org.springframework.core.env.Environment;
 
 import java.util.concurrent.ExecutorService;
 
-@Configuration
 @PropertySources({
     @PropertySource("classpath:com/ss/jcrm/client/jasync/client-jasync.properties"),
     @PropertySource(
@@ -25,11 +24,14 @@ import java.util.concurrent.ExecutorService;
     )
 })
 @Import(JAsyncConfig.class)
+@Configuration(proxyBeanMethods = false)
 public class JAsyncClientConfig {
 
     @Bean
-    @DependsOn("clientConnectionPool")
-    @NotNull Flyway clientFlyway(@NotNull Environment env) {
+    @NotNull Flyway clientFlyway(
+        @NotNull ConnectionPool<? extends ConcreteConnection> clientConnectionPool,
+        @NotNull Environment env
+    ) {
 
         var flyway = Flyway.configure()
             .locations("classpath:com/ss/jcrm/client/db/migration")

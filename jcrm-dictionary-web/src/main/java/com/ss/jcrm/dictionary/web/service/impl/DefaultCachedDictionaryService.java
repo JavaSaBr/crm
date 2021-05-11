@@ -8,7 +8,11 @@ import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import com.ss.rlib.common.util.dictionary.ObjectDictionary;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
@@ -22,15 +26,17 @@ import java.util.function.Function;
  * @param <C> the type of collection of all resources.
  * @param <R> the type of entities resource.
  */
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DefaultCachedDictionaryService<T extends NamedUniqEntity, R, C> implements
     CachedDictionaryService<R, C>, Reloadable {
 
-    @AllArgsConstructor
+    @Value
+    @RequiredArgsConstructor
     private static class State<C, R> {
 
-        private final C allResources;
-        private final LongDictionary<R> idToResource;
-        private final ObjectDictionary<String, R> nameToResource;
+        @NotNull C allResources;
+        @NotNull LongDictionary<R> idToResource;
+        @NotNull ObjectDictionary<String, R> nameToResource;
 
         public State(@NotNull Function<List<R>, C> collectionFunction) {
             this.allResources = collectionFunction.apply(List.of());
@@ -39,11 +45,11 @@ public class DefaultCachedDictionaryService<T extends NamedUniqEntity, R, C> imp
         }
     }
 
-    private final DictionaryDao<T> dictionaryDao;
-    private final Function<T, R> resourceFunction;
-    private final Function<List<R>, C> collectionFunction;
+    final @NotNull DictionaryDao<T> dictionaryDao;
+    final @NotNull Function<T, R> resourceFunction;
+    final @NotNull Function<List<R>, C> collectionFunction;
 
-    private volatile State<C, R> state;
+    volatile @NotNull State<C, R> state;
 
     public DefaultCachedDictionaryService(
         @NotNull DictionaryDao<T> dictionaryDao,
@@ -73,9 +79,9 @@ public class DefaultCachedDictionaryService<T extends NamedUniqEntity, R, C> imp
         var nameToResource = DictionaryFactory.<String, R>newObjectDictionary();
         var resources = new ArrayList<R>();
 
-        for (T entity : entities) {
+        for (var entity : entities) {
 
-            R resource = resourceFunction.apply(entity);
+            var resource = resourceFunction.apply(entity);
 
             idToResource.put(entity.getId(), resource);
             nameToResource.put(entity.getName(), resource);

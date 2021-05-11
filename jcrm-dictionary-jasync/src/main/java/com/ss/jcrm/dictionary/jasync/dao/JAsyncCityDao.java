@@ -13,44 +13,56 @@ import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
 import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.rlib.common.util.array.Array;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
-import lombok.extern.log4j.Log4j2;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-@Log4j2
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDao {
 
-    private static final String FIELD_LIST = "\"id\", \"name\", \"country_id\"";
+    private static final String FIELD_LIST = """
+        "id", "name", "country_id"
+        """;
 
-    private static final String Q_SELECT_BY_NAME =
-        "select " + FIELD_LIST + " from \"${schema}\".\"city\" where \"name\" = ?";
-    private static final String Q_SELECT_BY_ID =
-        "select " + FIELD_LIST + " from \"${schema}\".\"city\" where \"id\" = ?";
-    private static final String Q_SELECT_ALL = "select " + FIELD_LIST + " from \"${schema}\".\"city\"";
+    private static final String Q_SELECT_BY_NAME = """
+        select ${field-list} from "${schema}"."city" where "name" = ?
+        """;
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"city\" (\"name\", \"country_id\") " +
-        "values (?, ?) returning id";
+    private static final String Q_SELECT_BY_ID = """
+        select ${field-list} from "${schema}"."city" where "id" = ?
+        """;
 
-    private final String querySelectByName;
-    private final String querySelectById;
-    private final String querySelectAll;
-    private final String queryInsert;
+    private static final String Q_SELECT_ALL = """
+        select ${field-list} from "${schema}"."city"
+        """;
 
-    private final CountryDao countryDao;
+    private static final String Q_INSERT = """
+        insert into "${schema}"."city" ("name", "country_id") values (?, ?) returning "id"
+        """;
+
+    @NotNull String querySelectByName;
+    @NotNull String querySelectById;
+    @NotNull String querySelectAll;
+    @NotNull String queryInsert;
+
+    @NotNull CountryDao countryDao;
 
     public JAsyncCityDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
         @NotNull String schema,
         @NotNull CountryDao countryDao
     ) {
-        super(connectionPool);
-        this.querySelectByName = Q_SELECT_BY_NAME.replace("${schema}", schema);
-        this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
-        this.querySelectAll = Q_SELECT_ALL.replace("${schema}", schema);
-        this.queryInsert = Q_INSERT.replace("${schema}", schema);
+        super(connectionPool, schema, FIELD_LIST);
+        this.querySelectByName = prepareQuery(Q_SELECT_BY_NAME);
+        this.querySelectById = prepareQuery(Q_SELECT_BY_ID);
+        this.querySelectAll = prepareQuery(Q_SELECT_ALL);
+        this.queryInsert = prepareQuery(Q_INSERT);
         this.countryDao = countryDao;
     }
 

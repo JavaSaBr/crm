@@ -10,38 +10,50 @@ import com.ss.jcrm.dictionary.api.impl.DefaultIndustry;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.rlib.common.util.array.Array;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncIndustryDao extends AbstractDictionaryDao<Industry> implements IndustryDao {
 
-    private static final String FIELD_LIST = "\"id\", \"name\"";
+    private static final String FIELD_LIST = """
+        "id", "name"
+        """;
 
-    private static final String Q_SELECT_BY_NAME =
-        "select " + FIELD_LIST + " from \"${schema}\".\"industry\" where \"name\" = ?";
-    private static final String Q_SELECT_BY_ID =
-        "select " + FIELD_LIST + " from \"${schema}\".\"industry\" where \"id\" = ?";
-    private static final String Q_SELECT_ALL =
-        "select " + FIELD_LIST + " from \"${schema}\".\"industry\"";
+    private static final String Q_SELECT_BY_NAME = """
+        select ${field-list} from "${schema}"."industry" where "name" = ?
+        """;
 
-    private static final String Q_INSERT = "insert into \"${schema}\".\"industry\" (\"name\") values (?) returning id";
+    private static final String Q_SELECT_BY_ID = """
+        select ${field-list} from "${schema}"."industry" where "id" = ?
+        """;
 
-    private final String querySelectByName;
-    private final String querySelectById;
-    private final String querySelectAll;
-    private final String queryInsert;
+    private static final String Q_SELECT_ALL = """
+        select ${field-list} from "${schema}"."industry"
+        """;
+
+    private static final String Q_INSERT = """
+        insert into "${schema}"."industry" ("name") values (?) returning "id"
+        """;
+
+    @NotNull String querySelectByName;
+    @NotNull String querySelectById;
+    @NotNull String querySelectAll;
+    @NotNull String queryInsert;
 
     public JAsyncIndustryDao(
         @NotNull ConnectionPool<? extends ConcreteConnection> connectionPool,
         @NotNull String schema
     ) {
-        super(connectionPool);
-        this.querySelectByName = Q_SELECT_BY_NAME.replace("${schema}", schema);
-        this.querySelectById = Q_SELECT_BY_ID.replace("${schema}", schema);
-        this.querySelectAll = Q_SELECT_ALL.replace("${schema}", schema);
-        this.queryInsert = Q_INSERT.replace("${schema}", schema);
+        super(connectionPool, schema, FIELD_LIST);
+        this.querySelectByName = prepareQuery(Q_SELECT_BY_NAME);
+        this.querySelectById = prepareQuery(Q_SELECT_BY_ID);
+        this.querySelectAll = prepareQuery(Q_SELECT_ALL);
+        this.queryInsert = prepareQuery(Q_INSERT);
     }
 
     @Override
@@ -79,8 +91,8 @@ public class JAsyncIndustryDao extends AbstractDictionaryDao<Industry> implement
 
     private @NotNull DefaultIndustry toIndustry(@NotNull RowData data) {
         return new DefaultIndustry(
-            data.getString(1),        // name
-            notNull(data.getLong(0))  // id
+            notNull(data.getString(1)), // name
+            notNull(data.getLong(0))    // id
         );
     }
 }

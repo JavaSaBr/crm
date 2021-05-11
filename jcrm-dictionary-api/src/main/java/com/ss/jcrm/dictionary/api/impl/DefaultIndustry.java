@@ -1,19 +1,18 @@
 package com.ss.jcrm.dictionary.api.impl;
 
 import com.ss.jcrm.dictionary.api.Industry;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 @ToString
 @AllArgsConstructor
-@Getter(onMethod_ = @NotNull)
 @EqualsAndHashCode(of = "id")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DefaultIndustry implements Industry {
 
-    private final String name;
+    @NotNull String name;
 
-    private final long id;
+    long id;
 }
