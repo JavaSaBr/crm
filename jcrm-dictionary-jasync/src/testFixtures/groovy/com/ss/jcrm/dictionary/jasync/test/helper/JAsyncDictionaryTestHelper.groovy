@@ -6,11 +6,8 @@ import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dictionary.api.Country
 import com.ss.jcrm.dictionary.api.dao.CountryDao
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
+import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification
 import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper
-
-import java.util.concurrent.CompletionException
-
-import static com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification.clearAllTables
 
 class JAsyncDictionaryTestHelper extends JAsyncTestHelper implements DictionaryTestHelper {
 
@@ -50,7 +47,7 @@ class JAsyncDictionaryTestHelper extends JAsyncTestHelper implements DictionaryT
 
     @Override
     void clearAllData() {
-        clearAllTables(connectionPool, schema)
+        JAsyncDictionarySpecification.clearAllTables(connectionPool, schema)
     }
     
     static def nextUID() {

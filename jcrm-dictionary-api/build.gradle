@@ -7,4 +7,5 @@ ext {
 dependencies {
     api projects.jcrmDao
     testImplementation projects.jcrmIntegrationTestDb
+    testFixturesApi projects.jcrmIntegrationTestDb
 }

@@ -10,8 +10,6 @@ dependencies {
     api projects.jcrmBaseSpring
     api projects.jcrmJasync
 
-    testImplementation projects.jcrmIntegrationTestDb
-    testImplementation projects.jcrmSecurity
-    testImplementation project(path: ":jcrm-user-api", configuration: "testArtifacts")
-    testImplementation project(path: ":jcrm-dictionary-jasync", configuration: "testArtifacts")
+    testFixturesApi testFixtures(projects.jcrmDictionaryJasync)
+    testFixturesApi testFixtures(projects.jcrmUserApi)
 }

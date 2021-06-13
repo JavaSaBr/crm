@@ -9,5 +9,5 @@ dependencies {
     api projects.jcrmSecurity
     api projects.jcrmUserContact
 
-    testImplementation projects.jcrmIntegrationTestDb
+    testFixturesApi projects.jcrmIntegrationTestDb
 }

@@ -9,8 +9,6 @@ import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
-import static com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils.clearTable
-
 @ContextConfiguration(classes = JAsyncDictionarySpecificationConfig)
 class JAsyncDictionarySpecification extends DefaultSpecification {
 
@@ -22,7 +20,7 @@ class JAsyncDictionarySpecification extends DefaultSpecification {
         ConnectionPool<? extends ConcreteConnection> connectionPool,
         String schema
     ) {
-        clearTable(connectionPool, schema, TABLE_CITY, TABLE_COUNTRY, TABLE_INDUSTRY)
+        DbSpecificationUtils.clearTable(connectionPool, schema, TABLE_CITY, TABLE_COUNTRY, TABLE_INDUSTRY)
     }
 
     @Autowired

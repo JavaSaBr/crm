@@ -8,6 +8,6 @@ dependencies {
     api projects.jcrmBase
     api projects.jcrmDictionaryApi
     api projects.jcrmUserApi
-    
-    testImplementation projects.jcrmIntegrationTestDb
+
+    testFixturesApi projects.jcrmIntegrationTestDb
 }

@@ -1,6 +1,5 @@
 package com.ss.jcrm.user.jdbc.test.dao
 
-
 import com.ss.jcrm.user.api.dao.EmailConfirmationDao
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
