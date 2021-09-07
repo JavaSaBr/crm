@@ -12,10 +12,9 @@ dependencies {
     api projects.jcrmSecurityWeb
     api projects.jcrmMail
 
-    testImplementation project(path: ":jcrm-user-jasync", configuration: "testArtifacts")
-    testImplementation project(path: ":jcrm-mail", configuration: "testArtifacts")
-    testImplementation projects.jcrmIntegrationTestDb
-    testImplementation projects.jcrmIntegrationTestWeb
+    testFixturesApi projects.jcrmIntegrationTestWeb
+    testFixturesApi testFixtures(projects.jcrmMail)
+    testFixturesApi testFixtures(projects.jcrmUserJasync)
 }
 
 /*

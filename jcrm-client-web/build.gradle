@@ -10,6 +10,6 @@ dependencies {
     api projects.jcrmUserJasync
     api projects.jcrmSecurityWeb
 
-    testImplementation project(path: ":jcrm-client-jasync", configuration: "testArtifacts")
-    testImplementation projects.jcrmIntegrationTestWeb
+    testFixturesApi testFixtures(projects.jcrmClientJasync)
+    testFixturesApi projects.jcrmIntegrationTestWeb
 }

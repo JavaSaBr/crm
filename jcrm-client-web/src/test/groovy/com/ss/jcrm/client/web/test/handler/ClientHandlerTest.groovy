@@ -64,23 +64,32 @@ class ClientHandlerTest extends ClientSpecification {
             
             def token = unsafeTokenService.generateNewToken(user)
             def body = new ClientInResource(
-                assigner: assigner.id,
-                curators: [curator1.id, curator2.id],
-                firstName: "First name",
-                secondName: "Second name",
-                thirdName: "Third name",
-                company: "Company",
-                birthday: "1990-05-22",
-                phoneNumbers: [new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())],
-                emails: [new ClientEmailResource("Test@test.com", EmailType.HOME.name())],
-                sites: [
+                0,
+                [
+                    curator1.id,
+                    curator2.id
+                ] as long[],
+                assigner.id as long,
+                0,
+                "First name",
+                "Second name",
+                "Third name",
+                "Company",
+                "1990-05-22",
+                [
+                    new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())
+                ] as ClientPhoneNumberResource[],
+                [
+                    new ClientEmailResource("Test@test.com", EmailType.HOME.name())
+                ] as ClientEmailResource[],
+                [
                     new ClientSiteResource("work.site.com", SiteType.WORK.name()),
                     new ClientSiteResource("home.site.com", SiteType.HOME.name())
-                ],
-                messengers: [
+                ] as ClientSiteResource[],
+                [
                     new ClientMessengerResource("misterX", MessengerType.TELEGRAM.name()),
                     new ClientMessengerResource("misterX", MessengerType.SKYPE.name())
-                ]
+                ] as ClientMessengerResource[]
             )
         
         when:
@@ -94,43 +103,43 @@ class ClientHandlerTest extends ClientSpecification {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
-                    .jsonPath('$.assigner').isEqualTo((int) body.assigner)
+                    .jsonPath('$.assigner').isEqualTo((int) body.assigner())
                     .jsonPath('$.curators[*]').value(containsInAnyOrder(
-                        (int) body.curators[0],
-                        (int) body.curators[1]
+                        (int) body.curators()[0],
+                        (int) body.curators()[1]
                     ))
-                    .jsonPath('$.firstName').isEqualTo(body.firstName)
-                    .jsonPath('$.secondName').isEqualTo(body.secondName)
-                    .jsonPath('$.thirdName').isEqualTo(body.thirdName)
-                    .jsonPath('$.company').isEqualTo(body.company)
-                    .jsonPath('$.birthday').isEqualTo(body.birthday)
+                    .jsonPath('$.firstName').isEqualTo(body.firstName())
+                    .jsonPath('$.secondName').isEqualTo(body.secondName())
+                    .jsonPath('$.thirdName').isEqualTo(body.thirdName())
+                    .jsonPath('$.company').isEqualTo(body.company())
+                    .jsonPath('$.birthday').isEqualTo(body.birthday())
                     .jsonPath('$.created').isNotEmpty()
                     .jsonPath('$.modified').isNotEmpty()
                     .jsonPath('$.phoneNumbers').value(hasSize(1))
-                    .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers[0].countryCode)
-                    .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers[0].regionCode)
-                    .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers[0].phoneNumber)
-                    .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers[0].type))
+                    .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers()[0].countryCode())
+                    .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers()[0].regionCode())
+                    .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers()[0].phoneNumber())
+                    .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers()[0].type))
                     .jsonPath('$.emails').value(hasSize(1))
-                    .jsonPath('$.emails[0].type').isEqualTo(body.emails[0].type)
-                    .jsonPath('$.emails[0].email').isEqualTo(body.emails[0].email)
+                    .jsonPath('$.emails[0].type').isEqualTo(body.emails()[0].type())
+                    .jsonPath('$.emails[0].email').isEqualTo(body.emails()[0].email())
                     .jsonPath('$.sites').value(hasSize(2))
                     .jsonPath('$.sites[*].type').value(containsInAnyOrder(
-                        body.sites[0].type,
-                        body.sites[1].type
+                        body.sites()[0].type(),
+                        body.sites()[1].type()
                     ))
                     .jsonPath('$.sites[*].url').value(containsInAnyOrder(
-                        body.sites[0].url,
-                        body.sites[1].url
+                        body.sites()[0].url(),
+                        body.sites()[1].url()
                     ))
                     .jsonPath('$.messengers').value(hasSize(2))
                     .jsonPath('$.messengers[*].type').value(containsInAnyOrder(
-                        body.messengers[0].type,
-                        body.messengers[1].type
+                        body.messengers()[0].type(),
+                        body.messengers()[1].type()
                     ))
                     .jsonPath('$.messengers[*].login').value(containsInAnyOrder(
-                        body.messengers[0].login,
-                        body.messengers[1].login
+                        body.messengers()[0].login(),
+                        body.messengers()[1].login()
                     ))
     }
     
@@ -171,7 +180,7 @@ class ClientHandlerTest extends ClientSpecification {
         when:
             def response = client.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/client/contact/" + contact.getId())
+                .url("/client/contact/${contact.getId()}")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -206,7 +215,7 @@ class ClientHandlerTest extends ClientSpecification {
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def assigner = userTestHelper.newUser("Assigner1", org)
             def token = unsafeTokenService.generateNewToken(user)
-            def body = new ClientInResource()
+            def body = ClientInResource.empty()
         
         when:
             def response = sendCreateRequest(token, body)
@@ -214,147 +223,164 @@ class ClientHandlerTest extends ClientSpecification {
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_ASSIGNER_NOT_PRESENTED, CLIENT_ASSIGNER_NOT_PRESENTED_MESSAGE)
         when:
-            body.setAssigner(assigner.id)
+            body = new ClientInResource(0, null, assigner.id as long, 0, null, null,
+                null, null, null, null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_FIRST_NAME_INVALID_LENGTH, CLIENT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
         when:
-            body.setFirstName(StringUtils.generate(1000))
+            body = new ClientInResource(0, null, assigner.id as long, 0, StringUtils.generate(1000), null,
+                null, null, null, null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_FIRST_NAME_INVALID_LENGTH, CLIENT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
         when:
-            body.setFirstName("First Name")
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", null,
+                null, null, null, null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_SECOND_NAME_INVALID_LENGTH, CLIENT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
         when:
-            body.setSecondName(StringUtils.generate(1000))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", StringUtils.generate(1000),
+                null, null, null, null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_SECOND_NAME_INVALID_LENGTH, CLIENT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
         when:
-            body.setSecondName("Second name")
-            body.setThirdName(StringUtils.generate(1000))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                StringUtils.generate(1000), null, null, null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_THIRD_NAME_TOO_LONG, CLIENT_THIRD_NAME_TOO_LONG_MESSAGE)
         when:
-            body.setThirdName(null)
-            body.setCompany(StringUtils.generate(1000))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, StringUtils.generate(1000), null, null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_COMPANY_TOO_LONG, CLIENT_COMPANY_TOO_LONG_MESSAGE)
         when:
-            body.setCompany(null)
-            body.setBirthday("invaliddate")
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "invaliddate", null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
-            body.setBirthday("1700-05-10")
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1700-05-10", null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
-            body.setBirthday("2500-05-10")
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "2500-05-10", null, null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
-            body.setBirthday("1950-04-22")
-            body.setPhoneNumbers(new ClientPhoneNumberResource(
-                countryCode: "+7",
-                regionCode: "234",
-                phoneNumber:  "123132",
-                type: "invalid"
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22",
+                [new ClientPhoneNumberResource("+7", "234", "123132", "invalid")] as ClientPhoneNumberResource[],
+                null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_PHONE_NUMBER_INVALID, CLIENT_PHONE_NUMBER_INVALID_MESSAGE)
         when:
-            body.setPhoneNumbers(new ClientPhoneNumberResource(
-                countryCode: "+7",
-                regionCode: StringUtils.generate(100),
-                phoneNumber:  "123132",
-                type: PhoneNumberType.WORK.name()
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22",
+                [new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())] as ClientPhoneNumberResource[],
+                null, null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_PHONE_NUMBER_INVALID, CLIENT_PHONE_NUMBER_INVALID_MESSAGE)
         when:
-            body.setPhoneNumbers(null)
-            body.setEmails(new ClientEmailResource(
-                email: "Test@test.com",
-                type: "invalid"
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22", null,
+                [new ClientEmailResource(
+                    "Test@test.com",
+                    "invalid"
+                )] as ClientEmailResource[],
+                null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
-            body.setEmails(new ClientEmailResource(
-                email: "invalid",
-                type: EmailType.HOME.name()
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22", null,
+                [new ClientEmailResource(
+                    "invalid",
+                    EmailType.HOME.name()
+                )] as ClientEmailResource[],
+                null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
-            body.setEmails(new ClientEmailResource(
-                email: StringUtils.generate(1000),
-                type: EmailType.HOME.name()
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22", null,
+                [new ClientEmailResource(
+                    StringUtils.generate(1000),
+                    EmailType.HOME.name()
+                )] as ClientEmailResource[],
+                null, null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
-            body.setEmails(null)
-            body.setSites(new ClientSiteResource(
-                url: "work.site.com",
-                type: "invalid"
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22", null, null,
+                new ClientSiteResource(
+                    "work.site.com",
+                    "invalid"
+                ) as ClientSiteResource[],
+                null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_SITE_INVALID, CLIENT_SITE_INVALID_MESSAGE)
         when:
-            body.setSites(new ClientSiteResource(
-                url: StringUtils.generate(1000),
-                type: SiteType.WORK.name()
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22", null, null,
+                new ClientSiteResource(
+                    StringUtils.generate(1000),
+                    SiteType.WORK.name()
+                ) as ClientSiteResource[],
+                null)
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_SITE_INVALID, CLIENT_SITE_INVALID_MESSAGE)
         when:
-            body.setSites(null)
-            body.setMessengers(new ClientMessengerResource(
-                login: "misterX",
-                type: "invalid"
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22", null, null, null,
+                [new ClientMessengerResource(
+                    "misterX",
+                   "invalid"
+                )] as ClientMessengerResource[])
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_MESSENGER_INVALID, CLIENT_MESSENGER_INVALID_MESSAGE)
         when:
-            body.setMessengers(new ClientMessengerResource(
-                login: StringUtils.generate(1000),
-                type: MessengerType.TELEGRAM.name()
-            ))
+            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
+                null, null, "1950-04-22", null, null, null,
+                [new ClientMessengerResource(
+                    StringUtils.generate(1000),
+                    MessengerType.TELEGRAM.name()
+                )] as ClientMessengerResource[])
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
@@ -424,29 +450,36 @@ class ClientHandlerTest extends ClientSpecification {
             def assigner = userTestHelper.newUser("Assigner1", org)
             def curator1 = userTestHelper.newUser("Curator1", org)
             def curator2 = userTestHelper.newUser("Curator2", org)
-            def contact = clientTestHelper.newSimpleClient(user)
+            def newClient = clientTestHelper.newSimpleClient(user)
     
             def token = unsafeTokenService.generateNewToken(user)
             def body = new ClientInResource(
-                id: contact.id,
-                assigner: assigner.id,
-                curators: [curator1.id, curator2.id],
-                firstName: "First name",
-                secondName: "Second name",
-                thirdName: "Third name",
-                company: "Company",
-                birthday: "1990-05-22",
-                version: contact.version,
-                phoneNumbers: [new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())],
-                emails: [new ClientEmailResource("Test@test.com", EmailType.HOME.name())],
-                sites: [
+                newClient.id,
+                [
+                    curator1.id,
+                    curator2.id
+                ] as long[],
+                assigner.id as long,
+                newClient.version,
+                "First name",
+                "Second name",
+                "Third name",
+                "Company",
+                "1990-05-22",
+                [
+                    new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())
+                ] as ClientPhoneNumberResource[],
+                [
+                    new ClientEmailResource("Test@test.com", EmailType.HOME.name())
+                ] as ClientEmailResource[],
+                [
                     new ClientSiteResource("work.site.com", SiteType.WORK.name()),
                     new ClientSiteResource("home.site.com", SiteType.HOME.name())
-                ],
-                messengers: [
+                ] as ClientSiteResource[],
+                [
                     new ClientMessengerResource("misterX", MessengerType.TELEGRAM.name()),
                     new ClientMessengerResource("misterX", MessengerType.SKYPE.name())
-                ]
+                ] as ClientMessengerResource[]
             )
         
         when:
@@ -460,43 +493,43 @@ class ClientHandlerTest extends ClientSpecification {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
-                    .jsonPath('$.assigner').isEqualTo((int) body.assigner)
+                    .jsonPath('$.assigner').isEqualTo((int) body.assigner())
                     .jsonPath('$.curators[*]').value(containsInAnyOrder(
-                        (int) body.curators[0],
-                        (int) body.curators[1]
+                        (int) body.curators()[0],
+                        (int) body.curators()[1]
                     ))
-                    .jsonPath('$.firstName').isEqualTo(body.firstName)
-                    .jsonPath('$.secondName').isEqualTo(body.secondName)
-                    .jsonPath('$.thirdName').isEqualTo(body.thirdName)
-                    .jsonPath('$.company').isEqualTo(body.company)
-                    .jsonPath('$.birthday').isEqualTo(body.birthday)
+                    .jsonPath('$.firstName').isEqualTo(body.firstName())
+                    .jsonPath('$.secondName').isEqualTo(body.secondName())
+                    .jsonPath('$.thirdName').isEqualTo(body.thirdName())
+                    .jsonPath('$.company').isEqualTo(body.company())
+                    .jsonPath('$.birthday').isEqualTo(body.birthday())
                     .jsonPath('$.created').isNotEmpty()
                     .jsonPath('$.modified').isNotEmpty()
                     .jsonPath('$.phoneNumbers').value(hasSize(1))
-                    .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers[0].countryCode)
-                    .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers[0].regionCode)
-                    .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers[0].phoneNumber)
-                    .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers[0].type))
+                    .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers()[0].countryCode())
+                    .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers()[0].regionCode())
+                    .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers()[0].phoneNumber())
+                    .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers()[0].type()))
                     .jsonPath('$.emails').value(hasSize(1))
-                    .jsonPath('$.emails[0].type').isEqualTo(body.emails[0].type)
-                    .jsonPath('$.emails[0].email').isEqualTo(body.emails[0].email)
+                    .jsonPath('$.emails[0].type').isEqualTo(body.emails()[0].type())
+                    .jsonPath('$.emails[0].email').isEqualTo(body.emails()[0].email())
                     .jsonPath('$.sites').value(hasSize(2))
                     .jsonPath('$.sites[*].type').value(containsInAnyOrder(
-                        body.sites[0].type,
-                        body.sites[1].type
+                        body.sites()[0].type(),
+                        body.sites()[1].type()
                     ))
                     .jsonPath('$.sites[*].url').value(containsInAnyOrder(
-                        body.sites[0].url,
-                        body.sites[1].url
+                        body.sites()[0].url(),
+                        body.sites()[1].url()
                     ))
                     .jsonPath('$.messengers').value(hasSize(2))
                     .jsonPath('$.messengers[*].type').value(containsInAnyOrder(
-                        body.messengers[0].type,
-                        body.messengers[1].type
+                        body.messengers()[0].type(),
+                        body.messengers()[1].type()
                     ))
                     .jsonPath('$.messengers[*].login').value(containsInAnyOrder(
-                        body.messengers[0].login,
-                        body.messengers[1].login
+                        body.messengers()[0].login(),
+                        body.messengers()[1].login()
                     ))
     }
     
@@ -510,13 +543,16 @@ class ClientHandlerTest extends ClientSpecification {
             def contact = clientTestHelper.newSimpleClient(user)
             
             def token = unsafeTokenService.generateNewToken(user)
-            def body = new ClientInResource(
-                id: contact.id,
-                assigner: assigner.id,
-                firstName: "First name",
-                secondName: "Second name",
-                thirdName: "Third name",
-                version: 10
+            def body = ClientInResource.withoutContacts(
+                contact.id,
+                null,
+                assigner.id,
+                10,
+                "First name",
+                "Second name",
+                "Third name",
+                null,
+                null
             )
         
         when:
@@ -529,13 +565,16 @@ class ClientHandlerTest extends ClientSpecification {
             response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
         when:
     
-            body = new ClientInResource(
-                id: contact.id,
-                assigner: (assigner.id + 100),
-                firstName: "First name",
-                secondName: "Second name",
-                thirdName: "Third name",
-                version: contact.version
+            body = ClientInResource.withoutContacts(
+                contact.id,
+                null,
+                (assigner.id + 100),
+                contact.version,
+                "First name",
+                "Second name",
+                "Third name",
+                null,
+                null
             )
         
             response = client.put()

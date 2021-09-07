@@ -1,4 +1,6 @@
-package com.ss.jcrm.dictionary.web.test
+package com.ss.jcrm.dictionary.web.test.handler
+
+import com.ss.jcrm.dictionary.web.test.DictionarySpecification
 
 class DictionaryStatusTest extends DictionarySpecification {
 

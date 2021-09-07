@@ -10,7 +10,7 @@ dependencies {
     api projects.jcrmUserApi
     api libs.bundles.jjwt
 
-    testImplementation project(path: ":jcrm-security", configuration: "testArtifacts")
-    testImplementation project(path: ":jcrm-user-jasync", configuration: "testArtifacts")
-    testImplementation projects.jcrmIntegrationTestWeb
+    testFixturesApi testFixtures(projects.jcrmSecurity)
+    testFixturesApi testFixtures(projects.jcrmUserJasync)
+    testFixturesApi projects.jcrmIntegrationTestWeb
 }

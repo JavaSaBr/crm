@@ -10,9 +10,8 @@ dependencies {
     api projects.jcrmDictionaryJasync
     api projects.jcrmSecurityWeb
 
-    testImplementation project(path: ":jcrm-dictionary-jasync", configuration: "testArtifacts")
-    testImplementation projects.jcrmIntegrationTestDb
-    testImplementation projects.jcrmIntegrationTestWeb
+    testFixturesApi projects.jcrmIntegrationTestWeb
+    testFixturesApi testFixtures(projects.jcrmDictionaryJasync)
 }
 /*
 afterEvaluate {

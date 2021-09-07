@@ -1,4 +1,6 @@
-package com.ss.jcrm.registration.web.test
+package com.ss.jcrm.registration.web.test.handler
+
+import com.ss.jcrm.registration.web.test.RegistrationSpecification
 
 class RegistrationStatusTest extends RegistrationSpecification {
 

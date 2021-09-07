@@ -2,7 +2,7 @@ package com.ss.jcrm.base.utils;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import java.util.*;
 
 public class CommonUtils {
 
