@@ -6,12 +6,11 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 
-
 @WebFluxTest(properties = "spring.main.allow-bean-definition-overriding=true")
 @ContextConfiguration(classes = WebSpecificationConfig)
 class WebSpecification extends DefaultSpecification {
     
     @Autowired
-    protected WebTestClient client
+    protected WebTestClient webClient
     
 }

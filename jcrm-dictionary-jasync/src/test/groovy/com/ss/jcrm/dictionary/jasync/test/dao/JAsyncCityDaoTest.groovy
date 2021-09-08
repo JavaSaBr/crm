@@ -11,7 +11,7 @@ class JAsyncCityDaoTest extends JAsyncDictionarySpecification {
     @Autowired
     CityDao cityDao
 
-    def "should create and load a new city"() {
+    def "should create and load new city"() {
 
         given:
             def country = dictionaryTestHelper.newCountry("testcountry")
@@ -25,7 +25,7 @@ class JAsyncCityDaoTest extends JAsyncDictionarySpecification {
             city.getCountry().getId() == country.getId()
     }
     
-    def "should prevent creating a city with the same name and the same country"() {
+    def "should prevent creating city with the same name and the same country"() {
 
         given:
             def country = dictionaryTestHelper.newCountry("testcountry")

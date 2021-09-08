@@ -42,7 +42,7 @@ public class ClientWebConfig {
 
     @Bean
     @NotNull ApiEndpointServer clientApiEndpointServer() {
-        return new ApiEndpointServer("/client");
+        return new ApiEndpointServer("/client-api");
     }
 
     @Bean
@@ -69,11 +69,11 @@ public class ClientWebConfig {
         var contextPath = clientApiEndpointServer.contextPath();
         return RouterFunctions.route()
             .GET("${contextPath}/status", request -> ServerResponse.ok().build())
-            .GET("${contextPath}/contacts", clientHandler::list)
-            .GET("${contextPath}/contacts/page", clientHandler::findPage)
-            .POST("${contextPath}/contact", clientHandler::create)
-            .PUT("${contextPath}/contact", clientHandler::update)
-            .GET("${contextPath}/contact/{id}", clientHandler::findById)
+            .GET("${contextPath}/clients", clientHandler::list)
+            .GET("${contextPath}/clients/page", clientHandler::findPage)
+            .POST("${contextPath}/client", clientHandler::create)
+            .PUT("${contextPath}/client", clientHandler::update)
+            .GET("${contextPath}/client/{id}", clientHandler::findById)
             .build();
     }
 }

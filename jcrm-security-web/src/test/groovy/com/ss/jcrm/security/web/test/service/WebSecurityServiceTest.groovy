@@ -17,14 +17,14 @@ class WebSecurityServiceTest extends WebSecuritySpecification {
             def user = userTestHelper.newUser("User1")
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/web/security/test/authorized")
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()
         then:
             response.expectStatus().isOk()
         when:
-            response = client.get()
+            response = webClient.get()
                 .url("/web/security/test/authorized")
                 .exchange()
         then:
@@ -37,7 +37,7 @@ class WebSecurityServiceTest extends WebSecuritySpecification {
         when:
             def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN, AccessRole.CURATOR)
             def token = unsafeTokenService.generateNewToken(user)
-            def response = client.get()
+            def response = webClient.get()
                 .url("/web/security/test/required/access/role/curator")
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()
@@ -46,7 +46,7 @@ class WebSecurityServiceTest extends WebSecuritySpecification {
         when:
             user = userTestHelper.newUser("User2", AccessRole.CURATOR)
             token = unsafeTokenService.generateNewToken(user)
-            response = client.get()
+            response = webClient.get()
                 .url("/web/security/test/required/access/role/curator")
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()
@@ -55,7 +55,7 @@ class WebSecurityServiceTest extends WebSecuritySpecification {
         when:
             user = userTestHelper.newUser("User3", AccessRole.ORG_ADMIN)
             token = unsafeTokenService.generateNewToken(user)
-            response = client.get()
+            response = webClient.get()
                 .url("/web/security/test/required/access/role/curator")
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()
@@ -69,7 +69,7 @@ class WebSecurityServiceTest extends WebSecuritySpecification {
         when:
             def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN, AccessRole.CURATOR)
             def token = unsafeTokenService.generateNewToken(user)
-            def response = client.get()
+            def response = webClient.get()
                 .url("/web/security/test/required/access/role/curator/or/org_admin")
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()
@@ -78,7 +78,7 @@ class WebSecurityServiceTest extends WebSecuritySpecification {
         when:
             user = userTestHelper.newUser("User2", AccessRole.CURATOR)
             token = unsafeTokenService.generateNewToken(user)
-            response = client.get()
+            response = webClient.get()
                 .url("/web/security/test/required/access/role/curator/or/org_admin")
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()
@@ -87,7 +87,7 @@ class WebSecurityServiceTest extends WebSecuritySpecification {
         when:
             user = userTestHelper.newUser("User3", AccessRole.ORG_ADMIN)
             token = unsafeTokenService.generateNewToken(user)
-            response = client.get()
+            response = webClient.get()
                 .url("/web/security/test/required/access/role/curator/or/org_admin")
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()
@@ -96,7 +96,7 @@ class WebSecurityServiceTest extends WebSecuritySpecification {
         when:
             user = userTestHelper.newUser("User4", AccessRole.SUPER_ADMIN)
             token = unsafeTokenService.generateNewToken(user)
-            response = client.get()
+            response = webClient.get()
                 .url("/web/security/test/required/access/role/curator/or/org_admin")
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .exchange()

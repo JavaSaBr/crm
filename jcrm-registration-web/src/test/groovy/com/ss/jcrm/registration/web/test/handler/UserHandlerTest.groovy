@@ -51,7 +51,7 @@ class UserHandlerTest extends RegistrationSpecification {
             )
     
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
@@ -119,7 +119,7 @@ class UserHandlerTest extends RegistrationSpecification {
             )
         
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
@@ -143,7 +143,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 null
             )
             
-            response = client.post()
+            response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
@@ -167,7 +167,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 "1990-05-22"
             )
         
-            response = client.post()
+            response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
@@ -191,7 +191,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 "1990-05-22"
             )
         
-            response = client.post()
+            response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
@@ -208,7 +208,7 @@ class UserHandlerTest extends RegistrationSpecification {
         given:
             def user = userTestHelper.newUser()
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/exist/user/email/$user.email")
                 .exchange()
         then:
@@ -220,7 +220,7 @@ class UserHandlerTest extends RegistrationSpecification {
         given:
             def email = "nonexist@test.com"
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/exist/user/email/$email")
                 .exchange()
         then:
@@ -232,7 +232,7 @@ class UserHandlerTest extends RegistrationSpecification {
         given:
             def email = "@&%&#2"
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/exist/user/email/$email")
                 .exchange()
         then:
@@ -252,7 +252,7 @@ class UserHandlerTest extends RegistrationSpecification {
             userTestHelper.newUser("user11@mail.com", "First1", "Second1", "Third1", org2)
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/search/user/name/first")
                 .exchange()
@@ -263,7 +263,7 @@ class UserHandlerTest extends RegistrationSpecification {
                     .jsonPath('$').isNotEmpty()
                     .jsonPath('$').value(hasSize(3))
         when:
-            response = client.get()
+            response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/search/user/name/first2 second")
                 .exchange()
@@ -276,7 +276,7 @@ class UserHandlerTest extends RegistrationSpecification {
                     .jsonPath('$[0].firstName').value(is("FIrst2"))
                     .jsonPath('$[0].secondName').value(is("Second2"))
         when:
-            response = client.get()
+            response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/search/user/name/hird")
                 .exchange()
@@ -292,7 +292,7 @@ class UserHandlerTest extends RegistrationSpecification {
     def "should not found users by name without tokens"() {
         
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/search/user/name/first")
                 .exchange()
         then:
@@ -312,7 +312,7 @@ class UserHandlerTest extends RegistrationSpecification {
             userDao.update(user).block()
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/user/$user.id")
                 .exchange()
@@ -339,7 +339,7 @@ class UserHandlerTest extends RegistrationSpecification {
             userDao.update(user).block()
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/user/minimal/$user.id")
                 .exchange()
@@ -353,7 +353,7 @@ class UserHandlerTest extends RegistrationSpecification {
                     .jsonPath('$.secondName').isEqualTo(user.secondName)
                     .jsonPath('$.thirdName').isEqualTo(user.thirdName)
         when:
-            response = client.get()
+            response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/user/$user.id")
                 .exchange()
@@ -370,14 +370,14 @@ class UserHandlerTest extends RegistrationSpecification {
             def user2 = userTestHelper.newUser("TestUser2", org2)
             def token = unsafeTokenService.generateNewToken(user1)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/user/$user2.id")
                 .exchange()
         then:
             response.expectStatus().isNotFound()
         when:
-            response = client.get()
+            response = webClient.get()
                 .url("/registration/user/$user1.id")
                 .exchange()
         then:
@@ -399,7 +399,7 @@ class UserHandlerTest extends RegistrationSpecification {
             long[] ids = [user1.id, user2.id, user3.id]
         
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/users/ids")
@@ -434,7 +434,7 @@ class UserHandlerTest extends RegistrationSpecification {
             def token = unsafeTokenService.generateNewToken(firstUser)
         
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/users/page?pageSize=5&offset=0")
                 .exchange()
@@ -446,7 +446,7 @@ class UserHandlerTest extends RegistrationSpecification {
                     .jsonPath('$.totalSize').isEqualTo(20)
                     .jsonPath('$.resources').value(hasSize(5))
         when:
-            response = client.get()
+            response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/users/page?pageSize=10&offset=12")
                 .exchange()
@@ -472,7 +472,7 @@ class UserHandlerTest extends RegistrationSpecification {
             long[] ids = [user1.id, user2.id, user3.id]
         
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/users/minimal/ids")

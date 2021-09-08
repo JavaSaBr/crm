@@ -41,7 +41,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
             def token = unsafeTokenService.generateNewToken(user)
         
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUserGroup)
@@ -73,7 +73,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
             def token = unsafeTokenService.generateNewToken(user)
         
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUserGroup)
@@ -105,7 +105,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
             def token = unsafeTokenService.generateNewToken(user)
         
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/user-group/$group.id")
                 .exchange()
@@ -142,7 +142,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
             def token = unsafeTokenService.generateNewToken(user)
         
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/user-groups/page?pageSize=10&offset=0")
                 .exchange()
@@ -159,7 +159,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
                         group3.id as int,
                     ))
         when:
-            response = client.get()
+            response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/user-groups/page?pageSize=1&offset=0")
                 .exchange()
@@ -181,7 +181,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
             def group = userTestHelper.newGroup("Group123", org)
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/exist/user-group/name/$group.name")
                 .exchange()
@@ -198,7 +198,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
             def group = userTestHelper.newGroup("Group123", org2)
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .url("/registration/exist/user-group/name/$group.name")
                 .exchange()

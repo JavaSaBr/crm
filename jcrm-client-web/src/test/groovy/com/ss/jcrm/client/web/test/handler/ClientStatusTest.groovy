@@ -1,8 +1,8 @@
-package com.ss.jcrm.dictionary.web.test.handler
+package com.ss.jcrm.client.web.test.handler
 
-import com.ss.jcrm.dictionary.web.test.DictionarySpecification
+import com.ss.jcrm.client.web.test.ClientSpecification
 
-class DictionaryStatusTest extends DictionarySpecification {
+class ClientStatusTest extends ClientSpecification {
 
     def "should return status ok"() {
 

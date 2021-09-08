@@ -11,7 +11,7 @@ class JAsyncCountryDaoTest extends JAsyncDictionarySpecification {
     @Autowired
     CountryDao countryDao
 
-    def "should create and load a new country"() {
+    def "should create and load new country"() {
 
         when:
             def country = countryDao.create("testcountry", "testflag", "testphone")
@@ -24,7 +24,7 @@ class JAsyncCountryDaoTest extends JAsyncDictionarySpecification {
             country.getPhoneCode() == "testphone"
     }
     
-    def "should prevent creating a country with the same name"() {
+    def "should prevent creating country with the same name"() {
 
         given:
             countryDao.create("testcountry", "testflag", "testphone").block()

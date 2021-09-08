@@ -67,7 +67,7 @@ public class DictionaryWebConfig {
 
     @Bean
     @NotNull ApiEndpointServer dictionaryApiEndpointServer() {
-        return new ApiEndpointServer("/dictionary");
+        return new ApiEndpointServer("/dictionary-api");
     }
 
     @Bean

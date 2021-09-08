@@ -23,7 +23,7 @@ public class CountryHandler {
 
     public @NotNull Mono<ServerResponse> getById(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("id"))
-            .map(NumberUtils::safeToLong)
+            .mapNotNull(NumberUtils::safeToLong)
             .switchIfEmpty(Mono.error(IdNotPresentedWebException::new))
             .map(countryDictionaryService::getByIdOptional)
             .flatMap(ResponseUtils::optionalResource);

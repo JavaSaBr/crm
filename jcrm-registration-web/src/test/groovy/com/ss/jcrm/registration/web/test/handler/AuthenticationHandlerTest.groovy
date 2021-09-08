@@ -34,7 +34,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
             def password = "pwdpwd"
             userTestHelper.newUser(email, password)
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new AuthenticationInResource(email, password.toCharArray()))
                 .url("/registration/authenticate")
@@ -64,7 +64,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
             )
         
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new AuthenticationInResource(phoneNumber.getFullPhoneNumber(), password.toCharArray()))
                 .url("/registration/authenticate")
@@ -89,7 +89,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
             def user = userTestHelper.newUser()
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/authenticate/$token")
                 .exchange()
         then:
@@ -113,7 +113,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 0
             )
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/token/refresh/$token")
                 .exchange()
         then:
@@ -137,7 +137,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 0
             )
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/token/refresh/$token")
                 .exchange()
         then:
@@ -152,7 +152,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 1000_000,
                 0
             )
-            response = client.get()
+            response = webClient.get()
                 .url("/registration/token/refresh/$token")
                 .exchange()
         then:
@@ -167,7 +167,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 0,
                 100
             )
-            response = client.get()
+            response = webClient.get()
                 .url("/registration/token/refresh/$token")
                 .exchange()
         then:
@@ -175,7 +175,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_TOKEN, INVALID_TOKEN_MESSAGE)
         when:
-            response = client.get()
+            response = webClient.get()
                 .url("/registration/token/refresh/invalidtoken")
                 .exchange()
         then:
@@ -196,7 +196,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 0
             )
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/authenticate/$token")
                 .exchange()
         then:
@@ -211,14 +211,14 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 0,
                 0
             )
-            response = client.get()
+            response = webClient.get()
                 .url("/registration/authenticate/$token")
                 .exchange()
         then:
             response.expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_TOKEN, INVALID_TOKEN_MESSAGE)
         when:
-            response = client.get()
+            response = webClient.get()
                 .url("/registration/authenticate/wefewfewfewf")
                 .exchange()
         then:
@@ -241,7 +241,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 password
             )
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new AuthenticationInResource("+3751231212", password.toCharArray()))
                 .url("/registration/authenticate")
@@ -251,7 +251,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)
         when:
-            response = client.post()
+            response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new AuthenticationInResource(phoneNumber.getFullPhoneNumber(), "invalidpwd".toCharArray()))
                 .url("/registration/authenticate")
@@ -261,7 +261,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
                 .expectStatus().isUnauthorized()
                 .verifyErrorResponse(INVALID_CREDENTIALS, INVALID_CREDENTIALS_MESSAGE)
         when:
-            response = client.post()
+            response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body("{}")
                 .url("/registration/authenticate")

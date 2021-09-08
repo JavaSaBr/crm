@@ -12,7 +12,7 @@ class EmailConfirmationHandlerTest extends RegistrationSpecification {
         given:
             def email = "testemail@test.com"
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/email-confirmation/$email")
                 .exchange()
         then:
@@ -24,7 +24,7 @@ class EmailConfirmationHandlerTest extends RegistrationSpecification {
         given:
             def email = "@&%&#2"
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/email-confirmation/$email")
                 .exchange()
         then:

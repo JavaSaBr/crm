@@ -11,7 +11,7 @@ class JAsyncIndustryDaoTest extends JAsyncDictionarySpecification {
     @Autowired
     IndustryDao industryDao
 
-    def "should create and load a new industry"() {
+    def "should create and load new industry"() {
 
         when:
             def industry = industryDao.create("testindustry").block()
@@ -21,7 +21,7 @@ class JAsyncIndustryDaoTest extends JAsyncDictionarySpecification {
             industry.getName() == "testindustry"
     }
     
-    def "should prevent creating an industry with the same name"() {
+    def "should prevent creating industry with the same name"() {
 
         given:
             industryDao.create("testindustry").block()

@@ -7,7 +7,7 @@ class RegistrationStatusTest extends RegistrationSpecification {
     def "should return status ok"() {
 
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/status")
                 .exchange()
         then:

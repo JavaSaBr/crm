@@ -48,11 +48,11 @@ import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is
 
 class ClientHandlerTest extends ClientSpecification {
-    
+
     @Autowired
     UnsafeTokenService unsafeTokenService
-    
-    def "should create a new contact successfully"() {
+
+    def "should create new client successfully"() {
     
         given:
             
@@ -77,26 +77,43 @@ class ClientHandlerTest extends ClientSpecification {
                 "Company",
                 "1990-05-22",
                 [
-                    new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())
+                    new ClientPhoneNumberResource(
+                        "+7",
+                        "234",
+                        "123132",
+                        PhoneNumberType.WORK.name()
+                    )
                 ] as ClientPhoneNumberResource[],
                 [
-                    new ClientEmailResource("Test@test.com", EmailType.HOME.name())
+                    new ClientEmailResource(
+                        "Test@test.com",
+                        EmailType.HOME.name()
+                    )
                 ] as ClientEmailResource[],
                 [
-                    new ClientSiteResource("work.site.com", SiteType.WORK.name()),
+                    new ClientSiteResource(
+                        "work.site.com",
+                        SiteType.WORK.name()
+                    ),
                     new ClientSiteResource("home.site.com", SiteType.HOME.name())
                 ] as ClientSiteResource[],
                 [
-                    new ClientMessengerResource("misterX", MessengerType.TELEGRAM.name()),
-                    new ClientMessengerResource("misterX", MessengerType.SKYPE.name())
+                    new ClientMessengerResource(
+                        "misterX",
+                        MessengerType.TELEGRAM.name()
+                    ),
+                    new ClientMessengerResource(
+                        "misterX",
+                        MessengerType.SKYPE.name()
+                    )
                 ] as ClientMessengerResource[]
             )
         
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(body)
-                .url("/client/contact")
+                .url("$contextPath/client")
                 .exchange()
         then:
             response.expectStatus().isCreated()
@@ -143,18 +160,18 @@ class ClientHandlerTest extends ClientSpecification {
                     ))
     }
     
-    def "should get all available contacts for org successfully"() {
+    def "should get all available clients for org successfully"() {
         
         given:
             def user = userTestHelper.newUser("User2", AccessRole.ORG_ADMIN)
             def token = unsafeTokenService.generateNewToken(user)
-            def contact1 = clientTestHelper.newSimpleClient(user)
-            def contact2 = clientTestHelper.newSimpleClient(user)
-            def contact3 = clientTestHelper.newSimpleClient(user)
+            def client1 = clientTestHelper.newSimpleClient(user)
+            def client2 = clientTestHelper.newSimpleClient(user)
+            def client3 = clientTestHelper.newSimpleClient(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/client/contacts")
+                .url("$contextPath/clients")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -162,34 +179,34 @@ class ClientHandlerTest extends ClientSpecification {
                 .expectBody()
                     .jsonPath('$').value(hasSize(3))
                     .jsonPath('$[*].id').value(containsInAnyOrder(
-                        (int) contact1.id,
-                        (int) contact2.id,
-                        (int) contact3.id))
+                        (int) client1.id,
+                        (int) client2.id,
+                        (int) client3.id))
                     .jsonPath('$[*].firstName').value(containsInAnyOrder(
-                        contact1.firstName,
-                        contact2.firstName,
-                        contact3.firstName))
+                        client1.firstName,
+                        client2.firstName,
+                        client3.firstName))
     }
     
-    def "should load a created contact successfully"() {
+    def "should load created client successfully"() {
         
         given:
             def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
             def token = unsafeTokenService.generateNewToken(user)
-            def contact = clientTestHelper.newSimpleClient(user)
+            def client = clientTestHelper.newSimpleClient(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/client/contact/${contact.getId()}")
+                .url("$contextPath/client/${client.getId()}")
                 .exchange()
         then:
             response.expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.id').isNotEmpty()
-                    .jsonPath('$.firstName').isEqualTo(contact.firstName)
-                    .jsonPath('$.secondName').isEqualTo(contact.secondName)
-                    .jsonPath('$.thirdName').isEqualTo(contact.thirdName)
+                    .jsonPath('$.firstName').isEqualTo(client.firstName)
+                    .jsonPath('$.secondName').isEqualTo(client.secondName)
+                    .jsonPath('$.thirdName').isEqualTo(client.thirdName)
     }
     
     def "should failed when id is not presented"() {
@@ -198,16 +215,16 @@ class ClientHandlerTest extends ClientSpecification {
             def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
             def token = unsafeTokenService.generateNewToken(user)
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/client/contact/invallid")
+                .url("$contextPath/client/invallid")
                 .exchange()
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(ID_NOT_PRESENTED, ID_NOT_PRESENTED_MESSAGE)
     }
     
-    def "should failed creating an invalid contact"() {
+    def "should failed creating invalid client"() {
         
         given:
             
@@ -223,164 +240,356 @@ class ClientHandlerTest extends ClientSpecification {
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_ASSIGNER_NOT_PRESENTED, CLIENT_ASSIGNER_NOT_PRESENTED_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, null, null,
-                null, null, null, null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_FIRST_NAME_INVALID_LENGTH, CLIENT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, StringUtils.generate(1000), null,
-                null, null, null, null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                StringUtils.generate(1000),
+                null,
+                null,
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_FIRST_NAME_INVALID_LENGTH, CLIENT_FIRST_NAME_INVALID_LENGTH_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", null,
-                null, null, null, null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                null,
+                null,
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_SECOND_NAME_INVALID_LENGTH, CLIENT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", StringUtils.generate(1000),
-                null, null, null, null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                StringUtils.generate(1000),
+                null,
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_SECOND_NAME_INVALID_LENGTH, CLIENT_SECOND_NAME_INVALID_LENGTH_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                StringUtils.generate(1000), null, null, null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                StringUtils.generate(1000),
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_THIRD_NAME_TOO_LONG, CLIENT_THIRD_NAME_TOO_LONG_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, StringUtils.generate(1000), null, null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                StringUtils.generate(1000),
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_COMPANY_TOO_LONG, CLIENT_COMPANY_TOO_LONG_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "invaliddate", null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "invaliddate"
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1700-05-10", null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1700-05-10"
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "2500-05-10", null, null, null, null)
+            body = ClientInResource.withoutContacts(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "2500-05-10"
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_BIRTHDAY_INVALID, CLIENT_BIRTHDAY_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22",
-                [new ClientPhoneNumberResource("+7", "234", "123132", "invalid")] as ClientPhoneNumberResource[],
-                null, null, null)
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                [new ClientPhoneNumberResource(
+                    "+7",
+                    "234",
+                    "1234567",
+                    "invalid")
+                ] as ClientPhoneNumberResource[],
+                null,
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_PHONE_NUMBER_INVALID, CLIENT_PHONE_NUMBER_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22",
-                [new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())] as ClientPhoneNumberResource[],
-                null, null, null)
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                [new ClientPhoneNumberResource(
+                    "+1234556",
+                    "12345678",
+                    "123456789",
+                    PhoneNumberType.MOBILE.name)
+                ] as ClientPhoneNumberResource[],
+                null,
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_PHONE_NUMBER_INVALID, CLIENT_PHONE_NUMBER_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22", null,
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                null,
                 [new ClientEmailResource(
                     "Test@test.com",
                     "invalid"
                 )] as ClientEmailResource[],
-                null, null)
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22", null,
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                null,
                 [new ClientEmailResource(
                     "invalid",
                     EmailType.HOME.name()
                 )] as ClientEmailResource[],
-                null, null)
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22", null,
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                null,
                 [new ClientEmailResource(
                     StringUtils.generate(1000),
                     EmailType.HOME.name()
                 )] as ClientEmailResource[],
-                null, null)
+                null,
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_EMAIL_INVALID, CLIENT_EMAIL_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22", null, null,
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                null,
+                null,
                 new ClientSiteResource(
                     "work.site.com",
                     "invalid"
                 ) as ClientSiteResource[],
-                null)
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_SITE_INVALID, CLIENT_SITE_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22", null, null,
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                null,
+                null,
                 new ClientSiteResource(
                     StringUtils.generate(1000),
                     SiteType.WORK.name()
                 ) as ClientSiteResource[],
-                null)
+                null
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_SITE_INVALID, CLIENT_SITE_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22", null, null, null,
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                null,
+                null,
+                null,
                 [new ClientMessengerResource(
                     "misterX",
-                   "invalid"
-                )] as ClientMessengerResource[])
+                    "invalid"
+                )] as ClientMessengerResource[]
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
                 .verifyErrorResponse(CLIENT_MESSENGER_INVALID, CLIENT_MESSENGER_INVALID_MESSAGE)
         when:
-            body = new ClientInResource(0, null, assigner.id as long, 0, "First Name", "Second name",
-                null, null, "1950-04-22", null, null, null,
+            body = new ClientInResource(
+                0,
+                null,
+                assigner.id as long,
+                0,
+                "First Name",
+                "Second name",
+                null,
+                null,
+                "1950-04-22",
+                null,
+                null,
+                null,
                 [new ClientMessengerResource(
                     StringUtils.generate(1000),
                     MessengerType.TELEGRAM.name()
-                )] as ClientMessengerResource[])
+                )] as ClientMessengerResource[]
+            )
             response = sendCreateRequest(token, body)
         then:
             response.expectStatus().isBadRequest()
@@ -388,14 +597,14 @@ class ClientHandlerTest extends ClientSpecification {
     }
     
     private WebTestClient.ResponseSpec sendCreateRequest(String token, ClientInResource body) {
-        client.post()
+        webClient.post()
             .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
             .body(body)
-            .url("/client/contact")
+            .url("$contextPath/client")
             .exchange()
     }
     
-    def "should load a page of contacts successfully"() {
+    def "should load page of clients successfully"() {
         
         given:
           
@@ -418,9 +627,9 @@ class ClientHandlerTest extends ClientSpecification {
             def token = unsafeTokenService.generateNewToken(firstUser)
         
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/client/contacts/page?pageSize=5&offset=0")
+                .url("$contextPath/clients/page?pageSize=5&offset=0")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -429,9 +638,9 @@ class ClientHandlerTest extends ClientSpecification {
                     .jsonPath('$.totalSize').isEqualTo(20)
                     .jsonPath('$.resources').value(hasSize(5))
         when:
-            response = client.get()
+            response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/client/contacts/page?pageSize=10&offset=12")
+                .url("$contextPath/clients/page?pageSize=10&offset=12")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -441,7 +650,7 @@ class ClientHandlerTest extends ClientSpecification {
                     .jsonPath('$.resources').value(hasSize(8))
     }
     
-    def "should update contact successfully"() {
+    def "should update client successfully"() {
         
         given:
             
@@ -467,26 +676,45 @@ class ClientHandlerTest extends ClientSpecification {
                 "Company",
                 "1990-05-22",
                 [
-                    new ClientPhoneNumberResource("+7", "234", "123132", PhoneNumberType.WORK.name())
+                    new ClientPhoneNumberResource(
+                        "+7",
+                        "234",
+                        "123132", PhoneNumberType.WORK.name()
+                    )
                 ] as ClientPhoneNumberResource[],
                 [
-                    new ClientEmailResource("Test@test.com", EmailType.HOME.name())
+                    new ClientEmailResource(
+                        "Test@test.com",
+                        EmailType.HOME.name()
+                    )
                 ] as ClientEmailResource[],
                 [
-                    new ClientSiteResource("work.site.com", SiteType.WORK.name()),
-                    new ClientSiteResource("home.site.com", SiteType.HOME.name())
+                    new ClientSiteResource(
+                        "work.site.com",
+                        SiteType.WORK.name()
+                    ),
+                    new ClientSiteResource(
+                        "home.site.com",
+                        SiteType.HOME.name()
+                    )
                 ] as ClientSiteResource[],
                 [
-                    new ClientMessengerResource("misterX", MessengerType.TELEGRAM.name()),
-                    new ClientMessengerResource("misterX", MessengerType.SKYPE.name())
+                    new ClientMessengerResource(
+                        "mist" +
+                            "erX", MessengerType.TELEGRAM.name()
+                    ),
+                    new ClientMessengerResource(
+                        "misterX",
+                        MessengerType.SKYPE.name()
+                    )
                 ] as ClientMessengerResource[]
             )
         
         when:
-            def response = client.put()
+            def response = webClient.put()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(body)
-                .url("/client/contact")
+                .url("$contextPath/client")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -533,18 +761,18 @@ class ClientHandlerTest extends ClientSpecification {
                     ))
     }
     
-    def "should failed updating a contact"() {
+    def "should failed updating client"() {
         
         given:
             
             def org = userTestHelper.newOrg()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def assigner = userTestHelper.newUser("Assigner1", org)
-            def contact = clientTestHelper.newSimpleClient(user)
+            def client = clientTestHelper.newSimpleClient(user)
             
             def token = unsafeTokenService.generateNewToken(user)
             def body = ClientInResource.withoutContacts(
-                contact.id,
+                client.id,
                 null,
                 assigner.id,
                 10,
@@ -556,20 +784,20 @@ class ClientHandlerTest extends ClientSpecification {
             )
         
         when:
-            def response = client.put()
+            def response = webClient.put()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(body)
-                .url("/client/contact")
+                .url("$contextPath/client")
                 .exchange()
         then:
             response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
         when:
     
             body = ClientInResource.withoutContacts(
-                contact.id,
+                client.id,
                 null,
                 (assigner.id + 100),
-                contact.version,
+                client.version,
                 "First name",
                 "Second name",
                 "Third name",
@@ -577,10 +805,10 @@ class ClientHandlerTest extends ClientSpecification {
                 null
             )
         
-            response = client.put()
+            response = webClient.put()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(body)
-                .url("/client/contact")
+                .url("$contextPath/client")
                 .exchange()
         then:
             response.expectStatus().isBadRequest()

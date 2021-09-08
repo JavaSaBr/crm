@@ -27,7 +27,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
         given:
             def organization = userTestHelper.newOrg()
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/exist/organization/name/$organization.name")
                 .exchange()
         then:
@@ -37,7 +37,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
     def "should found that an organization is not exist"() {
         
         when:
-            def response = client.get()
+            def response = webClient.get()
                 .url("/registration/exist/organization/name/nonexist")
                 .exchange()
         then:
@@ -58,7 +58,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 country.id
             )
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .url("/registration/register/organization")
@@ -92,7 +92,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 country.id
             )
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .url("/registration/register/organization")
@@ -117,7 +117,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 country.id + 100000
             )
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .url("/registration/register/organization")
@@ -142,7 +142,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 country.id
             )
         when:
-            def response = client.post()
+            def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .url("/registration/register/organization")

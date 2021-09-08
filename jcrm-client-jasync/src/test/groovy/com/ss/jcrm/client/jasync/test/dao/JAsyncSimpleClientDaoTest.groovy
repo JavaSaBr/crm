@@ -20,9 +20,9 @@ import java.time.LocalDate
 class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
     
     @Autowired
-    SimpleClientDao simpleContactDao
+    SimpleClientDao simpleClientDao
     
-    def "should create and load a simple contact"() {
+    def "should create and load simple client"() {
         
         given:
             
@@ -50,7 +50,7 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
             ]
             def birthday = LocalDate.of(1900, 3, 12)
         when:
-            def contact = simpleContactDao.create(
+            def client = simpleClientDao.create(
                 assigner,
                 curators,
                 assigner.getOrganization(),
@@ -65,94 +65,94 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
                 "My company"
             ).block()
         then:
-            contact != null
-            contact.id > 0
-            contact.assignerId == assigner.id
-            contact.curatorIds == JAsyncUtils.toIds(curators)
-            contact.organizationId == assigner.organization.id
-            contact.firstName == "First name"
-            contact.secondName == "Second name"
-            contact.thirdName == "Third name"
-            contact.birthday == birthday
-            contact.phoneNumbers == phoneNumbers
-            contact.emails == emails
-            contact.sites == sites
-            contact.messengers == messengers
-            contact.company == "My company"
-            contact.created.isAfter(currentTime)
-            contact.modified.isAfter(currentTime)
+            client != null
+            client.id > 0
+            client.assignerId == assigner.id
+            client.curatorIds == JAsyncUtils.toIds(curators)
+            client.organizationId == assigner.organization.id
+            client.firstName == "First name"
+            client.secondName == "Second name"
+            client.thirdName == "Third name"
+            client.birthday == birthday
+            client.phoneNumbers == phoneNumbers
+            client.emails == emails
+            client.sites == sites
+            client.messengers == messengers
+            client.company == "My company"
+            client.created.isAfter(currentTime)
+            client.modified.isAfter(currentTime)
         when:
-            contact = simpleContactDao.findById(contact.id).block()
+            client = simpleClientDao.findById(client.id).block()
         then:
-            contact != null
-            contact.id > 0
-            contact.assignerId == assigner.id
-            contact.curatorIds == JAsyncUtils.toIds(curators)
-            contact.organizationId == assigner.organization.id
-            contact.firstName == "First name"
-            contact.secondName == "Second name"
-            contact.thirdName == "Third name"
-            contact.birthday == birthday
-            contact.phoneNumbers == phoneNumbers
-            contact.emails == emails
-            contact.sites == sites
-            contact.messengers == messengers
-            contact.company == "My company"
-            contact.created.isAfter(currentTime)
-            contact.modified.isAfter(currentTime)
+            client != null
+            client.id > 0
+            client.assignerId == assigner.id
+            client.curatorIds == JAsyncUtils.toIds(curators)
+            client.organizationId == assigner.organization.id
+            client.firstName == "First name"
+            client.secondName == "Second name"
+            client.thirdName == "Third name"
+            client.birthday == birthday
+            client.phoneNumbers == phoneNumbers
+            client.emails == emails
+            client.sites == sites
+            client.messengers == messengers
+            client.company == "My company"
+            client.created.isAfter(currentTime)
+            client.modified.isAfter(currentTime)
     }
     
-    def "should load a simple contact"() {
+    def "should load simple client"() {
         
         given:
-            def contact = clientTestHelper.newSimpleClient()
+            def client = clientTestHelper.newSimpleClient()
         when:
-            def loaded = simpleContactDao.findById(contact.id).block()
+            def loaded = simpleClientDao.findById(client.id).block()
         then:
             loaded != null
-            loaded.id == contact.id
-            loaded.organizationId == contact.id
-            loaded.firstName == contact.firstName
+            loaded.id == client.id
+            loaded.organizationId == client.id
+            loaded.firstName == client.firstName
             loaded.secondName == loaded.secondName
     }
     
-    def "should load a simple contact only under its organization"() {
+    def "should load simple client only under its organization"() {
         
         given:
-            def contact = clientTestHelper.newSimpleClient()
+            def client = clientTestHelper.newSimpleClient()
         when:
-            def loaded = simpleContactDao.findByIdAndOrg(contact.id, contact.organizationId).block()
+            def loaded = simpleClientDao.findByIdAndOrg(client.id, client.organizationId).block()
         then:
             loaded != null
-            loaded.id == contact.id
-            loaded.organizationId == contact.id
-            loaded.firstName == contact.firstName
+            loaded.id == client.id
+            loaded.organizationId == client.id
+            loaded.firstName == client.firstName
             loaded.secondName == loaded.secondName
         when:
-            loaded = simpleContactDao.findByIdAndOrg(contact.id, contact.organizationId + 1).block()
+            loaded = simpleClientDao.findByIdAndOrg(client.id, client.organizationId + 1).block()
         then:
             loaded == null
     }
     
-    def "should update simple contact correctly"() {
+    def "should update simple client correctly"() {
         
         given:
             def assigner = userTestHelper.newUser()
-            def contact = clientTestHelper.newSimpleClient(assigner)
+            def client = clientTestHelper.newSimpleClient(assigner)
             def curator = userTestHelper.newUser("Curator2", assigner.organization)
             def timeAfterCreation = Instant.now()
         when:
-            def loaded = simpleContactDao.findById(contact.id).block()
+            def loaded = simpleClientDao.findById(client.id).block()
             def prevModified = loaded.modified
         then:
             loaded != null
-            loaded.id == contact.id
+            loaded.id == client.id
             loaded.curatorIds.length == 0
-            loaded.organizationId == contact.id
+            loaded.organizationId == client.id
             loaded.birthday == null
-            loaded.firstName == contact.firstName
+            loaded.firstName == client.firstName
             loaded.secondName == loaded.secondName
-            loaded.thirdName == null
+            loaded.thirdName == loaded.thirdName
             loaded.phoneNumbers.length == 0
             loaded.emails.length == 0
             loaded.sites.length == 0
@@ -167,11 +167,11 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
             loaded.sites = [new DefaultContactSite("google.com", SiteType.HOME)]
             loaded.emails = [new DefaultClientEmail("test@test.com", EmailType.WORK)]
             loaded.phoneNumbers = [new DefaultClientPhoneNumber("+375", "25", "124124", PhoneNumberType.WORK)]
-            loaded.thirdName = "Third name"
+            loaded.thirdName = "Third name 2"
             loaded.birthday = LocalDate.of(1900, 04, 11)
             loaded.curatorIds = [curator.id]
-            simpleContactDao.update(loaded).block()
-            def reloaded = simpleContactDao.findById(loaded.id).block()
+            simpleClientDao.update(loaded).block()
+            def reloaded = simpleClientDao.findById(loaded.id).block()
         then:
             reloaded.id == loaded.id
             reloaded.curatorIds == loaded.curatorIds
@@ -186,65 +186,65 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
             reloaded.version == 1
         when:
             reloaded.thirdName = "Third name 2"
-            simpleContactDao.update(reloaded).block()
-            reloaded = simpleContactDao.findById(reloaded.id).block()
+            simpleClientDao.update(reloaded).block()
+            reloaded = simpleClientDao.findById(reloaded.id).block()
         then:
             reloaded.version == 2
     }
     
-    def "should failed updating a simple contact by outdated version reason"() {
+    def "should failed updating simple client by outdated version reason"() {
         
         given:
             def assigner = userTestHelper.newUser()
-            def contact = clientTestHelper.newSimpleClient(assigner)
+            def client = clientTestHelper.newSimpleClient(assigner)
         when:
-            def loaded = simpleContactDao.findById(contact.id).block()
+            def loaded = simpleClientDao.findById(client.id).block()
         then:
             loaded != null
-            loaded.id == contact.id
+            loaded.id == client.id
             loaded.version == 0
         when:
             loaded.setVersion(5)
-            simpleContactDao.update(loaded).block()
+            simpleClientDao.update(loaded).block()
         then:
             thrown NotActualObjectDaoException
     }
     
-    def "should load page of contacts"() {
+    def "should load page of clients"() {
         
         given:
     
-            def firstOrgContactsCount = 20
-            def secondOrgContactsCount = 5
+            def firstOrgClientsCount = 20
+            def secondOrgClientsCount = 5
     
             def firstOrg = userTestHelper.newOrg()
             def firstUser = userTestHelper.newUser("User1", firstOrg)
             def secondOrg = userTestHelper.newOrg()
             def secondUser = userTestHelper.newUser("User2", secondOrg)
     
-            firstOrgContactsCount.times {
+            firstOrgClientsCount.times {
                 clientTestHelper.newSimpleClient(firstUser)
             }
     
-            secondOrgContactsCount.times {
+            secondOrgClientsCount.times {
                 clientTestHelper.newSimpleClient(secondUser)
             }
         
-            List<SimpleClient> loadedContacts = []
+            List<SimpleClient> loadedClients = []
     
         when:
-            def page = simpleContactDao.findPageByOrg(0, 5, firstOrg.id).block()
-            loadedContacts.addAll(page.entities)
+            def page = simpleClientDao.findPageByOrg(0, 5, firstOrg.id).block()
+            loadedClients.addAll(page.entities)
         then:
             page != null
-            page.totalSize == firstOrgContactsCount
+            page.totalSize == firstOrgClientsCount
             page.entities.size() == 5
         when:
-            page = simpleContactDao.findPageByOrg(17, 5, firstOrg.id).block()
+            page = simpleClientDao.findPageByOrg(17, 5, firstOrg.id).block()
         then:
             page != null
-            page.totalSize == firstOrgContactsCount
+            page.totalSize == firstOrgClientsCount
             page.entities.size() == 3
-            !page.entities.stream().anyMatch({ loadedContacts.contains(it) })
+            !page.entities.stream().anyMatch({ loadedClients.contains(it) })
     }
 }

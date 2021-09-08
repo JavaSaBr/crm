@@ -19,7 +19,8 @@ public interface SimpleClientDao extends Dao<SimpleClient> {
         @NotNull User assigner,
         @NotNull Organization organization,
         @NotNull String firstName,
-        @NotNull String secondName
+        @NotNull String secondName,
+        @NotNull String thirdName
     ) {
         return create(
             assigner,
@@ -27,7 +28,7 @@ public interface SimpleClientDao extends Dao<SimpleClient> {
             organization,
             firstName,
             secondName,
-            null,
+            thirdName,
             null,
             null,
             null,

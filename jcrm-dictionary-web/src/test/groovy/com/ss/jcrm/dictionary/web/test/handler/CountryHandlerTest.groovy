@@ -1,7 +1,5 @@
 package com.ss.jcrm.dictionary.web.test.handler
 
-import com.ss.jcrm.base.utils.Reloadable
-
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService
 import com.ss.jcrm.dictionary.web.test.DictionarySpecification
@@ -27,11 +25,13 @@ class CountryHandlerTest extends DictionarySpecification {
             def country2 = dictionaryTestHelper.newCountry("country2")
             def country3 = dictionaryTestHelper.newCountry("country3")
 
-            (countryDictionaryService as Reloadable).reload()
+            reloadableServices.each {
+                it.reload()
+            }
 
         when:
-            def response = client.get()
-                .url("/dictionary/countries")
+            def response = webClient.get()
+                .url("$contextPath/countries")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -45,19 +45,16 @@ class CountryHandlerTest extends DictionarySpecification {
     }
     
     def "should not get not exists country"() {
-        
-        given:
-            (countryDictionaryService as Reloadable).reload()
         when:
-            def response = client.get()
-                .url("/dictionary/country/id/1")
+            def response = webClient.get()
+                .url("$contextPath/country/id/1")
                 .exchange()
         then:
             response.expectStatus()
                 .isNotFound()
         when:
-            response = client.get()
-                .url("/dictionary/country/name/notexist")
+            response = webClient.get()
+                .url("$contextPath/country/name/notexist")
                 .exchange()
         then:
             response.expectStatus()
@@ -65,12 +62,9 @@ class CountryHandlerTest extends DictionarySpecification {
     }
     
     def "should get bad request with wrong id format"() {
-        
-        given:
-            (countryDictionaryService as Reloadable).reload()
         when:
-            def response = client.get()
-                .url("/dictionary/country/id/incorrectid")
+            def response = webClient.get()
+                .url("$contextPath/country/id/incorrectid")
                 .exchange()
         then:
             response.expectStatus().isBadRequest()
@@ -80,11 +74,16 @@ class CountryHandlerTest extends DictionarySpecification {
     def "should get country by id"() {
         
         given:
+
             def country = dictionaryTestHelper.newCountry("country1")
-            (countryDictionaryService as Reloadable).reload()
+
+            reloadableServices.each {
+                it.reload()
+            }
+
         when:
-            def response = client.get()
-                .url("/dictionary/country/id/$country.id")
+            def response = webClient.get()
+                .url("$contextPath/country/id/$country.id")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -97,11 +96,16 @@ class CountryHandlerTest extends DictionarySpecification {
     def "should get country by name"() {
         
         given:
+
             def country = dictionaryTestHelper.newCountry("test")
-            (countryDictionaryService as Reloadable).reload()
+
+            reloadableServices.each {
+                it.reload()
+            }
+
         when:
-            def response = client.get()
-                .url("/dictionary/country/name/$country.name")
+            def response = webClient.get()
+                .url("$contextPath/country/name/$country.name")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -119,11 +123,13 @@ class CountryHandlerTest extends DictionarySpecification {
             def country2 = dictionaryTestHelper.newCountry("country2")
             def country3 = dictionaryTestHelper.newCountry("country3")
 
-            (countryDictionaryService as Reloadable).reload()
+            reloadableServices.each {
+                it.reload()
+            }
 
         when:
-            def response = client.get()
-                .url("/dictionary/countries")
+            def response = webClient.get()
+                .url("$contextPath/countries")
                 .headerValue("Origin", "http://localhost")
                 .exchange()
         then:
