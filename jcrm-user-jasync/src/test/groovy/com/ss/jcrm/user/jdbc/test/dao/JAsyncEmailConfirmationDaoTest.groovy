@@ -11,7 +11,7 @@ class JAsyncEmailConfirmationDaoTest extends JAsyncUserSpecification {
     @Autowired
     EmailConfirmationDao emailConfirmationDao
 
-    def "should a new email confirmation"(String code, String email) {
+    def "should new email confirmation"(String code, String email) {
 
         when:
             def confirmation = emailConfirmationDao.create(code, email, Instant.now()).block()
@@ -24,7 +24,7 @@ class JAsyncEmailConfirmationDaoTest extends JAsyncUserSpecification {
             email << ["test1@email.com", "test2@email.com", "test3@eamil.com"]
     }
 
-    def "should create and load a new email confirmation by id"() {
+    def "should create and load new email confirmation by id"() {
 
         given:
             def code = "3453446"
@@ -41,7 +41,7 @@ class JAsyncEmailConfirmationDaoTest extends JAsyncUserSpecification {
             loaded.expiration.toEpochMilli() == expiration.toEpochMilli()
     }
 
-    def "should create and load a new email confirmation by code and email"() {
+    def "should create and load new email confirmation by code and email"() {
 
         given:
             def code = "12312"

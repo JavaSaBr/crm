@@ -7,6 +7,7 @@ import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import com.ss.jcrm.user.api.dao.UserDao
 import com.ss.jcrm.user.api.dao.UserGroupDao
+import com.ss.rlib.common.util.ArrayUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
@@ -45,7 +46,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUserGroup)
-                .url("/registration/user-group")
+                .url("$contextPath/user-group")
                 .exchange()
         then:
             response
@@ -69,7 +70,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
             def org = userTestHelper.newOrg()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             
-            def newUserGroup = UserGroupInResource.from("group1", [] as long[])
+            def newUserGroup = UserGroupInResource.from("group1", ArrayUtils.EMPTY_LONG_ARRAY)
             def token = unsafeTokenService.generateNewToken(user)
         
         when:
@@ -77,7 +78,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUserGroup)
-                .url("/registration/user-group")
+                .url("$contextPath/user-group")
                 .exchange()
         then:
             response
@@ -107,7 +108,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/user-group/$group.id")
+                .url("$contextPath/user-group/$group.id")
                 .exchange()
         then:
             response
@@ -144,7 +145,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/user-groups/page?pageSize=10&offset=0")
+                .url("$contextPath/user-groups/page?pageSize=10&offset=0")
                 .exchange()
         then:
             response
@@ -161,7 +162,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         when:
             response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/user-groups/page?pageSize=1&offset=0")
+                .url("$contextPath/user-groups/page?pageSize=1&offset=0")
                 .exchange()
         then:
             response
@@ -183,7 +184,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/exist/user-group/name/$group.name")
+                .url("$contextPath/exist/user-group/name/$group.name")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -200,7 +201,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/exist/user-group/name/$group.name")
+                .url("$contextPath/exist/user-group/name/$group.name")
                 .exchange()
         then:
             response.expectStatus().isNotFound()

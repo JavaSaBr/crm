@@ -6,20 +6,17 @@ import com.ss.jcrm.security.web.exception.InvalidTokenException
 import com.ss.jcrm.security.web.exception.ExpiredTokenException
 import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException
 import com.ss.jcrm.security.web.exception.PrematureTokenException
-import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.test.WebSecuritySpecification
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 
 import java.time.ZonedDateTime
-import java.util.concurrent.CompletionException
 
 class TokenServiceTest extends WebSecuritySpecification {
     
     @Value('${token.max.refreshes}')
     Integer maxRefreshes
     
-    def "should generate a new token for a user"() {
+    def "should generate new token for a user"() {
 
         given:
             def user1 = userTestHelper.newUser("User1")
@@ -33,7 +30,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             token1 != token2
     }
 
-    def "should find a user if token is not expired"() {
+    def "should find user if token is not expired"() {
 
         given:
             def user = userTestHelper.newUser("User1")
@@ -56,7 +53,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown ExpiredTokenException
     }
     
-    def "should find a user even if token is expired"() {
+    def "should find user even if token is expired"() {
         
         given:
             def user = userTestHelper.newUser("User1")
@@ -74,7 +71,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             foundUser.getId() == user.getId()
     }
     
-    def "should refresh a token"() {
+    def "should refresh token"() {
         
         given:
             def user = userTestHelper.newUser("User1")
@@ -86,7 +83,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             newToken != token
     }
     
-    def "should refresh a token after expiration"() {
+    def "should refresh token after expiration"() {
         
         given:
             def user = userTestHelper.newUser("User1")
@@ -104,7 +101,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             newToken != token
     }
     
-    def "should thrown InvalidTokenException when a token isn't valid"() {
+    def "should thrown InvalidTokenException when token isn't valid"() {
 
         given:
             def user = userTestHelper.newUser("User1")
@@ -115,7 +112,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown InvalidTokenException
     }
 
-    def "should thrown TokenExpiredException when a token is expired"() {
+    def "should thrown TokenExpiredException when token is expired"() {
 
         given:
             def user = userTestHelper.newUser("User1")
@@ -132,7 +129,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown ExpiredTokenException
     }
     
-    def "should thrown PrematureTokenException when a token is from future"() {
+    def "should thrown PrematureTokenException when token is from future"() {
         
         given:
             def user = userTestHelper.newUser("User1")
@@ -149,7 +146,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown PrematureTokenException
     }
     
-    def "should thrown MaxRefreshedTokenException when a token has reached max refreshes"() {
+    def "should thrown MaxRefreshedTokenException when token has reached max refreshes"() {
         
         given:
             def user = userTestHelper.newUser("User1")
@@ -163,7 +160,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown MaxRefreshedTokenException
     }
     
-    def "should thrown ChangedPasswordTokenException when a user changed a password"() {
+    def "should thrown ChangedPasswordTokenException when user changed password"() {
         
         given:
             def user = userTestHelper.newUser("User1")
@@ -175,7 +172,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown ChangedPasswordTokenException
     }
 
-    def "should thrown InvalidTokenException when a token isn't valid async"() {
+    def "should thrown InvalidTokenException when token isn't valid async"() {
 
         given:
             def user = userTestHelper.newUser("User1")
@@ -198,7 +195,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             thrown ObjectNotFoundDaoException
     }
 
-    def "should generate an activation code"(int length) {
+    def "should generate activation code"(int length) {
 
         when:
             def code = unsafeTokenService.generateActivateCode(length)

@@ -12,7 +12,7 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
     @Autowired
     OrganizationDao organizationDao
 
-    def "should create a new organization"(String name) {
+    def "should create new organization"(String name) {
 
         when:
             def created = organizationDao.create(name, dictionaryTestHelper.newCountry()).block()
@@ -22,7 +22,7 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
             name << ["testOrg1", "testOrg2", "dweffw", "Org1234"]
     }
     
-    def "should create and load a new organization"() {
+    def "should create and load new organization"() {
 
         given:
             def orgName = "TestOrgName1"

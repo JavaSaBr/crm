@@ -15,41 +15,41 @@ import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
 import static org.hamcrest.Matchers.hasSize
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.is
 
 class OrganizationHandlerTest extends RegistrationSpecification {
     
     @Autowired
     EmailConfirmationDao emailConfirmationDao
     
-    def "should found that an organization is exist"() {
+    def "should found that organization is exist"() {
         
         given:
             def organization = userTestHelper.newOrg()
         when:
             def response = webClient.get()
-                .url("/registration/exist/organization/name/$organization.name")
+                .url("$contextPath/exist/organization/name/$organization.name")
                 .exchange()
         then:
             response.expectStatus().isOk()
     }
     
-    def "should found that an organization is not exist"() {
+    def "should found that organization is not exist"() {
         
         when:
             def response = webClient.get()
-                .url("/registration/exist/organization/name/nonexist")
+                .url("$contextPath/exist/organization/name/nonexist")
                 .exchange()
         then:
             response.expectStatus().isNotFound()
     }
     
-    def "should register a new organization"() {
+    def "should register new organization"() {
         
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
-            def request = new OrganizationRegisterInResource(
+            def request = OrganizationRegisterInResource.from(
                 "test_org",
                 confirmation.email,
                 confirmation.code,
@@ -61,7 +61,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
             def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
-                .url("/registration/register/organization")
+                .url("$contextPath/register/organization")
                 .exchange()
         then:
             response
@@ -72,18 +72,18 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                     .jsonPath('$.user.id').isNotEmpty()
                     .jsonPath('$.user.email').value(is(confirmation.email))
                     .jsonPath('$.user.phoneNumbers').value(hasSize(1))
-                    .jsonPath('$.user.phoneNumbers[0].countryCode').isEqualTo(request.phoneNumber.countryCode)
-                    .jsonPath('$.user.phoneNumbers[0].regionCode').isEqualTo(request.phoneNumber.regionCode)
-                    .jsonPath('$.user.phoneNumbers[0].phoneNumber').isEqualTo(request.phoneNumber.phoneNumber)
+                    .jsonPath('$.user.phoneNumbers[0].countryCode').isEqualTo(request.phoneNumber().countryCode)
+                    .jsonPath('$.user.phoneNumbers[0].regionCode').isEqualTo(request.phoneNumber().regionCode)
+                    .jsonPath('$.user.phoneNumbers[0].phoneNumber').isEqualTo(request.phoneNumber().phoneNumber)
                     .jsonPath('$.user.phoneNumbers[0].type').isEqualTo((int) PhoneNumberType.UNKNOWN.id)
     }
     
-    def "should not register an organization with wrong activation code"() {
+    def "should not register organization with wrong activation code"() {
         
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
-            def request = new OrganizationRegisterInResource(
+            def request = OrganizationRegisterInResource.from(
                 "test_org",
                 confirmation.email,
                 confirmation.code + "111",
@@ -95,7 +95,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
             def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
-                .url("/registration/register/organization")
+                .url("$contextPath/register/organization")
                 .exchange()
         then:
             response
@@ -103,12 +103,12 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 .verifyErrorResponse(INVALID_ACTIVATION_CODE, INVALID_ACTIVATION_CODE_MESSAGE)
     }
     
-    def "should not register an organization with wrong country"() {
+    def "should not register organization with wrong country"() {
         
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
-            def request = new OrganizationRegisterInResource(
+            def request = OrganizationRegisterInResource.from(
                 "test_org",
                 confirmation.email,
                 confirmation.code,
@@ -120,7 +120,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
             def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
-                .url("/registration/register/organization")
+                .url("$contextPath/register/organization")
                 .exchange()
         then:
             response
@@ -128,12 +128,12 @@ class OrganizationHandlerTest extends RegistrationSpecification {
                 .verifyErrorResponse(COUNTRY_NOT_FOUND, COUNTRY_NOT_FOUND_MESSAGE)
     }
     
-    def "should not register an organization with wrong email"() {
+    def "should not register organization with wrong email"() {
         
         given:
             def country = dictionaryTestHelper.newCountry()
             def confirmation = userTestHelper.newEmailConfirmation()
-            def request = new OrganizationRegisterInResource(
+            def request = OrganizationRegisterInResource.from(
                 "test_org",
                 "wrongemail11",
                 confirmation.code,
@@ -145,7 +145,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
             def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
-                .url("/registration/register/organization")
+                .url("$contextPath/register/organization")
                 .exchange()
         then:
             response

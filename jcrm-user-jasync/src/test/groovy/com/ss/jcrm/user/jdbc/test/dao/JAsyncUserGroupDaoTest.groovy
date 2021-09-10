@@ -12,7 +12,7 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
     @Autowired
     UserGroupDao userGroupDao
 
-    def "should create a new group"(String name, Set<AccessRole> roles) {
+    def "should create new group"(String name, Set<AccessRole> roles) {
 
         when:
             def created = userGroupDao.create(name, roles, userTestHelper.newOrg()).block()
@@ -28,7 +28,7 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
             ]
     }
 
-    def "should create and load a new group"() {
+    def "should create and load new group"() {
 
         given:
             def org = userTestHelper.newOrg()

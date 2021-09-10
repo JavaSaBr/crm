@@ -8,6 +8,7 @@ import com.ss.jcrm.user.contact.api.MessengerType
 import com.ss.jcrm.user.contact.api.PhoneNumberType
 import com.ss.jcrm.user.contact.api.resource.MessengerResource
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource
+import com.ss.jcrm.web.config.ApiEndpointServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
@@ -17,6 +18,9 @@ import java.util.concurrent.ThreadLocalRandom
 class RegistrationSpecification extends WebSpecification {
 
     @Autowired
+    ApiEndpointServer registrationApiEndpointServer
+
+    @Autowired
     UserTestHelper userTestHelper
 
     @Autowired
@@ -24,10 +28,15 @@ class RegistrationSpecification extends WebSpecification {
     
     @Autowired
     ObjectMapper objectMapper
-    
+
+    def contextPath
+
     def setup() {
+
         userTestHelper.clearAllData()
         dictionaryTestHelper.clearAllData()
+
+        contextPath = registrationApiEndpointServer.contextPath()
     }
     
     def generateMessengers() {

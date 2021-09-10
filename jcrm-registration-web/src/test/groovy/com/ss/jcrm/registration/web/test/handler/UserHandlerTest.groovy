@@ -28,7 +28,7 @@ class UserHandlerTest extends RegistrationSpecification {
     @Autowired
     UserDao userDao
     
-    def "should create a new user"() {
+    def "should create new user"() {
         
         given:
             
@@ -55,7 +55,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
-                .url("/registration/user")
+                .url("$contextPath/user")
                 .exchange()
         then:
             response
@@ -63,11 +63,11 @@ class UserHandlerTest extends RegistrationSpecification {
                 .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath('$.id').isNotEmpty()
-                .jsonPath('$.email').isEqualTo(newUser.email)
-                .jsonPath('$.firstName').isEqualTo(newUser.firstName)
-                .jsonPath('$.secondName').isEqualTo(newUser.secondName)
-                .jsonPath('$.thirdName').isEqualTo(newUser.thirdName)
-                .jsonPath('$.birthday').isEqualTo(newUser.birthday)
+                .jsonPath('$.email').isEqualTo(newUser.email())
+                .jsonPath('$.firstName').isEqualTo(newUser.firstName())
+                .jsonPath('$.secondName').isEqualTo(newUser.secondName())
+                .jsonPath('$.thirdName').isEqualTo(newUser.thirdName())
+                .jsonPath('$.birthday').isEqualTo(newUser.birthday())
                 .jsonPath('$.phoneNumbers').value(hasSize(2))
                 .jsonPath('$.phoneNumbers[*].countryCode').value(containsInAnyOrder(
                     phoneNumbers[0].countryCode,
@@ -96,7 +96,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 ))
     }
     
-    def "should not create a new user without required fields"() {
+    def "should not create new user without required fields"() {
         
         given:
             
@@ -123,7 +123,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
-                .url("/registration/user")
+                .url("$contextPath/user")
                 .exchange()
         then:
             response
@@ -147,7 +147,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
-                .url("/registration/user")
+                .url("$contextPath/user")
                 .exchange()
         then:
             response
@@ -171,7 +171,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
-                .url("/registration/user")
+                .url("$contextPath/user")
                 .exchange()
         then:
             response
@@ -195,7 +195,7 @@ class UserHandlerTest extends RegistrationSpecification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
                 .body(newUser)
-                .url("/registration/user")
+                .url("$contextPath/user")
                 .exchange()
         then:
             response
@@ -209,7 +209,7 @@ class UserHandlerTest extends RegistrationSpecification {
             def user = userTestHelper.newUser()
         when:
             def response = webClient.get()
-                .url("/registration/exist/user/email/$user.email")
+                .url("$contextPath/exist/user/email/$user.email")
                 .exchange()
         then:
             response.expectStatus().isOk()
@@ -221,19 +221,19 @@ class UserHandlerTest extends RegistrationSpecification {
             def email = "nonexist@test.com"
         when:
             def response = webClient.get()
-                .url("/registration/exist/user/email/$email")
+                .url("$contextPath/exist/user/email/$email")
                 .exchange()
         then:
             response.expectStatus().isNotFound()
     }
     
-    def "should bad request if email invalid"() {
+    def "should bad request if email is invalid"() {
     
         given:
             def email = "@&%&#2"
         when:
             def response = webClient.get()
-                .url("/registration/exist/user/email/$email")
+                .url("$contextPath/exist/user/email/$email")
                 .exchange()
         then:
             response
@@ -254,7 +254,7 @@ class UserHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/search/user/name/first")
+                .url("$contextPath/search/user/name/first")
                 .exchange()
         then:
             response
@@ -265,7 +265,7 @@ class UserHandlerTest extends RegistrationSpecification {
         when:
             response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/search/user/name/first2 second")
+                .url("$contextPath/search/user/name/first2 second")
                 .exchange()
         then:
             response
@@ -278,7 +278,7 @@ class UserHandlerTest extends RegistrationSpecification {
         when:
             response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/search/user/name/hird")
+                .url("$contextPath/search/user/name/hird")
                 .exchange()
         then:
             response
@@ -293,7 +293,7 @@ class UserHandlerTest extends RegistrationSpecification {
         
         when:
             def response = webClient.get()
-                .url("/registration/search/user/name/first")
+                .url("$contextPath/search/user/name/first")
                 .exchange()
         then:
             response
@@ -314,7 +314,7 @@ class UserHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/user/$user.id")
+                .url("$contextPath/user/$user.id")
                 .exchange()
         then:
             response
@@ -341,7 +341,7 @@ class UserHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/user/minimal/$user.id")
+                .url("$contextPath/user/minimal/$user.id")
                 .exchange()
         then:
             response
@@ -355,7 +355,7 @@ class UserHandlerTest extends RegistrationSpecification {
         when:
             response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/user/$user.id")
+                .url("$contextPath/user/$user.id")
                 .exchange()
         then:
             response.expectStatus().isForbidden()
@@ -372,13 +372,13 @@ class UserHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/user/$user2.id")
+                .url("$contextPath/user/$user2.id")
                 .exchange()
         then:
             response.expectStatus().isNotFound()
         when:
             response = webClient.get()
-                .url("/registration/user/$user1.id")
+                .url("$contextPath/user/$user1.id")
                 .exchange()
         then:
             response.expectStatus().isUnauthorized()
@@ -402,7 +402,7 @@ class UserHandlerTest extends RegistrationSpecification {
             def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/users/ids")
+                .url("$contextPath/users/ids")
                 .body(ids)
                 .exchange()
         then:
@@ -416,7 +416,7 @@ class UserHandlerTest extends RegistrationSpecification {
                     ))
     }
     
-    def "should load a page of contacts successfully"() {
+    def "should load page of users successfully"() {
         
         given:
     
@@ -436,23 +436,23 @@ class UserHandlerTest extends RegistrationSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/users/page?pageSize=5&offset=0")
+                .url("$contextPath/users/page?pageSize=5&offset=0")
                 .exchange()
         then:
             response
                 .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.totalSize').isEqualTo(20)
                     .jsonPath('$.resources').value(hasSize(5))
         when:
             response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/users/page?pageSize=10&offset=12")
+                .url("$contextPath/users/page?pageSize=10&offset=12")
                 .exchange()
         then:
             response.expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                     .jsonPath('$.totalSize').isEqualTo(20)
                     .jsonPath('$.resources').value(hasSize(8))
@@ -475,7 +475,7 @@ class UserHandlerTest extends RegistrationSpecification {
             def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("/registration/users/minimal/ids")
+                .url("$contextPath/users/minimal/ids")
                 .body(ids)
                 .exchange()
         then:
