@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/user.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/env_config.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/authentication_in_resource.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/authentication_out_resource.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/json_resource.dart';
 
 import 'http_service.dart';
 
 class SecurityService extends ChangeNotifier {
+
+  static const headerToken = 'jcrm-access-token';
 
   static const max_refreshed_token_message = 2001;
 
@@ -16,7 +22,7 @@ class SecurityService extends ChangeNotifier {
 
   bool _authenticated = false;
 
-  ReadonlyUser _currentUser = ReadonlyUser.none;
+  User _currentUser = User.none;
 
   String _accessToken = "";
 
@@ -24,11 +30,11 @@ class SecurityService extends ChangeNotifier {
 
   bool get authenticated => _authenticated;
 
-  ReadonlyUser get currentUser => _currentUser;
+  User get currentUser => _currentUser;
 
   String get accessToken => _accessToken;
 
-  void internalAuthenticate(ReadonlyUser user, String accessToken) {
+  void internalAuthenticate(User user, String accessToken) {
     _accessToken = accessToken;
     _currentUser = user;
     _authenticated = accessToken.isNotEmpty;
@@ -37,14 +43,31 @@ class SecurityService extends ChangeNotifier {
 
   Future<void> logout() async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
-    internalAuthenticate(ReadonlyUser.none, empty_token);
+    internalAuthenticate(User.none, empty_token);
   }
 
   Future<bool> login(String username, String password) async {
+
+    var url = EnvConfig.registrationUrl + "/authenticate";
+    var body = AuthenticationOutResource(username, password);
+
+   // var result = await _httpService.post(url, body, (json) => AuthenticationInResource.fromJson(json));
+
     await Future<void>.delayed(const Duration(milliseconds: 200));
     _authenticated = true;
     notifyListeners();
     return _authenticated;
+  }
+
+  Future<T> getRequest<T extends JsonResource>(String url, T Function(Map<String, dynamic> json) jsonReader) async {
+
+    if(_accessToken.isEmpty) {
+      throw AssertionError("Is not authenticated");
+    }
+
+    return _httpService.get(url, jsonReader, {
+      headerToken: _accessToken
+    });
   }
 }
 

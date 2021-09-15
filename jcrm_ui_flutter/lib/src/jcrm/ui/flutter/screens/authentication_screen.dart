@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/routing.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/screens/dashboard_screen.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/error_service.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/security_service.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/theme/theme_constants.dart';
+import 'package:provider/provider.dart';
 
 class Credentials {
   final String username;
@@ -11,6 +15,8 @@ class Credentials {
 }
 
 class AuthenticationScreen extends StatefulWidget {
+  static const routeName = "login";
+
   final ValueChanged<Credentials> credentials;
 
   const AuthenticationScreen({
@@ -23,7 +29,6 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class AuthenticationScreenState extends State<AuthenticationScreen> {
-
   static final formSize = BoxConstraints.loose(const Size(600, 600));
 
   final _userController = TextEditingController();
@@ -65,7 +70,7 @@ class AuthenticationScreenState extends State<AuthenticationScreen> {
                             minimumSize: ThemeConstants.cardButtonSize,
                           ),
                           onPressed: () async {
-                            widget.credentials(Credentials(_userController.value.text, _passwordController.value.text));
+                            tryToAuth();
                           },
                           child: const Text('Sign in')),
                     ),
@@ -102,4 +107,18 @@ class AuthenticationScreenState extends State<AuthenticationScreen> {
           ],
         )),
       );
+
+  Future<void> tryToAuth() async {
+
+    var securityService = Provider.of<SecurityService>(context, listen: false);
+    var errorService = Provider.of<ErrorService>(context, listen: false);
+    var routeState = RouteStateScope.of(context);
+
+    try {
+      await securityService.login(_userController.value.text, _passwordController.value.text);
+      routeState.go(DashboardScreen.routeName);
+    } on Exception catch (exception) {
+      errorService.handleErrorOnUi(context, exception);
+    }
+  }
 }

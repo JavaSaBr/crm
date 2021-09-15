@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-
-import 'page/navigator.dart';
-import 'routing.dart';
-import 'service/security_service.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/routing/delegate.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/routing/parsed_route.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/routing/parser.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/routing/route_state.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/screens/root_navigator_screen.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/security_service.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/util/routes.dart';
 
 class JcrmUiApplication extends StatefulWidget {
-
   final SecurityService _securityService;
 
   JcrmUiApplication(this._securityService, {Key? key}) : super(key: key);
 
   @override
-  JcrmUiApplicationState createState() =>
-      JcrmUiApplicationState(_securityService);
+  JcrmUiApplicationState createState() => JcrmUiApplicationState(_securityService);
 }
 
 class JcrmUiApplicationState extends State<JcrmUiApplication> {
-
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   final SecurityService _securityService;
@@ -29,21 +29,11 @@ class JcrmUiApplicationState extends State<JcrmUiApplication> {
 
   @override
   void initState() {
-
     /// Configure the parser with all of the app's allowed path templates.
     _routeParser = TemplateRouteParser(
-      allowedPaths: [
-        '/signin',
-        '/authors',
-        '/settings',
-        '/books/new',
-        '/books/all',
-        '/books/popular',
-        '/book/:bookId',
-        '/author/:authorId',
-      ],
+      allowedPaths: Routes.allowedPaths,
       guard: _guard,
-      initialRoute: '/signin',
+      initialRoute: Routes.loginRoute,
     );
 
     _routeState = RouteState(_routeParser);
@@ -51,7 +41,7 @@ class JcrmUiApplicationState extends State<JcrmUiApplication> {
     _routerDelegate = SimpleRouterDelegate(
       routeState: _routeState,
       navigatorKey: _navigatorKey,
-      builder: (context) => BookstoreNavigator(
+      builder: (context) => RootNavigatorScreen(
         navigatorKey: _navigatorKey,
       ),
     );
@@ -64,19 +54,21 @@ class JcrmUiApplicationState extends State<JcrmUiApplication> {
 
   @override
   Widget build(BuildContext context) => RouteStateScope(
-    notifier: _routeState,
-    child: SecurityAuthScope(
-      notifier: _securityService,
-      child: MaterialApp.router(
-        routerDelegate: _routerDelegate,
-        routeInformationParser: _routeParser,
-      ),
-    ),
-  );
+        notifier: _routeState,
+        child: SecurityAuthScope(
+          notifier: _securityService,
+          child: MaterialApp.router(
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.light,
+            routerDelegate: _routerDelegate,
+            routeInformationParser: _routeParser,
+          ),
+        ),
+      );
 
   Future<ParsedRoute> _guard(ParsedRoute from) async {
     final signedIn = _securityService.authenticated;
-    final signInRoute = ParsedRoute('/signin', '/signin', {}, {});
+    final signInRoute = ParsedRoute(Routes.loginRoute, Routes.loginRoute, {}, {});
 
     // Go to /signin if the user is not signed in
     if (!signedIn && from != signInRoute) {
@@ -84,14 +76,14 @@ class JcrmUiApplicationState extends State<JcrmUiApplication> {
     }
     // Go to /books if the user is signed in and tries to go to /signin.
     else if (signedIn && from == signInRoute) {
-      return ParsedRoute('/books/popular', '/books/popular', {}, {});
+      return ParsedRoute(Routes.dashboardRoute, Routes.dashboardRoute, {}, {});
     }
     return from;
   }
 
   void _handleAuthStateChanged() {
     if (!_securityService.authenticated) {
-      _routeState.go('/signin');
+      _routeState.go(Routes.loginRoute);
     }
   }
 

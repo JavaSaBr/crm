@@ -1,10 +1,11 @@
-// Copyright 2021, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/page/author_details.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/page/book_details.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/page/scaffold.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/page/scaffold_body.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/screens/authentication_screen.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/screens/root_navigator_screen.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/security_service.dart';
 
 import '../data.dart';
@@ -12,32 +13,30 @@ import '../data/library.dart';
 import '../routing.dart';
 import '../widget/fade_transition_page.dart';
 
-import 'author_details.dart';
-import 'book_details.dart';
-import 'scaffold.dart';
-
 /// Builds the top-level navigator for the app. The pages to display are based
 /// on the `routeState` that was parsed by the TemplateRouteParser.
-class BookstoreNavigator extends StatefulWidget {
+class NavigatorScreen extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  const BookstoreNavigator({
+  const NavigatorScreen({
     required this.navigatorKey,
     Key? key,
   }) : super(key: key);
 
   @override
-  _BookstoreNavigatorState createState() => _BookstoreNavigatorState();
+  NavigatorScreenState createState() => NavigatorScreenState();
 }
 
-class _BookstoreNavigatorState extends State<BookstoreNavigator> {
-  final _signInKey = const ValueKey('Sign in');
+class NavigatorScreenState extends State<NavigatorScreen> {
+  
+  final _loginKey = const ValueKey('Sign in');
   final _scaffoldKey = const ValueKey<String>('App scaffold');
   final _bookDetailsKey = const ValueKey<String>('Book details screen');
   final _authorDetailsKey = const ValueKey<String>('Author details screen');
 
   @override
   Widget build(BuildContext context) {
+  
     final routeState = RouteStateScope.of(context);
     final securityScope = SecurityAuthScope.of(context);
     final pathTemplate = routeState.route.pathTemplate;
@@ -49,6 +48,7 @@ class _BookstoreNavigatorState extends State<BookstoreNavigator> {
     }
 
     Author? selectedAuthor;
+   
     if (pathTemplate == '/author/:authorId') {
       selectedAuthor = libraryInstance.allAuthors.firstWhereOrNull(
               (b) => b.id.toString() == routeState.route.parameters['authorId']);
@@ -75,7 +75,7 @@ class _BookstoreNavigatorState extends State<BookstoreNavigator> {
         if (routeState.route.pathTemplate == '/login')
         // Display the sign in screen.
           FadeTransitionPage<void>(
-            key: _signInKey,
+            key: _loginKey,
             child: AuthenticationScreen(
               credentials: (credentials) async {
                 var signedIn = await securityScope.login(
@@ -90,7 +90,7 @@ class _BookstoreNavigatorState extends State<BookstoreNavigator> {
           // Display the app
           FadeTransitionPage<void>(
             key: _scaffoldKey,
-            child: const BookstoreScaffold(),
+            child: const BookstoreScaffoldBody(),
           ),
           // Add an additional page to the stack if the user is viewing a book
           // or an author
