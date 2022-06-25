@@ -8,6 +8,9 @@ class UserSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UserTable();
+    return Container(
+      decoration: const BoxDecoration(color: Colors.red),
+      child: UserTable(),
+    );
   }
 }

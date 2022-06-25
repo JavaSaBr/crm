@@ -22,13 +22,11 @@ class OrganizationSettingsScreen extends StatefulWidget {
   }
 }
 
-class OrganizationSettingsScreenState extends State<OrganizationSettingsScreen>
-    with SingleTickerProviderStateMixin {
+class OrganizationSettingsScreenState extends State<OrganizationSettingsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
   void initState() {
-
     _tabController = TabController(
       initialIndex: 0,
       length: 2,
@@ -40,7 +38,6 @@ class OrganizationSettingsScreenState extends State<OrganizationSettingsScreen>
 
   @override
   Widget build(BuildContext context) {
-
     var tabs = OrganizationSettingsScreen.tabMapping;
 
     return Scaffold(
@@ -57,8 +54,7 @@ class OrganizationSettingsScreenState extends State<OrganizationSettingsScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          for (final factory in tabs.values)
-            factory(context),
+          for (final factory in tabs.values) factory(context),
         ],
       ),
     );
