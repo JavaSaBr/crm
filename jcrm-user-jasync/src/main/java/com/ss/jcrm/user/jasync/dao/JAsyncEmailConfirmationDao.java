@@ -1,11 +1,13 @@
 package com.ss.jcrm.user.jasync.dao;
 
-import static com.ss.jcrm.jasync.util.JAsyncUtils.toDateTime;
-import static com.ss.jcrm.jasync.util.JAsyncUtils.toJavaInstant;
+import static com.ss.jcrm.base.utils.DateUtils.toOffsetDateTime;
+import static com.ss.jcrm.base.utils.DateUtils.toUtcInstant;
+import static com.ss.jcrm.jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
+import com.ss.jcrm.base.utils.DateUtils;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
 import com.ss.jcrm.user.api.EmailConfirmation;
@@ -72,7 +74,7 @@ public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmat
     ) {
         return insert(
             queryInsert,
-            List.of(code, email, toDateTime(expiration)),
+            List.of(code, email, toOffsetDateTime(expiration)),
             id -> new DefaultEmailConfirmation(id, code, email, expiration)
         );
     }
@@ -101,7 +103,7 @@ public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmat
             notNull(data.getLong(0)),               // id
             data.getString(1),                      // code
             data.getString(2),                      // email
-            toJavaInstant(notNull(data.getDate(3))) // expiration
+            notNull(toUtcInstant(data.getDate(3)))  // expiration
         );
     }
 }

@@ -14,6 +14,7 @@ import com.ss.rlib.common.util.array.Array
 import com.ss.rlib.common.util.array.ArrayFactory
 import org.springframework.beans.factory.annotation.Autowired
 
+import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 
@@ -140,7 +141,7 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
             def assigner = userTestHelper.newUser()
             def client = clientTestHelper.newSimpleClient(assigner)
             def curator = userTestHelper.newUser("Curator2", assigner.organization)
-            def timeAfterCreation = Instant.now()
+            def timeAfterCreation = Instant.now(Clock.systemUTC())
         when:
             def loaded = simpleClientDao.findById(client.id).block()
             def prevModified = loaded.modified

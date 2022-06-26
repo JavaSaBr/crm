@@ -65,15 +65,14 @@ public class ClientWebConfig {
         @NotNull ApiEndpointServer clientApiEndpointServer,
         @NotNull ClientHandler clientHandler
     ) {
-
         var contextPath = clientApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .GET("${contextPath}/status", request -> ServerResponse.ok().build())
-            .GET("${contextPath}/clients", clientHandler::list)
-            .GET("${contextPath}/clients/page", clientHandler::findPage)
-            .POST("${contextPath}/client", clientHandler::create)
-            .PUT("${contextPath}/client", clientHandler::update)
-            .GET("${contextPath}/client/{id}", clientHandler::findById)
+            .GET("%s/status".formatted(contextPath), request -> ServerResponse.ok().build())
+            .GET("%s/clients".formatted(contextPath), clientHandler::list)
+            .GET("%s/clients/page".formatted(contextPath), clientHandler::findPage)
+            .POST("%s/client".formatted(contextPath), clientHandler::create)
+            .PUT("%s/client".formatted(contextPath), clientHandler::update)
+            .GET("%s/client/{id}".formatted(contextPath), clientHandler::findById)
             .build();
     }
 }

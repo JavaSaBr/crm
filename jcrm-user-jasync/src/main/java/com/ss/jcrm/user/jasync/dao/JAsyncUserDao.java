@@ -1,11 +1,14 @@
 package com.ss.jcrm.user.jasync.dao;
 
+import static com.ss.jcrm.base.utils.DateUtils.toOffsetDateTime;
+import static com.ss.jcrm.base.utils.DateUtils.toUtcInstant;
 import static com.ss.jcrm.jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.ifNull;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
+import com.ss.jcrm.base.utils.DateUtils;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
@@ -29,8 +32,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Slf4j
@@ -158,7 +163,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         @NotNull Set<Messenger> messengers
     ) {
 
-        var currentTime = Instant.now();
+        var currentTime = Instant.now(Clock.systemUTC());
+        var offsetDateTime = toOffsetDateTime(currentTime);
         return insert(
             queryInsert,
             Arrays.asList(
@@ -170,11 +176,11 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 StringUtils.emptyIfNull(firstName),
                 StringUtils.emptyIfNull(secondName),
                 StringUtils.emptyIfNull(thirdName),
-                toDate(birthday),
+                birthday,
                 JAsyncUtils.toJson(phoneNumbers),
                 JAsyncUtils.toJson(messengers),
-                toDateTime(currentTime),
-                toDateTime(currentTime)
+                offsetDateTime,
+                offsetDateTime
             ),
             id -> new DefaultUser(
                 id,
@@ -252,8 +258,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 user.getVersion() + 1,
                 user.isEmailConfirmed(),
                 user.getPasswordVersion(),
-                toDate(user.getBirthday()),
-                toDateTime(user.getModified()),
+                user.getBirthday(),
+                toOffsetDateTime(user.getModified()),
                 user.getId(),
                 user.getVersion()
             ),
@@ -320,7 +326,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
         var firstName = data.getString(3);
         var secondName = data.getString(4);
         var thirdName = data.getString(5);
-        var birthday = toJavaDate(data.getAs(6));
+        var birthday = (LocalDate) data.getAs(6);
         var phoneNumbers = JAsyncUtils.fromJsonArrayToSet(data.getString(7), PhoneNumber[].class);
         var messengers = JAsyncUtils.fromJsonArrayToSet(data.getString(8), Messenger[].class);
         var passwordVersion = ifNull(data.getInt(15), 0);
@@ -341,8 +347,8 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
             Dao::requireById
         );
 
-        var created = toJavaInstant(data.getAs(16));
-        var modified = toJavaInstant(data.getAs(17));
+        var created = notNull(toUtcInstant(data.getAs(16)));
+        var modified = notNull(toUtcInstant(data.getAs(17)));
 
         return Mono.zip(groupsAsync, orgAsync)
             .map(objects -> new DefaultUser(

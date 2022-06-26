@@ -38,6 +38,7 @@ public class BaseWebConfig {
             new JavaTimeModule()
         );
     }
+
     @Bean
     @NotNull ScheduledExecutorService mainScheduler(@NotNull Environment env) {
         return Executors.newScheduledThreadPool(

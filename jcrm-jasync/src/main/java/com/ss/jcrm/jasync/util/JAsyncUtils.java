@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
@@ -29,13 +28,10 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.EventLoopGroup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -85,13 +81,10 @@ public class JAsyncUtils {
         var errorMessage = exception.getErrorMessage();
         var fields = errorMessage.getFields();
 
-        switch (fields.get('C')) {
-            case "23505": {
-                return new DuplicateObjectDaoException(String.valueOf(errorMessage.getMessage()));
-            }
-        }
-
-        return new DaoException(exception);
+        return switch (fields.get('C')) {
+            case "23505" -> new DuplicateObjectDaoException(String.valueOf(errorMessage.getMessage()));
+            default -> new DaoException(exception);
+        };
     }
 
     public static @NotNull ConnectionPoolConfiguration buildPoolConfig(
@@ -100,7 +93,6 @@ public class JAsyncUtils {
         @Nullable EventLoopGroup eventLoopGroup,
         @Nullable Executor dbExecutor
     ) {
-
         return new ConnectionPoolConfiguration(
             configuration.getHost(),
             configuration.getPort(),
@@ -125,30 +117,6 @@ public class JAsyncUtils {
             emptyList(),
             dbPoolConfiguration.getMaxObjectTtl()
         );
-    }
-
-    public static @Nullable LocalDate toDate(@Nullable java.time.LocalDate localDate) {
-        if (localDate == null) {
-            return null;
-        } else {
-            return new LocalDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
-        }
-    }
-
-    public static @NotNull LocalDateTime toDateTime(@NotNull Instant instant) {
-        return new LocalDateTime(instant.toEpochMilli());
-    }
-
-    public static @NotNull Instant toJavaInstant(@NotNull LocalDateTime dateTime) {
-        return dateTime.toDate().toInstant();
-    }
-
-    public static @Nullable java.time.LocalDate toJavaDate(@Nullable LocalDate dateTime) {
-        if (dateTime == null) {
-            return null;
-        } else {
-            return java.time.LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth());
-        }
     }
 
     public static <T> @Nullable T[] arrayFromJson(@Nullable String json, @NotNull Class<T[]> type) {

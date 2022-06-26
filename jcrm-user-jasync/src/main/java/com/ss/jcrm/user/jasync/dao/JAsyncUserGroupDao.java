@@ -1,11 +1,11 @@
 package com.ss.jcrm.user.jasync.dao;
 
-import static com.ss.jcrm.jasync.util.JAsyncUtils.toDateTime;
-import static com.ss.jcrm.jasync.util.JAsyncUtils.toJavaInstant;
+import static com.ss.jcrm.base.utils.DateUtils.toOffsetDateTime;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
+import com.ss.jcrm.base.utils.DateUtils;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
@@ -22,9 +22,9 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joda.time.LocalDateTime;
 import reactor.core.publisher.Mono;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,8 +123,8 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
         @NotNull Organization organization
     ) {
 
-        var created = Instant.now();
-        var createdDateTime = toDateTime(created);
+        var created = Instant.now(Clock.systemUTC());
+        var createdDateTime = toOffsetDateTime(created);
 
         return insert(
             queryInsert,
@@ -150,7 +150,7 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
                 StringUtils.emptyIfNull(userGroup.getName()),
                 JAsyncUtils.idsToJson(userGroup.getRoles()),
                 userGroup.getVersion() + 1,
-                toDateTime(userGroup.getModified()),
+                toOffsetDateTime(userGroup.getModified()),
                 userGroup.getId(),
                 userGroup.getVersion()
             ),
@@ -233,8 +233,9 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
             data.getString(3),
             AccessRole::require
         );
-        var modified = toJavaInstant(data.getAs(4));
-        var created = toJavaInstant(data.getAs(5));
+
+        var modified = DateUtils.toUtcInstant(data.getAs(4));
+        var created = DateUtils.toUtcInstant(data.getAs(5));
         var version = notNull(data.getInt(6));
 
         return organizationDao.requireById(orgId)

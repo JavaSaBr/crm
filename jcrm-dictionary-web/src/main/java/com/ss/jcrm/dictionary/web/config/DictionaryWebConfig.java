@@ -83,7 +83,7 @@ public class DictionaryWebConfig {
     ) {
         var contextPath = dictionaryApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .GET("${contextPath}/status", request -> ServerResponse.ok().build())
+            .GET("%s/status".formatted(contextPath), request -> ServerResponse.ok().build())
             .build();
     }
 
@@ -94,9 +94,9 @@ public class DictionaryWebConfig {
     ) {
         var contextPath = dictionaryApiEndpointServer.contextPath();
         return RouterFunctions.route()
-            .GET("${contextPath}/countries", countryHandler::getAll)
-            .GET("${contextPath}/country/id/{id}", countryHandler::getById)
-            .GET("${contextPath}/country/name/{name}", countryHandler::getByName)
+            .GET("%s/countries".formatted(contextPath), countryHandler::getAll)
+            .GET("%s/country/id/{id}".formatted(contextPath), countryHandler::getById)
+            .GET("%s/country/name/{name}".formatted(contextPath), countryHandler::getByName)
             .build();
     }
 }

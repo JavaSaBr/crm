@@ -29,7 +29,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UiServerConfig {
 
-    public static record AngularWebFilter(String @NotNull [] apiEndpoints) implements WebFilter {
+    public record AngularWebFilter(String @NotNull [] apiEndpoints) implements WebFilter {
 
         @Override
         public @NotNull Mono<Void> filter(@NotNull ServerWebExchange exchange, @NotNull WebFilterChain chain) {

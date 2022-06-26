@@ -19,25 +19,18 @@ allprojects {
     apply plugin: "groovy"
     apply plugin: "java-test-fixtures"
 
-    sourceCompatibility = JavaVersion.VERSION_15
-    targetCompatibility = JavaVersion.VERSION_15
+    sourceCompatibility = JavaVersion.VERSION_18
+    targetCompatibility = JavaVersion.VERSION_18
 
     repositories {
         mavenLocal()
         mavenCentral()
-        maven {
-            url "https://dl.bintray.com/javasabr/maven"
-        }
-        maven {
-            url "https://dl.bintray.com/jasync-sql/jasync-sql"
-        }
     }
 
     ext {
         angularVersion = "11.0.6"
-        annotationVersion = "20.1.0"
-        lombokVersion = '1.18.18'
-        betterStringVersion = "0.5"
+        annotationVersion = "23.0.0"
+        lombokVersion = '1.18.24'
     }
 
     dependencies {
@@ -53,15 +46,6 @@ allprojects {
                 it.annotationProcessor "org.projectlombok:lombok:$lombokVersion"
                 it.testCompileOnly "org.projectlombok:lombok:$lombokVersion"
                 it.testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-            }
-        }
-    
-        if (project.ext.has("betterStrings") && project.ext["betterStrings"] == "true") {
-            project.dependencies {
-                it.compileOnly "com.antkorwin:better-strings:$betterStringVersion"
-                it.annotationProcessor "com.antkorwin:better-strings:$betterStringVersion"
-                it.testCompileOnly "com.antkorwin:better-strings:$betterStringVersion"
-                it.testAnnotationProcessor "com.antkorwin:better-strings:$betterStringVersion"
             }
         }
     }
@@ -174,6 +158,6 @@ task buildSingleArtifactWithoutTests(type: GradleBuild) {
 }
 
 wrapper {
-    gradleVersion = '7.0'
+    gradleVersion = '7.4.2'
     distributionType = Wrapper.DistributionType.ALL
 }

@@ -11,4 +11,5 @@ public class CommonUtils {
             .mapToLong(HasId::getId)
             .toArray();
     }
+
 }

@@ -1,10 +1,13 @@
 package com.ss.jcrm.client.jasync.dao;
 
+import static com.ss.jcrm.base.utils.DateUtils.toOffsetDateTime;
+import static com.ss.jcrm.base.utils.DateUtils.toUtcInstant;
 import static com.ss.jcrm.jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
+import com.ss.jcrm.base.utils.DateUtils;
 import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.api.impl.*;
@@ -20,8 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -113,7 +115,8 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
         @Nullable ClientMessenger[] messengers,
         @Nullable String company
     ) {
-        var currentTime = Instant.now();
+        var currentTime = Instant.now(Clock.systemUTC());
+        var offsetDateTime = toOffsetDateTime(currentTime);
         return insert(
             queryInsert,
             Arrays.asList(
@@ -123,14 +126,14 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
                 firstName,
                 secondName,
                 thirdName,
-                toDate(birthday),
+                birthday,
                 toJson(phoneNumbers),
                 toJson(emails),
                 toJson(sites),
                 toJson(messengers),
                 company,
-                toDateTime(currentTime),
-                toDateTime(currentTime)
+                offsetDateTime,
+                offsetDateTime
             ),
             id -> new DefaultSimpleClient(
                 id,
@@ -163,13 +166,13 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
                 contact.getFirstName(),
                 contact.getSecondName(),
                 contact.getThirdName(),
-                toDate(contact.getBirthday()),
+                contact.getBirthday(),
                 toJson(contact.getPhoneNumbers()),
                 toJson(contact.getEmails()),
                 toJson(contact.getSites()),
                 toJson(contact.getMessengers()),
                 contact.getCompany(),
-                toDateTime(contact.getModified()),
+                toOffsetDateTime(contact.getModified()),
                 contact.getVersion() + 1,
                 contact.getId(),
                 contact.getVersion()
@@ -208,7 +211,7 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
         var firstName = data.getString(4);
         var secondName = data.getString(5);
         var thirdName = data.getString(6);
-        var birthday = toJavaDate(data.getAs(7));
+        var birthday = (LocalDate) data.getAs(7);
 
         var phoneNumbers = arrayFromJson(
             data.getString(8),
@@ -226,8 +229,8 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
 
         var company = data.getString(12);
         var version = notNull(data.getInt(13));
-        var created = toJavaInstant(data.getAs(14));
-        var modified = toJavaInstant(data.getAs(15));
+        var created = toUtcInstant(data.getAs(14));
+        var modified = toUtcInstant(data.getAs(15));
 
         return new DefaultSimpleClient(
             id,
