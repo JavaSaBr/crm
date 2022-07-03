@@ -8,7 +8,6 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/screens/authentication_scree
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/security_service.dart';
 
 import '../data.dart';
-import '../data/library.dart';
 import '../routing.dart';
 import '../widget/fade_transition_page.dart';
 

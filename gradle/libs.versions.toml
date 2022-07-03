@@ -1,5 +1,5 @@
 [versions]
-rlib = "9.10.0"
+rlib = "9.9.1"
 reactor = "3.4.19"
 jackson = "2.13.3"
 testcontainers = "1.17.2"

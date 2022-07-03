@@ -10,7 +10,7 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/util/routes.dart';
 class JcrmUiApplication extends StatefulWidget {
   final SecurityService _securityService;
 
-  JcrmUiApplication(this._securityService, {Key? key}) : super(key: key);
+  const JcrmUiApplication(this._securityService, {Key? key}) : super(key: key);
 
   @override
   JcrmUiApplicationState createState() => JcrmUiApplicationState(_securityService);
