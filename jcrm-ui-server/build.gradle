@@ -6,7 +6,7 @@ ext {
 
 dependencies {
     api projects.jcrmBaseWeb
-    api projects.jcrmUi
+    api projects.jcrmUiFlutter
 }
 
 task deleteOldFrontEnd(type: Delete) {
@@ -15,8 +15,8 @@ task deleteOldFrontEnd(type: Delete) {
 
 task copyFrontEnd(type: Copy) {
 
-    def uiProject = project(':jcrm-ui')
-    def sourceFolder = uiProject.projectDir.toPath().resolve('build/front-end')
+    def uiProject = project(':jcrm_ui_flutter')
+    def sourceFolder = uiProject.projectDir.toPath().resolve('build/web')
     def targetFolder = getStaticResourcesFolder()
     
     from sourceFolder.toString()
