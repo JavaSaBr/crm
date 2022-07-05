@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/entity.dart';
 
 abstract class EntityTable<T extends Entity> extends StatefulWidget {
-
   final EntityDataSource<T> dataSource;
 
   const EntityTable({Key? key, required this.dataSource}) : super(key: key);
 }
 
 abstract class EntityTableState<T extends Entity> extends State<EntityTable> with SingleTickerProviderStateMixin {
-
   final EntityDataSource<T> _dataSource;
 
   EntityTableState(this._dataSource);
@@ -24,54 +22,44 @@ abstract class EntityTableState<T extends Entity> extends State<EntityTable> wit
     return ListView(
       restorationId: restorationPrefix,
       padding: const EdgeInsets.all(16),
-      children: [
-        PaginatedDataTable(columns: buildColumns(), source: _dataSource)
-      ],
+      children: [PaginatedDataTable(columns: buildColumns(), source: _dataSource)],
     );
   }
 
   get restorationPrefix => "entity_table_list_view";
 
   List<DataColumn> buildColumns() {
-    return [
-      const DataColumn(
-        label: Text("Id"),
-        numeric: true
-      )
-    ];
+    return [const DataColumn(label: Text("Id"), numeric: true)];
   }
 }
 
 class EntityDataSource<T extends Entity> extends DataTableSource {
+  List<T> _entities = [];
 
-  List<T> _etities = [];
-  
-  EntityDataSource(this._etities);
+  EntityDataSource(this._entities);
 
   @override
   DataRow? getRow(int index) {
-
-    if(index >= _etities.length) {
+    if (index >= _entities.length) {
       return null;
     }
 
-    return DataRow.byIndex(
-        index: index,
-        cells: [
-          DataCell(Text(
-              _etities[index].toString(),
-            textAlign: TextAlign.left,
-          ))
-        ]
-    );
+    return DataRow.byIndex(index: index, cells: [
+      DataCell(Text(
+        _entities[index].toString(),
+        textAlign: TextAlign.left,
+      ))
+    ]);
   }
 
   @override
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => _etities.length;
+  int get rowCount => _entities.length;
 
   @override
   int get selectedRowCount => 0;
+
+  List<T> get entities => _entities;
 }
