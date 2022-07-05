@@ -15,7 +15,7 @@ abstract class EntityRepository<E extends Entity, R extends EntityResource> exte
 
   Future<E> findById(int id) async {
     return _securityService
-        .getRequest(buildFindByIdUrl(id), (json) => readFromJson(json))
+        .doGet(buildFindByIdUrl(id), (json) => readFromJson(json))
         .then((value) => convertFromResource(value));
   }
 

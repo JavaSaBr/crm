@@ -2,10 +2,10 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/uniq_entity_resourc
 
 class MinimalUserResource extends UniqEntityResource {
   final String email;
-  final String firstName;
-  final String secondName;
-  final String thirdName;
-  final String birthday;
+  final String? firstName;
+  final String? secondName;
+  final String? thirdName;
+  final String? birthday;
 
   MinimalUserResource(int id, this.email, this.firstName, this.secondName, this.thirdName, this.birthday) : super(id);
 

@@ -1,12 +1,14 @@
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/messanger.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/minimal_user.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/phone_number.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/user_resource.dart';
 
 class User extends MinimalUser {
 
   static final User none = User(0, "", "", "", "", DateTime.now(), [], [], DateTime.now(), DateTime.now());
 
-  List<String> phoneNumbers;
-  List<String> messengers;
+  List<PhoneNumber> phoneNumbers;
+  List<Messanger> messengers;
 
   DateTime created;
   DateTime modified;
@@ -25,8 +27,8 @@ class User extends MinimalUser {
   ) : super(id, email, firstName, secondName, thirdName, birthday);
 
   User.fromResource(UserResource resource)
-      : phoneNumbers = resource.phoneNumbers,
-        messengers = resource.messengers,
+      : phoneNumbers = resource.phoneNumbers.map((resource) => PhoneNumber.fromResource(resource)).toList(),
+        messengers = resource.messengers.map((resource) => Messanger.fromResource(resource)).toList(),
         created = DateTime.fromMillisecondsSinceEpoch(resource.created),
         modified = DateTime.fromMillisecondsSinceEpoch(resource.modified),
         super.fromResource(resource);

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/exception/http_exception.dart';
@@ -8,6 +9,7 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/model/http_error.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/util/value_wrapper.dart';
 
 class ErrorService {
+
   void throwHttpErrorIfNeed(Response response) {
     if (response.statusCode < 400) {
       return;
@@ -28,6 +30,10 @@ class ErrorService {
   }
 
   void handleErrorOnUi(BuildContext context, Exception exception) {
+
+    if (kDebugMode) {
+      print(exception);
+    }
 
     var value = ValueWrapper<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>>(null);
 

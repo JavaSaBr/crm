@@ -8,15 +8,15 @@ class MinimalUser extends UniqEntity {
   String firstName;
   String secondName;
   String thirdName;
-  DateTime birthday;
+  DateTime? birthday;
 
   MinimalUser(int id, this.email, this.firstName, this.secondName, this.thirdName, this.birthday) : super(id);
 
   MinimalUser.fromResource(MinimalUserResource resource)
       : email = resource.email,
-        firstName = resource.firstName,
-        secondName = resource.secondName,
-        thirdName = resource.thirdName,
-        birthday = DateTime.parse(resource.birthday),
+        firstName = resource.firstName == null? "" : resource.firstName!,
+        secondName = resource.secondName == null ? "" : resource.secondName!,
+        thirdName = resource.thirdName == null ? "" : resource.thirdName!,
+        birthday = resource.birthday == null ? null : DateTime.parse(resource.birthday!),
         super.fromResource(resource);
 }

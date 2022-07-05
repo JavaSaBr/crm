@@ -4,6 +4,11 @@ Flutter implementation of UI for jCRM
 
 ## Getting Started
 
+## Run UI
+```shell
+flutter run -d chrome --dart-define=registration_url=https://localhost:8090/registration
+```
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:

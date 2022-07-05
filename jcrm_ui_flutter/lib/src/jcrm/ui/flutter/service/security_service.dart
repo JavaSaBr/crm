@@ -10,29 +10,41 @@ import 'http_service.dart';
 class SecurityService extends ChangeNotifier {
 
   static const headerToken = 'jcrm-access-token';
-
-  static const max_refreshed_token_message = 2001;
-
-  static const empty_token = '';
-
-  static const local_storage_token = 'jcrm:auth:token';
-  static const header_token = 'JCRM-Access-Token';
+  static const maxRefreshedTokenMessage = 2001;
+  static const emptyToken = '';
+  static const localStorageToken = 'jcrm:auth:token';
 
   final HttpService _httpService;
 
   bool _authenticated = false;
-
   User _currentUser = User.none;
-
   String _accessToken = "";
 
   SecurityService(this._httpService);
 
-  bool get authenticated => _authenticated;
+  Future<void> logout() async {
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    internalAuthenticate(User.none, emptyToken);
+  }
 
-  User get currentUser => _currentUser;
+  Future<bool> login(String username, String password) async {
 
-  String get accessToken => _accessToken;
+    var url = "${EnvConfig.registrationUrl}/authenticate";
+    var body = AuthenticationOutResource(username, password);
+
+    try {
+      var response = await _httpService.post(url, body, (json) => AuthenticationInResource.fromJson(json));
+      internalAuthenticate(User.fromResource(response.user), response.token);
+    } catch (ex) {
+      _accessToken = emptyToken;
+      _currentUser = User.none;
+      _authenticated = false;
+      rethrow;
+    }
+
+    notifyListeners();
+    return _authenticated;
+  }
 
   void internalAuthenticate(User user, String accessToken) {
     _accessToken = accessToken;
@@ -41,45 +53,26 @@ class SecurityService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> logout() async {
-    await Future<void>.delayed(const Duration(milliseconds: 200));
-    internalAuthenticate(User.none, empty_token);
-  }
-
-  Future<bool> login(String username, String password) async {
-
-    var url = EnvConfig.registrationUrl + "/authenticate";
-    var body = AuthenticationOutResource(username, password);
-
-   // var result = await _httpService.post(url, body, (json) => AuthenticationInResource.fromJson(json));
-
-    await Future<void>.delayed(const Duration(milliseconds: 200));
-    _authenticated = true;
-    notifyListeners();
-    return _authenticated;
-  }
-
-  Future<T> getRequest<T extends JsonResource>(String url, T Function(Map<String, dynamic> json) jsonReader) async {
-
-    if(_accessToken.isEmpty) {
+  Future<T> doGet<T extends JsonResource>(String url, T Function(Map<String, dynamic> json) jsonReader) async {
+    if (_accessToken.isEmpty) {
       throw AssertionError("Is not authenticated");
+    } else {
+      return _httpService.get(url, jsonReader, {headerToken: _accessToken});
     }
-
-    return _httpService.get(url, jsonReader, {
-      headerToken: _accessToken
-    });
   }
+
+  bool get authenticated => _authenticated;
+  User get currentUser => _currentUser;
+  String get accessToken => _accessToken;
 }
 
 class SecurityAuthScope extends InheritedNotifier<SecurityService> {
-
   const SecurityAuthScope({
     required SecurityService notifier,
     required Widget child,
     Key? key,
   }) : super(key: key, notifier: notifier, child: child);
 
-  static SecurityService of(BuildContext context) => context
-      .dependOnInheritedWidgetOfExactType<SecurityAuthScope>()!
-      .notifier!;
+  static SecurityService of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<SecurityAuthScope>()!.notifier!;
 }
