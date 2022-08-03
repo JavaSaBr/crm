@@ -6,6 +6,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'src/jcrm/ui/flutter/service/http_service.dart';
 import 'src/jcrm/ui/flutter/service/registration_service.dart';
 import 'src/jcrm/ui/flutter/service/security_service.dart';
+import 'dart:html';
 
 void main() {
   setUrlStrategy(PathUrlStrategy());
@@ -17,7 +18,8 @@ void main() {
             providers: [Provider(create: (context) => RegistrationService(context.read<HttpService>()))],
             child: MultiProvider(
                 providers: [
-                  ChangeNotifierProvider(create: (context) => SecurityService(context.read<HttpService>())),
+                  ChangeNotifierProvider(
+                      create: (context) => SecurityService(context.read<HttpService>(), window.localStorage)),
                 ],
                 builder: (context, child) {
                   return JcrmUiApplication(context.watch<SecurityService>());

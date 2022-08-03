@@ -67,7 +67,12 @@ class JcrmUiApplicationState extends State<JcrmUiApplication> {
       );
 
   Future<ParsedRoute> _guard(ParsedRoute from) async {
-    final signedIn = _securityService.authenticated;
+    var signedIn = _securityService.authenticated;
+
+    if (!signedIn) {
+      signedIn = await _securityService.tryToRestoreSession();
+    }
+
     final signInRoute = ParsedRoute(Routes.loginRoute, Routes.loginRoute, {}, {});
 
     // Go to /signin if the user is not signed in

@@ -8,7 +8,7 @@ class RegistrationStatusTest extends RegistrationSpecification {
 
         when:
             def response = webClient.get()
-                .url("/registration/status")
+                .url("$contextPath/status")
                 .exchange()
         then:
             response.expectStatus().isOk()

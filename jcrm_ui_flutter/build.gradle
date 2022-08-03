@@ -1,0 +1,73 @@
+
+/*task pullFlutterCliImage(type: Exec, group: 'Angular') {
+
+    def useDocker = Boolean.parseBoolean(System.getProperty("use.flutter.docker", "true"))
+
+    if (useDocker) {
+        commandLine 'docker', 'pull', "cirrusci/flutter:$flutterVersion"
+    } else {
+        commandLine 'echo'
+    }
+
+    println "Need to pull flutter docker:$useDocker -> $commandLine"
+}
+
+task buildFlutter(type: Exec, group: 'Build') {
+
+    def useDocker = Boolean.parseBoolean(System.getProperty("use.flutter.docker", "true"))
+    def target = System.getProperty("flutter.target", "web")
+
+    if (useDocker) {
+        commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-v',
+            getDockerMappingFolder(), "cirrusci/flutter:$flutterVersion", 'flutter', 'build', target
+    } else {
+        commandLine 'flutter', 'build', target
+    }
+
+    println "Build flutter using docker:$useDocker with args:$commandLine"
+}
+
+task debug(type: Exec, group: 'Application', description: 'Debug front-end') {
+    commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-p', '4200:4200', '-v',
+        getDockerMappingFolder(), "trion/ng-cli:$angularVersion", 'ng', 'serve', "--configuration=local-ssl"
+}
+
+static def getDockerUserId() {
+    return System.getProperty("docker.user.id", "1000")
+}
+
+static def getDockerGroupId() {
+    return System.getProperty("docker.group.id", "1000")
+}*/
+
+task buildFlutter(type: Exec, group: 'Build') {
+
+    def useDocker = Boolean.parseBoolean(System.getProperty("use.flutter.docker", "false"))
+    def target = System.getProperty("flutter.target", "web")
+
+    if (useDocker) {
+        commandLine 'docker', 'run', '-u', "${getDockerUserId()}:${getDockerGroupId()}", '--rm', '-v',
+            getDockerMappingFolder(), "cirrusci/flutter:$flutterVersion", 'flutter', 'build', target
+    } else {
+        commandLine 'flutter', 'build', target
+    }
+
+    println "Build flutter using docker:$useDocker with args:$commandLine"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src'
+        }
+    }
+}
+/*
+
+tasks.buildFlutter.dependsOn pullFlutterCliImage
+
+def getDockerMappingFolder() {
+    return project.projectDir.path + ":/app"
+}*/
+
+tasks.classes.dependsOn buildFlutter

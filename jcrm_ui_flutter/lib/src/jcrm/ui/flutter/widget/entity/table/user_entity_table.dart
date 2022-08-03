@@ -11,9 +11,36 @@ class UserTable extends EntityTable<User> {
                   DateTime.now()),
               User(2, "test@test", "Olga", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
                   DateTime.now()),
-              User(2, "test@test", "Vlad", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+              User(3, "test@test", "Vlad", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
                   DateTime.now()),
-              User(2, "test@test", "Anton", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+              User(4, "test@test", "Anton", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+
+              User(5, "test@test", "Alex", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(6, "test@test", "Olga", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(7, "test@test", "Vlad", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(8, "test@test", "Anton", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+
+              User(9, "test@test", "Alex", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(10, "test@test", "Olga", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(11, "test@test", "Vlad", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(12, "test@test", "Anton", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+
+              User(13, "test@test", "Alex", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(14, "test@test", "Olga", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(15, "test@test", "Vlad", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
+                  DateTime.now()),
+              User(16, "test@test", "Anton", "Second name", "Third name", DateTime.now(), [], [], DateTime.now(),
                   DateTime.now()),
             ]));
 
@@ -26,7 +53,12 @@ class UserTableState extends EntityTableState<User> {
 
   @override
   List<DataColumn> buildColumns() {
-    return [const DataColumn(label: Text("Id"), numeric: true), const DataColumn(label: Text("First name"))];
+    return [
+      EntityTableState.buildColumn("Id"),
+      EntityTableState.buildColumn("First name"),
+      EntityTableState.buildColumn("Second name"),
+      EntityTableState.buildColumn("Third name")
+    ];
   }
 }
 
@@ -46,6 +78,14 @@ class UserDataSource extends EntityDataSource<User> {
       )),
       DataCell(Text(
         entities[index].firstName,
+        textAlign: TextAlign.left,
+      )),
+      DataCell(Text(
+        entities[index].secondName,
+        textAlign: TextAlign.left,
+      )),
+      DataCell(Text(
+        entities[index].thirdName,
         textAlign: TextAlign.left,
       ))
     ]);

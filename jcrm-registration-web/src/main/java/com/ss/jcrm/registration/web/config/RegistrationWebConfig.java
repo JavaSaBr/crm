@@ -62,7 +62,7 @@ public class RegistrationWebConfig {
 
     @Bean
     @NotNull ApiEndpointServer registrationApiEndpointServer() {
-        return new ApiEndpointServer("/registration");
+        return new ApiEndpointServer("/registration-api");
     }
 
     @Bean

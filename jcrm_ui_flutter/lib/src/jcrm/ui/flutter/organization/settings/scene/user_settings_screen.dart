@@ -9,7 +9,7 @@ class UserSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.red),
+      alignment: Alignment.bottomRight,
       child: UserTable(),
     );
   }

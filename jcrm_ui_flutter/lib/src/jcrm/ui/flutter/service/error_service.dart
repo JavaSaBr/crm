@@ -58,3 +58,9 @@ class ErrorService {
     return exception.toString();
   }
 }
+
+class Errors {
+
+  static const tokenExpired = 2000;
+  static const tokenMaxRefreshed = 2001;
+}

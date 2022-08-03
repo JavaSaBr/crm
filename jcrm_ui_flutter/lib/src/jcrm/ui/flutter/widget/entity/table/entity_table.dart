@@ -1,3 +1,4 @@
+import 'package:data_table_2/paginated_data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/entity.dart';
 
@@ -8,6 +9,14 @@ abstract class EntityTable<T extends Entity> extends StatefulWidget {
 }
 
 abstract class EntityTableState<T extends Entity> extends State<EntityTable> with SingleTickerProviderStateMixin {
+  static const headerTextStyle = TextStyle(fontWeight: FontWeight.bold);
+
+  static DataColumn buildColumn(String label) {
+    return DataColumn(label: Text(label, style: headerTextStyle));
+  }
+
+  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+
   final EntityDataSource<T> _dataSource;
 
   EntityTableState(this._dataSource);
@@ -19,17 +28,31 @@ abstract class EntityTableState<T extends Entity> extends State<EntityTable> wit
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      restorationId: restorationPrefix,
-      padding: const EdgeInsets.all(16),
-      children: [PaginatedDataTable(columns: buildColumns(), source: _dataSource)],
+    return Container(
+      padding: const EdgeInsets.all(4),
+      child: PaginatedDataTable2(
+          fit: FlexFit.tight,
+          columns: buildColumns(),
+          source: _dataSource,
+          wrapInCard: false,
+          rowsPerPage: _rowsPerPage,
+          onRowsPerPageChanged: (value) {
+            // No need to wrap into setState, it will be called inside the widget
+            // and trigger rebuild
+            //setState(() {
+            _rowsPerPage = value!;
+            print(_rowsPerPage);
+            //});
+          },
+          initialFirstRowIndex: 0,
+          availableRowsPerPage: [PaginatedDataTable.defaultRowsPerPage, PaginatedDataTable.defaultRowsPerPage * 2, PaginatedDataTable.defaultRowsPerPage * 5]),
     );
   }
 
   get restorationPrefix => "entity_table_list_view";
 
   List<DataColumn> buildColumns() {
-    return [const DataColumn(label: Text("Id"), numeric: true)];
+    return [buildColumn("Id")];
   }
 }
 
