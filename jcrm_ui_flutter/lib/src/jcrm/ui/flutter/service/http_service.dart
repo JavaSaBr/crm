@@ -16,11 +16,7 @@ class HttpService {
   HttpService(this.errorService);
 
   Future<T> post<T extends JsonResource>(
-      String url,
-      JsonResource body,
-      T Function(Map<String, dynamic> json) readJson
-  ) async {
-
+      String url, JsonResource body, T Function(Map<String, dynamic> json) readJson) async {
     var client = http.Client();
     try {
 
@@ -43,10 +39,7 @@ class HttpService {
   }
 
   Future<T> get<T extends JsonResource>(
-      String url,
-      T Function(Map<String, dynamic> json) jsonReader,
-      Map<String, String>? headers
-  ) async {
+      String url, T Function(Map<String, dynamic> json) jsonReader, Map<String, String>? headers) async {
     var client = http.Client();
     try {
       var uri = Uri.parse(url);

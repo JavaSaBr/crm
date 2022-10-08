@@ -14,9 +14,8 @@ import 'http_service.dart';
 class SecurityService extends ChangeNotifier {
 
   static const headerToken = 'jcrm-access-token';
-  static const maxRefreshedTokenMessage = 2001;
+  static const localStorageKeyToken = 'jcrm:auth:token';
   static const emptyToken = '';
-  static const localStorageToken = 'jcrm:auth:token';
 
   final HttpService _httpService;
   final Storage _localStorage;
@@ -29,7 +28,7 @@ class SecurityService extends ChangeNotifier {
 
   Future<bool> tryToRestoreSession() async {
    
-    var restoredToken = _localStorage[localStorageToken];
+    var restoredToken = _localStorage[localStorageKeyToken];
 
     if (restoredToken == null) {
       return false;
@@ -40,12 +39,10 @@ class SecurityService extends ChangeNotifier {
       var response = await _httpService.get(url, (json) => AuthenticationInResource.fromJson(json), {});
       internalAuthenticate(User.fromResource(response.user), response.token);
     } catch (ex) {
-      var flag = ex is HttpException;
-      var tokenExpired = Errors.tokenExpired;
       if (ex is HttpException && ex.error.errorCode == Errors.tokenExpired) {
         return refreshToken(restoredToken);
       } else {
-        _localStorage.remove(localStorageToken);
+        _localStorage.remove(localStorageKeyToken);
         internalAuthenticate(User.none, emptyToken);
       }
     }
@@ -59,10 +56,10 @@ class SecurityService extends ChangeNotifier {
     try {
       var response = await _httpService.get(url, (json) => AuthenticationInResource.fromJson(json), {});
       internalAuthenticate(User.fromResource(response.user), response.token);
-      _localStorage[localStorageToken] = response.token;
+      _localStorage[localStorageKeyToken] = response.token;
     } catch (ex) {
       if (ex is HttpException && ex.error.errorCode == Errors.tokenMaxRefreshed) {
-        _localStorage.remove(localStorageToken);
+        _localStorage.remove(localStorageKeyToken);
       }
       internalAuthenticate(User.none, emptyToken);
     }
@@ -82,7 +79,7 @@ class SecurityService extends ChangeNotifier {
 
     try {
       var response = await _httpService.post(url, body, (json) => AuthenticationInResource.fromJson(json));
-      _localStorage[localStorageToken] = response.token;
+      _localStorage[localStorageKeyToken] = response.token;
       internalAuthenticate(User.fromResource(response.user), response.token);
     } catch (ex) {
       _accessToken = emptyToken;

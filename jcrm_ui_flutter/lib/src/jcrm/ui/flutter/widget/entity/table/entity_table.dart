@@ -16,6 +16,9 @@ abstract class EntityTableState<T extends Entity> extends State<EntityTable> wit
   }
 
   int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+  bool _sortAscending = true;
+  int? _sortColumnIndex;
+  bool _initialized = false;
 
   final EntityDataSource<T> _dataSource;
 
@@ -31,21 +34,28 @@ abstract class EntityTableState<T extends Entity> extends State<EntityTable> wit
     return Container(
       padding: const EdgeInsets.all(4),
       child: PaginatedDataTable2(
-          fit: FlexFit.tight,
-          columns: buildColumns(),
-          source: _dataSource,
-          wrapInCard: false,
-          rowsPerPage: _rowsPerPage,
-          onRowsPerPageChanged: (value) {
-            // No need to wrap into setState, it will be called inside the widget
-            // and trigger rebuild
-            //setState(() {
-            _rowsPerPage = value!;
-            print(_rowsPerPage);
-            //});
-          },
-          initialFirstRowIndex: 0,
-          availableRowsPerPage: [PaginatedDataTable.defaultRowsPerPage, PaginatedDataTable.defaultRowsPerPage * 2, PaginatedDataTable.defaultRowsPerPage * 5]),
+        checkboxHorizontalMargin: 12,
+        autoRowsToHeight: true,
+        columnSpacing: 0,
+        fit: FlexFit.tight,
+        columns: buildColumns(),
+        source: _dataSource,
+        wrapInCard: false,
+        rowsPerPage: _rowsPerPage,
+        onRowsPerPageChanged: (value) {
+          // No need to wrap into setState, it will be called inside the widget
+          // and trigger rebuild
+          //setState(() {
+          _rowsPerPage = value!;
+          print(_rowsPerPage);
+          //});
+        },
+        initialFirstRowIndex: 0,
+        empty: Center(
+            child: Container(padding: const EdgeInsets.all(20), color: Colors.grey[200], child: const Text('No data'))),
+        sortColumnIndex: _sortColumnIndex,
+        sortAscending: _sortAscending,
+      ),
     );
   }
 
