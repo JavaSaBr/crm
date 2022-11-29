@@ -19,8 +19,8 @@ allprojects {
     apply plugin: "groovy"
     apply plugin: "java-test-fixtures"
 
-    sourceCompatibility = JavaVersion.VERSION_18
-    targetCompatibility = JavaVersion.VERSION_18
+    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility = JavaVersion.VERSION_19
 
     repositories {
         mavenLocal()
@@ -162,6 +162,6 @@ task buildSingleArtifactWithoutTests(type: GradleBuild) {
 }
 
 wrapper {
-    gradleVersion = '7.4.2'
+    gradleVersion = '7.6'
     distributionType = Wrapper.DistributionType.ALL
 }
