@@ -29,20 +29,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.0.2
-  http: ^0.13.4
-  adaptive_navigation: ^0.0.5
-  collection: ^1.15.0
+  provider: ^6.0.5
+  http: ^0.13.5
+  adaptive_navigation: ^0.0.7
+  collection: ^1.17.0
   path_to_regexp: ^0.4.0
-  quiver: ^3.0.1+1
-  url_launcher: ^6.0.17
+  quiver: ^3.2.1
+  url_launcher: ^6.1.8
   url_strategy: ^0.2.0
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.4
-  data_table_2: ^2.3.5
+  cupertino_icons: ^1.0.5
+  data_table_2: ^2.3.10
 
 dev_dependencies:
   flutter_test:
