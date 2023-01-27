@@ -1,15 +1,15 @@
 [versions]
 rlib = "9.9.1"
-reactor = "3.4.19"
-jackson = "2.13.3"
-testcontainers = "1.17.2"
-postgresql-driver = "42.1.1"
-jasync = "2.0.7"
-flyway = "8.5.13"
-springboot = "2.7.1"
-spock = "2.1-groovy-3.0"
-spring = '5.3.21'
-groovy = "3.0.11"
+reactor = "3.5.2"
+jackson = "2.14.1"
+testcontainers = "1.17.6"
+postgresql-driver = "42.5.1"
+jasync = "2.1.18"
+flyway = "9.12.0"
+springboot = "3.0.2"
+spock = "2.3-groovy-4.0"
+spring = '6.0.4'
+groovy = "4.0.8"
 hamcrest = "2.2"
 jsonpath = "2.7.0"
 jsonwebtoken = "0.11.5"
@@ -50,9 +50,9 @@ spock-spring = { module = "org.spockframework:spock-spring", version.ref = "spoc
 
 spring-test = { module = "org.springframework:spring-test", version.ref = "spring" }
 
-groovy-all = { module = "org.codehaus.groovy:groovy-all", version.ref = "groovy" }
+groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy" }
 
-hamcrest-library = { module = "org.hamcrest:hamcrest-library", version.ref = "hamcrest" }
+hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 
 json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "jsonpath" }
 
