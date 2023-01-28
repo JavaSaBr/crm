@@ -1,9 +1,5 @@
 apply plugin: "java-library"
 
-ext {
-    lombok = "true"
-}
-
 dependencies {
     api projects.jcrmBase
     api libs.springboot.starter.core

@@ -1,8 +1,7 @@
 apply plugin: "java-library"
+apply plugin: "java-test-fixtures"
 
 ext {
-    lombok = "true"
-    betterStrings = "true"
    // springboot = "true"
 }
 

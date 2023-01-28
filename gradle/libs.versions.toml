@@ -13,6 +13,8 @@ groovy = "4.0.8"
 hamcrest = "2.2"
 jsonpath = "2.7.0"
 jsonwebtoken = "0.11.5"
+lombok = "1.18.24"
+jetbrains-annotations = "24.0.0"
 
 [libraries]
 rlib-common = { module = "com.spaceshift:rlib.common", version.ref = "rlib" }
@@ -21,6 +23,8 @@ rlib-mail = { module = "com.spaceshift:rlib.mail", version.ref = "rlib" }
 rlib-testcontainers = { module = "com.spaceshift:rlib.testcontainers", version.ref = "rlib" }
 
 reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }

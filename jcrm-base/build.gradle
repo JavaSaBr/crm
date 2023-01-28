@@ -1,9 +1,5 @@
 apply plugin: "java-library"
 
-ext {
-    lombok = "true"
-}
-
 dependencies {
     api libs.rlib.common
     api libs.rlib.logger.slf4j

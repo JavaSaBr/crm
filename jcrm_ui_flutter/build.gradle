@@ -1,3 +1,4 @@
+apply plugin: "java"
 
 /*task pullFlutterCliImage(type: Exec, group: 'Angular') {
 
@@ -58,7 +59,15 @@ task buildFlutter(type: Exec, group: 'Build') {
 sourceSets {
     main {
         java {
-            srcDirs 'src'
+            srcDirs 'lib'
+        }
+        resources {
+            srcDirs 'web'
+        }
+    }
+    test {
+        java {
+            srcDirs 'test'
         }
     }
 }
@@ -70,4 +79,4 @@ def getDockerMappingFolder() {
     return project.projectDir.path + ":/app"
 }*/
 
-tasks.classes.dependsOn buildFlutter
+//tasks.classes.dependsOn buildFlutter

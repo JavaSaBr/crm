@@ -1,10 +1,6 @@
 apply plugin: "java"
 apply plugin: "org.springframework.boot"
 
-ext {
-    lombok = "true"
-}
-
 dependencies {
     implementation projects.jcrmRegistrationWeb
     implementation projects.jcrmDictionaryWeb

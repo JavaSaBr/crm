@@ -1,8 +1,5 @@
 apply plugin: "java-library"
-
-ext {
-    lombok = "true"
-}
+apply plugin: "java-test-fixtures"
 
 dependencies {
     api projects.jcrmDao

@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 buildscript {
     repositories {
         maven {
@@ -7,21 +5,15 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.0"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.2"
+        classpath 'com.adarshr:gradle-test-logger-plugin:3.2.0'
     }
 }
 
-rootProject.version = "0.0.2"
-group = "com.spaceshift"
-
 allprojects {
-
-    apply plugin: "groovy"
-    apply plugin: "java-test-fixtures"
-
-    sourceCompatibility = JavaVersion.VERSION_19
-    targetCompatibility = JavaVersion.VERSION_19
-
+    apply from: "$rootDir/gradle/java-projects-configurator.gradle"
+    apply from: "$rootDir/gradle/property-replacer.gradle"
+    
     repositories {
         mavenLocal()
         mavenCentral()
@@ -29,133 +21,23 @@ allprojects {
             url 'https://gitlab.com/api/v4/projects/37512056/packages/maven'
         }
     }
-
+    
     ext {
         angularVersion = "11.0.6"
         flutterVersion = "3.0.4"
-        annotationVersion = "23.0.0"
-        lombokVersion = '1.18.24'
-    }
-
-    dependencies {
-        compileOnly "org.jetbrains:annotations:$annotationVersion"
-        testCompileOnly "org.jetbrains:annotations:$annotationVersion"
-    }
-
-    afterEvaluate { Project project ->
-
-        if (project.ext.has("lombok") && project.ext["lombok"] == "true") {
-            project.dependencies {
-                it.compileOnly "org.projectlombok:lombok:$lombokVersion"
-                it.annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-                it.testCompileOnly "org.projectlombok:lombok:$lombokVersion"
-                it.testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-            }
-        }
-    }
-
-    sourceSets {
-        main {
-            java {
-                srcDirs 'src/main/groovy'
-            }
-        }
-        test {
-            java {
-                srcDirs 'src/test/groovy'
-            }
-        }
-        testFixtures {
-            java {
-                srcDirs 'src/test/groovy'
-            }
-        }
-    }
-
-    configurations {
-        testArtifacts.extendsFrom testRuntime
-    }
-
-    task testJar(type: Jar) {
-        classifier "test"
-        from sourceSets.test.output
-    }
-
-    artifacts {
-        testArtifacts testJar
     }
     
-    test {
-        useJUnitPlatform()
-        testLogging {
-            events "passed", "skipped", "failed"
-        }
-    }
-    
-    tasks.withType(Test) {
-        maxParallelForks = 2
-        forkEvery = 100
-        jvmArgs += "--enable-preview"
-    }
-    
-    tasks.withType(JavaCompile) {
-        options.compilerArgs += ["--enable-preview", "-parameters"]
-    }
-    
-    tasks.withType(GroovyCompile) {
-        options.forkOptions.jvmArgs += "--enable-preview"
-    }
-    
-    processResources {
-        filter(ReplaceTokens, tokens: [
-            
-            // USER DB
-            'userDbScheme': System.getProperty("userDbScheme", "jcrm-user-db"),
-            'userDbHost': System.getProperty("userDbHost", "localhost"),
-            'userDbPort': System.getProperty("userDbPort", "5432"),
-            'userDbDatabase': System.getProperty("userDbDatabase", "jcrm"),
-            'userDbUser': System.getProperty("userDbUser", "root"),
-            'userDbPassword': System.getProperty("userDbPassword", "root"),
-
-            // DICTIONARY DB
-            'dictionaryDbScheme': System.getProperty("dictionaryDbScheme", "jcrm-dictionary-db"),
-            'dictionaryDbHost': System.getProperty("dictionaryDbHost", "localhost"),
-            'dictionaryDbPort': System.getProperty("dictionaryDbPort", "5432"),
-            'dictionaryDbDatabase': System.getProperty("dictionaryDbDatabase", "jcrm"),
-            'dictionaryDbUser': System.getProperty("dictionaryDbUser", "root"),
-            'dictionaryDbPassword': System.getProperty("dictionaryDbPassword", "root"),
-
-            // CLIENT DB
-            'clientDbScheme': System.getProperty("clientDbScheme", "jcrm-client-db"),
-            'clientDbHost': System.getProperty("clientDbHost", "localhost"),
-            'clientDbPort': System.getProperty("clientDbPort", "5432"),
-            'clientDbDatabase': System.getProperty("clientDbDatabase", "jcrm"),
-            'clientDbUser': System.getProperty("clientDbUser", "root"),
-            'clientDbPassword': System.getProperty("clientDbPassword", "root"),
-            
-            // SECURITY
-            'securityTokenSecretKey': System.getProperty("securityTokenSecretKey", "7e9f81de588c09edd3f2dd5e3a0397344b659b1aa54024cfde1fa2527ffe57818c059b2a1df89b52427e06a60714093609fa9087414d42c779e71822fec33079"),
-            
-            // EMAL
-            'mailUser': System.getProperty("mailUser", ""),
-            'mailPassword': System.getProperty("mailPassword", ""),
-            'mailFrom': System.getProperty("mailFrom", ""),
-            
-            // SSL
-            'keystorePath': System.getProperty("keystorePath", projectDir.toPath().resolve("../jcrm.p12").toString()),
-            'keystorePassword': System.getProperty("keystorePassword", "ssljcrm"),
-            'keystoreAlias': System.getProperty("keystoreAlias", "jcrm"),
-        ])
-    }
+    version = "${targetVersion}"
+    group = "com.spaceshift"
 }
 
-task buildSingleArtifact(type: GradleBuild) {
+tasks.register("buildSingleArtifact", GradleBuild) {
     group = 'build'
     description = 'Build all modules -> Build result artifact'
     tasks = ['build', 'bootJar']
 }
 
-task buildSingleArtifactWithoutTests(type: GradleBuild) {
+tasks.register("buildSingleArtifactWithoutTests", GradleBuild) {
     group = 'build'
     description = 'Build all modules without tests -> Build result artifact'
     tasks = ['classes', 'bootJar']

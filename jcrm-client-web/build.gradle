@@ -1,9 +1,5 @@
 apply plugin: "java-library"
-
-ext {
-    lombok = "true"
-    betterStrings = "true"
-}
+apply plugin: "java-test-fixtures"
 
 dependencies {
     api projects.jcrmClientJasync
