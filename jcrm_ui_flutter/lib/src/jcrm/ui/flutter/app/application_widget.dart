@@ -7,16 +7,16 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/screens/root_navigator_scree
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/security_service.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/util/routes.dart';
 
-class JcrmUiApplication extends StatefulWidget {
+class ApplicationWidget extends StatefulWidget {
   final SecurityService _securityService;
 
-  const JcrmUiApplication(this._securityService, {Key? key}) : super(key: key);
+  const ApplicationWidget(this._securityService, {Key? key}) : super(key: key);
 
   @override
-  JcrmUiApplicationState createState() => JcrmUiApplicationState(_securityService);
+  ApplicationWidgetState createState() => ApplicationWidgetState(_securityService);
 }
 
-class JcrmUiApplicationState extends State<JcrmUiApplication> {
+class ApplicationWidgetState extends State<ApplicationWidget> {
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   final SecurityService _securityService;
@@ -25,7 +25,7 @@ class JcrmUiApplicationState extends State<JcrmUiApplication> {
   late final SimpleRouterDelegate _routerDelegate;
   late final TemplateRouteParser _routeParser;
 
-  JcrmUiApplicationState(this._securityService);
+  ApplicationWidgetState(this._securityService);
 
   @override
   void initState() {
