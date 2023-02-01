@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/sort/uniq_entity_sortable_field.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/repository/sortable_field.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/user.dart';
-import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/user_data_source.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/user_table_data_source.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/entity_table.dart';
 
 class UserTable extends EntityTable<User> {
@@ -13,7 +14,7 @@ class UserTable extends EntityTable<User> {
   }
 }
 
-class UserTableState extends EntityTableState<User, UserDataSource> {
+class UserTableState extends EntityTableState<User, UserTableDataSource> {
 
   @override
   List<DataColumn> buildColumns() {
@@ -27,6 +28,6 @@ class UserTableState extends EntityTableState<User, UserDataSource> {
 
   @override
   SortableField? columnIndexToSortableField(int index) {
-    return super.columnIndexToSortableField(index);
+    return UniqEntitySortableField.id;
   }
 }

@@ -4,7 +4,7 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/repository/sortable_field.da
 
 abstract class AsyncTableDataSource<E> extends AsyncDataTableSource {
 
-  SortableField? _sortField = null;
+  SortableField? _sortField;
   SortDirection _sortDirection = SortDirection.asc;
 
   SortDirection get sortDirection => _sortDirection;
@@ -15,5 +15,4 @@ abstract class AsyncTableDataSource<E> extends AsyncDataTableSource {
     _sortDirection = sortDirection;
     refreshDatasource();
   }
-
 }

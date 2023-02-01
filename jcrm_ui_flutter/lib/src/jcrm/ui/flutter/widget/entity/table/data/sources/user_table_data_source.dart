@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/user.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/repository/user_repository.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/user_resource.dart';
-import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/uniq_entity_data_source.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/uniq_entity_table_data_source.dart';
 
-class UserDataSource extends UniqEntityDataSource<User, UserResource, UserRepository> {
+class UserTableDataSource extends UniqEntityTableDataSource<User, UserResource, UserRepository> {
   
-  UserDataSource(UserRepository repository) : super(repository);
+  UserTableDataSource(UserRepository repository) : super(repository);
 
   @override
   DataRow buildRow(User entity) {

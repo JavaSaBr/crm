@@ -4,8 +4,19 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/entity.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/repository/sort_direction.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/repository/sortable_field.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/async_table_data_source.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/user_table_data_source.dart';
+import 'package:provider/provider.dart';
 
-abstract class EntityTableState<T extends Entity, D extends AsyncTableDataSource<T>> extends State<EntityTable<T>> {
+abstract class EntityTable<T extends Entity> extends StatefulWidget {
+  const EntityTable({Key? key}) : super(key: key);
+
+  @override
+  State<EntityTable<T>> createState();
+}
+
+abstract class EntityTableState<T extends Entity,
+    D extends AsyncTableDataSource<T>> extends State<EntityTable<T>> {
+
   static const headerTextStyle = TextStyle(fontWeight: FontWeight.bold);
 
   final PaginatorController _controller = PaginatorController();
@@ -16,29 +27,12 @@ abstract class EntityTableState<T extends Entity, D extends AsyncTableDataSource
   int? _sortColumnIndex;
   bool _dataSourceLoading = false;
 
-  late final AsyncTableDataSource<T> _dataSource;
+  late final D _dataSource;
 
-  DataColumn buildColumn(String label) {
-    return DataColumn(
-      label: Text(label, style: headerTextStyle),
-      onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-    );
-  }
-
-  SortableField? columnIndexToSortableField(int index) {
-    return null;
-  }
-
-  void sort(int columnIndex, bool ascending) {
-
-    _dataSource.changeSorting(
-        columnIndexToSortableField(columnIndex),
-        SortDirection.forAscending(ascending));
-
-    setState(() {
-      _sortColumnIndex = columnIndex;
-      _sortAscending = ascending;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = context.read<D>();
   }
 
   // Use global key to avoid rebuilding state of _TitledRangeSelector
@@ -95,17 +89,36 @@ abstract class EntityTableState<T extends Entity, D extends AsyncTableDataSource
 
   get restorationPrefix => "entity_table_list_view";
 
+  @protected
+  SortableField? columnIndexToSortableField(int index) {
+    return null;
+  }
+
+  void sort(int columnIndex, bool ascending) {
+
+    _dataSource.changeSorting(
+        columnIndexToSortableField(columnIndex),
+        SortDirection.forAscending(ascending));
+
+    setState(() {
+      _sortColumnIndex = columnIndex;
+      _sortAscending = ascending;
+    });
+  }
+
   List<DataColumn> buildColumns() {
     return [buildColumn("Id")];
   }
+
+  @protected
+  DataColumn buildColumn(String label) {
+    return DataColumn(
+      label: Text(label, style: headerTextStyle),
+      onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+    );
+  }
 }
 
-abstract class EntityTable<T extends Entity> extends StatefulWidget {
-  const EntityTable({Key? key}) : super(key: key);
-
-  @override
-  State<EntityTable<T>> createState();
-}
 
 class _ErrorAndRetry extends StatelessWidget {
   const _ErrorAndRetry(this.errorMessage, this.retry);

@@ -5,12 +5,12 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/repository/entity_repository
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/entity_resource.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/async_table_data_source.dart';
 
-abstract class EntityDataSource<E extends Entity, R extends EntityResource,
+abstract class EntityTableDataSource<E extends Entity, R extends EntityResource,
     ER extends EntityRepository<E, R>> extends AsyncTableDataSource<E> {
 
   final ER repository;
 
-  EntityDataSource(this.repository) {
+  EntityTableDataSource(this.repository) {
     print('EntityDataSource created');
   }
 
