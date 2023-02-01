@@ -1,11 +1,9 @@
-import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/entity.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/repository/sort_direction.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/repository/sortable_field.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/async_table_data_source.dart';
-import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/entity/table/data/sources/user_table_data_source.dart';
-import 'package:provider/provider.dart';
 
 abstract class EntityTable<T extends Entity> extends StatefulWidget {
   const EntityTable({Key? key}) : super(key: key);
@@ -32,8 +30,11 @@ abstract class EntityTableState<T extends Entity,
   @override
   void initState() {
     super.initState();
-    _dataSource = context.read<D>();
+    _dataSource = createDataSource();
   }
+
+  @protected
+  D createDataSource();
 
   // Use global key to avoid rebuilding state of _TitledRangeSelector
   // upon AsyncPaginatedDataTable2 refreshes, e.g. upon page switches

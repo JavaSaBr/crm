@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/config/table_data_sources_config.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/config/repositories_config.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/error_service.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/http_service.dart';
@@ -21,21 +20,16 @@ class ApplicationConfig extends MultiProvider {
                   Provider(create: (context) => HttpService(context.read<ErrorService>()))
                 ],
                 child: MultiProvider(
-                  providers: [
-                    Provider(create: (context) => RegistrationService(context.read<HttpService>()))
-                  ],
-                  child: MultiProvider(
-                      providers: [
-                        ChangeNotifierProvider(create: (context) => SecurityService(context.read<HttpService>(), window.localStorage)),
-                      ],
-                      child: MultiProvider(
+                    providers: [
+                      Provider(create: (context) => RegistrationService(context.read<HttpService>()))
+                    ],
+                    child: MultiProvider(
                         providers: [
-                          RepositoriesConfig()
+                          ChangeNotifierProvider(create: (context) => SecurityService(context.read<HttpService>(), window.localStorage)),
                         ],
                         child: MultiProvider(
-                          providers: [
-                            TableDataSourcesConfig()
-                          ],
-                          builder: appBuilder
-                        ))))));
+                            providers: [
+                              RepositoriesConfig()
+                            ],
+                            builder: appBuilder)))));
 }
