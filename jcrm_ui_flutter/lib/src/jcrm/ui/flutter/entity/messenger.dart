@@ -1,14 +1,14 @@
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/entity.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/messenger_resource.dart';
 
-class Messanger extends Entity {
+class Messenger extends Entity {
 
   final String login;
   final int type;
 
-  Messanger(this.login, this.type);
+  Messenger(this.login, this.type);
 
-  Messanger.fromResource(MessengerResource resource)
+  Messenger.fromResource(MessengerResource resource)
       : login = resource.login,
         type = resource.type;
 }

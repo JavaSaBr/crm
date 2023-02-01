@@ -2,6 +2,7 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/uniq_entity.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/minimal_user_resource.dart';
 
 class MinimalUser extends UniqEntity {
+
   static final MinimalUser none = MinimalUser(0, "", "", "", "", DateTime.now());
 
   String email;

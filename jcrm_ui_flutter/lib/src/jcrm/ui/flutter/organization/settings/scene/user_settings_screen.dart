@@ -10,7 +10,7 @@ class UserSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.bottomRight,
-      child: UserTable(),
+      child: UserTable(context),
     );
   }
 }

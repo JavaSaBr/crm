@@ -1,3 +1,4 @@
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/user.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/json_resource.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/minimal_user_resource.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/resource/phone_number_resource.dart';
@@ -9,9 +10,16 @@ class UserResource extends MinimalUserResource {
   final int created;
   final int modified;
 
-  UserResource(int id, String email, String firstName, String secondName, String thirdName, String birthday,
-      this.phoneNumbers, this.messengers, this.created, this.modified)
-      : super(id, email, firstName, secondName, thirdName, birthday);
+  UserResource.fromEntity(User entity)
+      : phoneNumbers = entity.phoneNumbers
+            .map((entity) => PhoneNumberResource.fromEntity(entity))
+            .toList(growable: false),
+        messengers = entity.messengers
+            .map((entity) => MessengerResource.fromEntity(entity))
+            .toList(growable: false),
+        created = entity.created.microsecondsSinceEpoch,
+        modified = entity.modified.microsecondsSinceEpoch,
+        super.fromEntity(entity);
 
   UserResource.fromJson(Map<String, dynamic> json)
       : phoneNumbers = PhoneNumberResource.fromJsonList(json['phoneNumbers']),
@@ -19,6 +27,11 @@ class UserResource extends MinimalUserResource {
         created = json['created'],
         modified = json['modified'],
         super.fromJson(json);
+
+  UserResource(int id, String email, String firstName, String secondName,
+      String thirdName, String birthday,
+      this.phoneNumbers, this.messengers, this.created, this.modified)
+      : super(id, email, firstName, secondName, thirdName, birthday);
 
   @override
   void buildJson(Map<String, dynamic> json) {

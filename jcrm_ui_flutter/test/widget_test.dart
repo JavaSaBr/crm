@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/app/application_config.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/config/application_config.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/app/application_widget.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/security_service.dart';
 import 'package:provider/provider.dart';
