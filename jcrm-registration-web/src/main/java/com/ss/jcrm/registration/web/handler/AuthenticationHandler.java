@@ -9,8 +9,8 @@ import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.exception.SecurityErrors;
 import com.ss.jcrm.security.web.service.TokenService;
-import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.user.api.dao.UserDao;
+import crm.user.api.User;
+import crm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.UnauthorizedWebException;
 import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.StringUtils;
@@ -73,7 +73,7 @@ public class AuthenticationHandler {
         var password = resource.password();
         try {
 
-            if (!passwordService.isCorrect(password, user.getSalt(), user.getPassword())) {
+            if (!passwordService.isCorrect(password, user.salt(), user.password())) {
                 throw new UnauthorizedWebException(INVALID_CREDENTIALS_MESSAGE, INVALID_CREDENTIALS);
             }
 

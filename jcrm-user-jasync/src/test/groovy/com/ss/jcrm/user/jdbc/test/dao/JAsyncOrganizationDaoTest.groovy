@@ -1,7 +1,7 @@
 package com.ss.jcrm.user.jdbc.test.dao
 
-import com.ss.jcrm.user.api.Organization
-import com.ss.jcrm.user.api.dao.OrganizationDao
+import crm.user.api.Organization
+import crm.user.api.dao.OrganizationDao
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import com.ss.rlib.common.util.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,9 +32,9 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
            // def orgById = organizationDao.findById(created.getId()).block()
         then:
             orgByName != null
-            orgByName.getName() == orgName
-            orgByName.getId() != 0L
-            orgByName.getCountry() != null
+            orgByName.name() == orgName
+            orgByName.id() != 0L
+            orgByName.country() != null
            // orgById != null
            // orgById.getId() != 0L
            // orgById.getCountry() != null
@@ -91,8 +91,8 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
 
     private static boolean validate(Organization organization, String resultName) {
         return organization != null &&
-            organization.getId() != 0 &&
-            StringUtils.equals(organization.getName(), resultName) &&
-            organization.getCountry() != null
+            organization.id() != 0 &&
+            StringUtils.equals(organization.name(), resultName) &&
+            organization.country() != null
     }
 }

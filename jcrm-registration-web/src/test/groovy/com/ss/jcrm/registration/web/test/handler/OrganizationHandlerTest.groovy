@@ -2,7 +2,7 @@ package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
-import com.ss.jcrm.user.api.dao.EmailConfirmationDao
+import crm.user.api.dao.EmailConfirmationDao
 import com.ss.jcrm.user.contact.api.PhoneNumberType
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource
 import org.springframework.beans.factory.annotation.Autowired

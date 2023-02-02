@@ -8,11 +8,11 @@ import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
 import com.ss.jcrm.security.config.SecurityConfig
 import com.ss.jcrm.security.service.PasswordService
-import com.ss.jcrm.user.api.dao.EmailConfirmationDao
-import com.ss.jcrm.user.api.dao.OrganizationDao
-import com.ss.jcrm.user.api.dao.UserDao
-import com.ss.jcrm.user.api.dao.UserGroupDao
-import com.ss.jcrm.user.api.test.UserTestHelper
+import crm.user.api.dao.EmailConfirmationDao
+import crm.user.api.dao.OrganizationDao
+import crm.user.api.dao.UserDao
+import crm.user.api.dao.UserGroupDao
+import crm.user.api.test.UserTestHelper
 import com.ss.jcrm.user.jasync.config.JAsyncUserConfig
 import com.ss.jcrm.user.jdbc.test.helper.JAsyncUserTestHelper
 import org.jetbrains.annotations.NotNull

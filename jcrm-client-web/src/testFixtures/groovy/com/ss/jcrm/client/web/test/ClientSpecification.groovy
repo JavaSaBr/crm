@@ -3,7 +3,7 @@ package com.ss.jcrm.client.web.test
 import com.ss.jcrm.client.api.test.ClientTestHelper
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
-import com.ss.jcrm.user.api.test.UserTestHelper
+import crm.user.api.test.UserTestHelper
 import com.ss.jcrm.web.config.ApiEndpointServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration

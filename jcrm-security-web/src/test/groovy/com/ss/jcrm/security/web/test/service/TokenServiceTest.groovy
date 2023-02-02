@@ -39,7 +39,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             def foundUser = unsafeTokenService.findUserIfNotExpired(token).block()
         then:
             foundUser != null
-            foundUser.getId() == user.getId()
+            foundUser.id() == user.id()
         when:
             token = unsafeTokenService.generateNewToken(
                 user.id,
@@ -68,7 +68,7 @@ class TokenServiceTest extends WebSecuritySpecification {
             def foundUser = unsafeTokenService.findUser(token).block()
         then:
             foundUser != null
-            foundUser.getId() == user.getId()
+            foundUser.id() == user.id()
     }
     
     def "should refresh token"() {
@@ -165,7 +165,7 @@ class TokenServiceTest extends WebSecuritySpecification {
         given:
             def user = userTestHelper.newUser("User1")
             def token = unsafeTokenService.generateNewToken(user)
-            user.setPasswordVersion(2)
+            user.passwordVersion(2)
         when:
             unsafeTokenService.refresh(user, token)
         then:

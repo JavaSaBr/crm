@@ -7,15 +7,14 @@ import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.base.utils.DateUtils;
 import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.api.impl.*;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
-import com.ss.jcrm.user.api.Organization;
-import com.ss.jcrm.user.api.User;
+import crm.user.api.Organization;
+import crm.user.api.User;
 import com.ss.rlib.common.util.array.Array;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -120,8 +119,8 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
         return insert(
             queryInsert,
             Arrays.asList(
-                organization.getId(),
-                assigner.getId(),
+                organization.id(),
+                assigner.id(),
                 idsToJson(curators),
                 firstName,
                 secondName,
@@ -137,9 +136,9 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
             ),
             id -> new DefaultSimpleClient(
                 id,
-                assigner.getId(),
+                assigner.id(),
                 toIds(curators),
-                organization.getId(),
+                organization.id(),
                 firstName,
                 secondName,
                 thirdName,
@@ -173,9 +172,9 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
                 toJson(contact.getMessengers()),
                 contact.getCompany(),
                 toOffsetDateTime(contact.getModified()),
-                contact.getVersion() + 1,
-                contact.getId(),
-                contact.getVersion()
+                contact.version() + 1,
+                contact.id(),
+                contact.version()
             ),
             contact
         );

@@ -1,10 +1,10 @@
 package com.ss.jcrm.user.jdbc.test.dao
 
 import com.ss.jcrm.security.service.PasswordService
-import com.ss.jcrm.user.api.dao.MinimalUserDao
-import com.ss.jcrm.user.api.dao.OrganizationDao
-import com.ss.jcrm.user.api.dao.UserDao
-import com.ss.jcrm.user.api.dao.UserGroupDao
+import crm.user.api.dao.MinimalUserDao
+import crm.user.api.dao.OrganizationDao
+import crm.user.api.dao.UserDao
+import crm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -38,16 +38,16 @@ class JAsyncMinimalUserDaoTest extends JAsyncUserSpecification {
         then:
             user != null
             user.email == "User1"
-            Arrays.equals(user.getSalt(), salt)
+            Arrays.equals(user.salt(), salt)
             user.id != 0L
             user.organization == org
             user.roles.size() == 1
         when:
-            def loaded = minimalUserDao.findById(user.getId()).block()
+            def loaded = minimalUserDao.findById(user.id()).block()
         then:
             loaded != null
             loaded.email == "User1"
-            loaded.organizationId == org.getId()
+            loaded.orgId == org.id()
             loaded.roles.size() == 1
     }
     

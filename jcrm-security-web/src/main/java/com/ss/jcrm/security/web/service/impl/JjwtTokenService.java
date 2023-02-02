@@ -3,8 +3,8 @@ package com.ss.jcrm.security.web.service.impl;
 import static java.time.ZonedDateTime.now;
 import com.ss.jcrm.security.web.exception.*;
 import com.ss.jcrm.security.web.service.UnsafeTokenService;
-import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.user.api.dao.UserDao;
+import crm.user.api.User;
+import crm.user.api.dao.UserDao;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -78,11 +78,11 @@ public class JjwtTokenService implements UnsafeTokenService {
     public @NotNull String generateNewToken(@NotNull User user) {
         var now = now();
         return generateNewToken(
-            user.getId(),
+            user.id(),
             now.plusMinutes(expirationTime),
             now,
             0,
-            user.getPasswordVersion()
+            user.passwordVersion()
         );
     }
 
@@ -132,19 +132,19 @@ public class JjwtTokenService implements UnsafeTokenService {
 
         if (passwordVersion == null) {
             throw new InvalidTokenException("The token [" + token + "] doesn't include field 'refreshes'.");
-        } else if (passwordVersion != user.getPasswordVersion()) {
+        } else if (passwordVersion != user.passwordVersion()) {
             throw new ChangedPasswordTokenException(
-                "The token [" + token + "] cannot be used for the user [" + user.getEmail() +
+                "The token [" + token + "] cannot be used for the user [" + user.email() +
                     "] because his password was changed.");
         }
 
         var now = now();
 
-        return generateNewToken(user.getId(),
+        return generateNewToken(user.id(),
             now.plusMinutes(expirationTime),
             now,
             refreshes + 1,
-            user.getPasswordVersion()
+            user.passwordVersion()
         );
     }
 

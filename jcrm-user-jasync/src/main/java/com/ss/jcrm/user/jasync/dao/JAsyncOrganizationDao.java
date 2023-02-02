@@ -14,9 +14,9 @@ import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.jasync.dao.AbstractNamedObjectJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
-import com.ss.jcrm.user.api.Organization;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
-import com.ss.jcrm.user.api.impl.DefaultOrganization;
+import crm.user.api.Organization;
+import crm.user.api.dao.OrganizationDao;
+import crm.user.api.impl.DefaultOrganization;
 import com.ss.rlib.common.util.array.Array;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -99,7 +99,7 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
     public @NotNull Mono<@NotNull Organization> create(@NotNull String name, @NotNull Country country) {
         return insert(
             queryInsert,
-            List.of(name, country.getId()),
+            List.of(name, country.id()),
             id -> new DefaultOrganization(id, 0, name, country)
         );
     }
@@ -125,7 +125,7 @@ public class JAsyncOrganizationDao extends AbstractNamedObjectJAsyncDao<Organiza
     }
 
     @Override
-    public @NotNull Mono<Boolean> delete(long id) {
+    public @NotNull Mono<Boolean> deleteById(long id) {
         return delete(queryDeleteById, List.of(id));
     }
 

@@ -5,7 +5,7 @@ import com.ss.jcrm.registration.web.test.RegistrationSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
-import com.ss.jcrm.user.api.dao.UserDao
+import crm.user.api.dao.UserDao
 import com.ss.rlib.common.util.ArrayUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType

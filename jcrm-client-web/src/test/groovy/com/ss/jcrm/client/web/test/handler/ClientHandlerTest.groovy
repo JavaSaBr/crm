@@ -197,7 +197,7 @@ class ClientHandlerTest extends ClientSpecification {
         when:
             def response = webClient.get()
                 .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
-                .url("$contextPath/client/${client.getId()}")
+                .url("$contextPath/client/${client.id()}")
                 .exchange()
         then:
             response.expectStatus().isOk()

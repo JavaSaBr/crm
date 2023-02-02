@@ -2,8 +2,8 @@ package com.ss.jcrm.user.jdbc.test.dao
 
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.security.AccessRole
-import com.ss.jcrm.user.api.UserGroup
-import com.ss.jcrm.user.api.dao.UserGroupDao
+import crm.user.api.UserGroup
+import crm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -36,12 +36,12 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
             def roles = Set.of(AccessRole.USER_GROUP_MANAGER, AccessRole.DELETE_USER)
             def created = userGroupDao.create(groupName, roles, org).block()
         when:
-            def groupById = userGroupDao.findById(created.getId()).block()
+            def groupById = userGroupDao.findById(created.id()).block()
         then:
             groupById != null
-            groupById.getId() != 0L
-            groupById.getName() == groupName
-            groupById.getOrganization() == org
+            groupById.id() != 0L
+            groupById.name() == groupName
+            groupById.organization() == org
     }
     
     def "should throw NotActualObjectDaoException during updating outdated group"() {
@@ -50,7 +50,7 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
             def org = userTestHelper.newOrg()
             def group = userTestHelper.newGroup("Group1", org)
             group.version = -1
-            group.setRoles(Set.of(AccessRole.DELETE_USER))
+            group.roles(Set.of(AccessRole.DELETE_USER))
         when:
             userGroupDao.update(group).block()
         then:
@@ -62,14 +62,14 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
         given:
             def org = userTestHelper.newOrg()
             def group = userTestHelper.newGroup("Group1", org)
-            def modified = group.getModified()
+            def modified = group.modified()
         when:
             def loaded = userGroupDao.findByIdAndOrgId(group.id, org.id).block()
         then:
             validate(loaded, "Group1", Set.of())
         when:
-            group.setRoles(Set.of(AccessRole.DELETE_USER, AccessRole.CREATE_USER))
-            group.setName("Group2")
+            group.roles(Set.of(AccessRole.DELETE_USER, AccessRole.CREATE_USER))
+            group.name("Group2")
             def updated = userGroupDao.update(group).block()
         then:
             validate(updated, "Group2", Set.of(AccessRole.DELETE_USER, AccessRole.CREATE_USER))

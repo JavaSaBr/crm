@@ -1,6 +1,6 @@
 package com.ss.jcrm.registration.web.resources;
 
-import com.ss.jcrm.user.api.User;
+import crm.user.api.User;
 import com.ss.jcrm.web.resources.RestResource;
 import org.jetbrains.annotations.NotNull;
 

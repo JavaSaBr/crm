@@ -127,10 +127,10 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
 
                     if (queryResult.getRowsAffected() < 1) {
                         throw new NotActualObjectDaoException(
-                            "The object's version " + versioned.getVersion() + " is outdated.");
+                            "The object's version " + versioned.version() + " is outdated.");
                     }
 
-                    versioned.setVersion(versioned.getVersion() + 1);
+                    versioned.version(versioned.version() + 1);
                 }
 
                 return entity;

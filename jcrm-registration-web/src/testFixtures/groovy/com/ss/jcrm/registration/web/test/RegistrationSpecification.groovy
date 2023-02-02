@@ -3,7 +3,7 @@ package com.ss.jcrm.registration.web.test
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
-import com.ss.jcrm.user.api.test.UserTestHelper
+import crm.user.api.test.UserTestHelper
 import com.ss.jcrm.user.contact.api.MessengerType
 import com.ss.jcrm.user.contact.api.PhoneNumberType
 import com.ss.jcrm.user.contact.api.resource.MessengerResource

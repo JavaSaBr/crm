@@ -8,7 +8,7 @@ import com.ss.jcrm.client.jasync.config.JAsyncClientConfig
 import com.ss.jcrm.client.jasync.test.helper.JAsyncClientTestHelper
 import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
-import com.ss.jcrm.user.api.test.UserTestHelper
+import crm.user.api.test.UserTestHelper
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecificationConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

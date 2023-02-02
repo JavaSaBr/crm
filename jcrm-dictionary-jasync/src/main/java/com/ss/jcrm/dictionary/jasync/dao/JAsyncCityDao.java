@@ -75,7 +75,7 @@ public class JAsyncCityDao extends AbstractDictionaryDao<City> implements CityDa
     public @NotNull Mono<@NotNull City> create(@NotNull String name, @NotNull Country country) {
         return insert(
             queryInsert,
-            List.of(name, country.getId()),
+            List.of(name, country.id()),
             id -> new DefaultCity(name, country, id)
         );
     }

@@ -4,7 +4,7 @@ apply plugin: "java-test-fixtures"
 dependencies {
     api projects.jcrmBase
     api projects.jcrmDictionaryApi
-    api projects.jcrmUserApi
+    api projects.userApi
 
     testFixturesApi projects.jcrmIntegrationTestDb
 }

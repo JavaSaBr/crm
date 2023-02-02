@@ -1,7 +1,7 @@
 package com.ss.jcrm.registration.web.resources;
 
 import static com.ss.jcrm.base.utils.CommonUtils.toLongIds;
-import com.ss.jcrm.user.api.UserGroup;
+import crm.user.api.UserGroup;
 import com.ss.jcrm.web.resources.RestResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,11 +15,11 @@ public record UserGroupOutResource(
 
     public static @NotNull UserGroupOutResource from(@NotNull UserGroup userGroup) {
         return new UserGroupOutResource(
-            userGroup.getName(),
-            toLongIds(userGroup.getRoles()),
-            userGroup.getId(),
-            userGroup.getCreated().toEpochMilli(),
-            userGroup.getModified().toEpochMilli()
+            userGroup.name(),
+            toLongIds(userGroup.roles()),
+            userGroup.id(),
+            userGroup.created().toEpochMilli(),
+            userGroup.modified().toEpochMilli()
         );
     }
 }

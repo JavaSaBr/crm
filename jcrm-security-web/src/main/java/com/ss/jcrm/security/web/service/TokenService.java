@@ -5,7 +5,7 @@ import com.ss.jcrm.security.web.exception.InvalidTokenException;
 import com.ss.jcrm.security.web.exception.ExpiredTokenException;
 import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException;
 import com.ss.jcrm.security.web.exception.PrematureTokenException;
-import com.ss.jcrm.user.api.User;
+import crm.user.api.User;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 

@@ -4,7 +4,7 @@ apply plugin: "java-test-fixtures"
 dependencies {
     api projects.jcrmSecurity
     api projects.jcrmBaseWeb
-    api projects.jcrmUserApi
+    api projects.userApi
     api libs.bundles.jjwt
 
     testFixturesApi testFixtures(projects.jcrmSecurity)

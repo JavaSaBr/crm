@@ -2,7 +2,7 @@ package com.ss.jcrm.user.contact.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.ss.jcrm.base.utils.HasId;
+import com.ss.jcrm.base.utils.WithId;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.AccessLevel;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum PhoneNumberType implements HasId {
+public enum PhoneNumberType implements WithId {
     UNKNOWN(0, "Unknown"),
     WORK(1, "Work"),
     MOBILE(2, "Mobile"),;

@@ -2,9 +2,9 @@ package com.ss.jcrm.registration.web.handler;
 
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.registration.web.resources.UserRegisterInResource;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
-import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserGroupDao;
+import crm.user.api.dao.OrganizationDao;
+import crm.user.api.dao.UserDao;
+import crm.user.api.dao.UserGroupDao;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

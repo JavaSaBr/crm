@@ -11,11 +11,11 @@ import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.user.api.Organization;
-import com.ss.jcrm.user.api.UserGroup;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
-import com.ss.jcrm.user.api.dao.UserGroupDao;
-import com.ss.jcrm.user.api.impl.DefaultUserGroup;
+import crm.user.api.Organization;
+import crm.user.api.UserGroup;
+import crm.user.api.dao.OrganizationDao;
+import crm.user.api.dao.UserGroupDao;
+import crm.user.api.impl.DefaultUserGroup;
 import com.ss.rlib.common.util.StringUtils;
 import com.ss.rlib.common.util.array.Array;
 import lombok.AccessLevel;
@@ -130,7 +130,7 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
             queryInsert,
             Arrays.asList(
                 name,
-                organization.getId(),
+                organization.id(),
                 JAsyncUtils.idsToJson(roles),
                 createdDateTime,
                 createdDateTime
@@ -142,17 +142,17 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
     @Override
     public @NotNull Mono<@NotNull UserGroup> update(@NotNull UserGroup userGroup) {
 
-        userGroup.setModified(Instant.now());
+        userGroup.modified(Instant.now());
 
         return update(
             queryUpdate,
             Arrays.asList(
-                StringUtils.emptyIfNull(userGroup.getName()),
-                JAsyncUtils.idsToJson(userGroup.getRoles()),
-                userGroup.getVersion() + 1,
-                toOffsetDateTime(userGroup.getModified()),
-                userGroup.getId(),
-                userGroup.getVersion()
+                StringUtils.emptyIfNull(userGroup.name()),
+                JAsyncUtils.idsToJson(userGroup.roles()),
+                userGroup.version() + 1,
+                toOffsetDateTime(userGroup.modified()),
+                userGroup.id(),
+                userGroup.version()
             ),
             userGroup
         );
@@ -165,7 +165,7 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
 
     @Override
     public @NotNull Mono<@NotNull Set<UserGroup>> findAll(@NotNull Organization organization) {
-        return selectAllAsync(querySelectAllByOrg, organization.getId(), converter())
+        return selectAllAsync(querySelectAllByOrg, organization.id(), converter())
             .map(Set::copyOf);
     }
 

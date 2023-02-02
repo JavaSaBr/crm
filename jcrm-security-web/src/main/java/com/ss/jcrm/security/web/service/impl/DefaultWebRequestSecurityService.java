@@ -6,7 +6,7 @@ import static com.ss.jcrm.web.exception.ExceptionUtils.toUnauthorized;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
-import com.ss.jcrm.user.api.User;
+import crm.user.api.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +31,7 @@ public class DefaultWebRequestSecurityService implements WebRequestSecurityServi
             .stream()
             .findFirst()
             .orElseThrow(() -> toUnauthorized(NOT_PRESENTED_TOKEN, NOT_PRESENTED_TOKEN_MESSAGE)))
-            .filter(user -> user.getRoles().contains(accessRole))
+            .filter(user -> user.roles().contains(accessRole))
             .switchIfEmpty(Mono.error(toForbidden(HAS_NO_REQUIRED_ACCESS_ROLE, HAS_NO_REQUIRED_ACCESS_ROLE_MESSAGE)));
     }
 
@@ -68,10 +68,10 @@ public class DefaultWebRequestSecurityService implements WebRequestSecurityServi
 
         var ownedRoles = new HashSet<AccessRole>();
 
-        resolveAllRoles(ownedRoles, user.getRoles());
+        resolveAllRoles(ownedRoles, user.roles());
 
-        for (var group : user.getGroups()) {
-            resolveAllRoles(ownedRoles, group.getRoles());
+        for (var group : user.groups()) {
+            resolveAllRoles(ownedRoles, group.roles());
         }
 
         return ownedRoles;

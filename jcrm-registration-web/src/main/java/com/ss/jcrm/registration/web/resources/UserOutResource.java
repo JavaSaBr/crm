@@ -3,15 +3,11 @@ package com.ss.jcrm.registration.web.resources;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.user.api.User;
+import crm.user.api.User;
 import com.ss.jcrm.user.contact.api.resource.MessengerResource;
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
 import com.ss.jcrm.web.resources.RestResource;
 import com.ss.rlib.common.util.DateUtils;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,26 +29,26 @@ public record UserOutResource(
     public static @NotNull UserOutResource from(@NotNull User user) {
 
         return new UserOutResource(
-            user.getEmail(),
-            user.getFirstName(),
-            user.getSecondName(),
-            user.getThirdName(),
-            DateUtils.toString(user.getBirthday()),
-            user.getPhoneNumbers()
+            user.email(),
+            user.firstName(),
+            user.secondName(),
+            user.thirdName(),
+            DateUtils.toString(user.birthday()),
+            user.phoneNumbers()
                 .stream()
                 .map(PhoneNumberResource::from)
                 .toArray(PhoneNumberResource[]::new),
-            user.getMessengers()
+            user.messengers()
                 .stream()
                 .map(MessengerResource::from)
                 .toArray(MessengerResource[]::new),
-            user.getRoles()
+            user.roles()
                 .stream()
-                .mapToLong(AccessRole::getId)
+                .mapToLong(AccessRole::id)
                 .toArray(),
-            user.getId(),
-            user.getCreated().toEpochMilli(),
-            user.getModified().toEpochMilli()
+            user.id(),
+            user.created().toEpochMilli(),
+            user.modified().toEpochMilli()
         );
     }
 }

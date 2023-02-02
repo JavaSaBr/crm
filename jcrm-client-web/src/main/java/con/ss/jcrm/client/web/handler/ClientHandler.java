@@ -1,6 +1,6 @@
 package con.ss.jcrm.client.web.handler;
 
-import com.ss.jcrm.base.utils.HasId;
+import com.ss.jcrm.base.utils.WithId;
 import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.api.impl.DefaultClientEmail;
@@ -12,7 +12,7 @@ import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
-import com.ss.jcrm.user.api.dao.UserDao;
+import crm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.ExceptionUtils;
 import com.ss.jcrm.web.exception.IdNotPresentedWebException;
 import com.ss.jcrm.web.exception.ResourceIsAlreadyChangedWebException;
@@ -60,7 +60,7 @@ public class ClientHandler {
 
     public @NotNull Mono<ServerResponse> list(@NotNull ServerRequest request) {
         return webRequestSecurityService.isAuthorized(request)
-            .flatMap(user -> simpleClientDao.findByOrg(user.getOrganization()))
+            .flatMap(user -> simpleClientDao.findByOrg(user.organization()))
             .map(contacts -> contacts.stream()
                 .map(ClientOutResource::from)
                 .toArray(ClientOutResource[]::new))
@@ -104,8 +104,8 @@ public class ClientHandler {
         var user = authorized.getUser();
         var resource = authorized.getResource();
 
-        return userDao.findByIdAndOrg(resource.assigner(), user.getOrganization())
-            .zipWhen(assigner -> userDao.findByIdsAndOrg(resource.curators(), assigner.getOrganization()))
+        return userDao.findByIdAndOrg(resource.assigner(), user.organization())
+            .zipWhen(assigner -> userDao.findByIdsAndOrg(resource.curators(), assigner.organization()))
             .flatMap(args -> {
 
                 var assigner = args.getT1();
@@ -114,7 +114,7 @@ public class ClientHandler {
                 return simpleClientDao.create(
                     assigner,
                     curators,
-                    assigner.getOrganization(),
+                    assigner.organization(),
                     resource.firstName(),
                     resource.secondName(),
                     resource.thirdName(),
@@ -133,13 +133,13 @@ public class ClientHandler {
     ) {
 
         var user = authorized.getUser();
-        var org = user.getOrganization();
+        var org = user.organization();
         var resource = authorized.getResource();
 
         return simpleClientDao.findByIdAndOrg(resource.id(), org)
             .switchIfEmpty(Mono.error(IdNotPresentedWebException::new))
             .zipWhen(contact -> {
-                if (contact.getVersion() != resource.version()) {
+                if (contact.version() != resource.version()) {
                     return Mono.error(new ResourceIsAlreadyChangedWebException());
                 } else {
                     return userDao.findByIdAndOrg(resource.assigner(), org);
@@ -167,7 +167,7 @@ public class ClientHandler {
                 contact.setSites(toSites(resource.sites()));
                 contact.setMessengers(toMessengers(resource.messengers()));
                 contact.setCuratorIds(curators.stream()
-                    .mapToLong(HasId::getId)
+                    .mapToLong(WithId::id)
                     .toArray());
 
                 return simpleClientDao.update(contact)

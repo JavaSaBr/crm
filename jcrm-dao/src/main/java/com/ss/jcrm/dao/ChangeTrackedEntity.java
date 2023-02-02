@@ -6,9 +6,8 @@ import java.time.Instant;
 
 public interface ChangeTrackedEntity extends Entity {
 
-    @NotNull Instant getCreated();
+  @NotNull Instant created();
+  @NotNull Instant modified();
 
-    @NotNull Instant getModified();
-
-    void setModified(@NotNull Instant modified);
+  @NotNull ChangeTrackedEntity modified(@NotNull Instant modified);
 }

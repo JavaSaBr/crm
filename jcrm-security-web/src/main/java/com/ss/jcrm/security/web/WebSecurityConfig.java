@@ -6,7 +6,7 @@ import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.security.web.service.impl.DefaultWebRequestSecurityService;
 import com.ss.jcrm.security.web.service.impl.JjwtTokenService;
-import com.ss.jcrm.user.api.dao.UserDao;
+import crm.user.api.dao.UserDao;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,6 @@ import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 

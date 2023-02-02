@@ -4,10 +4,10 @@ import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.service.PasswordService
-import com.ss.jcrm.user.api.User
-import com.ss.jcrm.user.api.dao.OrganizationDao
-import com.ss.jcrm.user.api.dao.UserDao
-import com.ss.jcrm.user.api.dao.UserGroupDao
+import crm.user.api.User
+import crm.user.api.dao.OrganizationDao
+import crm.user.api.dao.UserDao
+import crm.user.api.dao.UserGroupDao
 import com.ss.jcrm.user.contact.api.Messenger
 import com.ss.jcrm.user.contact.api.MessengerType
 import com.ss.jcrm.user.contact.api.PhoneNumber
@@ -70,12 +70,12 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         then:
             user != null
             user.email == "User1"
-            Arrays.equals(user.getSalt(), salt)
+            Arrays.equals(user.salt(), salt)
             user.id != 0L
             user.organization == org
             user.roles.size() == 1
         when:
-            def loaded = userDao.findById(user.getId()).block()
+            def loaded = userDao.findById(user.id()).block()
         then:
             loaded != null
             loaded.email == "User1"
@@ -109,7 +109,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         then:
             user.version == 1
         when:
-            def user2 = userDao.findById(user.getId()).block()
+            def user2 = userDao.findById(user.id()).block()
         then:
             user2 != null
             user2.email == user.email

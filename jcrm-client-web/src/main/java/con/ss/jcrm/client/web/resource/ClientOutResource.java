@@ -29,12 +29,12 @@ public record ClientOutResource(
 
     public static @NotNull ClientOutResource from(@NotNull SimpleClient client) {
         return new ClientOutResource(
-            client.getId(),
+            client.id(),
             client.getAssignerId(),
             client.getCreated().toEpochMilli(),
             client.getModified().toEpochMilli(),
             client.getCuratorIds(),
-            client.getVersion(),
+            client.version(),
             client.getFirstName(),
             client.getSecondName(),
             client.getThirdName(),

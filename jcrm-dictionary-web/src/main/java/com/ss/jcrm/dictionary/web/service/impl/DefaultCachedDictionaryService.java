@@ -9,7 +9,6 @@ import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import com.ss.rlib.common.util.dictionary.ObjectDictionary;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
@@ -83,8 +82,8 @@ public class DefaultCachedDictionaryService<T extends NamedUniqEntity, R, C> imp
 
             var resource = resourceFunction.apply(entity);
 
-            idToResource.put(entity.getId(), resource);
-            nameToResource.put(entity.getName(), resource);
+            idToResource.put(entity.id(), resource);
+            nameToResource.put(entity.name(), resource);
 
             resources.add(resource);
         }

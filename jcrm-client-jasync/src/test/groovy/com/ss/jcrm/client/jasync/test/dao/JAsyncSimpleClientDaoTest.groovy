@@ -9,7 +9,7 @@ import com.ss.jcrm.client.api.impl.DefaultContactSite
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.jasync.util.JAsyncUtils
-import com.ss.jcrm.user.api.User
+import crm.user.api.User
 import com.ss.rlib.common.util.array.Array
 import com.ss.rlib.common.util.array.ArrayFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -54,7 +54,7 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
             def client = simpleClientDao.create(
                 assigner,
                 curators,
-                assigner.getOrganization(),
+                assigner.organization(),
                 "First name",
                 "Second name",
                 "Third name",
@@ -205,7 +205,7 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
             loaded.id == client.id
             loaded.version == 0
         when:
-            loaded.setVersion(5)
+            loaded.version(5)
             simpleClientDao.update(loaded).block()
         then:
             thrown NotActualObjectDaoException

@@ -4,8 +4,8 @@ import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
-import com.ss.jcrm.user.api.Organization;
-import com.ss.jcrm.user.api.User;
+import crm.user.api.Organization;
+import crm.user.api.User;
 import com.ss.rlib.common.util.array.Array;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,13 +61,13 @@ public interface SimpleClientDao extends Dao<SimpleClient> {
     @NotNull Mono<@NotNull Array<SimpleClient>> findByOrg(long orgId);
 
     default @NotNull Mono<@NotNull Array<SimpleClient>> findByOrg(@NotNull Organization organization) {
-        return findByOrg(organization.getId());
+        return findByOrg(organization.id());
     }
 
     @NotNull Mono<@NotNull SimpleClient> findByIdAndOrg(long id, long orgId);
 
     default @NotNull Mono<@NotNull SimpleClient> findByIdAndOrg(long id, @NotNull Organization organization) {
-        return findByIdAndOrg(id, organization.getId());
+        return findByIdAndOrg(id, organization.id());
     }
 
     @NotNull Mono<@NotNull EntityPage<SimpleClient>> findPageByOrg(long offset, long size, long orgId);

@@ -2,17 +2,15 @@ package com.ss.jcrm.user.jasync.dao;
 
 import static com.ss.jcrm.base.utils.DateUtils.toOffsetDateTime;
 import static com.ss.jcrm.base.utils.DateUtils.toUtcInstant;
-import static com.ss.jcrm.jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.base.utils.DateUtils;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncConverter;
-import com.ss.jcrm.user.api.EmailConfirmation;
-import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
-import com.ss.jcrm.user.api.impl.DefaultEmailConfirmation;
+import crm.user.api.EmailConfirmation;
+import crm.user.api.dao.EmailConfirmationDao;
+import crm.user.api.impl.DefaultEmailConfirmation;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
@@ -94,7 +92,7 @@ public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmat
     }
 
     @Override
-    public @NotNull Mono<Boolean> delete(long id) {
+    public @NotNull Mono<Boolean> deleteById(long id) {
         return delete(queryDeleteById, id);
     }
 

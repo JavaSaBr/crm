@@ -1,7 +1,7 @@
 package com.ss.jcrm.security.web.service;
 
 import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.user.api.User;
+import crm.user.api.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;

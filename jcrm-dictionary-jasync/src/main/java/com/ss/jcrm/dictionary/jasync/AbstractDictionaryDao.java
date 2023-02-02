@@ -26,7 +26,7 @@ public abstract class AbstractDictionaryDao<T extends NamedUniqEntity> extends A
         return findAll()
             .map(array -> {
                 var result = DictionaryFactory.<T>newLongDictionary(array.size());
-                array.forEach(result, (dictionary, element) -> dictionary.put(element.getId(), element));
+                array.forEach(result, (dictionary, element) -> dictionary.put(element.id(), element));
                 return result;
             });
     }

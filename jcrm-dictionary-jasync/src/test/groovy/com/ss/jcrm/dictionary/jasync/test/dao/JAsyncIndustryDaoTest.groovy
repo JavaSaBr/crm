@@ -17,8 +17,8 @@ class JAsyncIndustryDaoTest extends JAsyncDictionarySpecification {
             def industry = industryDao.create("testindustry").block()
         then:
             industry != null
-            industry.getId() > 0
-            industry.getName() == "testindustry"
+            industry.id() > 0
+            industry.name() == "testindustry"
     }
     
     def "should prevent creating industry with the same name"() {
@@ -50,11 +50,11 @@ class JAsyncIndustryDaoTest extends JAsyncDictionarySpecification {
             def loaded = industryDao.findByName("testindustry2").block()
         then:
             loaded != null
-            loaded.getId() > 0
+            loaded.id() > 0
         when:
-            def reloaded = industryDao.findById(loaded.getId()).block()
+            def reloaded = industryDao.findById(loaded.id()).block()
         then:
             reloaded != null
-            reloaded.getId() == loaded.getId()
+            reloaded.id() == loaded.id()
     }
 }

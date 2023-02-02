@@ -5,7 +5,7 @@ import com.github.jasync.sql.db.pool.ConnectionPool
 import com.ss.jcrm.client.api.test.ClientTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
-import com.ss.jcrm.user.api.test.UserTestHelper
+import crm.user.api.test.UserTestHelper
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration

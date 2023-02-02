@@ -4,8 +4,8 @@ import com.ss.jcrm.mail.service.MailService;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
-import com.ss.jcrm.user.api.EmailConfirmation;
-import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
+import crm.user.api.EmailConfirmation;
+import crm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.web.util.ResponseUtils;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.AccessLevel;
@@ -55,12 +55,12 @@ public class EmailConfirmationHandler {
 
         var template = StringUtils.replace(
             emailConfirmationTemplate.getTemplate(),
-            "{email}", emailConfirmation.getEmail(),
-            "{code}", emailConfirmation.getCode()
+            "{email}", emailConfirmation.email(),
+            "{code}", emailConfirmation.code()
         );
 
         return mailService.send(
-            emailConfirmation.getEmail(),
+            emailConfirmation.email(),
             emailConfirmationSubject,
             template
         );

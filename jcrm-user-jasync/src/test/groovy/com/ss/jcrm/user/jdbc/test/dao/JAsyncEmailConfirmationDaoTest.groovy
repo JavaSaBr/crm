@@ -1,6 +1,6 @@
 package com.ss.jcrm.user.jdbc.test.dao
 
-import com.ss.jcrm.user.api.dao.EmailConfirmationDao
+import crm.user.api.dao.EmailConfirmationDao
 import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -35,7 +35,7 @@ class JAsyncEmailConfirmationDaoTest extends JAsyncUserSpecification {
             def loaded = emailConfirmationDao.findById(created.id).block()
         then:
             loaded != null
-            loaded.getId() != 0L
+            loaded.id() != 0L
             loaded.code == code
             loaded.email == email
             loaded.expiration.toEpochMilli() == expiration.toEpochMilli()
@@ -52,7 +52,7 @@ class JAsyncEmailConfirmationDaoTest extends JAsyncUserSpecification {
             def loaded = emailConfirmationDao.findByEmailAndCode(email, code).block()
         then:
             loaded != null
-            loaded.getId() != 0L
+            loaded.id() != 0L
             loaded.code == code
             loaded.email == email
             loaded.expiration.toEpochMilli() == expiration.toEpochMilli()
@@ -69,12 +69,12 @@ class JAsyncEmailConfirmationDaoTest extends JAsyncUserSpecification {
             def loaded = emailConfirmationDao.findByEmailAndCode(email, code).block()
         then:
             loaded != null
-            loaded.getId() != 0L
+            loaded.id() != 0L
             loaded.code == code
             loaded.email == email
             loaded.expiration.toEpochMilli() == expiration.toEpochMilli()
         when:
-            emailConfirmationDao.delete(loaded.id).block()
+            emailConfirmationDao.deleteById(loaded.id).block()
             def loaded2 = emailConfirmationDao.findById(loaded.id).block()
         then:
             loaded2 == null

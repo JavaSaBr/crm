@@ -2,25 +2,23 @@ package com.ss.jcrm.user.jasync.dao;
 
 import static com.ss.jcrm.base.utils.DateUtils.toOffsetDateTime;
 import static com.ss.jcrm.base.utils.DateUtils.toUtcInstant;
-import static com.ss.jcrm.jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.ifNull;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.base.utils.DateUtils;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
 import com.ss.jcrm.jasync.function.JAsyncLazyConverter;
 import com.ss.jcrm.jasync.util.JAsyncUtils;
 import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.user.api.Organization;
-import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
-import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserGroupDao;
-import com.ss.jcrm.user.api.impl.DefaultUser;
+import crm.user.api.Organization;
+import crm.user.api.User;
+import crm.user.api.dao.OrganizationDao;
+import crm.user.api.dao.UserDao;
+import crm.user.api.dao.UserGroupDao;
+import crm.user.api.impl.DefaultUser;
 import com.ss.jcrm.user.contact.api.Messenger;
 import com.ss.jcrm.user.contact.api.PhoneNumber;
 import com.ss.rlib.common.util.StringUtils;
@@ -35,7 +33,6 @@ import reactor.core.publisher.Mono;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.*;
 
 @Slf4j
@@ -171,7 +168,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
                 email,
                 password,
                 salt,
-                organization.getId(),
+                organization.id(),
                 JAsyncUtils.idsToJson(roles),
                 StringUtils.emptyIfNull(firstName),
                 StringUtils.emptyIfNull(secondName),
@@ -243,25 +240,25 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     @Override
     public @NotNull Mono<User> update(@NotNull User user) {
 
-        user.setModified(Instant.now());
+        user.modified(Instant.now());
 
         return update(
             queryUpdate,
             Arrays.asList(
-                StringUtils.emptyIfNull(user.getFirstName()),
-                StringUtils.emptyIfNull(user.getSecondName()),
-                StringUtils.emptyIfNull(user.getThirdName()),
-                JAsyncUtils.toJson(user.getPhoneNumbers()),
-                JAsyncUtils.toJson(user.getMessengers()),
-                JAsyncUtils.idsToJson(user.getRoles()),
-                JAsyncUtils.idsToJson(user.getGroups()),
-                user.getVersion() + 1,
-                user.isEmailConfirmed(),
-                user.getPasswordVersion(),
-                user.getBirthday(),
-                toOffsetDateTime(user.getModified()),
-                user.getId(),
-                user.getVersion()
+                StringUtils.emptyIfNull(user.firstName()),
+                StringUtils.emptyIfNull(user.secondName()),
+                StringUtils.emptyIfNull(user.thirdName()),
+                JAsyncUtils.toJson(user.phoneNumbers()),
+                JAsyncUtils.toJson(user.messengers()),
+                JAsyncUtils.idsToJson(user.roles()),
+                JAsyncUtils.idsToJson(user.groups()),
+                user.version() + 1,
+                user.emailConfirmed(),
+                user.passwordVersion(),
+                user.birthday(),
+                toOffsetDateTime(user.modified()),
+                user.id(),
+                user.version()
             ),
             user
         );

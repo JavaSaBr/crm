@@ -11,11 +11,11 @@ import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
-import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.user.api.UserGroup;
-import com.ss.jcrm.user.api.dao.MinimalUserDao;
-import com.ss.jcrm.user.api.dao.UserDao;
-import com.ss.jcrm.user.api.dao.UserGroupDao;
+import crm.user.api.User;
+import crm.user.api.UserGroup;
+import crm.user.api.dao.MinimalUserDao;
+import crm.user.api.dao.UserDao;
+import crm.user.api.dao.UserGroupDao;
 import com.ss.jcrm.web.resources.DataPageResponse;
 import com.ss.jcrm.web.util.RequestUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
@@ -173,7 +173,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
     ) {
 
         var creator = authorized.getUser();
-        var organization = creator.getOrganization();
+        var organization = creator.organization();
 
         var resource = authorized.getResource();
         var roles = AccessRole.toSet(resource.roles());
@@ -181,7 +181,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         verifyRoles(creator, roles);
 
         return userGroupDao
-            .findByIdAndOrgId(resource.id(), organization.getId())
+            .findByIdAndOrgId(resource.id(), organization.id())
             .switchIfEmpty(Mono.error(() -> toBadRequest(
                 RegistrationErrors.USER_GROUP_IS_NOT_EXIST,
                 RegistrationErrors.USER_GROUP_IS_NOT_EXIST_MESSAGE
@@ -194,7 +194,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
     ) {
 
         var creator = authorized.getUser();
-        var organization = creator.getOrganization();
+        var organization = creator.organization();
 
         var resource = authorized.getResource();
         var roles = AccessRole.toSet(resource.roles());
@@ -202,7 +202,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         verifyRoles(creator, roles);
 
         return userGroupDao
-            .existByName(resource.name(), organization.getId())
+            .existByName(resource.name(), organization.id())
             .filter(throwIfTrue(() -> toBadRequest(
                 RegistrationErrors.USER_GROUP_IS_ALREADY_EXIST,
                 RegistrationErrors.USER_GROUP_IS_ALREADY_EXIST_MESSAGE

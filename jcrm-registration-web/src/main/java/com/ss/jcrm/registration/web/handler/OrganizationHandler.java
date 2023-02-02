@@ -10,12 +10,12 @@ import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.service.TokenService;
-import com.ss.jcrm.user.api.EmailConfirmation;
-import com.ss.jcrm.user.api.Organization;
-import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.user.api.dao.EmailConfirmationDao;
-import com.ss.jcrm.user.api.dao.OrganizationDao;
-import com.ss.jcrm.user.api.dao.UserDao;
+import crm.user.api.EmailConfirmation;
+import crm.user.api.Organization;
+import crm.user.api.User;
+import crm.user.api.dao.EmailConfirmationDao;
+import crm.user.api.dao.OrganizationDao;
+import crm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.BadRequestWebException;
 import com.ss.jcrm.web.exception.ExceptionUtils;
 import com.ss.jcrm.web.util.ResponseUtils;
@@ -77,7 +77,7 @@ public class OrganizationHandler extends BaseRegistrationHandler {
     }
 
     private <T> @Nullable T validateConfirmation(@NotNull T resource, @NotNull EmailConfirmation confirmation) {
-        if (Instant.now().isAfter(confirmation.getExpiration())) {
+        if (Instant.now().isAfter(confirmation.expiration())) {
             return null;
         } else {
             return resource;
@@ -112,7 +112,7 @@ public class OrganizationHandler extends BaseRegistrationHandler {
         Arrays.fill(resource.password(), ' ');
 
         return createOrgAdmin(resource, organization, salt, hash)
-            .onErrorResume(throwable -> organizationDao.delete(organization.getId())
+            .onErrorResume(throwable -> organizationDao.deleteById(organization.id())
                 .flatMap(aBoolean -> Mono.error(ExceptionUtils.toBadRequest(
                     throwable,
                     DuplicateObjectDaoException.class::isInstance,

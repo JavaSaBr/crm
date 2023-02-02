@@ -18,7 +18,7 @@ public class PhoneNumberResource {
             phoneNumber.getCountryCode(),
             phoneNumber.getRegionCode(),
             phoneNumber.getPhoneNumber(),
-            (int) phoneNumber.getType().getId()
+            (int) phoneNumber.getType().id()
         );
     }
 

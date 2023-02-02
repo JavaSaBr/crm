@@ -16,7 +16,7 @@ import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.exceptions.GenericDatabaseException;
 import com.github.jasync.sql.db.util.ExecutorServiceUtils;
 import com.github.jasync.sql.db.util.NettyUtils;
-import com.ss.jcrm.base.utils.HasId;
+import com.ss.jcrm.base.utils.WithId;
 import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.rlib.common.function.ObjectLongFunction;
@@ -266,25 +266,25 @@ public class JAsyncUtils {
             .map(Collections::unmodifiableSet);
     }
 
-    public static <T extends HasId> long @NotNull [] toIds(@Nullable Array<T> entities) {
+    public static <T extends WithId> long @NotNull [] toIds(@Nullable Array<T> entities) {
 
         if (entities == null || entities.isEmpty()) {
             return EMPTY_IDS;
         }
 
         return entities.stream()
-            .mapToLong(HasId::getId)
+            .mapToLong(WithId::id)
             .toArray();
     }
 
-    public static <T extends HasId> long @NotNull [] toIds(@Nullable T[] entities) {
+    public static <T extends WithId> long @NotNull [] toIds(@Nullable T[] entities) {
 
         if (entities == null || entities.length < 1) {
             return EMPTY_IDS;
         }
 
         return Stream.of(entities)
-            .mapToLong(HasId::getId)
+            .mapToLong(WithId::id)
             .toArray();
     }
 
@@ -303,36 +303,36 @@ public class JAsyncUtils {
         }
     }
 
-    public static <T extends HasId> @Nullable String idsToJson(@Nullable T[] entities) {
+    public static <T extends WithId> @Nullable String idsToJson(@Nullable T[] entities) {
 
         if (entities == null || entities.length < 1) {
             return null;
         }
 
         return Utils.uncheckedGet(entities, array -> OBJECT_MAPPER.writeValueAsString(Stream.of(array)
-            .mapToLong(HasId::getId)
+            .mapToLong(WithId::id)
             .toArray()));
     }
 
-    public static <T extends HasId> @Nullable String idsToJson(@Nullable Array<T> entities) {
+    public static <T extends WithId> @Nullable String idsToJson(@Nullable Array<T> entities) {
 
         if (entities == null || entities.isEmpty()) {
             return null;
         }
 
         return Utils.uncheckedGet(entities, array -> OBJECT_MAPPER.writeValueAsString(array.stream()
-            .mapToLong(HasId::getId)
+            .mapToLong(WithId::id)
             .toArray()));
     }
 
-    public static <T extends HasId> @Nullable String idsToJson(@NotNull Set<T> entities) {
+    public static <T extends WithId> @Nullable String idsToJson(@NotNull Set<T> entities) {
 
         if (entities.isEmpty()) {
             return null;
         }
 
         return Utils.uncheckedGet(entities, set -> OBJECT_MAPPER.writeValueAsString(set.stream()
-            .mapToLong(HasId::getId)
+            .mapToLong(WithId::id)
             .toArray()));
     }
 

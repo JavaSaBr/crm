@@ -13,8 +13,8 @@ public record CountryOutResource(
 
     public static @NotNull CountryOutResource from(@NotNull Country country) {
         return new CountryOutResource(
-            country.getId(),
-            country.getName(),
+            country.id(),
+            country.name(),
             country.getFlagCode(),
             country.getPhoneCode()
         );

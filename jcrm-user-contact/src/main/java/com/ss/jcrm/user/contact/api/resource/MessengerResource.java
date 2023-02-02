@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class MessengerResource {
 
     public static @NotNull MessengerResource from(@NotNull Messenger messenger) {
-        return new MessengerResource(messenger.getLogin(), (int) messenger.getType().getId());
+        return new MessengerResource(messenger.getLogin(), (int) messenger.getType().id());
     }
 
     @Nullable String login;

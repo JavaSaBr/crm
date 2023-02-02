@@ -10,8 +10,8 @@ import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
-import com.ss.jcrm.user.api.User;
-import com.ss.jcrm.user.api.dao.UserDao;
+import crm.user.api.User;
+import crm.user.api.dao.UserDao;
 import com.ss.jcrm.web.exception.ExceptionUtils;
 import com.ss.jcrm.web.resources.DataPageResponse;
 import com.ss.jcrm.web.util.RequestUtils;
@@ -152,7 +152,7 @@ public class UserHandler extends BaseRegistrationHandler {
                 resource.email(),
                 hash,
                 salt,
-                creator.getOrganization(),
+                creator.organization(),
                 Set.of(),
                 resource.firstName(),
                 resource.secondName(),

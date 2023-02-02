@@ -18,8 +18,8 @@ class JAsyncCountryDaoTest extends JAsyncDictionarySpecification {
                 .block()
         then:
             country != null
-            country.getId() > 0
-            country.getName() == "testcountry"
+            country.id() > 0
+            country.name() == "testcountry"
             country.getFlagCode() == "testflag"
             country.getPhoneCode() == "testphone"
     }
@@ -52,11 +52,11 @@ class JAsyncCountryDaoTest extends JAsyncDictionarySpecification {
             def loaded = countryDao.findByName("testcountry2").block()
         then:
             loaded != null
-            loaded.getId() > 0
+            loaded.id() > 0
         when:
-            def reloaded = countryDao.findById(loaded.getId()).block()
+            def reloaded = countryDao.findById(loaded.id()).block()
         then:
             reloaded != null
-            reloaded.getId() == loaded.getId()
+            reloaded.id() == loaded.id()
     }
 }

@@ -19,10 +19,10 @@ class JAsyncCityDaoTest extends JAsyncDictionarySpecification {
             def city = cityDao.create("testcity", country).block()
         then:
             city != null
-            city.getId() > 0
-            city.getName() == "testcity"
+            city.id() > 0
+            city.name() == "testcity"
             city.getCountry() != null
-            city.getCountry().getId() == country.getId()
+            city.getCountry().id() == country.id()
     }
     
     def "should prevent creating city with the same name and the same country"() {
@@ -58,11 +58,11 @@ class JAsyncCityDaoTest extends JAsyncDictionarySpecification {
             def loaded = cityDao.findByName("testcity2").block()
         then:
             loaded != null
-            loaded.getId() > 0
+            loaded.id() > 0
         when:
-            def reloaded = cityDao.findById(loaded.getId()).block()
+            def reloaded = cityDao.findById(loaded.id()).block()
         then:
             reloaded != null
-            reloaded.getId() == loaded.getId()
+            reloaded.id() == loaded.id()
     }
 }

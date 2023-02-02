@@ -2,7 +2,7 @@ package com.ss.jcrm.user.contact.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.ss.jcrm.base.utils.HasId;
+import com.ss.jcrm.base.utils.WithId;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.AccessLevel;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum MessengerType implements HasId {
+public enum MessengerType implements WithId {
     SKYPE(1, "Skype"),
     TELEGRAM(2, "Telegram"),
     WHATS_UP(3, "What's Up"),
