@@ -87,24 +87,24 @@ class ClientHandlerTest extends ClientSpecification {
                 [
                     new ClientEmailResource(
                         "Test@test.com",
-                        EmailType.HOME.name()
+                        EmailType.HOME.description()
                     )
                 ] as ClientEmailResource[],
                 [
                     new ClientSiteResource(
                         "work.site.com",
-                        SiteType.WORK.name()
+                        SiteType.WORK.description()
                     ),
-                    new ClientSiteResource("home.site.com", SiteType.HOME.name())
+                    new ClientSiteResource("home.site.com", SiteType.HOME.description())
                 ] as ClientSiteResource[],
                 [
                     new ClientMessengerResource(
                         "misterX",
-                        MessengerType.TELEGRAM.name()
+                        MessengerType.TELEGRAM.description()
                     ),
                     new ClientMessengerResource(
                         "misterX",
-                        MessengerType.SKYPE.name()
+                        MessengerType.SKYPE.description()
                     )
                 ] as ClientMessengerResource[]
             )
@@ -423,7 +423,7 @@ class ClientHandlerTest extends ClientSpecification {
                     "+1234556",
                     "12345678",
                     "123456789",
-                    PhoneNumberType.MOBILE.name)
+                    PhoneNumberType.MOBILE.description)
                 ] as ClientPhoneNumberResource[],
                 null,
                 null,
@@ -470,7 +470,7 @@ class ClientHandlerTest extends ClientSpecification {
                 null,
                 [new ClientEmailResource(
                     "invalid",
-                    EmailType.HOME.name()
+                    EmailType.HOME.description()
                 )] as ClientEmailResource[],
                 null,
                 null
@@ -493,7 +493,7 @@ class ClientHandlerTest extends ClientSpecification {
                 null,
                 [new ClientEmailResource(
                     StringUtils.generate(1000),
-                    EmailType.HOME.name()
+                    EmailType.HOME.description()
                 )] as ClientEmailResource[],
                 null,
                 null
@@ -540,7 +540,7 @@ class ClientHandlerTest extends ClientSpecification {
                 null,
                 new ClientSiteResource(
                     StringUtils.generate(1000),
-                    SiteType.WORK.name()
+                    SiteType.WORK.description()
                 ) as ClientSiteResource[],
                 null
             )
@@ -587,7 +587,7 @@ class ClientHandlerTest extends ClientSpecification {
                 null,
                 [new ClientMessengerResource(
                     StringUtils.generate(1000),
-                    MessengerType.TELEGRAM.name()
+                    MessengerType.TELEGRAM.description()
                 )] as ClientMessengerResource[]
             )
             response = sendCreateRequest(token, body)
@@ -685,27 +685,27 @@ class ClientHandlerTest extends ClientSpecification {
                 [
                     new ClientEmailResource(
                         "Test@test.com",
-                        EmailType.HOME.name()
+                        EmailType.HOME.description()
                     )
                 ] as ClientEmailResource[],
                 [
                     new ClientSiteResource(
                         "work.site.com",
-                        SiteType.WORK.name()
+                        SiteType.WORK.description()
                     ),
                     new ClientSiteResource(
                         "home.site.com",
-                        SiteType.HOME.name()
+                        SiteType.HOME.description()
                     )
                 ] as ClientSiteResource[],
                 [
                     new ClientMessengerResource(
                         "mist" +
-                            "erX", MessengerType.TELEGRAM.name()
+                            "erX", MessengerType.TELEGRAM.description()
                     ),
                     new ClientMessengerResource(
                         "misterX",
-                        MessengerType.SKYPE.name()
+                        MessengerType.SKYPE.description()
                     )
                 ] as ClientMessengerResource[]
             )

@@ -9,7 +9,7 @@ import com.ss.jcrm.client.jasync.test.helper.JAsyncClientTestHelper
 import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
 import crm.user.api.test.UserTestHelper
-import com.ss.jcrm.user.jdbc.test.JAsyncUserSpecificationConfig
+import user.jasync.JAsyncUserSpecificationConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,36 +26,38 @@ import org.testcontainers.containers.PostgreSQLContainer
 ])
 @PropertySource("classpath:com/ss/jcrm/client/jasync/test/client-jasync-test.properties")
 class JAsyncClientSpecificationConfig {
+  
+  @Autowired
+  PostgreSQLContainer postgreSQLContainer
+  
+  @Autowired
+  @Lazy
+  UserTestHelper userTestHelper
+  
+  @Autowired
+  @Lazy
+  SimpleClientDao simpleContactDao
+  
+  @Bean
+  ConnectionPool<? extends ConcreteConnection> clientConnectionPool() {
     
-    @Autowired
-    PostgreSQLContainer postgreSQLContainer
+    System.setProperty("jdbc.client.db.url", System.getProperty("db.test.url"))
+    System.setProperty("jdbc.client.db.username", System.getProperty("db.test.username"))
+    System.setProperty("jdbc.client.db.password", System.getProperty("db.test.password"))
     
-    @Autowired @Lazy
-    UserTestHelper userTestHelper
-    
-    @Autowired @Lazy
-    SimpleClientDao simpleContactDao
-    
-    @Bean
-    ConnectionPool<? extends ConcreteConnection> clientConnectionPool() {
-        
-        System.setProperty("jdbc.client.db.url", System.getProperty("db.test.url"))
-        System.setProperty("jdbc.client.db.username", System.getProperty("db.test.username"))
-        System.setProperty("jdbc.client.db.password", System.getProperty("db.test.password"))
-        
-        return DbSpecificationUtils.newConnectionPool(
-            postgreSQLContainer,
-            DbSpecificationConfig.dbName
-        )
-    }
-    
-    @Bean
-    ClientTestHelper taskTestHelper(Environment env) {
-        return new JAsyncClientTestHelper(
-            clientConnectionPool(),
-            env.getRequiredProperty("jdbc.client.db.schema"),
-            userTestHelper,
-            simpleContactDao
-        )
-    }
+    return DbSpecificationUtils.newConnectionPool(
+        postgreSQLContainer,
+        DbSpecificationConfig.dbName
+    )
+  }
+  
+  @Bean
+  ClientTestHelper taskTestHelper(Environment env) {
+    return new JAsyncClientTestHelper(
+        clientConnectionPool(),
+        env.getRequiredProperty("jdbc.client.db.schema"),
+        userTestHelper,
+        simpleContactDao
+    )
+  }
 }

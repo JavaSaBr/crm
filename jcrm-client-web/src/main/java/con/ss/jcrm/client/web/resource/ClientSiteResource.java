@@ -12,6 +12,6 @@ public record ClientSiteResource(
 ) {
 
     public static @NotNull ClientSiteResource from(@NotNull ClientSite site) {
-        return new ClientSiteResource(site.getUrl(), site.getType().name());
+        return new ClientSiteResource(site.getUrl(), site.getType().description());
     }
 }

@@ -1,54 +1,56 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 subprojects {
+  
+  afterEvaluate { Project project ->
     
-    afterEvaluate { Project project ->
-        
-        def plugins = project.plugins
-        def tasks = project.tasks
-        
-        if (plugins.hasPlugin("java")) {
-            tasks.named("processResources", Copy).configure { Copy task ->
-                task.filter(ReplaceTokens, tokens: [
-                    
-                    // USER DB
-                    'userDbScheme'          : System.getProperty("userDbScheme", "jcrm-user-db"),
-                    'userDbHost'            : System.getProperty("userDbHost", "localhost"),
-                    'userDbPort'            : System.getProperty("userDbPort", "5432"),
-                    'userDbDatabase'        : System.getProperty("userDbDatabase", "jcrm"),
-                    'userDbUser'            : System.getProperty("userDbUser", "root"),
-                    'userDbPassword'        : System.getProperty("userDbPassword", "root"),
-                    
-                    // DICTIONARY DB
-                    'dictionaryDbScheme'    : System.getProperty("dictionaryDbScheme", "jcrm-dictionary-db"),
-                    'dictionaryDbHost'      : System.getProperty("dictionaryDbHost", "localhost"),
-                    'dictionaryDbPort'      : System.getProperty("dictionaryDbPort", "5432"),
-                    'dictionaryDbDatabase'  : System.getProperty("dictionaryDbDatabase", "jcrm"),
-                    'dictionaryDbUser'      : System.getProperty("dictionaryDbUser", "root"),
-                    'dictionaryDbPassword'  : System.getProperty("dictionaryDbPassword", "root"),
-                    
-                    // CLIENT DB
-                    'clientDbScheme'        : System.getProperty("clientDbScheme", "jcrm-client-db"),
-                    'clientDbHost'          : System.getProperty("clientDbHost", "localhost"),
-                    'clientDbPort'          : System.getProperty("clientDbPort", "5432"),
-                    'clientDbDatabase'      : System.getProperty("clientDbDatabase", "jcrm"),
-                    'clientDbUser'          : System.getProperty("clientDbUser", "root"),
-                    'clientDbPassword'      : System.getProperty("clientDbPassword", "root"),
-                    
-                    // SECURITY
-                    'securityTokenSecretKey': System.getProperty("securityTokenSecretKey", "7e9f81de588c09edd3f2dd5e3a0397344b659b1aa54024cfde1fa2527ffe57818c059b2a1df89b52427e06a60714093609fa9087414d42c779e71822fec33079"),
-                    
-                    // EMAL
-                    'mailUser'              : System.getProperty("mailUser", ""),
-                    'mailPassword'          : System.getProperty("mailPassword", ""),
-                    'mailFrom'              : System.getProperty("mailFrom", ""),
-                    
-                    // SSL
-                    'keystorePath'          : System.getProperty("keystorePath", projectDir.toPath().resolve("../jcrm.p12").toString()),
-                    'keystorePassword'      : System.getProperty("keystorePassword", "ssljcrm"),
-                    'keystoreAlias'         : System.getProperty("keystoreAlias", "jcrm"),
-                ])
-            }
-        }
+    def plugins = project.plugins
+    def tasks = project.tasks
+    
+    if (plugins.hasPlugin("java")) {
+      tasks.named("processResources", Copy).configure { Copy task ->
+        task.filter(ReplaceTokens, tokens: [
+            
+            // USER DB
+            'userDbScheme'          : System.getProperty("userDbScheme", "jcrm-user-db"),
+            'userDbHost'            : System.getProperty("userDbHost", "localhost"),
+            'userDbPort'            : System.getProperty("userDbPort", "5432"),
+            'userDbDatabase'        : System.getProperty("userDbDatabase", "jcrm"),
+            'userDbUser'            : System.getProperty("userDbUser", "root"),
+            'userDbPassword'        : System.getProperty("userDbPassword", "root"),
+            
+            // DICTIONARY DB
+            'dictionaryDbScheme'    : System.getProperty("dictionaryDbScheme", "jcrm-dictionary-db"),
+            'dictionaryDbHost'      : System.getProperty("dictionaryDbHost", "localhost"),
+            'dictionaryDbPort'      : System.getProperty("dictionaryDbPort", "5432"),
+            'dictionaryDbDatabase'  : System.getProperty("dictionaryDbDatabase", "jcrm"),
+            'dictionaryDbUser'      : System.getProperty("dictionaryDbUser", "root"),
+            'dictionaryDbPassword'  : System.getProperty("dictionaryDbPassword", "root"),
+            
+            // CLIENT DB
+            'clientDbScheme'        : System.getProperty("clientDbScheme", "jcrm-client-db"),
+            'clientDbHost'          : System.getProperty("clientDbHost", "localhost"),
+            'clientDbPort'          : System.getProperty("clientDbPort", "5432"),
+            'clientDbDatabase'      : System.getProperty("clientDbDatabase", "jcrm"),
+            'clientDbUser'          : System.getProperty("clientDbUser", "root"),
+            'clientDbPassword'      : System.getProperty("clientDbPassword", "root"),
+            
+            // SECURITY
+            'securityTokenSecretKey': System.getProperty("securityTokenSecretKey",
+                "7e9f81de588c09edd3f2dd5e3a0397344b659b1aa54024cfde1fa2527ffe57818c059b2a1df89b52427e06a60714093609fa9087414d42c779e71822fec33079"),
+            
+            // EMAL
+            'mailUser'              : System.getProperty("mailUser", ""),
+            'mailPassword'          : System.getProperty("mailPassword", ""),
+            'mailFrom'              : System.getProperty("mailFrom", ""),
+            
+            // SSL
+            'keystorePath'          : System.getProperty("keystorePath",
+                projectDir.toPath().resolve("../jcrm.p12").toString()),
+            'keystorePassword'      : System.getProperty("keystorePassword", "ssljcrm"),
+            'keystoreAlias'         : System.getProperty("keystoreAlias", "jcrm"),
+        ])
+      }
     }
+  }
 }

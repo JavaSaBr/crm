@@ -8,6 +8,6 @@ dependencies {
     api libs.bundles.jjwt
 
     testFixturesApi testFixtures(projects.jcrmSecurity)
-    testFixturesApi testFixtures(projects.jcrmUserJasync)
+    testFixturesApi testFixtures(projects.userJasync)
     testFixturesApi projects.jcrmIntegrationTestWeb
 }

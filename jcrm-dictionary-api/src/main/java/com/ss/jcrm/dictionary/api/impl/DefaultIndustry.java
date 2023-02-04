@@ -1,18 +1,25 @@
 package com.ss.jcrm.dictionary.api.impl;
 
 import com.ss.jcrm.dictionary.api.Industry;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Getter
-@ToString
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DefaultIndustry implements Industry {
+public record DefaultIndustry(@NotNull String name, long id) implements Industry {
 
-    @NotNull String name;
+  @Override
+  public boolean equals(@Nullable Object o) {
+    if (this == o) {
+      return true;
+    } else if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    DefaultIndustry that = (DefaultIndustry) o;
+    return id == that.id;
+  }
 
-    long id;
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

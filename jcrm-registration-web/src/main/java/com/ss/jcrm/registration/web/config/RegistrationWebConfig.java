@@ -12,7 +12,7 @@ import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import com.ss.jcrm.spring.base.template.TemplateRegistry;
-import com.ss.jcrm.user.jasync.config.JAsyncUserConfig;
+import user.jasync.config.JAsyncUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import crm.user.api.dao.EmailConfirmationDao;

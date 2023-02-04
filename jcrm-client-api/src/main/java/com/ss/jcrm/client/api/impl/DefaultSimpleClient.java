@@ -1,15 +1,18 @@
 package com.ss.jcrm.client.api.impl;
 
 import com.ss.jcrm.client.api.*;
+import java.util.List;
 import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
+@Accessors(fluent = true)
 @EqualsAndHashCode(of = "id")
 public class DefaultSimpleClient implements SimpleClient {
 
@@ -28,18 +31,18 @@ public class DefaultSimpleClient implements SimpleClient {
     private Instant created;
     private Instant modified;
 
-    private ClientPhoneNumber[] phoneNumbers;
-    private ClientEmail[] emails;
-    private ClientSite[] sites;
-    private ClientMessenger[] messengers;
+    private List<ClientPhoneNumber> phoneNumbers;
+    private List<ClientEmail> emails;
+    private List<ClientSite> sites;
+    private List<ClientMessenger> messengers;
 
     private volatile int version;
 
     public DefaultSimpleClient(long id) {
         this.id = id;
-        this.phoneNumbers = EMPTY_PHONE_NUMBERS;
-        this.emails = EMPTY_EMAILS;
-        this.sites = EMPTY_SITES;
-        this.messengers = EMPTY_MESSENGERS;
+        this.phoneNumbers = List.of();
+        this.emails = List.of();
+        this.sites = List.of();
+        this.messengers = List.of();
     }
 }

@@ -3,6 +3,7 @@ package com.ss.jcrm.dictionary.jasync.test.dao
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dictionary.api.dao.CityDao
 import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification
+
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.core.publisher.Flux
 
@@ -21,8 +22,8 @@ class JAsyncCityDaoTest extends JAsyncDictionarySpecification {
             city != null
             city.id() > 0
             city.name() == "testcity"
-            city.getCountry() != null
-            city.getCountry().id() == country.id()
+            city.country() != null
+            city.country().id() == country.id()
     }
     
     def "should prevent creating city with the same name and the same country"() {
@@ -51,7 +52,7 @@ class JAsyncCityDaoTest extends JAsyncDictionarySpecification {
             ).blockLast()
         
         when:
-            def result = cityDao.findAll().block()
+            def result = waitForResults(cityDao.findAll())
         then:
             result.size() == 4
         when:

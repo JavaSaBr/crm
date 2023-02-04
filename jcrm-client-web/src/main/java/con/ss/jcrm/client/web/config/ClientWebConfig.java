@@ -5,7 +5,7 @@ import com.ss.jcrm.client.jasync.config.JAsyncClientConfig;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import crm.user.api.dao.UserDao;
-import com.ss.jcrm.user.jasync.config.JAsyncUserConfig;
+import user.jasync.config.JAsyncUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;
 import con.ss.jcrm.client.web.handler.ClientHandler;

@@ -3,7 +3,7 @@ apply plugin: "java-test-fixtures"
 
 dependencies {
     api projects.jcrmClientJasync
-    api projects.jcrmUserJasync
+    api projects.userJasync
     api projects.jcrmSecurityWeb
 
     testFixturesApi testFixtures(projects.jcrmClientJasync)

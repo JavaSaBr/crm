@@ -7,13 +7,13 @@ ext {
 
 dependencies {
     api projects.jcrmDictionaryJasync
-    api projects.jcrmUserJasync
+    api projects.userJasync
     api projects.jcrmSecurityWeb
     api projects.jcrmMail
 
     testFixturesApi projects.jcrmIntegrationTestWeb
     testFixturesApi testFixtures(projects.jcrmMail)
-    testFixturesApi testFixtures(projects.jcrmUserJasync)
+    testFixturesApi testFixtures(projects.userJasync)
 }
 
 /*

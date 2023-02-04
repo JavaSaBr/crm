@@ -39,11 +39,9 @@ public enum AccessRole implements WithId {
   VIEW_USER_GROUPS(202, "View user groups"),
   DELETE_USER_GROUP(203, "Delete user group"),
 
-  USER_GROUP_MANAGER(
-      5,
+  USER_GROUP_MANAGER(5,
       "User manager",
-      toArray(CREATE_USER_GROUP, CHANGE_USER_GROUP, VIEW_USER_GROUPS, DELETE_USER_GROUP)),
-  ;
+      toArray(CREATE_USER_GROUP, CHANGE_USER_GROUP, VIEW_USER_GROUPS, DELETE_USER_GROUP));
 
   public static final AccessRole[] EMPTY_ARRAY = new AccessRole[0];
 
@@ -87,8 +85,7 @@ public enum AccessRole implements WithId {
       throw new IllegalArgumentException("An access role's id cannot be < 0 or > " + (ID_TO_ROLE.length - 1));
     }
 
-    return ObjectUtils.notNull(
-        ID_TO_ROLE[id],
+    return ObjectUtils.notNull(ID_TO_ROLE[id],
         id,
         value -> new IllegalStateException("Can't find an access role by the id " + value));
   }
@@ -119,12 +116,12 @@ public enum AccessRole implements WithId {
   }
 
   long id;
-  @NotNull String name;
+  @NotNull String description;
   @NotNull AccessRole[] subRoles;
 
-  AccessRole(long id, @NotNull String name) {
+  AccessRole(long id, @NotNull String description) {
     this.id = id;
-    this.name = name;
+    this.description = description;
     this.subRoles = new AccessRole[0];
   }
 }

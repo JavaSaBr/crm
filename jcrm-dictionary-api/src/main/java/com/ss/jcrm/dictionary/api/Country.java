@@ -4,7 +4,6 @@ import com.ss.jcrm.dao.NamedUniqEntity;
 import org.jetbrains.annotations.NotNull;
 
 public interface Country extends NamedUniqEntity {
-
-    @NotNull String getFlagCode();
-    @NotNull String getPhoneCode();
+    @NotNull String flagCode();
+    @NotNull String phoneCode();
 }

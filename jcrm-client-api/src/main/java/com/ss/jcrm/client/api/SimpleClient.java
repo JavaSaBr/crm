@@ -1,6 +1,7 @@
 package com.ss.jcrm.client.api;
 
 import com.ss.jcrm.dao.VersionedUniqEntity;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,64 +10,45 @@ import java.time.LocalDate;
 
 public interface SimpleClient extends VersionedUniqEntity {
 
-    ClientPhoneNumber[] EMPTY_PHONE_NUMBERS = new ClientPhoneNumber[0];
-    ClientEmail[] EMPTY_EMAILS = new ClientEmail[0];
-    ClientSite[] EMPTY_SITES = new ClientSite[0];
-    ClientMessenger[] EMPTY_MESSENGERS = new ClientMessenger[0];
+  long assignerId();
+  SimpleClient assignerId(long assignerId);
 
-    long getAssignerId();
+  long @NotNull [] curatorIds();
+  SimpleClient curatorIds(long @NotNull [] curatorIds);
 
-    void setAssignerId(long assignerId);
+  long organizationId();
+  SimpleClient organizationId(long organizationId);
 
-    @NotNull long[] getCuratorIds();
+  @Nullable String firstName();
+  SimpleClient firstName(@Nullable String firstName);
 
-    void setCuratorIds(@NotNull long[] curatorIds);
+  @Nullable String secondName();
+  SimpleClient secondName(@Nullable String secondName);
 
-    long getOrganizationId();
+  @Nullable String thirdName();
+  SimpleClient thirdName(@Nullable String thirdName);
 
-    void setOrganizationId(long organizationId);
+  @Nullable LocalDate birthday();
+  SimpleClient birthday(@Nullable LocalDate birthday);
 
-    @Nullable String getFirstName();
+  @NotNull List<ClientPhoneNumber> phoneNumbers();
+  SimpleClient phoneNumbers(@NotNull List<ClientPhoneNumber> phoneNumbers);
 
-    void setFirstName(@Nullable String firstName);
+  @NotNull List<ClientEmail> emails();
+  SimpleClient emails(@NotNull List<ClientEmail> emails);
 
-    @Nullable String getSecondName();
+  @NotNull List<ClientSite> sites();
+  SimpleClient sites(@NotNull List<ClientSite> sites);
 
-    void setSecondName(@Nullable String secondName);
+  @NotNull List<ClientMessenger> messengers();
+  SimpleClient messengers(@NotNull List<ClientMessenger> messengers);
 
-    @Nullable String getThirdName();
+  @Nullable String company();
+  SimpleClient company(@Nullable String company);
 
-    void setThirdName(@Nullable String thirdName);
+  @NotNull Instant created();
+  SimpleClient created(@NotNull Instant created);
 
-    @Nullable LocalDate getBirthday();
-
-    void setBirthday(@Nullable LocalDate birthday);
-
-    @NotNull ClientPhoneNumber[] getPhoneNumbers();
-
-    void setPhoneNumbers(@NotNull ClientPhoneNumber[] phoneNumbers);
-
-    @NotNull ClientEmail[] getEmails();
-
-    void setEmails(@NotNull ClientEmail[] emails);
-
-    @NotNull ClientSite[] getSites();
-
-    void setSites(@NotNull ClientSite[] sites);
-
-    @NotNull ClientMessenger[] getMessengers();
-
-    void setMessengers(@NotNull ClientMessenger[] messengers);
-
-    @Nullable String getCompany();
-
-    void setCompany(@Nullable String company);
-
-    @NotNull Instant getCreated();
-
-    void setCreated(@NotNull Instant created);
-
-    @NotNull Instant getModified();
-
-    void setModified(@NotNull Instant modified);
+  @NotNull Instant modified();
+  SimpleClient modified(@NotNull Instant modified);
 }

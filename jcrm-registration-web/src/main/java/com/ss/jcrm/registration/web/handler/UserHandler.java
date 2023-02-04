@@ -68,7 +68,8 @@ public class UserHandler extends BaseRegistrationHandler {
     public @NotNull Mono<ServerResponse> findMinimalByIds(@NotNull ServerRequest request) {
         return RequestUtils.idsRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
-            .flatMap(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
+            .flatMapMany(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
+            .collectList()
             .map(users -> users.stream()
                 .map(MinimalUserOutResource::from)
                 .toArray(MinimalUserOutResource[]::new))
@@ -79,7 +80,8 @@ public class UserHandler extends BaseRegistrationHandler {
     public @NotNull Mono<ServerResponse> searchByName(@NotNull ServerRequest request) {
         return Mono.fromSupplier(() -> request.pathVariable("name"))
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
-            .flatMap(res -> userDao.searchByName(res.getParam(), res.getOrgId()))
+            .flatMapMany(res -> userDao.searchByName(res.getParam(), res.getOrgId()))
+            .collectList()
             .map(users -> users.stream()
                 .map(MinimalUserOutResource::from)
                 .toArray(MinimalUserOutResource[]::new))
@@ -119,7 +121,8 @@ public class UserHandler extends BaseRegistrationHandler {
     public @NotNull Mono<ServerResponse> findByIds(@NotNull ServerRequest request) {
         return RequestUtils.idsRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
-            .flatMap(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
+            .flatMapMany(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
+            .collectList()
             .map(users -> users.stream()
                 .map(UserOutResource::from)
                 .toArray(UserOutResource[]::new))

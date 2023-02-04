@@ -15,8 +15,8 @@ public record CountryOutResource(
         return new CountryOutResource(
             country.id(),
             country.name(),
-            country.getFlagCode(),
-            country.getPhoneCode()
+            country.flagCode(),
+            country.phoneCode()
         );
     }
 }

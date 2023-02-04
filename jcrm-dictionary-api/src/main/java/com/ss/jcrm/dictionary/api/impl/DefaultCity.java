@@ -2,19 +2,26 @@ package com.ss.jcrm.dictionary.api.impl;
 
 import com.ss.jcrm.dictionary.api.City;
 import com.ss.jcrm.dictionary.api.Country;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Getter
-@ToString
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DefaultCity implements City {
+public record DefaultCity(@NotNull String name, @NotNull Country country, long id)
+    implements City {
 
-    @NotNull String name;
-    @NotNull Country country;
+  @Override
+  public boolean equals(@Nullable Object another) {
+    if (this == another) {
+      return true;
+    } else if (another == null || getClass() != another.getClass()) {
+      return false;
+    }
+    DefaultCity that = (DefaultCity) another;
+    return id == that.id;
+  }
 
-    long id;
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

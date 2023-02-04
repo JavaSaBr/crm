@@ -3,6 +3,7 @@ package com.ss.jcrm.dictionary.jasync.test.dao
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dictionary.api.dao.CountryDao
 import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification
+
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.core.publisher.Flux
 
@@ -20,8 +21,8 @@ class JAsyncCountryDaoTest extends JAsyncDictionarySpecification {
             country != null
             country.id() > 0
             country.name() == "testcountry"
-            country.getFlagCode() == "testflag"
-            country.getPhoneCode() == "testphone"
+            country.flagCode() == "testflag"
+            country.phoneCode() == "testphone"
     }
     
     def "should prevent creating country with the same name"() {
@@ -45,7 +46,7 @@ class JAsyncCountryDaoTest extends JAsyncDictionarySpecification {
             ).blockLast()
             
         when:
-            def result = countryDao.findAll().block()
+            def result = waitForResults(countryDao.findAll())
         then:
             result.size() == 3
         when:

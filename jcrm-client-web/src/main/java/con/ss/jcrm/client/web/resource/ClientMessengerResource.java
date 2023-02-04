@@ -12,6 +12,6 @@ public record ClientMessengerResource(
 ) {
 
     public static @NotNull ClientMessengerResource from(@NotNull ClientMessenger messenger) {
-        return new ClientMessengerResource(messenger.getLogin(), messenger.getType().name());
+        return new ClientMessengerResource(messenger.getLogin(), messenger.getType().description());
     }
 }

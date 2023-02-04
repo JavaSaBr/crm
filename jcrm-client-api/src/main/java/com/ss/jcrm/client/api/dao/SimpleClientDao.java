@@ -7,68 +7,55 @@ import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
 import crm.user.api.Organization;
 import crm.user.api.User;
 import com.ss.rlib.common.util.array.Array;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
 public interface SimpleClientDao extends Dao<SimpleClient> {
 
-    default @NotNull Mono<@NotNull SimpleClient> create(
-        @NotNull User assigner,
-        @NotNull Organization organization,
-        @NotNull String firstName,
-        @NotNull String secondName,
-        @NotNull String thirdName
-    ) {
-        return create(
-            assigner,
-            null,
-            organization,
-            firstName,
-            secondName,
-            thirdName,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        );
-    }
+  default @NotNull Mono<SimpleClient> create(
+      @NotNull User assigner,
+      @NotNull Organization organization,
+      @NotNull String firstName,
+      @NotNull String secondName,
+      @NotNull String thirdName) {
+    return create(assigner, null, organization, firstName, secondName, thirdName, null, List.of(), List.of(), List.of(), List.of(), null);
+  }
 
-    @NotNull Mono<@NotNull SimpleClient> create(
-        @NotNull User assigner,
-        @Nullable Array<User> curators,
-        @NotNull Organization organization,
-        @NotNull String firstName,
-        @NotNull String secondName,
-        @Nullable String thirdName,
-        @Nullable LocalDate birthday,
-        @Nullable ClientPhoneNumber[] phoneNumbers,
-        @Nullable ClientEmail[] emails,
-        @Nullable ClientSite[] sites,
-        @Nullable ClientMessenger[] messengers,
-        @Nullable String company
-    );
+  @NotNull Mono<SimpleClient> create(
+      @NotNull User assigner,
+      @Nullable List<User> curators,
+      @NotNull Organization organization,
+      @NotNull String firstName,
+      @NotNull String secondName,
+      @Nullable String thirdName,
+      @Nullable LocalDate birthday,
+      @NotNull List<ClientPhoneNumber> phoneNumbers,
+      @NotNull List<ClientEmail> emails,
+      @NotNull List<ClientSite> sites,
+      @NotNull List<ClientMessenger> messengers,
+      @Nullable String company);
 
-    /**
-     * @throws NotActualObjectDaoException if the contact was changed in another thread/server.
-     */
-    @NotNull Mono<SimpleClient> update(@NotNull SimpleClient contact);
+  /**
+   * @throws NotActualObjectDaoException if the contact was changed in another thread/server.
+   */
+  @NotNull Mono<SimpleClient> update(@NotNull SimpleClient contact);
 
-    @NotNull Mono<@NotNull Array<SimpleClient>> findByOrg(long orgId);
+  @NotNull Flux<SimpleClient> findByOrg(long orgId);
 
-    default @NotNull Mono<@NotNull Array<SimpleClient>> findByOrg(@NotNull Organization organization) {
-        return findByOrg(organization.id());
-    }
+  default @NotNull Flux<SimpleClient> findByOrg(@NotNull Organization organization) {
+    return findByOrg(organization.id());
+  }
 
-    @NotNull Mono<@NotNull SimpleClient> findByIdAndOrg(long id, long orgId);
+  @NotNull Mono<SimpleClient> findByIdAndOrg(long id, long orgId);
 
-    default @NotNull Mono<@NotNull SimpleClient> findByIdAndOrg(long id, @NotNull Organization organization) {
-        return findByIdAndOrg(id, organization.id());
-    }
+  default @NotNull Mono<SimpleClient> findByIdAndOrg(long id, @NotNull Organization organization) {
+    return findByIdAndOrg(id, organization.id());
+  }
 
-    @NotNull Mono<@NotNull EntityPage<SimpleClient>> findPageByOrg(long offset, long size, long orgId);
+  @NotNull Mono<EntityPage<SimpleClient>> findPageByOrg(long offset, long size, long orgId);
 }

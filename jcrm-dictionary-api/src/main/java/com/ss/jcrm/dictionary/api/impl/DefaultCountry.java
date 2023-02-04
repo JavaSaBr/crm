@@ -1,29 +1,29 @@
 package com.ss.jcrm.dictionary.api.impl;
 
 import com.ss.jcrm.dictionary.api.Country;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Getter
-@ToString
-@EqualsAndHashCode(of = "id")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DefaultCountry implements Country {
+public record DefaultCountry(
+    @NotNull String name,
+    @NotNull String flagCode,
+    @NotNull String phoneCode,
+    long id) implements Country {
 
-    @NotNull String name;
-    @NotNull String flagCode;
-    @NotNull String phoneCode;
-
-    long id;
-
-    public DefaultCountry(@NotNull String name, @NotNull String flagCode, @NotNull String phoneCode, long id) {
-        this.name = name;
-        this.flagCode = flagCode;
-        this.phoneCode = phoneCode;
-        this.id = id;
+  @Override
+  public boolean equals(@Nullable Object another) {
+    if (this == another) {
+      return true;
+    } else if (another == null || getClass() != another.getClass()) {
+      return false;
     }
+    DefaultCountry that = (DefaultCountry) another;
+    return id == that.id;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

@@ -12,26 +12,25 @@ import org.springframework.test.context.ContextConfiguration
 
 @ContextConfiguration(classes = JAsyncClientSpecificationConfig)
 class JAsyncClientSpecification extends DefaultSpecification {
-    
-    static final String tableClient = "client"
-    
-    def static clearAllTables(
-        ConnectionPool<? extends ConcreteConnection> connectionPool,
-        String schema
-    ) {
-        DbSpecificationUtils.clearTable(connectionPool, schema, tableClient)
-    }
-    
-    @Autowired
-    UserTestHelper userTestHelper
-    
-    @Autowired
-    ClientTestHelper clientTestHelper
-    
-    @Autowired
-    List<? extends Flyway> flyways
-    
-    def setup() {
-        userTestHelper.clearAllData()
-    }
+  
+  static final String tableClient = "client"
+  
+  def static clearAllTables(
+      ConnectionPool<? extends ConcreteConnection> connectionPool,
+      String schema) {
+    DbSpecificationUtils.clearTable(connectionPool, schema, tableClient)
+  }
+  
+  @Autowired
+  UserTestHelper userTestHelper
+  
+  @Autowired
+  ClientTestHelper clientTestHelper
+  
+  @Autowired
+  List<? extends Flyway> flyways
+  
+  def setup() {
+    userTestHelper.clearAllData()
+  }
 }

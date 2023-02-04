@@ -12,6 +12,6 @@ public record ClientEmailResource(
 ) {
 
     public static @NotNull ClientEmailResource from(@NotNull ClientEmail email) {
-        return new ClientEmailResource(email.getEmail(), email.getType().name());
+        return new ClientEmailResource(email.getEmail(), email.getType().description());
     }
 }

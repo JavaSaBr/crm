@@ -12,24 +12,24 @@ import java.util.Set;
 
 public interface Organization extends NamedUniqEntity, VersionedUniqEntity {
 
-    @Nullable String address();
-    void address(@Nullable String address);
+  @Nullable String address();
+  Organization address(@Nullable String address);
 
-    @Nullable String zipCode();
-    void zipCode(@Nullable String zipCode);
+  @Nullable String zipCode();
+  Organization zipCode(@Nullable String zipCode);
 
-    @Nullable String email();
-    void email(@Nullable String email);
+  @Nullable String email();
+  Organization email(@Nullable String email);
 
-    @Nullable String phoneNumber();
-    void phoneNumber(@Nullable String phoneNumber);
+  @Nullable String phoneNumber();
+  Organization phoneNumber(@Nullable String phoneNumber);
 
-    @Nullable City city();
-    void city(@Nullable City city);
+  @Nullable City city();
+  Organization city(@Nullable City city);
 
-    @NotNull Country country();
-    void country(@NotNull Country country);
+  @NotNull Country country();
+  Organization country(@NotNull Country country);
 
-    @NotNull Set<Industry> industries();
-    void industries(@NotNull Set<Industry> industries);
+  @NotNull Set<Industry> industries();
+  Organization industries(@NotNull Set<Industry> industries);
 }

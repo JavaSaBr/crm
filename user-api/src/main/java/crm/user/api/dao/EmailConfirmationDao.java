@@ -10,7 +10,9 @@ import java.time.Instant;
 public interface EmailConfirmationDao extends Dao<EmailConfirmation> {
 
   @NotNull Mono<EmailConfirmation> create(
-      @NotNull String code, @NotNull String email, @NotNull Instant expiration);
+      @NotNull String code,
+      @NotNull String email,
+      @NotNull Instant expiration);
 
   @NotNull Mono<EmailConfirmation> findByEmailAndCode(@NotNull String email, @NotNull String code);
 
