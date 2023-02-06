@@ -316,6 +316,14 @@ public abstract class AbstractJAsyncDao<T extends UniqEntity> implements Dao<T> 
         .onErrorMap(CompletionException.class::isInstance, Throwable::getCause);
   }
 
+  protected <D extends Dao<T>> @NotNull Mono<List<T>> selectAllAsList(
+      @NotNull String query,
+      @NotNull List<?> args,
+      @NotNull JAsyncConverter<D, T> converter) {
+    return selectAll(query, args, converter)
+        .collectList();
+  }
+
   private <D extends Dao<T>> @NotNull CompletableFuture<@NotNull Stream<T>> selectAllImpl(
       @NotNull String query,
       @NotNull List<?> args,

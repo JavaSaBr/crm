@@ -106,8 +106,8 @@ public class ClientHandler {
         var user = authorized.getUser();
         var resource = authorized.getResource();
 
-        return userDao.findByIdAndOrg(resource.assigner(), user.organization())
-            .zipWhen(assigner -> userDao.findByIdsAndOrg(resource.curators(), assigner.organization())
+        return userDao.findByIdAndOrganization(resource.assigner(), user.organization())
+            .zipWhen(assigner -> userDao.findByIdsAndOrganization(resource.curators(), assigner.organization())
                 .collectList())
             .flatMap(args -> {
 
@@ -145,14 +145,14 @@ public class ClientHandler {
                 if (contact.version() != resource.version()) {
                     return Mono.error(new ResourceIsAlreadyChangedWebException());
                 } else {
-                    return userDao.findByIdAndOrg(resource.assigner(), org);
+                    return userDao.findByIdAndOrganization(resource.assigner(), org);
                 }
             })
             .switchIfEmpty(Mono.error(() -> ExceptionUtils.toBadRequest(
                 ClientErrors.INVALID_ASSIGNER,
                 ClientErrors.INVALID_ASSIGNER_MESSAGE
             )))
-            .zipWhen(tuple -> userDao.findByIdsAndOrg(resource.curators(), org)
+            .zipWhen(tuple -> userDao.findByIdsAndOrganization(resource.curators(), org)
                 .collectList(), TupleUtils::merge)
             .flatMap(tuple -> {
 

@@ -19,8 +19,6 @@ import java.util.concurrent.CompletionException;
 
 public interface UserDao extends Dao<User> {
 
-  User[] EMPTY_USERS = new User[0];
-
   /**
    * @throws DuplicateObjectDaoException if a user with the same name is already exist.
    */
@@ -80,20 +78,19 @@ public interface UserDao extends Dao<User> {
     return searchByName(name, organization.id());
   }
 
-  @NotNull Mono<User> findByIdAndOrgId(long id, long orgId);
+  @NotNull Mono<User> findByIdAndOrganization(long id, long organizationId);
 
-  default @NotNull Mono<User> findByIdAndOrg(long id, @NotNull Organization organization) {
-    return findByIdAndOrgId(id, organization.id());
+  default @NotNull Mono<User> findByIdAndOrganization(long id, @NotNull Organization organization) {
+    return findByIdAndOrganization(id, organization.id());
   }
 
-  @NotNull Flux<User> findByIdsAndOrgId(long @Nullable [] ids, long orgId);
+  @NotNull Flux<User> findByIdsAndOrganization(long @Nullable [] ids, long organizationId);
 
-  default @NotNull Flux<User> findByIdsAndOrg(
-      long @Nullable [] ids, @NotNull Organization organization) {
-    return findByIdsAndOrgId(ids, organization.id());
+  default @NotNull Flux<User> findByIdsAndOrganization(long @Nullable [] ids, @NotNull Organization organization) {
+    return findByIdsAndOrganization(ids, organization.id());
   }
 
-  @NotNull Mono<EntityPage<User>> findPageByOrg(long offset, long size, long orgId);
+  @NotNull Mono<EntityPage<User>> findPageByOrganization(long offset, long size, long organizationId);
 
-  @NotNull Mono<Boolean> containsAll(long @NotNull [] ids, long orgId);
+  @NotNull Mono<Boolean> containsAll(long @NotNull [] ids, long organizationId);
 }

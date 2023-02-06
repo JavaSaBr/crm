@@ -8,6 +8,6 @@ import java.util.Set;
 
 public interface MinimalUser extends UniqEntity {
     @NotNull String email();
-    long orgId();
+    long organizationId();
     @NotNull Set<AccessRole> roles();
 }

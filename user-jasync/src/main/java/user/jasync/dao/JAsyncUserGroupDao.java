@@ -155,36 +155,36 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
   }
 
   @Override
-  public @NotNull Mono<Boolean> existByName(@NotNull String name, long orgId) {
-    return count(queryCountByNameAndOrg, List.of(name, orgId))
+  public @NotNull Mono<Boolean> existByName(@NotNull String name, long organizationId) {
+    return count(queryCountByNameAndOrg, List.of(name, organizationId))
         .map(count -> count > 0);
   }
 
   @Override
-  public @NotNull Flux<UserGroup> searchByName(@NotNull String name, long orgId) {
+  public @NotNull Flux<UserGroup> searchByName(@NotNull String name, long organizationId) {
     var pattern = "%" + name + "%";
-    return selectAllAsync(querySearchByNameAndOrg, List.of(pattern, orgId), converter());
+    return selectAllAsync(querySearchByNameAndOrg, List.of(pattern, organizationId), converter());
   }
 
   @Override
-  public @NotNull Mono<EntityPage<UserGroup>> findPageByOrg(long offset, long size, long orgId) {
-    return selectAllAsync(queryPageByOrg, List.of(orgId, size, offset), converter())
+  public @NotNull Mono<EntityPage<UserGroup>> findPageByOrganization(long offset, long size, long organizationId) {
+    return selectAllAsync(queryPageByOrg, List.of(organizationId, size, offset), converter())
         .collectList()
-        .zipWith(count(queryCountByOrg, orgId), EntityPage::new);
+        .zipWith(count(queryCountByOrg, organizationId), EntityPage::new);
   }
 
   @Override
-  public @NotNull Mono<UserGroup> findByIdAndOrgId(long id, long orgId) {
-    return selectAsync(querySelectByIdAndOrg, List.of(id, orgId), converter());
+  public @NotNull Mono<UserGroup> findByIdAndOrganization(long id, long organizationId) {
+    return selectAsync(querySelectByIdAndOrg, List.of(id, organizationId), converter());
   }
 
   @Override
-  public @NotNull Flux<UserGroup> findByIdsAndOrgId(long @Nullable [] ids, long orgId) {
+  public @NotNull Flux<UserGroup> findByIdsAndOrganization(long @Nullable [] ids, long organizationId) {
 
     if (ids == null || ids.length == 0) {
       return Flux.empty();
     } else if (ids.length == 1) {
-      return selectAllAsync(querySelectByIdAndOrg, List.of(ids[0], orgId), converter());
+      return selectAllAsync(querySelectByIdAndOrg, List.of(ids[0], organizationId), converter());
     }
 
     var args = new ArrayList<>(ids.length + 1);
@@ -193,7 +193,7 @@ public class JAsyncUserGroupDao extends AbstractJAsyncDao<UserGroup> implements 
       args.add(id);
     }
 
-    args.add(orgId);
+    args.add(organizationId);
 
     return selectAllAsync(injectIdList(querySelectByIdsAndOrg, ids), args, converter());
   }

@@ -83,7 +83,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         .zipWith(webRequestSecurityService.isAuthorized(request, USER_GROUP_VIEWERS), AuthorizedParam::new)
         .flatMap(authorized -> {
           var pageRequest = authorized.getParam();
-          return userGroupDao.findPageByOrg(pageRequest.offset(), pageRequest.pageSize(), authorized.getOrgId());
+          return userGroupDao.findPageByOrganization(pageRequest.offset(), pageRequest.pageSize(), authorized.getOrgId());
         })
         .map(entityPage -> DataPageResponse.from(entityPage.totalSize(),
             entityPage.entities(),
@@ -99,7 +99,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         .zipWith(webRequestSecurityService.isAuthorized(request, USER_GROUP_AND_USERS_VIEWERS), AuthorizedParam::new)
         .flatMap(authorized -> {
           var pageRequest = authorized.getParam();
-          return minimalUserDao.findPageByOrgAndGroup(pageRequest.offset(),
+          return minimalUserDao.findPageByOrganizationAndGroup(pageRequest.offset(),
               pageRequest.pageSize(),
               authorized.getOrgId(),
               pageRequest.id());
@@ -116,7 +116,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
     return RequestUtils
         .idRequest(request)
         .zipWith(webRequestSecurityService.isAuthorized(request, USER_GROUP_VIEWERS), AuthorizedParam::new)
-        .flatMap(param -> userGroupDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
+        .flatMap(param -> userGroupDao.findByIdAndOrganization(param.getParam(), param.getOrgId()))
         .map(UserGroupOutResource::from)
         .flatMap(ResponseUtils::ok)
         .switchIfEmpty(ResponseUtils.lazyNotFound());
@@ -127,7 +127,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
         .idsRequest(request)
         .zipWith(webRequestSecurityService.isAuthorized(request, USER_GROUP_VIEWERS), AuthorizedParam::new)
         .flatMap(param -> userGroupDao
-            .findByIdsAndOrgId(param.getParam(), param.getOrgId())
+            .findByIdsAndOrganization(param.getParam(), param.getOrgId())
             .collectList())
         .map(users -> users
             .stream()
@@ -183,7 +183,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
     verifyRoles(creator, roles);
 
     return userGroupDao
-        .findByIdAndOrgId(resource.id(), organization.id())
+        .findByIdAndOrganization(resource.id(), organization.id())
         .switchIfEmpty(Mono.error(() -> toBadRequest(RegistrationErrors.USER_GROUP_IS_NOT_EXIST,
             RegistrationErrors.USER_GROUP_IS_NOT_EXIST_MESSAGE)))
         .flatMap(userGroupDao::update);

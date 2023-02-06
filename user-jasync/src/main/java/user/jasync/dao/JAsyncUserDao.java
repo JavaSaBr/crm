@@ -200,17 +200,17 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
   }
 
   @Override
-  public @NotNull Mono<User> findByIdAndOrgId(long id, long orgId) {
-    return selectAsync(querySelectByIdAndOrgId, List.of(id, orgId), converter());
+  public @NotNull Mono<User> findByIdAndOrganization(long id, long organizationId) {
+    return selectAsync(querySelectByIdAndOrgId, List.of(id, organizationId), converter());
   }
 
   @Override
-  public @NotNull Flux<User> findByIdsAndOrgId(long @Nullable [] ids, long orgId) {
+  public @NotNull Flux<User> findByIdsAndOrganization(long @Nullable [] ids, long organizationId) {
 
     if (ids == null || ids.length == 0) {
       return Flux.empty();
     } else if (ids.length == 1) {
-      return selectAllAsync(querySelectByIdAndOrgId, List.of(ids[0], orgId), converter());
+      return selectAllAsync(querySelectByIdAndOrgId, List.of(ids[0], organizationId), converter());
     }
 
     var args = new ArrayList<>(ids.length + 1);
@@ -219,7 +219,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
       args.add(id);
     }
 
-    args.add(orgId);
+    args.add(organizationId);
 
     var query = injectIdList(querySelectByIdsAndOrgId, ids);
 
@@ -270,21 +270,21 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
   }
 
   @Override
-  public @NotNull Mono<EntityPage<User>> findPageByOrg(long offset, long size, long orgId) {
-    return selectAllAsync(queryPageByOrgId, List.of(orgId, size, offset), converter())
+  public @NotNull Mono<EntityPage<User>> findPageByOrganization(long offset, long size, long organizationId) {
+    return selectAllAsync(queryPageByOrgId, List.of(organizationId, size, offset), converter())
         .collectList()
-        .zipWith(count(queryCountByOrgId, orgId), EntityPage::new);
+        .zipWith(count(queryCountByOrgId, organizationId), EntityPage::new);
   }
 
   @Override
-  public @NotNull Mono<Boolean> containsAll(long @NotNull [] ids, long orgId) {
+  public @NotNull Mono<Boolean> containsAll(long @NotNull [] ids, long organizationId) {
 
     if (ids.length == 0) {
       return Mono.just(true);
     }
 
     var args = new ArrayList<>(ids.length + 1);
-    args.add(orgId);
+    args.add(organizationId);
 
     for (var id : ids) {
       args.add(id);

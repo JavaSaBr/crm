@@ -7,9 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
 public interface MinimalUserDao extends Dao<MinimalUser> {
-
-  MinimalUser[] EMPTY_USERS = new MinimalUser[0];
-
-  @NotNull Mono<EntityPage<MinimalUser>> findPageByOrgAndGroup(
-      long offset, long size, long orgId, long groupId);
+  @NotNull Mono<EntityPage<MinimalUser>> findPageByOrganizationAndGroup(
+      long offset, long size, long organizationId, long groupId);
 }

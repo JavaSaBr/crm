@@ -59,7 +59,7 @@ public class UserHandler extends BaseRegistrationHandler {
     public @NotNull Mono<ServerResponse> findMinimalById(@NotNull ServerRequest request) {
         return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
-            .flatMap(param -> userDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
+            .flatMap(param -> userDao.findByIdAndOrganization(param.getParam(), param.getOrgId()))
             .map(MinimalUserOutResource::from)
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
@@ -68,7 +68,7 @@ public class UserHandler extends BaseRegistrationHandler {
     public @NotNull Mono<ServerResponse> findMinimalByIds(@NotNull ServerRequest request) {
         return RequestUtils.idsRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request), AuthorizedParam::new)
-            .flatMapMany(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
+            .flatMapMany(param -> userDao.findByIdsAndOrganization(param.getParam(), param.getOrgId()))
             .collectList()
             .map(users -> users.stream()
                 .map(MinimalUserOutResource::from)
@@ -93,7 +93,7 @@ public class UserHandler extends BaseRegistrationHandler {
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
             .flatMap(authorized -> {
                 var pageRequest = authorized.getParam();
-                return userDao.findPageByOrg(
+                return userDao.findPageByOrganization(
                     pageRequest.offset(),
                     pageRequest.pageSize(),
                     authorized.getOrgId()
@@ -112,7 +112,7 @@ public class UserHandler extends BaseRegistrationHandler {
     public @NotNull Mono<ServerResponse> findById(@NotNull ServerRequest request) {
         return RequestUtils.idRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
-            .flatMap(param -> userDao.findByIdAndOrgId(param.getParam(), param.getOrgId()))
+            .flatMap(param -> userDao.findByIdAndOrganization(param.getParam(), param.getOrgId()))
             .map(UserOutResource::from)
             .flatMap(ResponseUtils::ok)
             .switchIfEmpty(ResponseUtils.lazyNotFound());
@@ -121,7 +121,7 @@ public class UserHandler extends BaseRegistrationHandler {
     public @NotNull Mono<ServerResponse> findByIds(@NotNull ServerRequest request) {
         return RequestUtils.idsRequest(request)
             .zipWith(webRequestSecurityService.isAuthorized(request, USER_VIEWERS), AuthorizedParam::new)
-            .flatMapMany(param -> userDao.findByIdsAndOrgId(param.getParam(), param.getOrgId()))
+            .flatMapMany(param -> userDao.findByIdsAndOrganization(param.getParam(), param.getOrgId()))
             .collectList()
             .map(users -> users.stream()
                 .map(UserOutResource::from)

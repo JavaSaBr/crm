@@ -13,7 +13,6 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
   UserGroupDao userGroupDao
   
   def "should create new group"(String name, Set<AccessRole> roles) {
-    
     when:
         def created = userGroupDao.create(name, roles, userTestHelper.newOrg()).block()
     then:
@@ -29,7 +28,6 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
   }
   
   def "should create and load new group"() {
-    
     given:
         def org = userTestHelper.newOrg()
         def groupName = "TestGroup1"
@@ -45,7 +43,6 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
   }
   
   def "should throw NotActualObjectDaoException during updating outdated group"() {
-    
     given:
         def org = userTestHelper.newOrg()
         def group = userTestHelper.newGroup("Group1", org)
@@ -58,13 +55,12 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
   }
   
   def "should update user group correctly"() {
-    
     given:
         def org = userTestHelper.newOrg()
         def group = userTestHelper.newGroup("Group1", org)
         def modified = group.modified()
     when:
-        def loaded = userGroupDao.findByIdAndOrgId(group.id(), org.id()).block()
+        def loaded = userGroupDao.findByIdAndOrganization(group.id(), org.id()).block()
     then:
         validate(loaded, "Group1", Set.of())
     when:
@@ -106,25 +102,23 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
   }
   
   def "should load group only under the same organization"() {
-    
     given:
         def org1 = userTestHelper.newOrg()
         def org2 = userTestHelper.newOrg()
         def group = userTestHelper.newGroup("group1", org1)
     when:
-        def loaded = userGroupDao.findByIdAndOrgId(group.id(), org1.id()).block()
+        def loaded = userGroupDao.findByIdAndOrganization(group.id(), org1.id()).block()
     then:
         loaded != null
         loaded.id() != 0L
         loaded.organization() == org1
     when:
-        loaded = userGroupDao.findByIdAndOrgId(loaded.id(), org2.id()).block()
+        loaded = userGroupDao.findByIdAndOrganization(loaded.id(), org2.id()).block()
     then:
         loaded == null
   }
   
   def "should load groups only under the same organization"() {
-    
     given:
         def org1 = userTestHelper.newOrg()
         def org2 = userTestHelper.newOrg()
@@ -134,23 +128,22 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
         def group4 = userTestHelper.newGroup("group4", org2)
         long[] ids = [group1.id(), group2.id(), group3.id(), group4.id()]
     when:
-        def loaded = waitForResults(userGroupDao.findByIdsAndOrgId(ids, org1.id()))
+        def loaded = waitForResults(userGroupDao.findByIdsAndOrganization(ids, org1.id()))
     then:
         loaded != null
         loaded.size() == 3
     when:
-        loaded = waitForResults(userGroupDao.findByIdsAndOrgId(ids, org2.id()))
+        loaded = waitForResults(userGroupDao.findByIdsAndOrganization(ids, org2.id()))
     then:
         loaded.size() == 1
     when:
         ids = [group4.id()]
-        loaded = waitForResults(userGroupDao.findByIdsAndOrgId(ids, org2.id()))
+        loaded = waitForResults(userGroupDao.findByIdsAndOrganization(ids, org2.id()))
     then:
         loaded.size() == 1
   }
   
   def "should load all groups of some organization"() {
-    
     given:
         
         def org = userTestHelper.newOrg()
@@ -169,7 +162,6 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
   }
   
   def "should load page of user groups"() {
-    
     given:
         
         def firstOrgGroupsCount = 20
@@ -191,14 +183,14 @@ class JAsyncUserGroupDaoTest extends JAsyncUserSpecification {
         List<UserGroup> loadedGroups = []
     
     when:
-        def page = userGroupDao.findPageByOrg(0, 5, firstOrg.id()).block()
+        def page = userGroupDao.findPageByOrganization(0, 5, firstOrg.id()).block()
         loadedGroups.addAll(page.entities())
     then:
         page != null
         page.totalSize() == firstOrgGroupsCount
         page.entities().size() == 5
     when:
-        page = userGroupDao.findPageByOrg(17, 5, firstOrg.id()).block()
+        page = userGroupDao.findPageByOrganization(17, 5, firstOrg.id()).block()
     then:
         page != null
         page.totalSize() == firstOrgGroupsCount

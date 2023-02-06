@@ -74,16 +74,17 @@ public class JAsyncEmailConfirmationDao extends AbstractJAsyncDao<EmailConfirmat
 
   @Override
   public @NotNull Mono<EmailConfirmation> findByEmailAndCode(@NotNull String email, @NotNull String code) {
-    return select(querySelectByCodeAndEmail, List.of(code, email), converter());
-  }
-
-  private @NotNull JAsyncConverter<@NotNull JAsyncEmailConfirmationDao, @NotNull EmailConfirmation> converter() {
-    return JAsyncEmailConfirmationDao::toEmailConformation;
+    var args = List.of(code, email);
+    return select(querySelectByCodeAndEmail, args, converter());
   }
 
   @Override
   public @NotNull Mono<Boolean> deleteById(long id) {
     return delete(queryDeleteById, id);
+  }
+
+  private @NotNull JAsyncConverter<@NotNull JAsyncEmailConfirmationDao, @NotNull EmailConfirmation> converter() {
+    return JAsyncEmailConfirmationDao::toEmailConformation;
   }
 
   private @NotNull EmailConfirmation toEmailConformation(@NotNull RowData data) {

@@ -61,17 +61,22 @@ public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> impleme
     return select(querySelectById, id, converter());
   }
 
-  private @NotNull JAsyncConverter<@NotNull JAsyncMinimalUserDao, @NotNull MinimalUser> converter() {
-    return JAsyncMinimalUserDao::toMinimalUser;
+  @Override
+  public @NotNull Mono<EntityPage<MinimalUser>> findPageByOrganizationAndGroup(
+      long offset, long size, long organizationId, long groupId) {
+    return count(queryCountByOrgAndGroup, List.of(organizationId, groupId))
+        .filter(total -> total > 0)
+        .zipWhen(
+            total -> {
+              var args = List.of(organizationId, groupId, size, offset);
+              return selectAllAsList(querySelectPageByOrgAndGroup, args, converter());
+            },
+            EntityPage::from)
+        .switchIfEmpty(Mono.just(EntityPage.empty()));
   }
 
-  @Override
-  public @NotNull Mono<EntityPage<MinimalUser>> findPageByOrgAndGroup(
-      long offset, long size, long orgId, long groupId) {
-    var args = List.of(orgId, groupId, size, offset);
-    return selectAll(querySelectPageByOrgAndGroup, args, converter())
-        .collectList()
-        .zipWith(count(queryCountByOrgAndGroup, List.of(orgId, groupId)), EntityPage::new);
+  private @NotNull JAsyncConverter<@NotNull JAsyncMinimalUserDao, @NotNull MinimalUser> converter() {
+    return JAsyncMinimalUserDao::toMinimalUser;
   }
 
   private @NotNull MinimalUser toMinimalUser(@NotNull RowData data) {

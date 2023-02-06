@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public record DefaultMinimalUser(
     long id,
-    long orgId,
+    long organizationId,
     @NotNull String email,
     @NotNull Set<AccessRole> roles) implements MinimalUser {
 

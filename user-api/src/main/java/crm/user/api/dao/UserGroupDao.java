@@ -21,25 +21,27 @@ public interface UserGroupDao extends Dao<UserGroup> {
    * @throws DuplicateObjectDaoException if a group with the same name and organization is already exist
    */
   @NotNull Mono<UserGroup> create(
-      @NotNull String name, @NotNull Set<AccessRole> roles, @NotNull Organization organization);
+      @NotNull String name,
+      @NotNull Set<AccessRole> roles,
+      @NotNull Organization organization);
 
   @NotNull Mono<UserGroup> update(@NotNull UserGroup userGroup);
 
   @NotNull Flux<UserGroup> findAll(@NotNull Organization organization);
 
-  @NotNull Mono<Boolean> existByName(@NotNull String name, long orgId);
+  @NotNull Mono<Boolean> existByName(@NotNull String name, long organizationId);
 
-  @NotNull Flux<UserGroup> searchByName(@NotNull String name, long orgId);
+  @NotNull Flux<UserGroup> searchByName(@NotNull String name, long organizationId);
 
-  @NotNull Mono<EntityPage<UserGroup>> findPageByOrg(long offset, long size, long orgId);
+  @NotNull Mono<EntityPage<UserGroup>> findPageByOrganization(long offset, long size, long organizationId);
 
-  @NotNull Mono<UserGroup> findByIdAndOrgId(long id, long orgId);
+  @NotNull Mono<UserGroup> findByIdAndOrganization(long id, long organizationId);
 
-  default @NotNull Mono<UserGroup> findByIdAndOrg(long id, @NotNull Organization organization) {
-    return findByIdAndOrgId(id, organization.id());
+  default @NotNull Mono<UserGroup> findByIdAndOrganization(long id, @NotNull Organization organization) {
+    return findByIdAndOrganization(id, organization.id());
   }
 
-  @NotNull Flux<UserGroup> findByIdsAndOrgId(long @Nullable [] ids, long orgId);
+  @NotNull Flux<UserGroup> findByIdsAndOrganization(long @Nullable [] ids, long organizationId);
 
   default @NotNull Mono<LongDictionary<UserGroup>> findAllAsMap(@NotNull Organization organization) {
     return findAll(organization)

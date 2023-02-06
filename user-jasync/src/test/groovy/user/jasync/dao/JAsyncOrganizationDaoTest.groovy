@@ -13,7 +13,6 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
   OrganizationDao organizationDao
   
   def "should create new organization"(String name) {
-    
     when:
         def created = organizationDao.create(name, dictionaryTestHelper.newCountry()).block()
     then:
@@ -23,7 +22,6 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
   }
   
   def "should create and load new organization"() {
-    
     given:
         def orgName = "TestOrgName1"
         def created = organizationDao.create(orgName, dictionaryTestHelper.newCountry()).block()
@@ -41,15 +39,12 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
   }
   
   def "should load all new organizations"() {
-    
     given:
-        
         def orgNames = ["org1", "org2", "org3", "org4"]
         
         orgNames.forEach {
           organizationDao.create(it, dictionaryTestHelper.newCountry()).block()
         }
-    
     when:
         def loaded = waitForResults(organizationDao.findAll())
     then:
@@ -58,9 +53,7 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
   }
   
   def "should load all new organizations using async"() {
-    
     given:
-        
         def orgNames = ["org1", "org2", "org3", "org4"]
         def results = new ArrayList<Mono<?>>()
         
@@ -71,7 +64,6 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
         results.forEach {
           it.block()
         }
-    
     when:
         def loaded = waitForResults(organizationDao.findAll())
     then:
@@ -80,7 +72,6 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
   }
   
   def "should found created organization by name"() {
-    
     given:
         def org = userTestHelper.newOrg()
     when:
