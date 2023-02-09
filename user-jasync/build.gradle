@@ -4,7 +4,7 @@ apply plugin: "java-test-fixtures"
 dependencies {
   api projects.base
   api projects.userApi
-  api projects.jcrmBaseSpring
+  api projects.baseSpring
   api projects.jcrmJasync
   
   testFixturesApi testFixtures(projects.jcrmJasync)

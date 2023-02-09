@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 
 public interface Reloadable {
 
-    void reload();
+  void reload();
 
-    @NotNull Mono<?> reloadAsync();
+  @NotNull Mono<?> reloadAsync();
 }

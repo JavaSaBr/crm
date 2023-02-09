@@ -1,4 +1,4 @@
-package com.ss.jcrm.spring.base.config;
+package crm.base.spring.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

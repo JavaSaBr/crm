@@ -5,7 +5,7 @@ import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dictionary.api.dao.CityDao;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
-import com.ss.jcrm.spring.base.config.PropertiesConfig;
+import crm.base.spring.config.PropertiesConfig;
 import jasync.config.AbstractJAsyncConfig;
 import jasync.config.CommonJAsyncConfig;
 import crm.user.api.dao.EmailConfirmationDao;

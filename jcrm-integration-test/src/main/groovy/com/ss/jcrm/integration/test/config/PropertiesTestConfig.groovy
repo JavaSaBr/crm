@@ -1,7 +1,7 @@
 package com.ss.jcrm.integration.test.config
 
 import com.ss.jcrm.integration.test.model.PropertiesTestProvider
-import com.ss.jcrm.spring.base.config.PropertiesConfig
+import crm.base.spring.config.PropertiesConfig
 import org.jetbrains.annotations.NotNull
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

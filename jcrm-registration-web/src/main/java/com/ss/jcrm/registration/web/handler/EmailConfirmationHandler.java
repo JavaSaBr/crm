@@ -3,7 +3,7 @@ package com.ss.jcrm.registration.web.handler;
 import com.ss.jcrm.mail.service.MailService;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import com.ss.jcrm.security.web.service.TokenService;
-import com.ss.jcrm.spring.base.template.TemplateRegistry;
+import crm.base.spring.template.TemplateRegistry;
 import crm.user.api.EmailConfirmation;
 import crm.user.api.dao.EmailConfirmationDao;
 import com.ss.jcrm.web.util.ResponseUtils;

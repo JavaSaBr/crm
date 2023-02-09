@@ -11,7 +11,7 @@ import com.ss.jcrm.security.service.PasswordService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
-import com.ss.jcrm.spring.base.template.TemplateRegistry;
+import crm.base.spring.template.TemplateRegistry;
 import crm.user.jasync.config.JAsyncUserConfig;
 import com.ss.jcrm.web.config.ApiEndpointServer;
 import com.ss.jcrm.web.config.BaseWebConfig;

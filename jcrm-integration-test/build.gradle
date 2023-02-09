@@ -2,7 +2,7 @@ apply plugin: "java-library"
 
 dependencies {
     api projects.base
-    api projects.jcrmBaseSpring
+    api projects.baseSpring
     api libs.spring.test
     api libs.bundles.spock
     api libs.groovy.all

@@ -1,6 +1,6 @@
 package jcrm.dao;
 
-import com.ss.jcrm.spring.base.config.BaseConfig;
+import crm.base.spring.config.BaseConfig;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;

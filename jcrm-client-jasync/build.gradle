@@ -2,7 +2,7 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 dependencies {
-    api projects.jcrmBaseSpring
+    api projects.baseSpring
     api projects.jcrmJasync
     api projects.jcrmClientApi
 

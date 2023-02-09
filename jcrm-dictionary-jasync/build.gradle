@@ -3,7 +3,7 @@ apply plugin: "java-test-fixtures"
 
 dependencies {
     api projects.jcrmDictionaryApi
-    api projects.jcrmBaseSpring
+    api projects.baseSpring
     api projects.jcrmJasync
 
     testFixturesApi testFixtures(projects.jcrmDictionaryApi)

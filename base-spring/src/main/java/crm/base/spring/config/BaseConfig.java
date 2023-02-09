@@ -1,4 +1,4 @@
-package com.ss.jcrm.spring.base.config;
+package crm.base.spring.config;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

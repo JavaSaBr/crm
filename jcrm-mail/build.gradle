@@ -3,7 +3,7 @@ apply plugin: "java-test-fixtures"
 
 dependencies {
 
-    api projects.jcrmBaseSpring
+    api projects.baseSpring
 
     api (libs.rlib.mail) {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
