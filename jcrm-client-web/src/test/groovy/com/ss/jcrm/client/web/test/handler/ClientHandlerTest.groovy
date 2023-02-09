@@ -19,8 +19,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 
-import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED
-import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
+import static crm.base.web.exception.CommonErrors.ID_NOT_PRESENTED
+import static crm.base.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
 import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_ASSIGNER_NOT_PRESENTED
 import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_ASSIGNER_NOT_PRESENTED_MESSAGE
 import static con.ss.jcrm.client.web.exception.ClientErrors.CLIENT_BIRTHDAY_INVALID

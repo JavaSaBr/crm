@@ -1,6 +1,6 @@
 package com.ss.jcrm.integration.test.web
 
-import com.ss.jcrm.web.exception.BadRequestWebException
+import crm.base.web.exception.BadRequestWebException
 import org.springframework.web.util.UriBuilder
 
 import java.util.function.Function

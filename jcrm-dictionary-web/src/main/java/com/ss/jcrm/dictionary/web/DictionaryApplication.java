@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.web;
 
 import com.ss.jcrm.dictionary.web.config.DictionaryWebConfig;
-import com.ss.jcrm.web.BaseWebApplication;
+import crm.base.web.BaseWebApplication;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;

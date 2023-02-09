@@ -1,10 +1,9 @@
 package com.ss.jcrm.ui.server;
 
 import com.ss.jcrm.ui.server.config.UiServerConfig;
-import com.ss.jcrm.web.BaseWebApplication;
+import crm.base.web.BaseWebApplication;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

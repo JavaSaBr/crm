@@ -2,9 +2,9 @@ package com.ss.jcrm.dictionary.web.handler;
 
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
-import com.ss.jcrm.web.exception.IdNotPresentedWebException;
-import com.ss.jcrm.web.exception.NameNotPresentedWebException;
-import com.ss.jcrm.web.util.ResponseUtils;
+import crm.base.web.exception.IdNotPresentedWebException;
+import crm.base.web.exception.NameNotPresentedWebException;
+import crm.base.web.util.ResponseUtils;
 import com.ss.rlib.common.util.NumberUtils;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;

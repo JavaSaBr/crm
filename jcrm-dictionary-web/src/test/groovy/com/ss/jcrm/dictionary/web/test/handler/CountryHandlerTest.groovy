@@ -6,8 +6,8 @@ import com.ss.jcrm.dictionary.web.test.DictionarySpecification
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
-import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED
-import static com.ss.jcrm.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
+import static crm.base.web.exception.CommonErrors.ID_NOT_PRESENTED
+import static crm.base.web.exception.CommonErrors.ID_NOT_PRESENTED_MESSAGE
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is

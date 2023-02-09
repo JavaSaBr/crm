@@ -1,7 +1,7 @@
 apply plugin: "java-library"
 
 dependencies {
-    api projects.jcrmBaseWeb
+    api projects.baseWeb
     api projects.jcrmUiFlutter
 }
 

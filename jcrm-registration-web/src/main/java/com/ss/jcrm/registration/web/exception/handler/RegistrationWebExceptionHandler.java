@@ -1,7 +1,7 @@
 package com.ss.jcrm.registration.web.exception.handler;
 
 import com.ss.jcrm.security.web.exception.handler.SecurityWebExceptionHandler;
-import com.ss.jcrm.web.exception.handler.DefaultWebExceptionHandler;
+import crm.base.web.exception.handler.DefaultWebExceptionHandler;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.reactive.function.server.ServerResponse;

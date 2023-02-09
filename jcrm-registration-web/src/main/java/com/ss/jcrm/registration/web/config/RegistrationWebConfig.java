@@ -13,8 +13,8 @@ import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import crm.base.spring.template.TemplateRegistry;
 import crm.user.jasync.config.JAsyncUserConfig;
-import com.ss.jcrm.web.config.ApiEndpointServer;
-import com.ss.jcrm.web.config.BaseWebConfig;
+import crm.base.web.config.ApiEndpoint;
+import crm.base.web.config.BaseWebConfig;
 import crm.user.api.dao.EmailConfirmationDao;
 import crm.user.api.dao.MinimalUserDao;
 import crm.user.api.dao.OrganizationDao;
@@ -65,8 +65,8 @@ public class RegistrationWebConfig {
     }
 
     @Bean
-    @NotNull ApiEndpointServer registrationApiEndpointServer() {
-        return new ApiEndpointServer("/registration-api");
+    @NotNull ApiEndpoint registrationApiEndpointServer() {
+        return new ApiEndpoint("/registration-api");
     }
 
     @Bean
@@ -156,9 +156,9 @@ public class RegistrationWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> registrationStatusRouterFunction(
-        @NotNull ApiEndpointServer registrationApiEndpointServer
+        @NotNull ApiEndpoint registrationApiEndpoint
     ) {
-        var contextPath = registrationApiEndpointServer.contextPath();
+        var contextPath = registrationApiEndpoint.contextPath();
         return RouterFunctions.route()
             .GET("%s/status".formatted(contextPath), request -> ServerResponse.ok()
                 .build())
@@ -167,10 +167,10 @@ public class RegistrationWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> userRouterFunction(
-        @NotNull ApiEndpointServer registrationApiEndpointServer,
+        @NotNull ApiEndpoint registrationApiEndpoint,
         @NotNull UserHandler userHandler
     ) {
-        var contextPath = registrationApiEndpointServer.contextPath();
+        var contextPath = registrationApiEndpoint.contextPath();
         return RouterFunctions.route()
             .GET("%s/user/minimal/{id}".formatted(contextPath), userHandler::findMinimalById)
             .POST("%s/users/minimal/ids".formatted(contextPath), APP_JSON, userHandler::findMinimalByIds)
@@ -185,10 +185,10 @@ public class RegistrationWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> emailConfirmationRouterFunction(
-        @NotNull ApiEndpointServer registrationApiEndpointServer,
+        @NotNull ApiEndpoint registrationApiEndpoint,
         @NotNull EmailConfirmationHandler emailConfirmationHandler
     ) {
-        var contextPath = registrationApiEndpointServer.contextPath();
+        var contextPath = registrationApiEndpoint.contextPath();
         return RouterFunctions.route()
             .GET("%s/email-confirmation/{email}".formatted(contextPath), emailConfirmationHandler::emailConfirmation)
             .build();
@@ -196,10 +196,10 @@ public class RegistrationWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> authenticationRouterFunction(
-        @NotNull ApiEndpointServer registrationApiEndpointServer,
+        @NotNull ApiEndpoint registrationApiEndpoint,
         @NotNull AuthenticationHandler authenticationHandler
     ) {
-        var contextPath = registrationApiEndpointServer.contextPath();
+        var contextPath = registrationApiEndpoint.contextPath();
         return RouterFunctions.route()
             .POST("%s/authenticate".formatted(contextPath), APP_JSON, authenticationHandler::authenticate)
             .GET("%s/authenticate/{token}".formatted(contextPath), authenticationHandler::authenticateByToken)
@@ -209,10 +209,10 @@ public class RegistrationWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> organizationRouterFunction(
-        @NotNull ApiEndpointServer registrationApiEndpointServer,
+        @NotNull ApiEndpoint registrationApiEndpoint,
         @NotNull OrganizationHandler organizationHandler
     ) {
-        var contextPath = registrationApiEndpointServer.contextPath();
+        var contextPath = registrationApiEndpoint.contextPath();
         return RouterFunctions.route()
             .POST("%s/register/organization".formatted(contextPath), APP_JSON, organizationHandler::register)
             .GET("%s/exist/organization/name/{name}".formatted(contextPath), organizationHandler::existByName)
@@ -221,10 +221,10 @@ public class RegistrationWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> userGroupRouterFunction(
-        @NotNull ApiEndpointServer registrationApiEndpointServer,
+        @NotNull ApiEndpoint registrationApiEndpoint,
         @NotNull UserGroupHandler userGroupHandler
     ) {
-        var contextPath = registrationApiEndpointServer.contextPath();
+        var contextPath = registrationApiEndpoint.contextPath();
         return RouterFunctions.route()
             .POST("%s/user-group".formatted(contextPath), APP_JSON, userGroupHandler::create)
             .POST("%s/user-groups/ids".formatted(contextPath), APP_JSON, userGroupHandler::findByIds)

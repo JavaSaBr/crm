@@ -4,7 +4,7 @@ import com.ss.jcrm.client.api.test.ClientDbTestHelper
 import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
 
-import com.ss.jcrm.web.config.ApiEndpointServer
+import crm.base.web.config.ApiEndpoint
 import crm.user.api.UserDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration
 class ClientSpecification extends WebSpecification {
 
     @Autowired
-    ApiEndpointServer clientApiEndpointServer
+    ApiEndpoint clientApiEndpointServer
 
     @Autowired
     UserDbTestHelper userTestHelper

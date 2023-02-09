@@ -1,6 +1,6 @@
 package con.ss.jcrm.client.web;
 
-import com.ss.jcrm.web.BaseWebApplication;
+import crm.base.web.BaseWebApplication;
 import con.ss.jcrm.client.web.config.ClientWebConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;

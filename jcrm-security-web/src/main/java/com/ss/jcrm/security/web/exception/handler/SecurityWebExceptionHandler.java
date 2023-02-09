@@ -5,7 +5,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import com.ss.jcrm.security.web.exception.ExpiredTokenException;
 import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException;
 import com.ss.jcrm.security.web.exception.TokenException;
-import com.ss.jcrm.web.exception.handler.DefaultWebExceptionHandler;
+import crm.base.web.exception.handler.DefaultWebExceptionHandler;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.reactive.function.server.ServerResponse;

@@ -1,7 +1,7 @@
 package com.ss.jcrm.registration.web.resources;
 
 import crm.user.api.User;
-import com.ss.jcrm.web.resources.RestResource;
+import crm.base.web.resources.RestResource;
 import org.jetbrains.annotations.NotNull;
 
 public record AuthenticationOutResource(

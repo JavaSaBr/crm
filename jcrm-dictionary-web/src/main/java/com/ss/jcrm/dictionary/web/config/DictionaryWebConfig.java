@@ -7,8 +7,8 @@ import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import com.ss.jcrm.dictionary.web.service.impl.DefaultCachedDictionaryService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
-import com.ss.jcrm.web.config.ApiEndpointServer;
-import com.ss.jcrm.web.config.BaseWebConfig;
+import crm.base.web.config.ApiEndpoint;
+import crm.base.web.config.BaseWebConfig;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
@@ -66,8 +66,8 @@ public class DictionaryWebConfig {
     }
 
     @Bean
-    @NotNull ApiEndpointServer dictionaryApiEndpointServer() {
-        return new ApiEndpointServer("/dictionary-api");
+    @NotNull ApiEndpoint dictionaryApiEndpointServer() {
+        return new ApiEndpoint("/dictionary-api");
     }
 
     @Bean
@@ -79,9 +79,9 @@ public class DictionaryWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> dictionaryStatusRouterFunction(
-        @NotNull ApiEndpointServer dictionaryApiEndpointServer
+        @NotNull ApiEndpoint dictionaryApiEndpoint
     ) {
-        var contextPath = dictionaryApiEndpointServer.contextPath();
+        var contextPath = dictionaryApiEndpoint.contextPath();
         return RouterFunctions.route()
             .GET("%s/status".formatted(contextPath), request -> ServerResponse.ok().build())
             .build();
@@ -89,10 +89,10 @@ public class DictionaryWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> countryRouterFunction(
-        @NotNull ApiEndpointServer dictionaryApiEndpointServer,
+        @NotNull ApiEndpoint dictionaryApiEndpoint,
         @NotNull CountryHandler countryHandler
     ) {
-        var contextPath = dictionaryApiEndpointServer.contextPath();
+        var contextPath = dictionaryApiEndpoint.contextPath();
         return RouterFunctions.route()
             .GET("%s/countries".formatted(contextPath), countryHandler::getAll)
             .GET("%s/country/id/{id}".formatted(contextPath), countryHandler::getById)

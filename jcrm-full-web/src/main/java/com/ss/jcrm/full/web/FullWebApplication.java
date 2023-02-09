@@ -3,7 +3,7 @@ package com.ss.jcrm.full.web;
 import com.ss.jcrm.dictionary.web.config.DictionaryWebConfig;
 import com.ss.jcrm.registration.web.config.RegistrationWebConfig;
 import com.ss.jcrm.ui.server.config.UiServerConfig;
-import com.ss.jcrm.web.BaseWebApplication;
+import crm.base.web.BaseWebApplication;
 import con.ss.jcrm.client.web.config.ClientWebConfig;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;

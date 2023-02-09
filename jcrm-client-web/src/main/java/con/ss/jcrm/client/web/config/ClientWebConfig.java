@@ -6,8 +6,8 @@ import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import crm.user.api.dao.UserDao;
 import crm.user.jasync.config.JAsyncUserConfig;
-import com.ss.jcrm.web.config.ApiEndpointServer;
-import com.ss.jcrm.web.config.BaseWebConfig;
+import crm.base.web.config.ApiEndpoint;
+import crm.base.web.config.BaseWebConfig;
 import con.ss.jcrm.client.web.handler.ClientHandler;
 import con.ss.jcrm.client.web.validator.ResourceValidator;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +41,8 @@ public class ClientWebConfig {
     private final List<? extends Flyway> flyways;
 
     @Bean
-    @NotNull ApiEndpointServer clientApiEndpointServer() {
-        return new ApiEndpointServer("/client-api");
+    @NotNull ApiEndpoint clientApiEndpointServer() {
+        return new ApiEndpoint("/client-api");
     }
 
     @Bean
@@ -62,10 +62,10 @@ public class ClientWebConfig {
 
     @Bean
     @NotNull RouterFunction<ServerResponse> clientStatusRouterFunction(
-        @NotNull ApiEndpointServer clientApiEndpointServer,
+        @NotNull ApiEndpoint clientApiEndpoint,
         @NotNull ClientHandler clientHandler
     ) {
-        var contextPath = clientApiEndpointServer.contextPath();
+        var contextPath = clientApiEndpoint.contextPath();
         return RouterFunctions.route()
             .GET("%s/status".formatted(contextPath), request -> ServerResponse.ok().build())
             .GET("%s/clients".formatted(contextPath), clientHandler::list)

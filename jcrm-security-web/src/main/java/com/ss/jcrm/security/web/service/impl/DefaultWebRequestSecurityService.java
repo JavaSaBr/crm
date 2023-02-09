@@ -1,8 +1,8 @@
 package com.ss.jcrm.security.web.service.impl;
 
 import static com.ss.jcrm.security.web.exception.SecurityErrors.*;
-import static com.ss.jcrm.web.exception.ExceptionUtils.toForbidden;
-import static com.ss.jcrm.web.exception.ExceptionUtils.toUnauthorized;
+import static crm.base.web.util.ExceptionUtils.toForbidden;
+import static crm.base.web.util.ExceptionUtils.toUnauthorized;
 
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.service.TokenService;

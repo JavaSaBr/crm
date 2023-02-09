@@ -3,8 +3,8 @@ package com.ss.jcrm.ui.server.config;
 import static org.springframework.web.reactive.function.server.RouterFunctions.resources;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import com.ss.jcrm.web.config.ApiEndpointServer;
-import com.ss.jcrm.web.config.BaseWebConfig;
+import crm.base.web.config.ApiEndpoint;
+import crm.base.web.config.BaseWebConfig;
 import com.ss.rlib.common.util.FileUtils;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -57,9 +57,9 @@ public class UiServerConfig {
 
     String @NotNull [] apiEndpoints;
 
-    public UiServerConfig(@NotNull List<ApiEndpointServer> servers) {
+    public UiServerConfig(@NotNull List<ApiEndpoint> servers) {
         this.apiEndpoints = servers.stream()
-            .map(ApiEndpointServer::contextPath)
+            .map(ApiEndpoint::contextPath)
             .toArray(String[]::new);
     }
 

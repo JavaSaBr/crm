@@ -3,7 +3,7 @@ package com.ss.jcrm.dictionary.web.test
 import crm.base.util.Reloadable
 import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
-import com.ss.jcrm.web.config.ApiEndpointServer
+import crm.base.web.config.ApiEndpoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration
 class DictionarySpecification extends WebSpecification {
 
     @Autowired
-    ApiEndpointServer dictionaryApiEndpointServer
+    ApiEndpoint dictionaryApiEndpointServer
 
     @Autowired
     DictionaryDbTestHelper dictionaryTestHelper

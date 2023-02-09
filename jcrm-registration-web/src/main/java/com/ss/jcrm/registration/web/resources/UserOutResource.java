@@ -6,7 +6,7 @@ import com.ss.jcrm.security.AccessRole;
 import crm.user.api.User;
 import com.ss.jcrm.user.contact.api.resource.MessengerResource;
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource;
-import com.ss.jcrm.web.resources.RestResource;
+import crm.base.web.resources.RestResource;
 import com.ss.rlib.common.util.DateUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

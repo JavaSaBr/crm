@@ -6,7 +6,7 @@ import com.ss.jcrm.security.web.service.TokenService;
 import crm.base.spring.template.TemplateRegistry;
 import crm.user.api.EmailConfirmation;
 import crm.user.api.dao.EmailConfirmationDao;
-import com.ss.jcrm.web.util.ResponseUtils;
+import crm.base.web.util.ResponseUtils;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.ss.jcrm.registration.web.handler;
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_ACCESS_ROLE;
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_ACCESS_ROLE_MESSAGE;
-import static com.ss.jcrm.web.exception.ExceptionUtils.toBadRequest;
+import static crm.base.web.util.ExceptionUtils.toBadRequest;
 import static com.ss.rlib.common.function.Functions.Predicates.*;
 
 import com.ss.jcrm.registration.web.exception.RegistrationErrors;
@@ -17,9 +17,9 @@ import crm.user.api.UserGroup;
 import crm.user.api.dao.MinimalUserDao;
 import crm.user.api.dao.UserDao;
 import crm.user.api.dao.UserGroupDao;
-import com.ss.jcrm.web.resources.DataPageResponse;
-import com.ss.jcrm.web.util.RequestUtils;
-import com.ss.jcrm.web.util.ResponseUtils;
+import crm.base.web.resources.DataPageResponse;
+import crm.base.web.util.RequestUtils;
+import crm.base.web.util.ResponseUtils;
 import com.ss.rlib.common.util.ArrayUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

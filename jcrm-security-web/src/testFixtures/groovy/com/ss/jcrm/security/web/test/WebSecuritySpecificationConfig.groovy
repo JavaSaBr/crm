@@ -8,7 +8,7 @@ import com.ss.jcrm.security.web.service.TokenService
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 
-import com.ss.jcrm.web.config.BaseWebConfig
+import crm.base.web.config.BaseWebConfig
 import crm.user.jasync.config.JAsyncUserTestConfig
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.web.resource;
 
 import com.ss.jcrm.dictionary.api.Country;
-import com.ss.jcrm.web.resources.RestResource;
+import crm.base.web.resources.RestResource;
 import org.jetbrains.annotations.NotNull;
 
 public record CountryOutResource(

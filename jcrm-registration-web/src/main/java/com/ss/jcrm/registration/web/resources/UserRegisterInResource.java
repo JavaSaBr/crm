@@ -1,6 +1,6 @@
 package com.ss.jcrm.registration.web.resources;
 
-import com.ss.jcrm.web.resources.RestResource;
+import crm.base.web.resources.RestResource;
 import org.jetbrains.annotations.Nullable;
 
 public record UserRegisterInResource(
