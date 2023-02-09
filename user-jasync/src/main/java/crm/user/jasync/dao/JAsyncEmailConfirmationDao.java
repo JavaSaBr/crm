@@ -1,12 +1,12 @@
 package crm.user.jasync.dao;
 
-import static com.ss.jcrm.base.utils.DateUtils.toUtcInstant;
+import static crm.base.util.DateUtils.toUtcInstant;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.base.utils.DateUtils;
+import crm.base.util.DateUtils;
 import jasync.dao.AbstractJAsyncDao;
 import jasync.function.JAsyncConverter;
 import crm.user.api.EmailConfirmation;

@@ -18,7 +18,7 @@ import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.exceptions.GenericDatabaseException;
 import com.github.jasync.sql.db.util.ExecutorServiceUtils;
 import com.github.jasync.sql.db.util.NettyUtils;
-import com.ss.jcrm.base.utils.WithId;
+import crm.base.util.WithId;
 import com.ss.jcrm.dao.exception.DaoException;
 import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
 import com.ss.rlib.common.function.ObjectLongFunction;

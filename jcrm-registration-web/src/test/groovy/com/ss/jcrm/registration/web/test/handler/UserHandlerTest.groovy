@@ -32,7 +32,7 @@ class UserHandlerTest extends RegistrationSpecification {
         
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def token = unsafeTokenService.generateNewToken(user)
             def phoneNumbers = generatePhoneNumbers()
@@ -100,7 +100,7 @@ class UserHandlerTest extends RegistrationSpecification {
         
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def token = unsafeTokenService.generateNewToken(user)
             def phoneNumbers = generatePhoneNumbers()
@@ -244,8 +244,8 @@ class UserHandlerTest extends RegistrationSpecification {
     def "should found users by name"() {
         
         given:
-            def org1 = userTestHelper.newOrg()
-            def org2 = userTestHelper.newOrg()
+            def org1 = userTestHelper.newOrganization()
+            def org2 = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("user1@mail.com", "FiRst1", "Second1", "Third1", org1)
             userTestHelper.newUser("user2@mail.com", "FIrst2", "Second2", "THird2", org1)
             userTestHelper.newUser("user3@mail.com", "first3", "Second3", "ThIrd3", org1)
@@ -364,8 +364,8 @@ class UserHandlerTest extends RegistrationSpecification {
     def "should not load user by id without token or under other organization"() {
         
         given:
-            def org1 = userTestHelper.newOrg()
-            def org2 = userTestHelper.newOrg()
+            def org1 = userTestHelper.newOrganization()
+            def org2 = userTestHelper.newOrganization()
             def user1 = userTestHelper.newUser("TestUser1", org1, AccessRole.USER_MANAGER)
             def user2 = userTestHelper.newUser("TestUser2", org2)
             def token = unsafeTokenService.generateNewToken(user1)
@@ -388,8 +388,8 @@ class UserHandlerTest extends RegistrationSpecification {
     def "should load users by ids"() {
         
         given:
-            def org1 = userTestHelper.newOrg()
-            def org2 = userTestHelper.newOrg()
+            def org1 = userTestHelper.newOrganization()
+            def org2 = userTestHelper.newOrganization()
             def user1 = userTestHelper.newUser("TestUser1", org1, AccessRole.USER_MANAGER)
             def user2 = userTestHelper.newUser("TestUser2", org1)
             def user3 = userTestHelper.newUser("TestUser3", org1)
@@ -467,8 +467,8 @@ class UserHandlerTest extends RegistrationSpecification {
     def "should load minimal users by ids"() {
         
         given:
-            def org1 = userTestHelper.newOrg()
-            def org2 = userTestHelper.newOrg()
+            def org1 = userTestHelper.newOrganization()
+            def org2 = userTestHelper.newOrganization()
             def user1 = userTestHelper.newUser("TestUser1", org1)
             def user2 = userTestHelper.newUser("TestUser2", org1)
             def user3 = userTestHelper.newUser("TestUser3", org1)

@@ -2,7 +2,7 @@ package com.ss.jcrm.user.contact.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.ss.jcrm.base.utils.WithId;
+import crm.base.util.WithId;
 import com.ss.rlib.common.util.ObjectUtils;
 import com.ss.rlib.common.util.StringUtils;
 import lombok.AccessLevel;

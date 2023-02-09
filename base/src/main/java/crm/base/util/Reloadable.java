@@ -1,4 +1,4 @@
-package com.ss.jcrm.base.utils;
+package crm.base.util;
 
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;

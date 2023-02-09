@@ -56,7 +56,7 @@ class ClientHandlerTest extends ClientSpecification {
     
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def assigner = userTestHelper.newUser("Assigner1", org)
             def curator1 = userTestHelper.newUser("Curator1", org)
@@ -228,7 +228,7 @@ class ClientHandlerTest extends ClientSpecification {
         
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def assigner = userTestHelper.newUser("Assigner1", org)
             def token = unsafeTokenService.generateNewToken(user)
@@ -611,9 +611,9 @@ class ClientHandlerTest extends ClientSpecification {
             def firstOrgContactsCount = 20
             def secondOrgContactsCount = 5
     
-            def firstOrg = userTestHelper.newOrg()
+            def firstOrg = userTestHelper.newOrganization()
             def firstUser = userTestHelper.newUser("User1", firstOrg)
-            def secondOrg = userTestHelper.newOrg()
+            def secondOrg = userTestHelper.newOrganization()
             def secondUser = userTestHelper.newUser("User2", secondOrg)
     
             firstOrgContactsCount.times {
@@ -654,7 +654,7 @@ class ClientHandlerTest extends ClientSpecification {
         
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def assigner = userTestHelper.newUser("Assigner1", org)
             def curator1 = userTestHelper.newUser("Curator1", org)
@@ -663,10 +663,10 @@ class ClientHandlerTest extends ClientSpecification {
     
             def token = unsafeTokenService.generateNewToken(user)
             def body = new ClientInResource(
-                newClient.id,
+                newClient.id(),
                 [
-                    curator1.id,
-                    curator2.id
+                    curator1.id(),
+                    curator2.id()
                 ] as long[],
                 assigner.id as long,
                 newClient.version,
@@ -765,7 +765,7 @@ class ClientHandlerTest extends ClientSpecification {
         
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             def assigner = userTestHelper.newUser("Assigner1", org)
             def client = clientTestHelper.newSimpleClient(user)

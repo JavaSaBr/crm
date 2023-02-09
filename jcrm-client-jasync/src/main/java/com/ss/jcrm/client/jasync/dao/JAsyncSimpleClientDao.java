@@ -1,6 +1,6 @@
 package com.ss.jcrm.client.jasync.dao;
 
-import static com.ss.jcrm.base.utils.DateUtils.toUtcInstant;
+import static crm.base.util.DateUtils.toUtcInstant;
 import static jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.base.utils.DateUtils;
+import crm.base.util.DateUtils;
 import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.api.impl.*;

@@ -3,7 +3,7 @@ package com.ss.jcrm.security;
 import static com.ss.rlib.common.util.array.ArrayFactory.toArray;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
-import com.ss.jcrm.base.utils.WithId;
+import crm.base.util.WithId;
 import com.ss.rlib.common.util.ArrayUtils;
 import com.ss.rlib.common.util.ObjectUtils;
 import lombok.AccessLevel;

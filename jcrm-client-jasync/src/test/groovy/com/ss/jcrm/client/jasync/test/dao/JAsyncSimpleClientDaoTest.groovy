@@ -213,9 +213,9 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
         def firstOrgClientsCount = 20
         def secondOrgClientsCount = 5
         
-        def firstOrg = userTestHelper.newOrg()
+        def firstOrg = userTestHelper.newOrganization()
         def firstUser = userTestHelper.newUser("User1", firstOrg)
-        def secondOrg = userTestHelper.newOrg()
+        def secondOrg = userTestHelper.newOrganization()
         def secondUser = userTestHelper.newUser("User2", secondOrg)
         
         firstOrgClientsCount.times {

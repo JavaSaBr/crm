@@ -2,7 +2,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = 'JCRM'
 
-include 'jcrm-base'
 //include 'jcrm-jdbc'
 include 'jcrm-jasync'
 include 'jcrm-base-spring'
@@ -31,5 +30,6 @@ include 'jcrm-client-web'
 include 'jcrm-user-contact'
 include 'jcrm_ui_flutter'
 
+include 'base'
 include 'user-api'
 include 'user-jasync'

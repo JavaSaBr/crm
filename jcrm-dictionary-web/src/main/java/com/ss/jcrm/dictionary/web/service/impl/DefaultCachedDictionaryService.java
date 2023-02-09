@@ -1,6 +1,6 @@
 package com.ss.jcrm.dictionary.web.service.impl;
 
-import com.ss.jcrm.base.utils.Reloadable;
+import crm.base.util.Reloadable;
 import com.ss.jcrm.dao.NamedUniqEntity;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;

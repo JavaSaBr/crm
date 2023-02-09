@@ -1,4 +1,4 @@
-package com.ss.jcrm.base.utils;
+package crm.base.util;
 
 import java.time.Instant;
 import java.time.LocalDate;

@@ -28,7 +28,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
         
             def newUserGroup = UserGroupInResource.from(
@@ -67,7 +67,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
             
             def newUserGroup = UserGroupInResource.from("group1", ArrayUtils.EMPTY_LONG_ARRAY)
@@ -97,7 +97,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         
         given:
             
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org, AccessRole.VIEW_USER_GROUPS)
             def group = userTestHelper.newGroup("Group1", org, Set.of(
                 AccessRole.CREATE_USER,
@@ -130,8 +130,8 @@ class UserGroupHandlerTest extends RegistrationSpecification {
         
         given:
             
-            def org1 = userTestHelper.newOrg()
-            def org2 = userTestHelper.newOrg()
+            def org1 = userTestHelper.newOrganization()
+            def org2 = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User1", org1, AccessRole.ORG_ADMIN)
         
             def group1 = userTestHelper.newGroup(org1)
@@ -177,7 +177,7 @@ class UserGroupHandlerTest extends RegistrationSpecification {
     def "should found that user group is exist in user's org"() {
         
         given:
-            def org = userTestHelper.newOrg()
+            def org = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User", org, AccessRole.ORG_ADMIN)
             def group = userTestHelper.newGroup("Group123", org)
             def token = unsafeTokenService.generateNewToken(user)
@@ -193,8 +193,8 @@ class UserGroupHandlerTest extends RegistrationSpecification {
     def "should found that user group is not exist in user's org"() {
         
         given:
-            def org1 = userTestHelper.newOrg()
-            def org2 = userTestHelper.newOrg()
+            def org1 = userTestHelper.newOrganization()
+            def org2 = userTestHelper.newOrganization()
             def user = userTestHelper.newUser("User", org1, AccessRole.ORG_ADMIN)
             def group = userTestHelper.newGroup("Group123", org2)
             def token = unsafeTokenService.generateNewToken(user)

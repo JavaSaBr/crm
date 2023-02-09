@@ -5,9 +5,10 @@ import crm.user.api.dao.OrganizationDao
 import crm.user.jasync.JAsyncUserSpecification
 import com.ss.rlib.common.util.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
-import reactor.core.publisher.Mono
 
 class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
+  
+  private static final def PREFIX = "JAsyncOrganizationDaoTest"
   
   @Autowired
   OrganizationDao organizationDao
@@ -18,12 +19,12 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
     then:
         validate(created, name)
     where:
-        name << ["testOrg1", "testOrg2", "dweffw", "Org1234"]
+        name << ["${PREFIX}_testOrg1", "${PREFIX}_testOrg2", "${PREFIX}_dweffw", "${PREFIX}_Org1234"]
   }
   
   def "should create and load new organization"() {
     given:
-        def orgName = "TestOrgName1"
+        def orgName = userTestHelper.nextOrganizationName()
         def created = organizationDao.create(orgName, dictionaryTestHelper.newCountry()).block()
     when:
         def orgByName = organizationDao.findByName(orgName).block()

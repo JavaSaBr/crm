@@ -10,6 +10,8 @@ import spock.lang.Specification
 @ContextConfiguration(classes = BaseTestConfig)
 class DefaultSpecification extends Specification {
   
+  String prefix = getClass().getSimpleName()
+  
   def setupSpec() {
   }
   

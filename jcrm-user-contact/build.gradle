@@ -1,5 +1,5 @@
 apply plugin: "java-library"
 
 dependencies {
-    api projects.jcrmBase
+    api projects.base
 }

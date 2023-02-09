@@ -1,6 +1,6 @@
 package con.ss.jcrm.client.web.handler;
 
-import com.ss.jcrm.base.utils.WithId;
+import crm.base.util.WithId;
 import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.api.impl.DefaultClientEmail;

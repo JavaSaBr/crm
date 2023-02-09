@@ -1,4 +1,4 @@
-package com.ss.jcrm.base.utils;
+package crm.base.util;
 
 public interface WithId {
   long id();

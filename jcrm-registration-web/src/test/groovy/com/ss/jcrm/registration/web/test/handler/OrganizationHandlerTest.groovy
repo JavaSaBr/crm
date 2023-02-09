@@ -25,7 +25,7 @@ class OrganizationHandlerTest extends RegistrationSpecification {
     def "should found that organization is exist"() {
         
         given:
-            def organization = userTestHelper.newOrg()
+            def organization = userTestHelper.newOrganization()
         when:
             def response = webClient.get()
                 .url("$contextPath/exist/organization/name/$organization.name")

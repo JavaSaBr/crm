@@ -1,6 +1,6 @@
 package com.ss.jcrm.registration.web.resources;
 
-import static com.ss.jcrm.base.utils.CommonUtils.toLongIds;
+import static crm.base.util.CommonUtils.toLongIds;
 import crm.user.api.UserGroup;
 import com.ss.jcrm.web.resources.RestResource;
 import org.jetbrains.annotations.NotNull;
