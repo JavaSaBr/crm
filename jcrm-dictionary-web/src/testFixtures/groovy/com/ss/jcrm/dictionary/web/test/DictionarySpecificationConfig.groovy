@@ -2,7 +2,7 @@ package com.ss.jcrm.dictionary.web.test
 
 import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecificationConfig
 import com.ss.jcrm.dictionary.web.config.DictionaryWebConfig
-import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
+import integration.test.db.config.DbTestConfig
 import com.ss.jcrm.integration.test.web.WebSpecificationConfig
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource
 @Configuration
 @Import([
     DictionaryWebConfig,
-    DbSpecificationConfig,
+    DbTestConfig,
     WebSpecificationConfig,
     JAsyncDictionarySpecificationConfig
 ])

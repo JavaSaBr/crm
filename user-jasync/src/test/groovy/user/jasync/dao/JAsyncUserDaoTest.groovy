@@ -12,7 +12,7 @@ import com.ss.jcrm.user.contact.api.Messenger
 import com.ss.jcrm.user.contact.api.MessengerType
 import com.ss.jcrm.user.contact.api.PhoneNumber
 import com.ss.jcrm.user.contact.api.PhoneNumberType
-import user.jasync.JAsyncUserSpecification
+import crm.user.jasync.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.time.Instant
@@ -35,12 +35,13 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   def "should create and load new user"() {
     given:
         
-        def org = userTestHelper.newOrg()
+        def organization = userTestHelper.newOrganization()
         def salt = passwordService.nextSalt
         def password = passwordService.nextPassword(24)
         def hash = passwordService.hash(password, salt)
         def roles = userTestHelper.onlyOrgAdminRole()
         def birthday = LocalDate.of(1990, 5, 15)
+        def email = userTestHelper.nextEmail()
         
         Set<PhoneNumber> phoneNumbers = [
             new PhoneNumber("+375", "234", "6786786", PhoneNumberType.MOBILE),
@@ -54,10 +55,10 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
     
     when:
         def user = userDao.create(
-            "User1",
+            email,
             hash,
             salt,
-            org,
+            organization,
             roles,
             "F name",
             "S name",
@@ -67,18 +68,18 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
             messengers).block()
     then:
         user != null
-        user.email() == "User1"
+        user.email() == email
         Arrays.equals(user.salt(), salt)
         user.id() != 0L
-        user.organization() == org
+        user.organization() == organization
         user.roles().size() == 1
     when:
         def loaded = userDao.findById(user.id()).block()
     then:
         loaded != null
-        loaded.email() == "User1"
+        loaded.email() == email
         Arrays.equals(loaded.salt(), salt)
-        loaded.organization() == org
+        loaded.organization() == organization
         loaded.roles().size() == 1
         loaded.firstName() == "F name"
         loaded.secondName() == "S name"
@@ -90,16 +91,17 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   
   def "should prevent creating user with the same name"() {
     given:
-        userTestHelper.newUser("User1")
+        def email = userTestHelper.nextEmail()
+        userTestHelper.newUser(email)
     when:
-        userTestHelper.newUser("User1")
+        userTestHelper.newUser(email)
     then:
         thrown DuplicateObjectDaoException
   }
   
   def "should load changed user with correct version"() {
     given:
-        def user = userTestHelper.newUser("User1")
+        def user = userTestHelper.newUser()
     when:
         userDao.update(user).block()
     then:
@@ -115,10 +117,10 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   
   def "should update user correctly"() {
     given:
-        def org = userTestHelper.newOrg()
-        def group1 = userTestHelper.newGroup(org)
-        def group2 = userTestHelper.newGroup(org)
-        def user = userTestHelper.newUser("User1", org)
+        def organization = userTestHelper.newOrganization()
+        def group1 = userTestHelper.newGroup(organization)
+        def group2 = userTestHelper.newGroup(organization)
+        def user = userTestHelper.newUser(organization)
         def timeAfterCreation = Instant.now()
         def birthday = LocalDate.of(1990, 10, 10)
     when:
@@ -127,13 +129,13 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
     then:
         loaded != null
         loaded.id() == user.id()
-        loaded.email() == "User1"
+        loaded.email() == user.email()
         loaded.created().isBefore(timeAfterCreation)
-        loaded.organization() == org
+        loaded.organization() == organization
     when:
-       
+        
         Thread.sleep(1000)
-       
+        
         loaded.firstName("First name")
         loaded.secondName("Second name")
         loaded.thirdName("Third name")
@@ -149,9 +151,9 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         loaded.birthday(birthday)
         loaded.emailConfirmed(true)
         loaded.passwordVersion(3)
-    
+        
         userDao.update(loaded).block()
-    
+        
         def reloaded = userDao.findById(loaded.id()).block()
     
     then:
@@ -175,7 +177,7 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   
   def "should throw NotActualObjectDaoException during updating outdated user"() {
     given:
-        def user = userTestHelper.newUser("User1")
+        def user = userTestHelper.newUser()
         user.version(-1)
     when:
         userDao.update(user).block()
@@ -185,12 +187,12 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   
   def "should load user by email"() {
     given:
-        userTestHelper.newUser("User1")
+        def created = userTestHelper.newUser()
     when:
-        def user = userDao.findByEmail("User1").block()
+        def user = userDao.findByEmail(created.email()).block()
     then:
         user != null
-        user.email() == "User1"
+        user.email() == created.email()
         user.salt() != null
         user.id() != 0L
         user.organization() != null
@@ -198,21 +200,24 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   
   def "should load user by phone number"() {
     given:
-        
         Set<PhoneNumber> phoneNumbers = [
             new PhoneNumber("+24", "22", "3423"),
             new PhoneNumber("+24", "22", "54342")
         ]
         
-        Set<Messenger> messengers = [new Messenger("userWatsUp", MessengerType.WHATS_UP)]
+        Set<Messenger> messengers = [
+            new Messenger("userWatsUp", MessengerType.WHATS_UP)
+        ]
         
-        userTestHelper.newUser("User1", phoneNumbers, messengers)
+        def email = userTestHelper.nextEmail()
+        
+        userTestHelper.newUser(email, phoneNumbers, messengers)
     
     when:
         def user = userDao.findByPhoneNumber("+24223423").block()
     then:
         user != null
-        user.email() == "User1"
+        user.email() == email
         user.salt() != null
         user.id() != 0L
         user.organization() != null
@@ -230,115 +235,120 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   
   def "should find users by names or email under the same org"() {
     given:
-        def org1 = userTestHelper.newOrg()
-        def org2 = userTestHelper.newOrg()
-        userTestHelper.newUser("user1@mail.com", "FiRst1", "Second1", "Third1", org1)
-        userTestHelper.newUser("user2@mail.com", "FIrst2", "Second2", "THird2", org1)
-        userTestHelper.newUser("user3@mail.com", "first3", "Second3", "ThIrd3", org1)
-        userTestHelper.newUser("user11@mail.com", "First1", "Second1", "Third1", org2)
-        userTestHelper.newUser("user12@mail.com", "First2", "Second2", "Third2", org2)
+        def organization1 = userTestHelper.newOrganization()
+        def organization2 = userTestHelper.newOrganization()
+        userTestHelper.newUser(userTestHelper.nextEmail(), "FiRst1", "Second1", "Third1", organization1)
+        userTestHelper.newUser(userTestHelper.nextEmail(), "FIrst2", "Second2", "THird2", organization1)
+        userTestHelper.newUser(userTestHelper.nextEmail(), "first3", "Second3", "ThIrd3", organization1)
+        userTestHelper.newUser(userTestHelper.nextEmail(), "First1", "Second1", "Third1", organization2)
+        userTestHelper.newUser(userTestHelper.nextEmail(), "First2", "Second2", "Third2", organization2)
     when:
-        def users = waitForResults(userDao.searchByName("user", org1.id()))
+        def users = waitForResults(userDao.searchByName("@it.net", organization1.id()))
     then:
         users.size() == 3
     when:
-        users = waitForResults(userDao.searchByName("First2", org1.id()))
+        users = waitForResults(userDao.searchByName("First2", organization1.id()))
     then:
         users.size() == 1
     when:
-        users = waitForResults(userDao.searchByName("hird", org1.id()))
+        users = waitForResults(userDao.searchByName("hird", organization1.id()))
     then:
         users.size() == 3
     when:
-        users = waitForResults(userDao.searchByName("fir", org1.id()))
+        users = waitForResults(userDao.searchByName("fir", organization1.id()))
     then:
         users.size() == 3
     when:
-        users = waitForResults(userDao.searchByName("@mai", org1.id()))
+        users = waitForResults(userDao.searchByName("email_", organization1.id()))
     then:
         users.size() == 3
     when:
-        users = waitForResults(userDao.searchByName("First1 Seco", org1.id()))
+        users = waitForResults(userDao.searchByName("First1 Seco", organization1.id()))
     then:
         users.size() == 1
     when:
-        users = waitForResults(userDao.searchByName("second3 Third", org1.id()))
+        users = waitForResults(userDao.searchByName("second3 Third", organization1.id()))
     then:
         users.size() == 1
   }
   
   def "should find users by names or email under the same org on russian"() {
     given:
-        def org1 = userTestHelper.newOrg()
-        def org2 = userTestHelper.newOrg()
-        userTestHelper.newUser("user1@mail.com", "АЛекс1", "ФАМил1", "Отчест1", org1)
-        userTestHelper.newUser("user2@mail.com", "алеКС2", "Фамил2", "ОТЧЕст2", org1)
-        userTestHelper.newUser("user12@mail.com", "Алекс1", "ФаМиЛ1", "ОтЧЕСтВ1", org2)
+        def organization1 = userTestHelper.newOrganization()
+        def organization2 = userTestHelper.newOrganization()
+        
+        def firstEmail = userTestHelper.nextEmail()
+        def secondEmail = userTestHelper.nextEmail()
+        def thirdEmail = userTestHelper.nextEmail()
+        
+        userTestHelper.newUser(firstEmail, "АЛекс1", "ФАМил1", "Отчест1", organization1)
+        userTestHelper.newUser(secondEmail, "алеКС2", "Фамил2", "ОТЧЕст2", organization1)
+        userTestHelper.newUser(thirdEmail, "Алекс1", "ФаМиЛ1", "ОтЧЕСтВ1", organization2)
     when:
-        def users = waitForResults(userDao.searchByName("user", org1.id()))
+        def users = waitForResults(userDao.searchByName("email", organization1.id()))
     then:
         users.size() == 2
     when:
-        users = waitForResults(userDao.searchByName("алекс2", org1.id()))
+        users = waitForResults(userDao.searchByName("алекс2", organization1.id()))
     then:
         users.size() == 1
     when:
-        users = waitForResults(userDao.searchByName("Отчест", org1.id()))
+        users = waitForResults(userDao.searchByName("Отчест", organization1.id()))
     then:
         users.size() == 2
     when:
-        users = waitForResults(userDao.searchByName("лЕКС", org1.id()))
+        users = waitForResults(userDao.searchByName("лЕКС", organization1.id()))
     then:
         users.size() == 2
     when:
-        users = waitForResults(userDao.searchByName("алекс1 ФАМИЛ", org1.id()))
+        users = waitForResults(userDao.searchByName("алекс1 ФАМИЛ", organization1.id()))
     then:
         users.size() == 1
     when:
-        users = waitForResults(userDao.searchByName("АЛЕКС2 фам", org1.id()))
+        users = waitForResults(userDao.searchByName("АЛЕКС2 фам", organization1.id()))
     then:
         users.size() == 1
   }
   
   def "should load user only under the same organization"() {
     given:
-        def org1 = userTestHelper.newOrg()
-        def org2 = userTestHelper.newOrg()
-        def user = userTestHelper.newUser("user1@mail.com", org1)
+        def organization1 = userTestHelper.newOrganization()
+        def organization2 = userTestHelper.newOrganization()
+        def user = userTestHelper.newUser(organization1)
     when:
-        def loaded = userDao.findByIdAndOrganization(user.id(), org1.id()).block()
+        def loaded = userDao.findByIdAndOrganization(user.id(), organization1.id()).block()
     then:
         loaded != null
         loaded.email() == user.email()
         loaded.id() != 0L
-        loaded.organization() == org1
+        loaded.organization() == organization1
     when:
-        loaded = userDao.findByIdAndOrganization(loaded.id(), org2.id()).block()
+        loaded = userDao.findByIdAndOrganization(loaded.id(), organization2.id()).block()
     then:
         loaded == null
   }
   
   def "should load users only under the same organization"() {
     given:
-        def org1 = userTestHelper.newOrg()
-        def org2 = userTestHelper.newOrg()
-        def user1 = userTestHelper.newUser("user1@mail.com", org1)
-        def user2 = userTestHelper.newUser("user2@mail.com", org1)
-        def user3 = userTestHelper.newUser("user3@mail.com", org1)
-        def user4 = userTestHelper.newUser("user4@mail.com", org2)
+        def organization1 = userTestHelper.newOrganization()
+        def organization2 = userTestHelper.newOrganization()
+        def user1 = userTestHelper.newUser(organization1)
+        def user2 = userTestHelper.newUser(organization1)
+        def user3 = userTestHelper.newUser(organization1)
+        def user4 = userTestHelper.newUser(organization2)
         long[] ids = [user1.id(), user2.id(), user3.id(), user4.id()]
     when:
-        def loaded = waitForResults(userDao.findByIdsAndOrganization(ids, org1.id()))
+        def loaded = waitForResults(userDao.findByIdsAndOrganization(ids, organization1.id()))
     then:
         loaded != null
         loaded.size() == 3
     when:
-        loaded = waitForResults(userDao.findByIdsAndOrganization(ids, org2.id()))
+        loaded = waitForResults(userDao.findByIdsAndOrganization(ids, organization2.id()))
     then:
         loaded.size() == 1
     when:
         ids = [user4.id()]
-        loaded = waitForResults(userDao.findByIdsAndOrganization(ids, org2.id()))
+        loaded = waitForResults(userDao.findByIdsAndOrganization(ids, organization2.id()))
     then:
         loaded.size() == 1
   }
@@ -349,28 +359,28 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         def firstOrgUsersCount = 20
         def secondOrgUsersCount = 5
         
-        def firstOrg = userTestHelper.newOrg()
-        def secondOrg = userTestHelper.newOrg()
+        def organization1 = userTestHelper.newOrganization()
+        def organization2 = userTestHelper.newOrganization()
         
         firstOrgUsersCount.times {
-          userTestHelper.newUser(userTestHelper.nextUId(), firstOrg)
+          userTestHelper.newUser(userTestHelper.nextEmail(), organization1)
         }
         
         secondOrgUsersCount.times {
-          userTestHelper.newUser(userTestHelper.nextUId(), secondOrg)
+          userTestHelper.newUser(userTestHelper.nextEmail(), organization2)
         }
         
         List<User> loadedUsers = []
     
     when:
-        def page = userDao.findPageByOrganization(0, 5, firstOrg.id()).block()
+        def page = userDao.findPageByOrganization(0, 5, organization1.id()).block()
         loadedUsers.addAll(page.entities())
     then:
         page != null
         page.totalSize() == firstOrgUsersCount
         page.entities().size() == 5
     when:
-        page = userDao.findPageByOrganization(17, 5, firstOrg.id()).block()
+        page = userDao.findPageByOrganization(17, 5, organization1.id()).block()
     then:
         page != null
         page.totalSize() == firstOrgUsersCount
@@ -381,30 +391,30 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   def "should return true when all users are in the same organization"() {
     given:
         
-        def org = userTestHelper.newOrg()
-        def user1 = userTestHelper.newUser("user1@mail.com", org)
-        def user2 = userTestHelper.newUser("user2@mail.com", org)
-        def user3 = userTestHelper.newUser("user3@mail.com", org)
+        def organization = userTestHelper.newOrganization()
+        def user1 = userTestHelper.newUser(organization)
+        def user2 = userTestHelper.newUser(organization)
+        def user3 = userTestHelper.newUser(organization)
         
         long[] ids = [user1.id(), user2.id(), user3.id()]
     
     when:
-        def result = userDao.containsAll(ids, org.id()).block()
+        def result = userDao.containsAll(ids, organization.id()).block()
     then:
         result
   }
   
   def "should return false when all users are in different organizations"() {
     given:
-        def org1 = userTestHelper.newOrg()
-        def org2 = userTestHelper.newOrg()
-        def user1 = userTestHelper.newUser("user1@mail.com", org1)
-        def user2 = userTestHelper.newUser("user2@mail.com", org1)
-        def user3 = userTestHelper.newUser("user3@mail.com", org1)
-        def user4 = userTestHelper.newUser("user4@mail.com", org2)
+        def organization1 = userTestHelper.newOrganization()
+        def organization2 = userTestHelper.newOrganization()
+        def user1 = userTestHelper.newUser(organization1)
+        def user2 = userTestHelper.newUser(organization1)
+        def user3 = userTestHelper.newUser(organization1)
+        def user4 = userTestHelper.newUser(organization2)
         long[] ids = [user1.id(), user2.id(), user3.id(), user4.id()]
     when:
-        def result = userDao.containsAll(ids, org1.id()).block()
+        def result = userDao.containsAll(ids, organization1.id()).block()
     then:
         !result
   }

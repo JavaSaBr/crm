@@ -1,2 +1,2 @@
-ALTER TABLE "jcrm-user-db"."user"
-  ALTER COLUMN password TYPE bytea USING password :: bytea;
+alter table "user"
+  alter column password type bytea using password :: bytea;

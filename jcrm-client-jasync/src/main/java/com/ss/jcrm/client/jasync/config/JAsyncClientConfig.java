@@ -6,8 +6,8 @@ import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.pool.PostgreSQLConnectionFactory;
 import com.ss.jcrm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.jasync.dao.JAsyncSimpleClientDao;
-import com.ss.jcrm.jasync.config.JAsyncConfig;
-import com.ss.jcrm.jasync.util.JAsyncUtils;
+import jasync.config.CommonJAsyncConfig;
+import jasync.util.JAsyncUtils;
 import io.netty.channel.EventLoopGroup;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutorService;
         ignoreResourceNotFound = true
     )
 })
-@Import(JAsyncConfig.class)
+@Import(CommonJAsyncConfig.class)
 @Configuration(proxyBeanMethods = false)
 public class JAsyncClientConfig {
 

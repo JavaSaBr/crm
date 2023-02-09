@@ -1,2 +1,2 @@
 create
-    index user_roles_index on "jcrm-user-db"."user" using gin (roles);
+  index user_roles_index on "user" using gin (roles);

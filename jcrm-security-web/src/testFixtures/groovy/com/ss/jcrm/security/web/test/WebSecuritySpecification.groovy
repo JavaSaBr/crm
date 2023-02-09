@@ -2,7 +2,7 @@ package com.ss.jcrm.security.web.test
 
 import com.ss.jcrm.integration.test.web.WebSpecification
 import com.ss.jcrm.security.web.service.UnsafeTokenService
-import crm.user.api.test.UserTestHelper
+import crm.user.api.UserDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration
 class WebSecuritySpecification extends WebSpecification {
 
     @Autowired
-    UserTestHelper userTestHelper
+    UserDbTestHelper userTestHelper
     
     @Autowired
     UnsafeTokenService unsafeTokenService

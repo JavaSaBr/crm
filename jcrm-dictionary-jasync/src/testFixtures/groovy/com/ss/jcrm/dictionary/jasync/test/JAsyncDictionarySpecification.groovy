@@ -2,7 +2,7 @@ package com.ss.jcrm.dictionary.jasync.test
 
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
-import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
+import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
 import org.flywaydb.core.Flyway
@@ -24,7 +24,7 @@ class JAsyncDictionarySpecification extends DefaultSpecification {
     }
 
     @Autowired
-    DictionaryTestHelper dictionaryTestHelper
+    DictionaryDbTestHelper dictionaryTestHelper
     
     @Autowired
     List<? extends Flyway> flyways

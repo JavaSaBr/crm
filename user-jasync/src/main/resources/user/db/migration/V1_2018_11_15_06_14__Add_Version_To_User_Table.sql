@@ -1,2 +1,2 @@
-ALTER TABLE "jcrm-user-db"."user"
-  ADD version int DEFAULT 0 NULL;
+alter table "user"
+  add version int default 0 null;

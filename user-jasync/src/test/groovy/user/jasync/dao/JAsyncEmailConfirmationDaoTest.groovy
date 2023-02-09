@@ -1,7 +1,7 @@
 package user.jasync.dao
 
 import crm.user.api.dao.EmailConfirmationDao
-import user.jasync.JAsyncUserSpecification
+import crm.user.jasync.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.time.Instant
@@ -26,7 +26,7 @@ class JAsyncEmailConfirmationDaoTest extends JAsyncUserSpecification {
   def "should create and load new email confirmation by id"() {
     given:
         def code = "3453446"
-        def email = "test5@email.com"
+        def email = userTestHelper.nextEmail()
         def expiration = Instant.now().plusSeconds(60)
         def created = emailConfirmationDao.create(code, email, expiration).block()
     when:

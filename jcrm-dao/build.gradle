@@ -1,5 +1,7 @@
 apply plugin: "java-library"
+apply plugin: "java-test-fixtures"
 
 dependencies {
-    api projects.jcrmBase
+  api projects.jcrmBaseSpring
+  testFixturesApi libs.flyway.core
 }

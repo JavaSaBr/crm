@@ -1,10 +1,10 @@
-CREATE TABLE "jcrm-user-db"."user"
+create table "user"
 (
-  id           bigserial PRIMARY KEY,
-  name         VARCHAR(100) NOT NULL,
-  password     VARCHAR(100) NOT NULL,
-  salt         bytea        NOT NULL,
+  id           bigserial primary key,
+  name         varchar(100) not null,
+  password     varchar(100) not null,
+  salt         bytea        not null,
   organization bigint
 );
-CREATE UNIQUE INDEX user_name_uindex
-  ON "jcrm-user-db"."user" (name);
+create unique index user_name_uindex
+  on "user" (name);

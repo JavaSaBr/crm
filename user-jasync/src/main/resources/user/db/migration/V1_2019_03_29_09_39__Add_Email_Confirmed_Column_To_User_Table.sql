@@ -1,2 +1,2 @@
-alter table "jcrm-user-db"."user"
-  add email_confirmed boolean default FALSE not null;
+alter table "user"
+  add email_confirmed boolean default false not null;

@@ -1,14 +1,15 @@
 package com.ss.jcrm.registration.web.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
+import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
-import crm.user.api.test.UserTestHelper
+
 import com.ss.jcrm.user.contact.api.MessengerType
 import com.ss.jcrm.user.contact.api.PhoneNumberType
 import com.ss.jcrm.user.contact.api.resource.MessengerResource
 import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource
 import com.ss.jcrm.web.config.ApiEndpointServer
+import crm.user.api.UserDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
@@ -21,10 +22,10 @@ class RegistrationSpecification extends WebSpecification {
     ApiEndpointServer registrationApiEndpointServer
 
     @Autowired
-    UserTestHelper userTestHelper
+    UserDbTestHelper userTestHelper
 
     @Autowired
-    DictionaryTestHelper dictionaryTestHelper
+    DictionaryDbTestHelper dictionaryTestHelper
     
     @Autowired
     ObjectMapper objectMapper

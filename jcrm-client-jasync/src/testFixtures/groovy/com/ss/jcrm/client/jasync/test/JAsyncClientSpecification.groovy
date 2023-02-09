@@ -2,10 +2,10 @@ package com.ss.jcrm.client.jasync.test
 
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
-import com.ss.jcrm.client.api.test.ClientTestHelper
+import com.ss.jcrm.client.api.test.ClientDbTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
-import crm.user.api.test.UserTestHelper
+import crm.user.api.UserDbTestHelper
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -22,10 +22,10 @@ class JAsyncClientSpecification extends DefaultSpecification {
   }
   
   @Autowired
-  UserTestHelper userTestHelper
+  UserDbTestHelper userTestHelper
   
   @Autowired
-  ClientTestHelper clientTestHelper
+  ClientDbTestHelper clientTestHelper
   
   @Autowired
   List<? extends Flyway> flyways

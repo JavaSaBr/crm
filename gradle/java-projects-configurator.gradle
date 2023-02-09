@@ -16,9 +16,15 @@ subprojects {
     if (hasGroovy) {
       plugins.apply("groovy")
     }
+  
+    def hasTestFixtures = Files.exists(srcDir.resolve("testFixtures"))
+  
+    if (hasTestFixtures) {
+      plugins.apply("java-test-fixtures")
+    }
   }
   
-  afterEvaluate {
+  afterEvaluate { Project prj ->
     
     sourceCompatibility = JavaVersion.VERSION_19
     targetCompatibility = JavaVersion.VERSION_19
@@ -30,6 +36,14 @@ subprojects {
       annotationProcessor libs.lombok
       testCompileOnly libs.lombok
       testAnnotationProcessor libs.lombok
+    }
+  
+    if (prj.plugins.hasPlugin("java-test-fixtures")) {
+      prj.dependencies {
+        testFixturesCompileOnly libs.jetbrains.annotations
+        testFixturesCompileOnly libs.lombok
+        testFixturesAnnotationProcessor libs.lombok
+      }
     }
     
     testlogger {
@@ -71,7 +85,7 @@ subprojects {
       }
       testFixtures {
         java {
-          srcDirs 'src/test/groovy'
+          srcDirs 'src/testFixtures/groovy'
         }
       }
     }

@@ -1,2 +1,2 @@
-alter table "jcrm-user-db"."user"
-    add messengers varchar(255);
+alter table "user"
+  add messengers varchar(255);

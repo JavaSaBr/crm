@@ -5,7 +5,7 @@ import crm.user.api.dao.MinimalUserDao
 import crm.user.api.dao.OrganizationDao
 import crm.user.api.dao.UserDao
 import crm.user.api.dao.UserGroupDao
-import user.jasync.JAsyncUserSpecification
+import crm.user.jasync.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
 class JAsyncMinimalUserDaoTest extends JAsyncUserSpecification {
@@ -27,7 +27,7 @@ class JAsyncMinimalUserDaoTest extends JAsyncUserSpecification {
   
   def "should load new minimal user"() {
     given:
-        def organization = userTestHelper.newOrg()
+        def organization = userTestHelper.newOrganization()
         def salt = passwordService.nextSalt
         def password = passwordService.nextPassword(24)
         def hash = passwordService.hash(password, salt)
@@ -52,13 +52,13 @@ class JAsyncMinimalUserDaoTest extends JAsyncUserSpecification {
   
   def "should load page of minimal users which are in target user group"() {
     given:
-        def organization = userTestHelper.newOrg()
+        def organization = userTestHelper.newOrganization()
         def group1 = userTestHelper.newGroup(organization)
         def group2 = userTestHelper.newGroup(organization)
-        def user1 = userTestHelper.newUser("User1", organization)
-        def user2 = userTestHelper.newUser("User2", organization)
-        def user3 = userTestHelper.newUser("User3", organization)
-        def user4 = userTestHelper.newUser("User4", organization)
+        def user1 = userTestHelper.newUser(organization)
+        def user2 = userTestHelper.newUser(organization)
+        def user3 = userTestHelper.newUser(organization)
+        def user4 = userTestHelper.newUser(organization)
     when:
         def page = minimalUserDao.findPageByOrganizationAndGroup(0, 10, organization.id(), group1.id()).block()
     then:

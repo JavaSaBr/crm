@@ -1,7 +1,7 @@
-CREATE TABLE "jcrm-user-db"."organization"
+create table "organization"
 (
-  id   bigserial PRIMARY KEY,
-  name VARCHAR(255) NOT NULL
+  id   bigserial primary key,
+  name varchar(255) not null
 );
-CREATE UNIQUE INDEX organization_name_uindex
-  ON "jcrm-user-db"."organization" (name);
+create unique index organization_name_uindex
+  on "organization" (name);

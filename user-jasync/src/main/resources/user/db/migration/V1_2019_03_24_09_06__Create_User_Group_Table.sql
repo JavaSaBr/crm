@@ -1,15 +1,15 @@
-CREATE TABLE "jcrm-user-db".user_group
+create table user_group
 (
-  id              bigserial PRIMARY KEY NOT NULL,
-  name            varchar(45)           NOT NULL,
-  organization_id bigint                NOT NULL,
-  CONSTRAINT user_group_to_org_fk FOREIGN KEY (organization_id) REFERENCES "jcrm-user-db".organization (id)
+  id              bigserial primary key not null,
+  name            varchar(45)           not null,
+  organization_id bigint                not null,
+  constraint user_group_to_org_fk foreign key (organization_id) references organization (id)
 );
-CREATE UNIQUE INDEX user_group_name_and_org_uindex
-  ON "jcrm-user-db".user_group (name, organization_id);
+create unique index user_group_name_and_org_uindex
+  on user_group (name, organization_id);
 
-ALTER TABLE "jcrm-user-db".user_group
-  ADD roles jsonb NULL;
+alter table user_group
+  add roles jsonb null;
 
-alter table "jcrm-user-db".user_group
+alter table user_group
   add version int default 0 not null;

@@ -2,11 +2,12 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 dependencies {
-    api projects.jcrmBase
-    api projects.userApi
-    api projects.jcrmBaseSpring
-    api projects.jcrmJasync
-
-    testFixturesApi testFixtures(projects.jcrmDictionaryJasync)
-    testFixturesApi testFixtures(projects.userApi)
+  api projects.jcrmBase
+  api projects.userApi
+  api projects.jcrmBaseSpring
+  api projects.jcrmJasync
+  
+  testFixturesApi testFixtures(projects.jcrmJasync)
+  testFixturesApi testFixtures(projects.jcrmDictionaryJasync)
+  testFixturesApi testFixtures(projects.userApi)
 }

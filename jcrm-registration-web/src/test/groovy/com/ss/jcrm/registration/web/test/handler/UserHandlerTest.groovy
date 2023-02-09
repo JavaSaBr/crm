@@ -417,19 +417,25 @@ class UserHandlerTest extends RegistrationSpecification {
     }
     
     def "should load page of users successfully"() {
-        
         given:
     
             def firstOrgContactsCount = 20
             def secondOrgContactsCount = 5
     
-            def firstOrg = userTestHelper.newOrg()
-            def firstUser = userTestHelper.newUser("User1", firstOrg, AccessRole.USER_MANAGER)
+            def firstOrganization = userTestHelper.newOrganization()
+            def secondOrganization = userTestHelper.newOrganization()
     
-            def secondOrg = userTestHelper.newOrg()
+            def firstUser = userTestHelper.newUser(userTestHelper.nextEmail(),
+                firstOrganization,
+                AccessRole.USER_MANAGER)
     
-            (firstOrgContactsCount - 1).times { userTestHelper.newUser(userTestHelper.nextUId(), firstOrg) }
-            secondOrgContactsCount.times { userTestHelper.newUser(userTestHelper.nextUId(), secondOrg) }
+            (firstOrgContactsCount - 1).times {
+              userTestHelper.newUser(userTestHelper.nextEmail(), firstOrganization)
+            }
+        
+            secondOrgContactsCount.times {
+              userTestHelper.newUser(userTestHelper.nextEmail(), secondOrganization)
+            }
     
             def token = unsafeTokenService.generateNewToken(firstUser)
         

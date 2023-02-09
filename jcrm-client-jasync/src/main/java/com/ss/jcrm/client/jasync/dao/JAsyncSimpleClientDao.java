@@ -1,7 +1,7 @@
 package com.ss.jcrm.client.jasync.dao;
 
 import static com.ss.jcrm.base.utils.DateUtils.toUtcInstant;
-import static com.ss.jcrm.jasync.util.JAsyncUtils.*;
+import static jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -13,9 +13,9 @@ import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.api.impl.*;
 import com.ss.jcrm.dao.EntityPage;
-import com.ss.jcrm.jasync.dao.AbstractJAsyncDao;
-import com.ss.jcrm.jasync.function.JAsyncConverter;
-import com.ss.jcrm.jasync.util.JAsyncUtils;
+import jasync.dao.AbstractJAsyncDao;
+import jasync.function.JAsyncConverter;
+import jasync.util.JAsyncUtils;
 import crm.user.api.Organization;
 import crm.user.api.User;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.web.test
 
 import com.ss.jcrm.base.utils.Reloadable
-import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
+import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
 import com.ss.jcrm.web.config.ApiEndpointServer
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +14,7 @@ class DictionarySpecification extends WebSpecification {
     ApiEndpointServer dictionaryApiEndpointServer
 
     @Autowired
-    DictionaryTestHelper dictionaryTestHelper
+    DictionaryDbTestHelper dictionaryTestHelper
 
     @Autowired
     List<Reloadable> reloadableServices

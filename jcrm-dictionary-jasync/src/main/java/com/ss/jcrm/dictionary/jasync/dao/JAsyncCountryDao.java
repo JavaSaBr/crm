@@ -9,7 +9,7 @@ import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultCountry;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
-import com.ss.jcrm.jasync.function.JAsyncConverter;
+import jasync.function.JAsyncConverter;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;

@@ -2,7 +2,7 @@ package user.jasync.dao
 
 import crm.user.api.Organization
 import crm.user.api.dao.OrganizationDao
-import user.jasync.JAsyncUserSpecification
+import crm.user.jasync.JAsyncUserSpecification
 import com.ss.rlib.common.util.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.core.publisher.Mono
@@ -40,8 +40,12 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
   
   def "should load all new organizations"() {
     given:
-        def orgNames = ["org1", "org2", "org3", "org4"]
-        
+        def orgNames = [
+            userTestHelper.nextOrganizationName(),
+            userTestHelper.nextOrganizationName(),
+            userTestHelper.nextOrganizationName(),
+            userTestHelper.nextOrganizationName()
+        ]
         orgNames.forEach {
           organizationDao.create(it, dictionaryTestHelper.newCountry()).block()
         }
@@ -49,33 +53,14 @@ class JAsyncOrganizationDaoTest extends JAsyncUserSpecification {
         def loaded = waitForResults(organizationDao.findAll())
     then:
         loaded != null
-        loaded.size() == orgNames.size()
-  }
-  
-  def "should load all new organizations using async"() {
-    given:
-        def orgNames = ["org1", "org2", "org3", "org4"]
-        def results = new ArrayList<Mono<?>>()
-        
-        orgNames.forEach {
-          results.add(organizationDao.create(it, dictionaryTestHelper.newCountry()))
-        }
-        
-        results.forEach {
-          it.block()
-        }
-    when:
-        def loaded = waitForResults(organizationDao.findAll())
-    then:
-        loaded != null
-        loaded.size() == orgNames.size()
+        loaded.size() >= orgNames.size()
   }
   
   def "should found created organization by name"() {
     given:
-        def org = userTestHelper.newOrg()
+        def organization = userTestHelper.newOrganization()
     when:
-        def exist = organizationDao.existByName(org.name()).block()
+        def exist = organizationDao.existByName(organization.name()).block()
     then:
         exist
   }

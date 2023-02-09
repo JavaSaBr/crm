@@ -3,13 +3,14 @@ package com.ss.jcrm.client.jasync.test
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
 import com.ss.jcrm.client.api.dao.SimpleClientDao
-import com.ss.jcrm.client.api.test.ClientTestHelper
+import com.ss.jcrm.client.api.test.ClientDbTestHelper
 import com.ss.jcrm.client.jasync.config.JAsyncClientConfig
-import com.ss.jcrm.client.jasync.test.helper.JAsyncClientTestHelper
-import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
+import com.ss.jcrm.client.jasync.test.helper.JAsyncClientDbTestHelper
+import crm.user.api.UserDbTestHelper
+import integration.test.db.config.DbTestConfig
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
-import crm.user.api.test.UserTestHelper
-import user.jasync.JAsyncUserSpecificationConfig
+
+import crm.user.jasync.config.JAsyncUserTestConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,7 +23,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 @Configuration
 @Import([
     JAsyncClientConfig,
-    JAsyncUserSpecificationConfig,
+    JAsyncUserTestConfig,
 ])
 @PropertySource("classpath:com/ss/jcrm/client/jasync/test/client-jasync-test.properties")
 class JAsyncClientSpecificationConfig {
@@ -32,7 +33,7 @@ class JAsyncClientSpecificationConfig {
   
   @Autowired
   @Lazy
-  UserTestHelper userTestHelper
+  UserDbTestHelper userTestHelper
   
   @Autowired
   @Lazy
@@ -47,13 +48,13 @@ class JAsyncClientSpecificationConfig {
     
     return DbSpecificationUtils.newConnectionPool(
         postgreSQLContainer,
-        DbSpecificationConfig.dbName
+        DbTestConfig.dbName
     )
   }
   
   @Bean
-  ClientTestHelper taskTestHelper(Environment env) {
-    return new JAsyncClientTestHelper(
+  ClientDbTestHelper taskTestHelper(Environment env) {
+    return new JAsyncClientDbTestHelper(
         clientConnectionPool(),
         env.getRequiredProperty("jdbc.client.db.schema"),
         userTestHelper,

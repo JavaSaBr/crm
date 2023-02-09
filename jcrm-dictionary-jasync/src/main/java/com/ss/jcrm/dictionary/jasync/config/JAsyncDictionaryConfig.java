@@ -10,8 +10,8 @@ import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.dictionary.jasync.dao.JAsyncCityDao;
 import com.ss.jcrm.dictionary.jasync.dao.JAsyncCountryDao;
 import com.ss.jcrm.dictionary.jasync.dao.JAsyncIndustryDao;
-import com.ss.jcrm.jasync.config.JAsyncConfig;
-import com.ss.jcrm.jasync.util.JAsyncUtils;
+import jasync.config.CommonJAsyncConfig;
+import jasync.util.JAsyncUtils;
 import io.netty.channel.EventLoopGroup;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
         ignoreResourceNotFound = true
     )
 })
-@Import(JAsyncConfig.class)
+@Import(CommonJAsyncConfig.class)
 @Configuration(proxyBeanMethods = false)
 public class JAsyncDictionaryConfig {
 

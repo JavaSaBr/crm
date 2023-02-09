@@ -4,7 +4,7 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.ss.jcrm.dao.NamedUniqEntity;
 import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
-import com.ss.jcrm.jasync.dao.AbstractNamedObjectJAsyncDao;
+import jasync.dao.AbstractNamedObjectJAsyncDao;
 import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import org.jetbrains.annotations.NotNull;

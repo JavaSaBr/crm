@@ -8,7 +8,7 @@ import com.ss.jcrm.client.api.impl.DefaultClientPhoneNumber
 import com.ss.jcrm.client.api.impl.DefaultContactSite
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
-import com.ss.jcrm.jasync.util.JAsyncUtils
+import jasync.util.JAsyncUtils
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.time.Instant

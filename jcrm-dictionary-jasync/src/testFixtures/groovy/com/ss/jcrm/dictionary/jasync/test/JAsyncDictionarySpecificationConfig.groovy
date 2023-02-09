@@ -3,10 +3,10 @@ package com.ss.jcrm.dictionary.jasync.test
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
 import com.ss.jcrm.dictionary.api.dao.CountryDao
-import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
+import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig
-import com.ss.jcrm.dictionary.jasync.test.helper.JAsyncDictionaryTestHelper
-import com.ss.jcrm.integration.test.db.config.DbSpecificationConfig
+import com.ss.jcrm.dictionary.jasync.test.helper.JAsyncDictionaryDbTestHelper
+import integration.test.db.config.DbTestConfig
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.*
@@ -16,7 +16,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 @Configuration
 @Import([
     JAsyncDictionaryConfig,
-    DbSpecificationConfig,
+    DbTestConfig,
 ])
 @PropertySource("classpath:com/ss/jcrm/dictionary/jasync/test/dictionary-jasync-test.properties")
 class JAsyncDictionarySpecificationConfig {
@@ -39,13 +39,13 @@ class JAsyncDictionarySpecificationConfig {
         
         return DbSpecificationUtils.newConnectionPool(
             postgreSQLContainer,
-            DbSpecificationConfig.dbName
+            DbTestConfig.dbName
         )
     }
     
     @Bean
-    DictionaryTestHelper dictionaryTestHelper() {
-        return new JAsyncDictionaryTestHelper(
+    DictionaryDbTestHelper dictionaryTestHelper() {
+        return new JAsyncDictionaryDbTestHelper(
             dictionaryConnectionPool(),
             countryDao,
             env.getRequiredProperty("jdbc.dictionary.db.schema")

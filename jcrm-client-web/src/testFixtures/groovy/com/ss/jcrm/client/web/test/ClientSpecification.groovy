@@ -1,10 +1,11 @@
 package com.ss.jcrm.client.web.test
 
-import com.ss.jcrm.client.api.test.ClientTestHelper
-import com.ss.jcrm.dictionary.api.test.DictionaryTestHelper
+import com.ss.jcrm.client.api.test.ClientDbTestHelper
+import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
-import crm.user.api.test.UserTestHelper
+
 import com.ss.jcrm.web.config.ApiEndpointServer
+import crm.user.api.UserDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
@@ -15,13 +16,13 @@ class ClientSpecification extends WebSpecification {
     ApiEndpointServer clientApiEndpointServer
 
     @Autowired
-    UserTestHelper userTestHelper
+    UserDbTestHelper userTestHelper
 
     @Autowired
-    DictionaryTestHelper dictionaryTestHelper
+    DictionaryDbTestHelper dictionaryTestHelper
     
     @Autowired
-    ClientTestHelper clientTestHelper
+    ClientDbTestHelper clientTestHelper
 
     def contextPath
 

@@ -1,16 +1,16 @@
-ALTER TABLE "jcrm-user-db".organization
-  ADD country_id bigint NOT NULL;
-ALTER TABLE "jcrm-user-db".organization
-  ADD version int DEFAULT 0 NOT NULL;
-ALTER TABLE "jcrm-user-db".organization
-  ADD zip_code varchar(50) NULL;
-ALTER TABLE "jcrm-user-db".organization
-  ADD address varchar(255) NULL;
-ALTER TABLE "jcrm-user-db".organization
-  ADD email varchar(50) NULL;
-ALTER TABLE "jcrm-user-db".organization
-  ADD phone_number varchar(50) NULL;
-ALTER TABLE "jcrm-user-db".organization
-  ADD city_id bigint NULL;
-ALTER TABLE "jcrm-user-db".organization
-  ADD industries jsonb NULL;
+alter table organization
+  add country_id bigint not null;
+alter table organization
+  add version int default 0 not null;
+alter table organization
+  add zip_code varchar(50) null;
+alter table organization
+  add address varchar(255) null;
+alter table organization
+  add email varchar(50) null;
+alter table organization
+  add phone_number varchar(50) null;
+alter table organization
+  add city_id bigint null;
+alter table organization
+  add industries jsonb null;
