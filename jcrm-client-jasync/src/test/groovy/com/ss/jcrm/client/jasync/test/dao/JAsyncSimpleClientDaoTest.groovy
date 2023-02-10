@@ -117,7 +117,7 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
     given:
         def client = clientTestHelper.newSimpleClient()
     when:
-        def loaded = simpleClientDao.findByIdAndOrg(client.id(), client.organizationId()).block()
+        def loaded = simpleClientDao.findByIdAndOrganization(client.id(), client.organizationId()).block()
     then:
         loaded != null
         loaded.id() == client.id()
@@ -125,7 +125,7 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
         loaded.firstName() == client.firstName()
         loaded.secondName() == loaded.secondName()
     when:
-        loaded = simpleClientDao.findByIdAndOrg(client.id(), client.organizationId() + 1).block()
+        loaded = simpleClientDao.findByIdAndOrganization(client.id(), client.organizationId() + 1).block()
     then:
         loaded == null
   }

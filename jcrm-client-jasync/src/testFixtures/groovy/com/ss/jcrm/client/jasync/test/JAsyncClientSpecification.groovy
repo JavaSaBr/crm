@@ -2,9 +2,9 @@ package com.ss.jcrm.client.jasync.test
 
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
-import com.ss.jcrm.client.api.test.ClientDbTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
 import com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils
+import crm.client.api.ClientDbTestHelper
 import crm.user.api.UserDbTestHelper
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired

@@ -4,8 +4,8 @@ apply plugin: "java-test-fixtures"
 dependencies {
     api projects.baseSpring
     api projects.jcrmJasync
-    api projects.jcrmClientApi
+    api projects.clientApi
 
-    testFixturesApi testFixtures(projects.jcrmClientApi)
+    testFixturesApi testFixtures(projects.clientApi)
     testFixturesApi testFixtures(projects.userJasync)
 }

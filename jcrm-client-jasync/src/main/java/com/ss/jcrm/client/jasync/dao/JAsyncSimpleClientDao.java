@@ -179,8 +179,8 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
   }
 
   @Override
-  public @NotNull Flux<SimpleClient> findByOrg(long orgId) {
-    return selectAll(querySelectByOrgId, List.of(orgId), converter());
+  public @NotNull Flux<SimpleClient> findByOrganization(long organizationId) {
+    return selectAll(querySelectByOrgId, List.of(organizationId), converter());
   }
 
   @Override
@@ -191,8 +191,8 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
   }
 
   @Override
-  public @NotNull Mono<SimpleClient> findByIdAndOrg(long id, long orgId) {
-    return select(querySelectByIdAndOrgId, List.of(id, orgId), converter());
+  public @NotNull Mono<SimpleClient> findByIdAndOrganization(long id, long organizationId) {
+    return select(querySelectByIdAndOrgId, List.of(id, organizationId), converter());
   }
 
   private @NotNull JAsyncConverter<JAsyncSimpleClientDao, SimpleClient> converter() {

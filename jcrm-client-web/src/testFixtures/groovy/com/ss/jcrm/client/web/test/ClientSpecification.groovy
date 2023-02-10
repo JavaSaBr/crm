@@ -1,10 +1,10 @@
 package com.ss.jcrm.client.web.test
 
-import com.ss.jcrm.client.api.test.ClientDbTestHelper
 import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
 
 import crm.base.web.config.ApiEndpoint
+import crm.client.api.ClientDbTestHelper
 import crm.user.api.UserDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration

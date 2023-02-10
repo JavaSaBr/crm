@@ -4,9 +4,9 @@ import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
 import com.ss.jcrm.client.api.SimpleClient
 import com.ss.jcrm.client.api.dao.SimpleClientDao
-import com.ss.jcrm.client.api.test.ClientDbTestHelper
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper
+import crm.client.api.ClientDbTestHelper
 import crm.user.api.User
 import crm.user.api.UserDbTestHelper
 
