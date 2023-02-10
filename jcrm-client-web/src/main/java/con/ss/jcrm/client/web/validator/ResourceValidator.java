@@ -1,9 +1,9 @@
 package con.ss.jcrm.client.web.validator;
 
-import com.ss.jcrm.client.api.EmailType;
-import com.ss.jcrm.client.api.MessengerType;
-import com.ss.jcrm.client.api.PhoneNumberType;
-import com.ss.jcrm.client.api.SiteType;
+import crm.client.api.EmailType;
+import crm.client.api.MessengerType;
+import crm.client.api.PhoneNumberType;
+import crm.client.api.SiteType;
 import crm.base.web.exception.BadRequestWebException;
 import crm.base.web.validator.BaseResourceValidator;
 import com.ss.rlib.common.util.StringUtils;

@@ -1,4 +1,4 @@
-package com.ss.jcrm.client.api;
+package crm.client.api;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import crm.base.util.EnumWithIdAndDescription;

@@ -1,9 +1,9 @@
 package com.ss.jcrm.client.web.test.handler
 
-import com.ss.jcrm.client.api.EmailType
-import com.ss.jcrm.client.api.MessengerType
-import com.ss.jcrm.client.api.PhoneNumberType
-import com.ss.jcrm.client.api.SiteType
+import crm.client.api.EmailType
+import crm.client.api.MessengerType
+import crm.client.api.PhoneNumberType
+import crm.client.api.SiteType
 import com.ss.jcrm.client.web.test.ClientSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService

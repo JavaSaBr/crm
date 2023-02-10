@@ -1,7 +1,7 @@
-package com.ss.jcrm.client.api.impl;
+package crm.client.api.impl;
 
-import com.ss.jcrm.client.api.ClientPhoneNumber;
-import com.ss.jcrm.client.api.PhoneNumberType;
+import crm.client.api.ClientPhoneNumber;
+import crm.client.api.PhoneNumberType;
 import org.jetbrains.annotations.NotNull;
 
 public record DefaultClientPhoneNumber(

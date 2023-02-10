@@ -1,13 +1,18 @@
 package com.ss.jcrm.client.jasync.test.dao
 
-import com.ss.jcrm.client.api.*
-import com.ss.jcrm.client.api.dao.SimpleClientDao
-import com.ss.jcrm.client.api.impl.DefaultClientEmail
-import com.ss.jcrm.client.api.impl.DefaultClientMessenger
-import com.ss.jcrm.client.api.impl.DefaultClientPhoneNumber
-import com.ss.jcrm.client.api.impl.DefaultContactSite
+
+import crm.client.api.dao.SimpleClientDao
+import crm.client.api.impl.DefaultClientEmail
+import crm.client.api.impl.DefaultClientMessenger
+import crm.client.api.impl.DefaultClientPhoneNumber
+import crm.client.api.impl.DefaultContactSite
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
+import crm.client.api.EmailType
+import crm.client.api.MessengerType
+import crm.client.api.PhoneNumberType
+import crm.client.api.SimpleClient
+import crm.client.api.SiteType
 import jasync.util.JAsyncUtils
 import org.springframework.beans.factory.annotation.Autowired
 

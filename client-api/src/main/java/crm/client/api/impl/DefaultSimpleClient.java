@@ -1,6 +1,10 @@
-package com.ss.jcrm.client.api.impl;
+package crm.client.api.impl;
 
-import com.ss.jcrm.client.api.*;
+import crm.client.api.ClientEmail;
+import crm.client.api.ClientMessenger;
+import crm.client.api.ClientPhoneNumber;
+import crm.client.api.ClientSite;
+import crm.client.api.SimpleClient;
 import java.util.List;
 import lombok.*;
 

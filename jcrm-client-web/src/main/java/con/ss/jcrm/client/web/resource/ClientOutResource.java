@@ -1,7 +1,7 @@
 package con.ss.jcrm.client.web.resource;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ss.jcrm.client.api.SimpleClient;
+import crm.client.api.SimpleClient;
 import crm.base.web.resources.RestResource;
 import com.ss.rlib.common.util.DateUtils;
 import org.jetbrains.annotations.NotNull;

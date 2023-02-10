@@ -1,8 +1,8 @@
 package con.ss.jcrm.client.web.resource;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ss.jcrm.client.api.ClientSite;
-import com.ss.jcrm.client.api.SiteType;
+import crm.client.api.ClientSite;
+import crm.client.api.SiteType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

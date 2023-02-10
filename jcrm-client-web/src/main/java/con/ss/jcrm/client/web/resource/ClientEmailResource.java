@@ -1,8 +1,8 @@
 package con.ss.jcrm.client.web.resource;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ss.jcrm.client.api.ClientEmail;
-import com.ss.jcrm.client.api.EmailType;
+import crm.client.api.ClientEmail;
+import crm.client.api.EmailType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

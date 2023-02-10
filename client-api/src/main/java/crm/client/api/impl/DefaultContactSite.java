@@ -1,7 +1,7 @@
-package com.ss.jcrm.client.api.impl;
+package crm.client.api.impl;
 
-import com.ss.jcrm.client.api.ClientSite;
-import com.ss.jcrm.client.api.SiteType;
+import crm.client.api.ClientSite;
+import crm.client.api.SiteType;
 import org.jetbrains.annotations.NotNull;
 
 public record DefaultContactSite(@NotNull String url, @NotNull SiteType type) implements ClientSite {}

@@ -1,6 +1,6 @@
 package con.ss.jcrm.client.web.config;
 
-import com.ss.jcrm.client.api.dao.SimpleClientDao;
+import crm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.jasync.config.JAsyncClientConfig;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;

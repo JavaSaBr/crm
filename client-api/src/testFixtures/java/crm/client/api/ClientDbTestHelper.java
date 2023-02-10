@@ -1,6 +1,5 @@
 package crm.client.api;
 
-import com.ss.jcrm.client.api.SimpleClient;
 import crm.user.api.User;
 import integration.test.db.DbTestHelper;
 

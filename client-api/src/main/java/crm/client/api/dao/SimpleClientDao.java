@@ -1,9 +1,13 @@
-package com.ss.jcrm.client.api.dao;
+package crm.client.api.dao;
 
-import com.ss.jcrm.client.api.*;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
+import crm.client.api.ClientEmail;
+import crm.client.api.ClientMessenger;
+import crm.client.api.ClientPhoneNumber;
+import crm.client.api.ClientSite;
+import crm.client.api.SimpleClient;
 import crm.user.api.Organization;
 import crm.user.api.User;
 import java.util.List;

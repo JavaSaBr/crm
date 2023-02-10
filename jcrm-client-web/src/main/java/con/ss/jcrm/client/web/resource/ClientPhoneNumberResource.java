@@ -1,7 +1,7 @@
 package con.ss.jcrm.client.web.resource;
 
-import com.ss.jcrm.client.api.ClientPhoneNumber;
-import com.ss.jcrm.client.api.PhoneNumberType;
+import crm.client.api.ClientPhoneNumber;
+import crm.client.api.PhoneNumberType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

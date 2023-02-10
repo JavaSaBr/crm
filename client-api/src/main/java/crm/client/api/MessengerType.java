@@ -1,4 +1,4 @@
-package com.ss.jcrm.client.api;
+package crm.client.api;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import crm.base.util.EnumWithIdAndDescription;
@@ -14,25 +14,27 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 @Accessors(fluent = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum SiteType implements EnumWithIdAndDescription {
-  WORK(1, "Work"),
-  HOME(2, "Home");
+public enum MessengerType implements EnumWithIdAndDescription {
+  SKYPE(1, "Skype"),
+  TELEGRAM(2, "Telegram"),
+  WHATS_UP(3, "What's Up"),
+  VIBER(4, "Viber");
 
-  private static final ExtendedEnumMap<SiteType> ENUM_MAP = new ExtendedEnumMap<>(SiteType.class);
+  private static final ExtendedEnumMap<MessengerType> ENUM_MAP = new ExtendedEnumMap<>(MessengerType.class);
 
-  public static @Nullable SiteType withDescription(@Nullable String description) {
+  public static @Nullable MessengerType withDescription(@Nullable String description) {
     return ENUM_MAP.withDescription(description);
   }
 
-  public static @Nullable SiteType withId(int id) {
+  public static @Nullable MessengerType withId(int id) {
     return ENUM_MAP.withId(id);
   }
 
-  public static @NotNull SiteType required(@NotNull String description) {
+  public static @NotNull MessengerType required(@NotNull String description) {
     return ENUM_MAP.required(description);
   }
 
-  public static @NotNull SiteType required(long id) {
+  public static @NotNull MessengerType required(long id) {
     return ENUM_MAP.required((int) id);
   }
 

@@ -4,7 +4,7 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.pool.PostgreSQLConnectionFactory;
-import com.ss.jcrm.client.api.dao.SimpleClientDao;
+import crm.client.api.dao.SimpleClientDao;
 import com.ss.jcrm.client.jasync.dao.JAsyncSimpleClientDao;
 import jasync.config.CommonJAsyncConfig;
 import jasync.util.JAsyncUtils;
