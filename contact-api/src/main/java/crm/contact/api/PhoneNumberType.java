@@ -1,4 +1,4 @@
-package crm.client.api;
+package crm.contact.api;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import crm.base.util.EnumWithIdAndDescription;
@@ -14,32 +14,35 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 @Accessors(fluent = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum MessengerType implements EnumWithIdAndDescription {
-  SKYPE(1, "Skype"),
-  TELEGRAM(2, "Telegram"),
-  WHATS_UP(3, "What's Up"),
-  VIBER(4, "Viber");
+public enum PhoneNumberType implements EnumWithIdAndDescription {
+  UNKNOWN(0, "Unknown"),
+  WORK(1, "Work"),
+  MOBILE(2, "Mobile");
 
-  private static final ExtendedEnumMap<MessengerType> ENUM_MAP = new ExtendedEnumMap<>(MessengerType.class);
+  private static final ExtendedEnumMap<PhoneNumberType> ENUM_MAP = new ExtendedEnumMap<>(PhoneNumberType.class);
 
-  public static @Nullable MessengerType withDescription(@Nullable String description) {
+  public static @Nullable PhoneNumberType withDescription(@Nullable String description) {
     return ENUM_MAP.withDescription(description);
   }
 
-  public static @Nullable MessengerType withId(int id) {
+  public static @Nullable PhoneNumberType withId(int id) {
     return ENUM_MAP.withId(id);
   }
 
-  public static @NotNull MessengerType required(@NotNull String description) {
+  public static @NotNull PhoneNumberType required(@NotNull String description) {
     return ENUM_MAP.required(description);
   }
 
-  public static @NotNull MessengerType required(long id) {
+  public static @NotNull PhoneNumberType required(long id) {
     return ENUM_MAP.required((int) id);
   }
 
   public static boolean exist(@Nullable String description) {
     return ENUM_MAP.exist(description);
+  }
+
+  public static boolean exist(long id) {
+    return ENUM_MAP.exist(id);
   }
 
   @Getter(onMethod_ = @JsonValue)

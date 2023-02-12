@@ -1,20 +1,21 @@
 package com.ss.jcrm.client.web.test.handler
 
-import crm.client.api.EmailType
-import crm.client.api.MessengerType
-import crm.client.api.PhoneNumberType
-import crm.client.api.SiteType
 import com.ss.jcrm.client.web.test.ClientSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import com.ss.rlib.common.util.StringUtils
 import com.ss.rlib.common.util.array.ArrayFactory
-import con.ss.jcrm.client.web.resource.ClientEmailResource
+
 import con.ss.jcrm.client.web.resource.ClientInResource
-import con.ss.jcrm.client.web.resource.ClientMessengerResource
-import con.ss.jcrm.client.web.resource.ClientPhoneNumberResource
-import con.ss.jcrm.client.web.resource.ClientSiteResource
+import crm.contact.api.EmailType
+import crm.contact.api.MessengerType
+import crm.contact.api.PhoneNumberType
+import crm.contact.api.SiteType
+import crm.contact.api.resource.EmailResource
+import crm.contact.api.resource.MessengerResource
+import crm.contact.api.resource.PhoneNumberResource
+import crm.contact.api.resource.SiteResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -325,7 +326,7 @@ class ClientHandlerTest extends ClientSpecification {
             null,
             null,
             "1950-04-22",
-            List.of(new ClientPhoneNumberResource("+7", "234", "1234567", "invalid")),
+            List.of(new PhoneNumberResource("+7", "234", "1234567", -1)),
             null,
             null,
             null)
@@ -362,7 +363,7 @@ class ClientHandlerTest extends ClientSpecification {
             null,
             "1950-04-22",
             null,
-            List.of(new ClientEmailResource("Test@test.com", "invalid")),
+            List.of(new EmailResource("Test@test.com", -1)),
             null,
             null)
         response = sendCreateRequest(token, body)
@@ -380,7 +381,7 @@ class ClientHandlerTest extends ClientSpecification {
             null,
             "1950-04-22",
             null,
-            List.of(new ClientEmailResource("invalid", EmailType.HOME.description())),
+            List.of(EmailResource.of("invalid", EmailType.HOME)),
             null,
             null)
         response = sendCreateRequest(token, body)
@@ -398,7 +399,7 @@ class ClientHandlerTest extends ClientSpecification {
             null,
             "1950-04-22",
             null,
-            List.of(new ClientEmailResource(StringUtils.generate(1000), EmailType.HOME.description())),
+            List.of(EmailResource.of(StringUtils.generate(1000), EmailType.HOME)),
             null,
             null)
         response = sendCreateRequest(token, body)
@@ -417,7 +418,7 @@ class ClientHandlerTest extends ClientSpecification {
             "1950-04-22",
             null,
             null,
-            List.of(new ClientSiteResource("work.site.com", "invalid")),
+            List.of(new SiteResource("work.site.com", -1)),
             null)
         response = sendCreateRequest(token, body)
     then:
@@ -435,7 +436,7 @@ class ClientHandlerTest extends ClientSpecification {
             "1950-04-22",
             null,
             null,
-            List.of(new ClientSiteResource(StringUtils.generate(1000), SiteType.WORK.description())),
+            List.of(SiteResource.of(StringUtils.generate(1000), SiteType.WORK)),
             null)
         response = sendCreateRequest(token, body)
     then:
@@ -454,7 +455,7 @@ class ClientHandlerTest extends ClientSpecification {
             null,
             null,
             null,
-            List.of(new ClientMessengerResource("misterX", "invalid")))
+            List.of(new MessengerResource("misterX", -1)))
         response = sendCreateRequest(token, body)
     then:
         response.expectStatus().isBadRequest()
@@ -472,7 +473,7 @@ class ClientHandlerTest extends ClientSpecification {
             null,
             null,
             null,
-            List.of(new ClientMessengerResource(StringUtils.generate(1000), MessengerType.TELEGRAM.description())))
+            List.of(MessengerResource.of(StringUtils.generate(1000), MessengerType.TELEGRAM)))
         response = sendCreateRequest(token, body)
     then:
         response.expectStatus().isBadRequest()
@@ -542,28 +543,28 @@ class ClientHandlerTest extends ClientSpecification {
         def newClient = clientTestHelper.newSimpleClient(user)
         
         def token = unsafeTokenService.generateNewToken(user)
-        def body = new ClientInResource(newClient.id(),
-            [curator1.id(),
-             curator2.id()] as long[],
-            assigner.id as long,
-            newClient.version,
+        def body = new ClientInResource(
+            newClient.id(), [
+            curator1.id(),
+            curator2.id()
+        ] as long[],
+            assigner.id() as long,
+            newClient.version(),
             "First name",
             "Second name",
             "Third name",
             "Company",
-            "1990-05-22",
-            [new ClientPhoneNumberResource("+7",
-                "234",
-                "123132", PhoneNumberType.WORK.description())] as ClientPhoneNumberResource[],
-            [new ClientEmailResource("Test@test.com",
-                EmailType.HOME.description())] as ClientEmailResource[],
-            [new ClientSiteResource("work.site.com",
-                SiteType.WORK.description()),
-             new ClientSiteResource("home.site.com",
-                 SiteType.HOME.description())] as ClientSiteResource[],
-            [new ClientMessengerResource("mist" + "erX", MessengerType.TELEGRAM.description()),
-             new ClientMessengerResource("misterX",
-                 MessengerType.SKYPE.description())] as ClientMessengerResource[])
+            "1990-05-22", [
+            PhoneNumberResource.of("+7", "234", "123132", PhoneNumberType.WORK)
+        ], [
+            EmailResource.of("Test@test.com", EmailType.HOME)
+        ], [
+            SiteResource.of("work.site.com", SiteType.WORK),
+            SiteResource.of("home.site.com", SiteType.HOME)
+        ], [
+            MessengerResource.of("mist" + "erX", MessengerType.TELEGRAM),
+            MessengerResource.of("misterX", MessengerType.SKYPE)
+        ])
     
     when:
         def response = webClient.put()

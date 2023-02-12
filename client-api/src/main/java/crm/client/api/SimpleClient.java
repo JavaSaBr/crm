@@ -1,7 +1,12 @@
 package crm.client.api;
 
 import com.ss.jcrm.dao.VersionedUniqEntity;
+import crm.contact.api.Email;
+import crm.contact.api.Messenger;
+import crm.contact.api.PhoneNumber;
+import crm.contact.api.Site;
 import java.util.List;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,17 +36,17 @@ public interface SimpleClient extends VersionedUniqEntity {
   @Nullable LocalDate birthday();
   SimpleClient birthday(@Nullable LocalDate birthday);
 
-  @NotNull List<ClientPhoneNumber> phoneNumbers();
-  SimpleClient phoneNumbers(@NotNull List<ClientPhoneNumber> phoneNumbers);
+  @NotNull Set<PhoneNumber> phoneNumbers();
+  SimpleClient phoneNumbers(@NotNull Set<PhoneNumber> phoneNumbers);
 
-  @NotNull List<ClientEmail> emails();
-  SimpleClient emails(@NotNull List<ClientEmail> emails);
+  @NotNull Set<Email> emails();
+  SimpleClient emails(@NotNull Set<Email> emails);
 
-  @NotNull List<ClientSite> sites();
-  SimpleClient sites(@NotNull List<ClientSite> sites);
+  @NotNull Set<Site> sites();
+  SimpleClient sites(@NotNull Set<Site> sites);
 
-  @NotNull List<ClientMessenger> messengers();
-  SimpleClient messengers(@NotNull List<ClientMessenger> messengers);
+  @NotNull Set<Messenger> messengers();
+  SimpleClient messengers(@NotNull Set<Messenger> messengers);
 
   @Nullable String company();
   SimpleClient company(@Nullable String company);

@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
 
-import com.ss.jcrm.user.contact.api.MessengerType
-import com.ss.jcrm.user.contact.api.PhoneNumberType
-import com.ss.jcrm.user.contact.api.resource.MessengerResource
-import com.ss.jcrm.user.contact.api.resource.PhoneNumberResource
 import crm.base.web.config.ApiEndpoint
+import crm.contact.api.MessengerType
+import crm.contact.api.PhoneNumberType
+import crm.contact.api.resource.MessengerResource
+import crm.contact.api.resource.PhoneNumberResource
 import crm.user.api.UserDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -40,30 +40,28 @@ class RegistrationSpecification extends WebSpecification {
         contextPath = registrationApiEndpointServer.contextPath()
     }
     
-    def generateMessengers() {
-        new MessengerResource[]{
-            new MessengerResource("telegaTest2", (int) MessengerType.TELEGRAM.id),
-            new MessengerResource("skypeTest1", (int) MessengerType.SKYPE.id)
-        }
+    List<MessengerResource> generateMessengers() {
+        return [
+            new MessengerResource("telegaTest2", MessengerType.TELEGRAM.id()),
+            new MessengerResource("skypeTest1", MessengerType.SKYPE.id())
+        ]
     }
     
-    def generatePhoneNumbers() {
+    List<PhoneNumberResource> generatePhoneNumbers() {
         
         def current = ThreadLocalRandom.current()
         
-        new PhoneNumberResource[]{
+        return [
             new PhoneNumberResource(
                 "+${current.nextInt(1, 300)}",
                 "${current.nextInt(20, 200)}",
                 "${current.nextInt(20000, 90000)}",
-                (int) PhoneNumberType.UNKNOWN.id
-            ),
+                PhoneNumberType.UNKNOWN.id()),
             new PhoneNumberResource(
                 "+${current.nextInt(1, 300)}",
                 "${current.nextInt(20, 200)}",
                 "${current.nextInt(20000, 90000)}",
-                (int) PhoneNumberType.UNKNOWN.id
-            )
-        }
+                PhoneNumberType.UNKNOWN.id())
+        ]
     }
 }

@@ -24,7 +24,6 @@ include 'jcrm-dictionary-jasync'
 include 'jcrm-dictionary-web'
 include 'jcrm-client-jasync'
 include 'jcrm-client-web'
-include 'jcrm-user-contact'
 include 'jcrm_ui_flutter'
 
 include 'base'
@@ -34,3 +33,4 @@ include 'user-api'
 include 'user-jasync'
 
 include 'client-api'
+include 'contact-api'

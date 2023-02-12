@@ -4,14 +4,14 @@ import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.service.PasswordService
+import crm.contact.api.Messenger
+import crm.contact.api.MessengerType
+import crm.contact.api.PhoneNumber
+import crm.contact.api.PhoneNumberType
 import crm.user.api.User
 import crm.user.api.dao.OrganizationDao
 import crm.user.api.dao.UserDao
 import crm.user.api.dao.UserGroupDao
-import com.ss.jcrm.user.contact.api.Messenger
-import com.ss.jcrm.user.contact.api.MessengerType
-import com.ss.jcrm.user.contact.api.PhoneNumber
-import com.ss.jcrm.user.contact.api.PhoneNumberType
 import crm.user.jasync.JAsyncUserSpecification
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -44,13 +44,13 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         def email = userTestHelper.nextEmail()
         
         Set<PhoneNumber> phoneNumbers = [
-            new PhoneNumber("+375", "234", "6786786", PhoneNumberType.MOBILE),
-            new PhoneNumber("+375", "25", "2344", PhoneNumberType.WORK),
+            PhoneNumber.of("+375", "234", "6786786", PhoneNumberType.MOBILE),
+            PhoneNumber.of("+375", "25", "2344", PhoneNumberType.WORK),
         ]
         
         Set<Messenger> messengers = [
-            new Messenger("userTelega", MessengerType.TELEGRAM),
-            new Messenger("userSkype", MessengerType.SKYPE)
+            Messenger.of("userTelega", MessengerType.TELEGRAM),
+            Messenger.of("userSkype", MessengerType.SKYPE)
         ]
     
     when:
@@ -140,12 +140,12 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
         loaded.secondName("Second name")
         loaded.thirdName("Third name")
         loaded.phoneNumbers(Set.of(
-            new PhoneNumber("+375", "25", "312333"),
-            new PhoneNumber("+375", "25", "123123", PhoneNumberType.MOBILE)
+            PhoneNumber.of("+375", "25", "312333"),
+            PhoneNumber.of("+375", "25", "123123", PhoneNumberType.MOBILE)
         ))
         loaded.messengers(Set.of(
-            new Messenger("userTelega", MessengerType.TELEGRAM),
-            new Messenger("userSkype", MessengerType.SKYPE)))
+            Messenger.of("userTelega", MessengerType.TELEGRAM),
+            Messenger.of("userSkype", MessengerType.SKYPE)))
         loaded.roles(Set.of(AccessRole.SUPER_ADMIN, AccessRole.ORG_ADMIN))
         loaded.groups(Set.of(group1, group2))
         loaded.birthday(birthday)
@@ -200,13 +200,14 @@ class JAsyncUserDaoTest extends JAsyncUserSpecification {
   
   def "should load user by phone number"() {
     given:
+       
         Set<PhoneNumber> phoneNumbers = [
-            new PhoneNumber("+24", "22", "3423"),
-            new PhoneNumber("+24", "22", "54342")
+            PhoneNumber.of("+24", "22", "3423"),
+            PhoneNumber.of("+24", "22", "54342")
         ]
         
         Set<Messenger> messengers = [
-            new Messenger("userWatsUp", MessengerType.WHATS_UP)
+            Messenger.of("userWatsUp", MessengerType.WHATS_UP)
         ]
         
         def email = userTestHelper.nextEmail()

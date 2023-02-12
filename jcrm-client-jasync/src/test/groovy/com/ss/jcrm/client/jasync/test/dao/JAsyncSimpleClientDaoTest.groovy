@@ -2,17 +2,19 @@ package com.ss.jcrm.client.jasync.test.dao
 
 
 import crm.client.api.dao.SimpleClientDao
-import crm.client.api.impl.DefaultClientEmail
-import crm.client.api.impl.DefaultClientMessenger
-import crm.client.api.impl.DefaultClientPhoneNumber
-import crm.client.api.impl.DefaultContactSite
+
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
-import crm.client.api.EmailType
-import crm.client.api.MessengerType
-import crm.client.api.PhoneNumberType
+
 import crm.client.api.SimpleClient
-import crm.client.api.SiteType
+import crm.contact.api.EmailType
+import crm.contact.api.MessengerType
+import crm.contact.api.PhoneNumberType
+import crm.contact.api.SiteType
+import crm.contact.api.impl.DefaultEmail
+import crm.contact.api.impl.DefaultMessenger
+import crm.contact.api.impl.DefaultPhoneNumber
+import crm.contact.api.impl.DefaultSite
 import jasync.util.JAsyncUtils
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -36,19 +38,19 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
             userTestHelper.newUser("Curator2")
         ]
         def phoneNumbers = [
-            new DefaultClientPhoneNumber("+7", "123", "456789", PhoneNumberType.WORK),
-            new DefaultClientPhoneNumber("+7", "123", "098765", PhoneNumberType.MOBILE)
+            DefaultPhoneNumber.of("+7", "123", "456789", PhoneNumberType.WORK),
+            DefaultPhoneNumber.of("+7", "123", "098765", PhoneNumberType.MOBILE)
         ]
         def emails = [
-            new DefaultClientEmail("test@test.com", EmailType.WORK),
-            new DefaultClientEmail("test2@test2.com", EmailType.HOME),
+            new DefaultEmail("test@test.com", EmailType.WORK),
+            new DefaultEmail("test2@test2.com", EmailType.HOME),
         ]
         def sites = [
-            new DefaultContactSite("google.com", SiteType.HOME),
+            new DefaultSite("google.com", SiteType.HOME),
         ]
         def messengers = [
-            new DefaultClientMessenger("user1", MessengerType.SKYPE),
-            new DefaultClientMessenger("user2", MessengerType.TELEGRAM),
+            new DefaultMessenger("user1", MessengerType.SKYPE),
+            new DefaultMessenger("user2", MessengerType.TELEGRAM),
         ]
         def birthday = LocalDate.of(1900, 3, 12)
     when:
@@ -164,10 +166,10 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
     when:
         Thread.sleep(1000)
         loaded.company("New Company")
-        loaded.messengers([new DefaultClientMessenger("test", MessengerType.SKYPE)])
-        loaded.sites([new DefaultContactSite("google.com", SiteType.HOME)])
-        loaded.emails([new DefaultClientEmail("test@test.com", EmailType.WORK)])
-        loaded.phoneNumbers([new DefaultClientPhoneNumber("+375", "25", "124124", PhoneNumberType.WORK)])
+        loaded.messengers([new DefaultMessenger("test", MessengerType.SKYPE)])
+        loaded.sites([new DefaultSite("google.com", SiteType.HOME)])
+        loaded.emails([new DefaultEmail("test@test.com", EmailType.WORK)])
+        loaded.phoneNumbers([DefaultPhoneNumber.of("+375", "25", "124124", PhoneNumberType.WORK)])
         loaded.thirdName("Third name 2")
         loaded.birthday(LocalDate.of(1900, 04, 11))
         loaded.curatorIds(new long[]{curator.id()})

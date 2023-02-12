@@ -70,4 +70,8 @@ public class ExtendedEnumMap<E extends EnumWithIdAndDescription> {
   public boolean exist(@Nullable String description) {
     return StringUtils.isNotEmpty(description) && nameToEnum.containsKey(description);
   }
+
+  public boolean exist(long id) {
+    return id >= 0 && id < idToEnum.length;
+  }
 }

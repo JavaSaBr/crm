@@ -1,7 +1,6 @@
 package com.ss.jcrm.client.jasync.dao;
 
 import static crm.base.util.DateUtils.toUtcInstant;
-import static jasync.util.JAsyncUtils.*;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -10,24 +9,25 @@ import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import crm.base.util.DateUtils;
 import crm.client.api.dao.SimpleClientDao;
-import com.ss.jcrm.client.api.impl.*;
 import com.ss.jcrm.dao.EntityPage;
-import crm.client.api.ClientEmail;
-import crm.client.api.ClientMessenger;
-import crm.client.api.ClientPhoneNumber;
-import crm.client.api.ClientSite;
 import crm.client.api.SimpleClient;
-import crm.client.api.impl.DefaultClientEmail;
-import crm.client.api.impl.DefaultClientMessenger;
-import crm.client.api.impl.DefaultClientPhoneNumber;
-import crm.client.api.impl.DefaultContactSite;
 import crm.client.api.impl.DefaultSimpleClient;
+import crm.contact.api.Email;
+import crm.contact.api.Messenger;
+import crm.contact.api.PhoneNumber;
+import crm.contact.api.Site;
+import crm.contact.api.impl.DefaultEmail;
+import crm.contact.api.impl.DefaultMessenger;
+import crm.contact.api.impl.DefaultPhoneNumber;
+import crm.contact.api.impl.DefaultSite;
 import jasync.dao.AbstractJAsyncDao;
 import jasync.function.JAsyncConverter;
 import jasync.util.JAsyncUtils;
 import crm.user.api.Organization;
 import crm.user.api.User;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
@@ -42,10 +42,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> implements SimpleClientDao {
 
-  private static final CollectionType CLIENT_EMAILS = JAsyncUtils.collectionType(ArrayList.class, DefaultClientEmail.class);
-  private static final CollectionType CONTACT_SITES = JAsyncUtils.collectionType(ArrayList.class, DefaultContactSite.class);
-  private static final CollectionType CLIENT_MESSENGERS = JAsyncUtils.collectionType(ArrayList.class, DefaultClientMessenger.class);
-  private static final CollectionType PHONE_NUMBERS = JAsyncUtils.collectionType(ArrayList.class, DefaultClientPhoneNumber.class);
+  private static final CollectionType CLIENT_EMAILS = JAsyncUtils.collectionType(HashSet.class, DefaultEmail.class);
+  private static final CollectionType CONTACT_SITES = JAsyncUtils.collectionType(HashSet.class, DefaultSite.class);
+  private static final CollectionType CLIENT_MESSENGERS = JAsyncUtils.collectionType(HashSet.class, DefaultMessenger.class);
+  private static final CollectionType PHONE_NUMBERS = JAsyncUtils.collectionType(HashSet.class, DefaultPhoneNumber.class);
 
   private static final String FIELD_LIST = """
       "id", "organization_id", "assigner", "curators", "first_name", "second_name", "third_name", "birthday", 
@@ -118,16 +118,16 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
   @Override
   public @NotNull Mono<@NotNull SimpleClient> create(
       @NotNull User assigner,
-      @Nullable List<User> curators,
+      @NotNull Set<User> curators,
       @NotNull Organization organization,
-      @NotNull String firstName,
-      @NotNull String secondName,
+      @Nullable String firstName,
+      @Nullable String secondName,
       @Nullable String thirdName,
       @Nullable LocalDate birthday,
-      @NotNull List<ClientPhoneNumber> phoneNumbers,
-      @NotNull List<ClientEmail> emails,
-      @NotNull List<ClientSite> sites,
-      @NotNull List<ClientMessenger> messengers,
+      @NotNull Set<PhoneNumber> phoneNumbers,
+      @NotNull Set<Email> emails,
+      @NotNull Set<Site> sites,
+      @NotNull Set<Messenger> messengers,
       @Nullable String company) {
 
     var currentTime = LocalDateTime.now();
@@ -135,15 +135,15 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
     var args = Arrays.asList(
         organization.id(),
         assigner.id(),
-        idsToJson(curators),
+        JAsyncUtils.idsToJson(curators),
         firstName,
         secondName,
         thirdName,
         birthday,
-        toJson(phoneNumbers),
-        toJson(emails),
-        toJson(sites),
-        toJson(messengers),
+        JAsyncUtils.toJson(phoneNumbers),
+        JAsyncUtils.toJson(emails),
+        JAsyncUtils.toJson(sites),
+        JAsyncUtils.toJson(messengers),
         company,
         currentTime,
         currentTime);
@@ -152,7 +152,7 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
         .map(id -> new DefaultSimpleClient(
             id,
             assigner.id(),
-            toIds(curators),
+            JAsyncUtils.toIds(curators),
             organization.id(),
             firstName,
             secondName,
@@ -171,15 +171,16 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
   @Override
   public @NotNull Mono<SimpleClient> update(@NotNull SimpleClient contact) {
     contact.modified(Instant.now());
-    return update(queryUpdate, Arrays.asList(toJson(contact.curatorIds()),
+    return update(queryUpdate, Arrays.asList(
+        JAsyncUtils.toJson(contact.curatorIds()),
         contact.firstName(),
         contact.secondName(),
         contact.thirdName(),
         contact.birthday(),
-        toJson(contact.phoneNumbers()),
-        toJson(contact.emails()),
-        toJson(contact.sites()),
-        toJson(contact.messengers()),
+        JAsyncUtils.toJson(contact.phoneNumbers()),
+        JAsyncUtils.toJson(contact.emails()),
+        JAsyncUtils.toJson(contact.sites()),
+        JAsyncUtils.toJson(contact.messengers()),
         contact.company(),
         DateUtils.toLocalDateTime(contact.modified()),
         contact.version() + 1,
@@ -213,17 +214,17 @@ public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> imple
     var id = notNull(data.getLong(0));
     var organizationId = notNull(data.getLong(1));
     var assignerId = notNull(data.getLong(2));
-    var curatorIds = jsonToIds(data.getString(3));
+    var curatorIds = JAsyncUtils.jsonToIds(data.getString(3));
 
     var firstName = data.getString(4);
     var secondName = data.getString(5);
     var thirdName = data.getString(6);
     var birthday = (LocalDate) data.getAs(7);
 
-    List<ClientPhoneNumber> phoneNumbers = listFromJson(data.getString(8), PHONE_NUMBERS);
-    List<ClientEmail> emails = listFromJson(data.getString(9), CLIENT_EMAILS);
-    List<ClientSite> sites = listFromJson(data.getString(10), CONTACT_SITES);
-    List<ClientMessenger> messengers = listFromJson(data.getString(11), CLIENT_MESSENGERS);
+    Set<PhoneNumber> phoneNumbers = JAsyncUtils.setFromJson(data.getString(8), PHONE_NUMBERS);
+    Set<Email> emails = JAsyncUtils.setFromJson(data.getString(9), CLIENT_EMAILS);
+    Set<Site> sites = JAsyncUtils.setFromJson(data.getString(10), CONTACT_SITES);
+    Set<Messenger> messengers = JAsyncUtils.setFromJson(data.getString(11), CLIENT_MESSENGERS);
 
     var company = data.getString(12);
     var version = notNull(data.getInt(13));

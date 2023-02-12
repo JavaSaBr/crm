@@ -1,4 +1,4 @@
-package crm.client.api;
+package crm.contact.api;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import crm.base.util.EnumWithIdAndDescription;
@@ -38,6 +38,10 @@ public enum EmailType implements EnumWithIdAndDescription {
 
   public static boolean exist(@Nullable String description) {
     return ENUM_MAP.exist(description);
+  }
+
+  public static boolean exist(long id) {
+    return ENUM_MAP.exist(id);
   }
 
   @Getter(onMethod_ = @JsonValue)

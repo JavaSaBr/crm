@@ -3,14 +3,14 @@ package crm.client.api.dao;
 import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.EntityPage;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
-import crm.client.api.ClientEmail;
-import crm.client.api.ClientMessenger;
-import crm.client.api.ClientPhoneNumber;
-import crm.client.api.ClientSite;
 import crm.client.api.SimpleClient;
+import crm.contact.api.Email;
+import crm.contact.api.Messenger;
+import crm.contact.api.PhoneNumber;
+import crm.contact.api.Site;
 import crm.user.api.Organization;
 import crm.user.api.User;
-import java.util.List;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Flux;
@@ -34,25 +34,25 @@ public interface SimpleClientDao extends Dao<SimpleClient> {
         secondName,
         thirdName,
         null,
-        List.of(),
-        List.of(),
-        List.of(),
-        List.of(),
+        Set.of(),
+        Set.of(),
+        Set.of(),
+        Set.of(),
         null);
   }
 
   @NotNull Mono<SimpleClient> create(
       @NotNull User assigner,
-      @Nullable List<User> curators,
+      @NotNull Set<User> curators,
       @NotNull Organization organization,
-      @NotNull String firstName,
-      @NotNull String secondName,
+      @Nullable String firstName,
+      @Nullable String secondName,
       @Nullable String thirdName,
       @Nullable LocalDate birthday,
-      @NotNull List<ClientPhoneNumber> phoneNumbers,
-      @NotNull List<ClientEmail> emails,
-      @NotNull List<ClientSite> sites,
-      @NotNull List<ClientMessenger> messengers,
+      @NotNull Set<PhoneNumber> phoneNumbers,
+      @NotNull Set<Email> emails,
+      @NotNull Set<Site> sites,
+      @NotNull Set<Messenger> messengers,
       @Nullable String company);
 
   /**

@@ -1,5 +1,9 @@
 package con.ss.jcrm.client.web.resource;
 
+import crm.contact.api.resource.EmailResource;
+import crm.contact.api.resource.MessengerResource;
+import crm.contact.api.resource.PhoneNumberResource;
+import crm.contact.api.resource.SiteResource;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,10 +18,10 @@ public record ClientInResource(
     @Nullable String thirdName,
     @Nullable String company,
     @Nullable String birthday,
-    @Nullable List<ClientPhoneNumberResource> phoneNumbers,
-    @Nullable List<ClientEmailResource> emails,
-    @Nullable List<ClientSiteResource> sites,
-    @Nullable List<ClientMessengerResource> messengers) {
+    @Nullable List<PhoneNumberResource> phoneNumbers,
+    @Nullable List<EmailResource> emails,
+    @Nullable List<SiteResource> sites,
+    @Nullable List<MessengerResource> messengers) {
 
   public static @NotNull ClientInResource empty() {
     return new ClientInResource(0, null, 0, 0, null, null, null, null, null, null, null, null, null);

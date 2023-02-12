@@ -1,14 +1,18 @@
 package con.ss.jcrm.client.web.validator;
 
-import crm.client.api.EmailType;
-import crm.client.api.MessengerType;
-import crm.client.api.PhoneNumberType;
-import crm.client.api.SiteType;
+import con.ss.jcrm.client.web.resource.ClientInResource;
 import crm.base.web.exception.BadRequestWebException;
 import crm.base.web.validator.BaseResourceValidator;
 import com.ss.rlib.common.util.StringUtils;
 import con.ss.jcrm.client.web.exception.ClientErrors;
-import con.ss.jcrm.client.web.resource.*;
+import crm.contact.api.EmailType;
+import crm.contact.api.MessengerType;
+import crm.contact.api.PhoneNumberType;
+import crm.contact.api.SiteType;
+import crm.contact.api.resource.PhoneNumberResource;
+import crm.contact.api.resource.EmailResource;
+import crm.contact.api.resource.SiteResource;
+import crm.contact.api.resource.MessengerResource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
@@ -52,95 +56,110 @@ public class ResourceValidator extends BaseResourceValidator {
   public void validate(@NotNull ClientInResource resource) {
 
     if (resource.assigner() == 0) {
-      throw new BadRequestWebException(ClientErrors.CLIENT_ASSIGNER_NOT_PRESENTED_MESSAGE,
+      throw new BadRequestWebException(
+          ClientErrors.CLIENT_ASSIGNER_NOT_PRESENTED_MESSAGE,
           ClientErrors.CLIENT_ASSIGNER_NOT_PRESENTED);
     }
 
-    validate(resource.firstName(),
+    validate(
+        resource.firstName(),
         clientNameMinLength,
         clientNameMaxLength,
         ClientErrors.CLIENT_FIRST_NAME_INVALID_LENGTH,
         ClientErrors.CLIENT_FIRST_NAME_INVALID_LENGTH_MESSAGE);
 
-    validate(resource.secondName(),
+    validate(
+        resource.secondName(),
         clientNameMinLength,
         clientNameMaxLength,
         ClientErrors.CLIENT_SECOND_NAME_INVALID_LENGTH,
         ClientErrors.CLIENT_SECOND_NAME_INVALID_LENGTH_MESSAGE);
 
-    validateMaxNullable(resource.thirdName(),
+    validateMaxNullable(
+        resource.thirdName(),
         clientNameMaxLength,
         ClientErrors.CLIENT_THIRD_NAME_TOO_LONG,
         ClientErrors.CLIENT_THIRD_NAME_TOO_LONG_MESSAGE);
 
-    validateMaxNullable(resource.company(),
+    validateMaxNullable(
+        resource.company(),
         clientCompanyMaxLength,
         ClientErrors.CLIENT_COMPANY_TOO_LONG,
         ClientErrors.CLIENT_COMPANY_TOO_LONG_MESSAGE);
 
-    validateNullable(resource.birthday(),
+    validateNullable(
+        resource.birthday(),
         clientMinBirthday,
         clientMaxBirthday,
         ClientErrors.CLIENT_BIRTHDAY_INVALID,
         ClientErrors.CLIENT_BIRTHDAY_INVALID_MESSAGE);
 
-    validateField(resource.phoneNumbers(),
-        ClientPhoneNumberResource::type,
+    validateField(
+        resource.phoneNumbers(),
+        PhoneNumberResource::type,
         PhoneNumberType::exist,
         ClientErrors.CLIENT_PHONE_NUMBER_INVALID,
         ClientErrors.CLIENT_PHONE_NUMBER_INVALID_MESSAGE);
 
-    validateResultString(resource.phoneNumbers(),
+    validateResultString(
+        resource.phoneNumbers(),
         clientPhoneNumberMinLength,
         clientPhoneNumberMaxLength,
-        ClientPhoneNumberResource::countryCode,
-        ClientPhoneNumberResource::regionCode,
-        ClientPhoneNumberResource::phoneNumber,
+        PhoneNumberResource::countryCode,
+        PhoneNumberResource::regionCode,
+        PhoneNumberResource::phoneNumber,
         ClientErrors.CLIENT_PHONE_NUMBER_INVALID,
         ClientErrors.CLIENT_PHONE_NUMBER_INVALID_MESSAGE);
 
-    validateField(resource.emails(),
-        ClientEmailResource::type,
+    validateField(
+        resource.emails(),
+        EmailResource::type,
         EmailType::exist,
         ClientErrors.CLIENT_EMAIL_INVALID,
         ClientErrors.CLIENT_EMAIL_INVALID_MESSAGE);
 
-    validateField(resource.emails(),
+    validateField(
+        resource.emails(),
         1,
         clientEmailMaxLength,
-        ClientEmailResource::email,
+        EmailResource::email,
         ClientErrors.CLIENT_EMAIL_INVALID,
         ClientErrors.CLIENT_EMAIL_INVALID_MESSAGE);
 
-    validateField(resource.emails(),
-        ClientEmailResource::email,
+    validateField(
+        resource.emails(),
+        EmailResource::email,
         StringUtils::isValidEmail,
         ClientErrors.CLIENT_EMAIL_INVALID,
         ClientErrors.CLIENT_EMAIL_INVALID_MESSAGE);
 
-    validateField(resource.messengers(),
-        ClientMessengerResource::type,
+    validateField(
+        resource.messengers(),
+        MessengerResource::type,
         MessengerType::exist,
         ClientErrors.CLIENT_MESSENGER_INVALID,
         ClientErrors.CLIENT_MESSENGER_INVALID_MESSAGE);
 
-    validateField(resource.messengers(),
+    validateField(
+        resource.messengers(),
         1,
         clientMessengerMaxLength,
-        ClientMessengerResource::login,
+        MessengerResource::login,
         ClientErrors.CLIENT_MESSENGER_INVALID,
         ClientErrors.CLIENT_MESSENGER_INVALID_MESSAGE);
 
-    validateField(resource.sites(),
-        ClientSiteResource::type,
+    validateField(
+        resource.sites(),
+        SiteResource::type,
         SiteType::exist,
         ClientErrors.CLIENT_SITE_INVALID,
         ClientErrors.CLIENT_SITE_INVALID_MESSAGE);
 
-    validateField(resource.sites(),
+    validateField(
+        resource.sites(),
         1,
         clientSiteMaxLength,
-        ClientSiteResource::url,
+        SiteResource::url,
         ClientErrors.CLIENT_SITE_INVALID,
         ClientErrors.CLIENT_SITE_INVALID_MESSAGE);
   }

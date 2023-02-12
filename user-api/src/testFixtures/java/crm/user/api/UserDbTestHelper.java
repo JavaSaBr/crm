@@ -1,8 +1,8 @@
 package crm.user.api;
 
 import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.user.contact.api.Messenger;
-import com.ss.jcrm.user.contact.api.PhoneNumber;
+import crm.contact.api.Messenger;
+import crm.contact.api.PhoneNumber;
 import integration.test.db.DbTestHelper;
 import java.util.Set;
 

@@ -151,6 +151,15 @@ public class JAsyncUtils {
     }
   }
 
+  public static <T> @NotNull Set<T> setFromJson(@Nullable String json, @NotNull CollectionType type) {
+    if (StringUtils.isEmpty(json)) {
+      return Set.of();
+    } else {
+      Set<T> parsed = Utils.uncheckedGet(json, type, OBJECT_MAPPER::readValue);
+      return ObjectUtils.ifNull(parsed, Set.of());
+    }
+  }
+
   public static <T> @Nullable T fromJson(@Nullable String json, @NotNull Class<T> type) {
 
     if (StringUtils.isEmpty(json)) {
@@ -266,7 +275,7 @@ public class JAsyncUtils {
         .map(Collections::unmodifiableSet);
   }
 
-  public static <T extends WithId> long @NotNull [] toIds(@Nullable List<T> entities) {
+  public static <T extends WithId> long @NotNull [] toIds(@Nullable  Collection<T> entities) {
 
     if (entities == null || entities.isEmpty()) {
       return EMPTY_IDS;

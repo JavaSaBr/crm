@@ -1,8 +1,8 @@
-package crm.client.api;
+package crm.contact.api;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface ClientSite {
+public interface Site {
   @NotNull String url();
   @NotNull SiteType type();
 }

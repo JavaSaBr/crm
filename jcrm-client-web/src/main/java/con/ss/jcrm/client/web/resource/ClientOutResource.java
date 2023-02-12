@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import crm.client.api.SimpleClient;
 import crm.base.web.resources.RestResource;
 import com.ss.rlib.common.util.DateUtils;
+import crm.contact.api.resource.EmailResource;
+import crm.contact.api.resource.MessengerResource;
+import crm.contact.api.resource.PhoneNumberResource;
+import crm.contact.api.resource.SiteResource;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,29 +25,27 @@ public record ClientOutResource(
     @Nullable String thirdName,
     @Nullable String company,
     @Nullable String birthday,
-    ClientPhoneNumberResource @Nullable [] phoneNumbers,
-    ClientEmailResource @Nullable [] emails,
-    ClientSiteResource @Nullable [] sites,
-    ClientMessengerResource @Nullable [] messengers
-) implements RestResource {
+    @Nullable List<PhoneNumberResource> phoneNumbers,
+    @Nullable List<EmailResource> emails,
+    @Nullable List<SiteResource> sites,
+    @Nullable List<MessengerResource> messengers) implements RestResource {
 
-    public static @NotNull ClientOutResource from(@NotNull SimpleClient client) {
-        return new ClientOutResource(
-            client.id(),
-            client.assignerId(),
-            client.created().toEpochMilli(),
-            client.modified().toEpochMilli(),
-            client.curatorIds(),
-            client.version(),
-            client.firstName(),
-            client.secondName(),
-            client.thirdName(),
-            client.company(),
-            DateUtils.toString(client.birthday()),
-            client.phoneNumbers().stream().map(ClientPhoneNumberResource::from).toArray(ClientPhoneNumberResource[]::new),
-            client.emails().stream().map(ClientEmailResource::from).toArray(ClientEmailResource[]::new),
-            client.sites().stream().map(ClientSiteResource::from).toArray(ClientSiteResource[]::new),
-            client.messengers().stream().map(ClientMessengerResource::from).toArray(ClientMessengerResource[]::new)
-        );
-    }
+  public static @NotNull ClientOutResource from(@NotNull SimpleClient client) {
+    return new ClientOutResource(
+        client.id(),
+        client.assignerId(),
+        client.created().toEpochMilli(),
+        client.modified().toEpochMilli(),
+        client.curatorIds(),
+        client.version(),
+        client.firstName(),
+        client.secondName(),
+        client.thirdName(),
+        client.company(),
+        DateUtils.toString(client.birthday()),
+        PhoneNumberResource.from(client.phoneNumbers()),
+        EmailResource.from(client.emails()),
+        SiteResource.from(client.sites()),
+        MessengerResource.from(client.messengers()));
+  }
 }

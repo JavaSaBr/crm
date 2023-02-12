@@ -4,8 +4,8 @@ import com.ss.jcrm.dao.ChangeTrackedEntity;
 import com.ss.jcrm.dao.VersionedUniqEntity;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.WithAccessRoles;
-import com.ss.jcrm.user.contact.api.Messenger;
-import com.ss.jcrm.user.contact.api.PhoneNumber;
+import crm.contact.api.Messenger;
+import crm.contact.api.PhoneNumber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

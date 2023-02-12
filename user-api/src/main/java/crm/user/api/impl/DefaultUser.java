@@ -1,11 +1,11 @@
 package crm.user.api.impl;
 
 import com.ss.jcrm.security.AccessRole;
+import crm.contact.api.Messenger;
+import crm.contact.api.PhoneNumber;
 import crm.user.api.Organization;
 import crm.user.api.User;
 import crm.user.api.UserGroup;
-import com.ss.jcrm.user.contact.api.Messenger;
-import com.ss.jcrm.user.contact.api.PhoneNumber;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;

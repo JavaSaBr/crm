@@ -2,24 +2,16 @@ package con.ss.jcrm.client.web.handler;
 
 import crm.base.util.WithId;
 import crm.client.api.dao.SimpleClientDao;
-import crm.client.api.impl.DefaultClientEmail;
-import crm.client.api.impl.DefaultClientMessenger;
-import crm.client.api.impl.DefaultClientPhoneNumber;
-import crm.client.api.impl.DefaultContactSite;
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
-import crm.client.api.ClientEmail;
-import crm.client.api.ClientMessenger;
-import crm.client.api.ClientPhoneNumber;
-import crm.client.api.ClientSite;
-import crm.client.api.EmailType;
-import crm.client.api.MessengerType;
-import crm.client.api.PhoneNumberType;
 import crm.client.api.SimpleClient;
-import crm.client.api.SiteType;
+import crm.contact.api.resource.EmailResource;
+import crm.contact.api.resource.MessengerResource;
+import crm.contact.api.resource.PhoneNumberResource;
+import crm.contact.api.resource.SiteResource;
 import crm.user.api.dao.UserDao;
 import crm.base.web.util.ExceptionUtils;
 import crm.base.web.exception.IdNotPresentedWebException;
@@ -32,10 +24,9 @@ import com.ss.rlib.common.util.DateUtils;
 import con.ss.jcrm.client.web.exception.ClientErrors;
 import con.ss.jcrm.client.web.resource.*;
 import con.ss.jcrm.client.web.validator.ResourceValidator;
-import java.util.List;
+import java.util.Set;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -120,19 +111,20 @@ public class ClientHandler {
         .flatMap(args -> {
 
           var assigner = args.getT1();
-          var curators = args.getT2();
+          var curators = Set.copyOf(args.getT2());
 
-          return simpleClientDao.create(assigner,
+          return simpleClientDao.create(
+              assigner,
               curators,
               assigner.organization(),
               resource.firstName(),
               resource.secondName(),
               resource.thirdName(),
               DateUtils.toLocalDate(resource.birthday()),
-              toPhoneNumbers(resource.phoneNumbers()),
-              toEmails(resource.emails()),
-              toSites(resource.sites()),
-              toMessengers(resource.messengers()),
+              PhoneNumberResource.toPhoneNumbers(resource.phoneNumbers()),
+              EmailResource.toEmails(resource.emails()),
+              SiteResource.toSites(resource.sites()),
+              MessengerResource.toMessengers(resource.messengers()),
               resource.company());
         });
   }
@@ -154,7 +146,8 @@ public class ClientHandler {
             return userDao.findByIdAndOrganization(resource.assigner(), org);
           }
         })
-        .switchIfEmpty(Mono.error(() -> ExceptionUtils.toBadRequest(ClientErrors.INVALID_ASSIGNER,
+        .switchIfEmpty(Mono.error(() -> ExceptionUtils.toBadRequest(
+            ClientErrors.INVALID_ASSIGNER,
             ClientErrors.INVALID_ASSIGNER_MESSAGE)))
         .zipWhen(tuple -> userDao
             .findByIdsAndOrganization(resource.curators(), org)
@@ -171,55 +164,16 @@ public class ClientHandler {
           contact.firstName(resource.firstName());
           contact.secondName(resource.secondName());
           contact.thirdName(resource.thirdName());
-          contact.emails(toEmails(resource.emails()));
-          contact.phoneNumbers(toPhoneNumbers(resource.phoneNumbers()));
-          contact.sites(toSites(resource.sites()));
-          contact.messengers(toMessengers(resource.messengers()));
-          contact.curatorIds(curators
-              .stream()
-              .mapToLong(WithId::id)
-              .toArray());
+          contact.emails(EmailResource.toEmails(resource.emails()));
+          contact.phoneNumbers(PhoneNumberResource.toPhoneNumbers(resource.phoneNumbers()));
+          contact.sites(SiteResource.toSites(resource.sites()));
+          contact.messengers(MessengerResource.toMessengers(resource.messengers()));
+          contact.curatorIds(WithId.toIds(curators));
 
           return simpleClientDao
               .update(contact)
               .onErrorMap(NotActualObjectDaoException.class, ResourceIsAlreadyChangedWebException::new)
               .map(result -> contact);
         });
-  }
-
-  private @NotNull List<ClientPhoneNumber> toPhoneNumbers(@Nullable List<ClientPhoneNumberResource> resources) {
-    return resources != null ? resources
-        .stream()
-        .map(res -> new DefaultClientPhoneNumber(
-            res.countryCode(),
-            res.regionCode(),
-            res.phoneNumber(),
-            PhoneNumberType.required(res.type())))
-        .map(ClientPhoneNumber.class::cast)
-        .toList() : List.of();
-  }
-
-  private @NotNull List<ClientEmail> toEmails(@Nullable List<ClientEmailResource> resources) {
-    return resources != null ? resources
-        .stream()
-        .map(res -> new DefaultClientEmail(res.email(), EmailType.withDescription(res.type())))
-        .map(ClientEmail.class::cast)
-        .toList() : List.of();
-  }
-
-  private @NotNull List<ClientSite> toSites(@Nullable List<ClientSiteResource> resources) {
-    return resources != null ? resources
-        .stream()
-        .map(res -> new DefaultContactSite(res.url(), SiteType.required(res.type())))
-        .map(ClientSite.class::cast)
-        .toList() : List.of();
-  }
-
-  private @NotNull List<ClientMessenger> toMessengers(@Nullable List<ClientMessengerResource> resources) {
-    return resources != null ? resources
-        .stream()
-        .map(res -> new DefaultClientMessenger(res.login(), MessengerType.required(res.type())))
-        .map(ClientMessenger.class::cast)
-        .toList() : List.of();
   }
 }

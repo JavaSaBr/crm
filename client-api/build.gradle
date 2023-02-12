@@ -1,9 +1,10 @@
 apply plugin: "java-library"
 
 dependencies {
-    api projects.base
-    api projects.jcrmDictionaryApi
-    api projects.userApi
-
-    testFixturesApi projects.jcrmIntegrationTestDb
+  api projects.base
+  api projects.jcrmDictionaryApi
+  api projects.userApi
+  api projects.contactApi
+  
+  testFixturesApi projects.jcrmIntegrationTestDb
 }

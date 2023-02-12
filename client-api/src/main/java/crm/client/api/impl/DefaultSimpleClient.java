@@ -1,11 +1,11 @@
 package crm.client.api.impl;
 
-import crm.client.api.ClientEmail;
-import crm.client.api.ClientMessenger;
-import crm.client.api.ClientPhoneNumber;
-import crm.client.api.ClientSite;
 import crm.client.api.SimpleClient;
-import java.util.List;
+import crm.contact.api.Email;
+import crm.contact.api.Messenger;
+import crm.contact.api.PhoneNumber;
+import crm.contact.api.Site;
+import java.util.Set;
 import lombok.*;
 
 import java.time.Instant;
@@ -35,18 +35,18 @@ public class DefaultSimpleClient implements SimpleClient {
     private Instant created;
     private Instant modified;
 
-    private List<ClientPhoneNumber> phoneNumbers;
-    private List<ClientEmail> emails;
-    private List<ClientSite> sites;
-    private List<ClientMessenger> messengers;
+    private Set<PhoneNumber> phoneNumbers;
+    private Set<Email> emails;
+    private Set<Site> sites;
+    private Set<Messenger> messengers;
 
     private volatile int version;
 
     public DefaultSimpleClient(long id) {
         this.id = id;
-        this.phoneNumbers = List.of();
-        this.emails = List.of();
-        this.sites = List.of();
-        this.messengers = List.of();
+        this.phoneNumbers = Set.of();
+        this.emails = Set.of();
+        this.sites = Set.of();
+        this.messengers = Set.of();
     }
 }

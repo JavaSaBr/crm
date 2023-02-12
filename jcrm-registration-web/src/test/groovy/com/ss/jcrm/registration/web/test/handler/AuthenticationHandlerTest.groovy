@@ -3,7 +3,8 @@ package com.ss.jcrm.registration.web.test.handler
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 import com.ss.jcrm.security.web.service.UnsafeTokenService
-import com.ss.jcrm.user.contact.api.PhoneNumber
+import crm.contact.api.PhoneNumberType
+import crm.contact.api.impl.DefaultPhoneNumber
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
@@ -28,7 +29,6 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
     UnsafeTokenService unsafeTokenService
     
     def "should authenticate a user by email"() {
-    
         given:
             def email = "test@test.com"
             def password = "pwdpwd"
@@ -50,23 +50,20 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
     }
     
     def "should authenticate a user by phone number"() {
-        
         given:
-            def email = "test@test.com"
+            def email = userTestHelper.nextEmail()
             def password = "pwdpwd"
-            def phoneNumber = new PhoneNumber("+375", "33", "123123")
+            def phoneNumber = DefaultPhoneNumber.of("+375", "33", "123123")
         
             userTestHelper.newUser(
                 email,
                 Set.of(phoneNumber),
                 Set.of(),
-                password
-            )
-        
+                password)
         when:
             def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new AuthenticationInResource(phoneNumber.getFullPhoneNumber(), password.toCharArray()))
+                .body(new AuthenticationInResource(phoneNumber.fullPhoneNumber(), password.toCharArray()))
                 .url("$contextPath/authenticate")
                 .exchange()
         then:
@@ -228,18 +225,11 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
     }
     
     def "should not authenticate a user with invalid credentials"() {
-        
         given:
-            def email = "test@test.com"
+            def email = userTestHelper.nextEmail()
             def password = "pwdpwd"
-            def phoneNumber = new PhoneNumber("+375", "33", "123123")
-    
-            userTestHelper.newUser(
-                email,
-                Set.of(phoneNumber),
-                Set.of(),
-                password
-            )
+            def phoneNumber = DefaultPhoneNumber.of("+375", "33", "123123")
+            userTestHelper.newUser(email, Set.of(phoneNumber), Set.of(), password)
         when:
             def response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -253,7 +243,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
         when:
             response = webClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new AuthenticationInResource(phoneNumber.getFullPhoneNumber(), "invalidpwd".toCharArray()))
+                .body(new AuthenticationInResource(phoneNumber.fullPhoneNumber(), "invalidpwd".toCharArray()))
                 .url("$contextPath/authenticate")
                 .exchange()
         then:
