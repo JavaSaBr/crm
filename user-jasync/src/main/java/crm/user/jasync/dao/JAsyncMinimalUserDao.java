@@ -6,7 +6,7 @@ import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.dao.EntityPage;
+import crm.dao.EntityPage;
 import jasync.dao.AbstractJAsyncDao;
 import jasync.function.JAsyncConverter;
 import jasync.util.JAsyncUtils;

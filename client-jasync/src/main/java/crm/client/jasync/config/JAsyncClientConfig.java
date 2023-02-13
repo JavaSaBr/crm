@@ -7,7 +7,7 @@ import crm.client.api.dao.SimpleClientDao;
 import crm.client.jasync.dao.JAsyncSimpleClientDao;
 import jasync.config.AbstractJAsyncConfig;
 import jasync.config.CommonJAsyncConfig;
-import jcrm.dao.config.DaoConfig;
+import crm.dao.config.DaoConfig;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;

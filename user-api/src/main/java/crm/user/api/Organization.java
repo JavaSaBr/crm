@@ -1,7 +1,7 @@
 package crm.user.api;
 
-import com.ss.jcrm.dao.NamedUniqEntity;
-import com.ss.jcrm.dao.VersionedUniqEntity;
+import crm.dao.NamedUniqEntity;
+import crm.dao.VersionedUniqEntity;
 import com.ss.jcrm.dictionary.api.City;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.Industry;

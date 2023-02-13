@@ -1,6 +1,6 @@
 package com.ss.jcrm.security.web.service;
 
-import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException;
+import crm.dao.exception.ObjectNotFoundDaoException;
 import com.ss.jcrm.security.web.exception.InvalidTokenException;
 import com.ss.jcrm.security.web.exception.ExpiredTokenException;
 import com.ss.jcrm.security.web.exception.MaxRefreshedTokenException;

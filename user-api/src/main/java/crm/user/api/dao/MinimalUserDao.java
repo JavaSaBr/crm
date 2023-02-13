@@ -1,7 +1,7 @@
 package crm.user.api.dao;
 
-import com.ss.jcrm.dao.Dao;
-import com.ss.jcrm.dao.EntityPage;
+import crm.dao.Dao;
+import crm.dao.EntityPage;
 import crm.user.api.MinimalUser;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;

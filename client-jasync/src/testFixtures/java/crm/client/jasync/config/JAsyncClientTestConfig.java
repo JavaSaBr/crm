@@ -32,6 +32,10 @@ public class JAsyncClientTestConfig {
       ConnectionPool<? extends ConcreteConnection> clientConnectionPool,
       UserDbTestHelper userTestHelper,
       SimpleClientDao simpleClientDao) {
-    return new JAsyncClientDbTestHelper(clientConnectionPool, clientSchema, userTestHelper, simpleClientDao);
+    return new JAsyncClientDbTestHelper(
+        clientConnectionPool,
+        clientSchema,
+        userTestHelper,
+        simpleClientDao);
   }
 }

@@ -4,7 +4,6 @@ rootProject.name = 'JCRM'
 
 //include 'jcrm-jdbc'
 include 'jcrm-jasync'
-include 'jcrm-dao'
 include 'jcrm-mail'
 include 'jcrm-security'
 include 'jcrm-security-web'
@@ -28,6 +27,8 @@ include 'jcrm_ui_flutter'
 include 'base'
 include 'base-spring'
 include 'base-web'
+
+include 'dao'
 
 include 'contact-api'
 

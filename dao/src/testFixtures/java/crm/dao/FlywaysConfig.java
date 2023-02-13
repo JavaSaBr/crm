@@ -1,10 +1,10 @@
-package jcrm.dao;
+package crm.dao;
 
 import crm.base.spring.config.BaseConfig;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import jcrm.dao.config.DaoConfig;
+import crm.dao.config.DaoConfig;
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

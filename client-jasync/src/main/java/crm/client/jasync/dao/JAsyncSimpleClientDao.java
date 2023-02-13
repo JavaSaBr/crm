@@ -9,7 +9,7 @@ import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import crm.base.util.DateUtils;
 import crm.client.api.dao.SimpleClientDao;
-import com.ss.jcrm.dao.EntityPage;
+import crm.dao.EntityPage;
 import crm.client.api.SimpleClient;
 import crm.client.api.impl.DefaultSimpleClient;
 import crm.contact.api.Email;

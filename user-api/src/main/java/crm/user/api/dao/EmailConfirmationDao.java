@@ -1,6 +1,6 @@
 package crm.user.api.dao;
 
-import com.ss.jcrm.dao.Dao;
+import crm.dao.Dao;
 import crm.user.api.EmailConfirmation;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;

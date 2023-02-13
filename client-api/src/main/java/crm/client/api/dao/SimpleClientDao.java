@@ -1,8 +1,8 @@
 package crm.client.api.dao;
 
-import com.ss.jcrm.dao.Dao;
-import com.ss.jcrm.dao.EntityPage;
-import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
+import crm.dao.Dao;
+import crm.dao.EntityPage;
+import crm.dao.exception.NotActualObjectDaoException;
 import crm.client.api.SimpleClient;
 import crm.contact.api.Email;
 import crm.contact.api.Messenger;

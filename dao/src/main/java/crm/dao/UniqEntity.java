@@ -1,4 +1,4 @@
-package com.ss.jcrm.dao;
+package crm.dao;
 
 import crm.base.util.WithId;
 

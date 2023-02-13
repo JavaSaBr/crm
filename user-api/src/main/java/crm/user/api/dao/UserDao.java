@@ -1,8 +1,8 @@
 package crm.user.api.dao;
 
-import com.ss.jcrm.dao.Dao;
-import com.ss.jcrm.dao.EntityPage;
-import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
+import crm.dao.Dao;
+import crm.dao.EntityPage;
+import crm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.security.AccessRole;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;

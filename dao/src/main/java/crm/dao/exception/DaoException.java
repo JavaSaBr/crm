@@ -1,4 +1,4 @@
-package com.ss.jcrm.dao.exception;
+package crm.dao.exception;
 
 public class DaoException extends RuntimeException {
 

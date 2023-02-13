@@ -13,7 +13,7 @@ import crm.user.api.dao.MinimalUserDao;
 import crm.user.api.dao.OrganizationDao;
 import crm.user.api.dao.UserDao;
 import crm.user.api.dao.UserGroupDao;
-import jcrm.dao.config.DaoConfig;
+import crm.dao.config.DaoConfig;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;

@@ -1,7 +1,7 @@
 package com.ss.jcrm.registration.web.handler;
 
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.*;
-import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
+import crm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.registration.web.resources.AuthenticationOutResource;

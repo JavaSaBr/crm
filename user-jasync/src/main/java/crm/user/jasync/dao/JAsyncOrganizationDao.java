@@ -6,7 +6,7 @@ import static com.ss.rlib.common.util.ObjectUtils.notNull;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.dao.Dao;
+import crm.dao.Dao;
 import com.ss.jcrm.dictionary.api.City;
 import com.ss.jcrm.dictionary.api.Country;
 import com.ss.jcrm.dictionary.api.dao.CityDao;

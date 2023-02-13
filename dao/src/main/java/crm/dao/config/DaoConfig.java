@@ -1,4 +1,4 @@
-package jcrm.dao.config;
+package crm.dao.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package jcrm.jasync.config;
 
-import jcrm.dao.FlywaysConfig;
+import crm.dao.FlywaysConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

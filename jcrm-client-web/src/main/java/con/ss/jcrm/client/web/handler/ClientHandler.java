@@ -2,7 +2,7 @@ package con.ss.jcrm.client.web.handler;
 
 import crm.base.util.WithId;
 import crm.client.api.dao.SimpleClientDao;
-import com.ss.jcrm.dao.exception.NotActualObjectDaoException;
+import crm.dao.exception.NotActualObjectDaoException;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;

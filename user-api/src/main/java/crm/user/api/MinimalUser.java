@@ -1,6 +1,6 @@
 package crm.user.api;
 
-import com.ss.jcrm.dao.UniqEntity;
+import crm.dao.UniqEntity;
 import com.ss.jcrm.security.AccessRole;
 import org.jetbrains.annotations.NotNull;
 

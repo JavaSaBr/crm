@@ -2,7 +2,7 @@ package crm.client.jasync
 
 import crm.client.api.dao.SimpleClientDao
 
-import com.ss.jcrm.dao.exception.NotActualObjectDaoException
+import crm.dao.exception.NotActualObjectDaoException
 
 import crm.client.api.SimpleClient
 import crm.contact.api.Email

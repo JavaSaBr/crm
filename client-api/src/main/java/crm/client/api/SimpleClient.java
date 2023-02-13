@@ -1,11 +1,10 @@
 package crm.client.api;
 
-import com.ss.jcrm.dao.VersionedUniqEntity;
+import crm.dao.VersionedUniqEntity;
 import crm.contact.api.Email;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
 import crm.contact.api.Site;
-import java.util.List;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

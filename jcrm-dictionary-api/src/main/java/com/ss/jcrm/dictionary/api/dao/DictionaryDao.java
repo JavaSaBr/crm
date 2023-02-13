@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.api.dao;
 
-import com.ss.jcrm.dao.NamedUniqEntity;
-import com.ss.jcrm.dao.NamedObjectDao;
+import crm.dao.NamedUniqEntity;
+import crm.dao.NamedObjectDao;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;

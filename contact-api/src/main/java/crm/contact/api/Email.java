@@ -1,7 +1,7 @@
 package crm.contact.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.ss.jcrm.dao.Entity;
+import crm.dao.Entity;
 import crm.contact.api.impl.DefaultEmail;
 import org.jetbrains.annotations.NotNull;
 

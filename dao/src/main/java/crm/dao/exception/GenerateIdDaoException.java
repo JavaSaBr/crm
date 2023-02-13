@@ -1,4 +1,4 @@
-package com.ss.jcrm.dao.exception;
+package crm.dao.exception;
 
 import org.jetbrains.annotations.NotNull;
 

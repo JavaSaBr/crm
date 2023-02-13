@@ -2,5 +2,5 @@ apply plugin: "java-library"
 
 dependencies {
   api projects.base
-  api projects.jcrmDao
+  api projects.dao
 }

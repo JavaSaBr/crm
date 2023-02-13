@@ -1,7 +1,7 @@
 package user.jasync.dao
 
-import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
-import com.ss.jcrm.dao.exception.NotActualObjectDaoException
+import crm.dao.exception.DuplicateObjectDaoException
+import crm.dao.exception.NotActualObjectDaoException
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.service.PasswordService
 import crm.contact.api.Messenger

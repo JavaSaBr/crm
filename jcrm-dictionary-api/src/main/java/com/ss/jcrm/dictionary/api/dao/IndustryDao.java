@@ -1,6 +1,6 @@
 package com.ss.jcrm.dictionary.api.dao;
 
-import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
+import crm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dictionary.api.Industry;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;

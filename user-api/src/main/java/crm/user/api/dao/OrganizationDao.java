@@ -1,7 +1,7 @@
 package crm.user.api.dao;
 
-import com.ss.jcrm.dao.NamedObjectDao;
-import com.ss.jcrm.dao.exception.DuplicateObjectDaoException;
+import crm.dao.NamedObjectDao;
+import crm.dao.exception.DuplicateObjectDaoException;
 import com.ss.jcrm.dictionary.api.Country;
 import crm.user.api.Organization;
 import org.jetbrains.annotations.NotNull;

@@ -1,3 +1,3 @@
-package com.ss.jcrm.dao;
+package crm.dao;
 
 public interface Entity {}

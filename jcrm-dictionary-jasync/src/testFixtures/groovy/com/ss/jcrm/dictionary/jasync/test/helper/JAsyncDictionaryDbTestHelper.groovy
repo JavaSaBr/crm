@@ -2,7 +2,7 @@ package com.ss.jcrm.dictionary.jasync.test.helper
 
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
-import com.ss.jcrm.dao.exception.DuplicateObjectDaoException
+import crm.dao.exception.DuplicateObjectDaoException
 import com.ss.jcrm.dictionary.api.Country
 import com.ss.jcrm.dictionary.api.dao.CountryDao
 import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper

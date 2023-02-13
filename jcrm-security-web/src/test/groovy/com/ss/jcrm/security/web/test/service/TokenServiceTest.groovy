@@ -1,6 +1,6 @@
 package com.ss.jcrm.security.web.test.service
 
-import com.ss.jcrm.dao.exception.ObjectNotFoundDaoException
+import crm.dao.exception.ObjectNotFoundDaoException
 import com.ss.jcrm.security.web.exception.ChangedPasswordTokenException
 import com.ss.jcrm.security.web.exception.InvalidTokenException
 import com.ss.jcrm.security.web.exception.ExpiredTokenException

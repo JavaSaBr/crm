@@ -1,7 +1,7 @@
 package crm.user.api;
 
-import com.ss.jcrm.dao.ChangeTrackedEntity;
-import com.ss.jcrm.dao.VersionedUniqEntity;
+import crm.dao.ChangeTrackedEntity;
+import crm.dao.VersionedUniqEntity;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.WithAccessRoles;
 import crm.contact.api.Messenger;

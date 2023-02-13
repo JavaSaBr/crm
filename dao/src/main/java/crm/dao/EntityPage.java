@@ -1,4 +1,4 @@
-package com.ss.jcrm.dao;
+package crm.dao;
 
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
