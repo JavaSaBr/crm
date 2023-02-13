@@ -1,8 +1,8 @@
 apply plugin: "java-library"
 
 dependencies {
-    api libs.rlib.common
-    api libs.rlib.logger.slf4j
-    api libs.reactor.core
-    api libs.bundles.jackson
+  api libs.rlib.common
+  api libs.rlib.logger.slf4j
+  api libs.reactor.core
+  api libs.bundles.jackson
 }

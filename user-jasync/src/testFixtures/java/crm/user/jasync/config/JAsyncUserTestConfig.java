@@ -2,10 +2,10 @@ package crm.user.jasync.config;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecificationConfig;
 import com.ss.jcrm.security.config.SecurityConfig;
 import com.ss.jcrm.security.service.PasswordService;
 import crm.dictionary.api.DictionaryDbTestHelper;
+import crm.dictionary.jasync.config.JAsyncDictionaryTestConfig;
 import crm.user.api.UserDbTestHelper;
 import crm.user.api.dao.EmailConfirmationDao;
 import crm.user.api.dao.OrganizationDao;
@@ -23,10 +23,10 @@ import org.springframework.context.annotation.Import;
 
 @Import({
     JAsyncUserConfig.class,
-    DbTestConfig.class,
-    JAsyncDictionarySpecificationConfig.class,
     SecurityConfig.class,
-    JAsyncTestConfig.class
+    DbTestConfig.class,
+    JAsyncTestConfig.class,
+    JAsyncDictionaryTestConfig.class
 })
 @Configuration(proxyBeanMethods = false)
 public class JAsyncUserTestConfig {

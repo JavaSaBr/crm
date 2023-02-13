@@ -1,10 +1,10 @@
 apply plugin: "java-library"
 
 dependencies {
-    api projects.base
-    api libs.bundles.springboot.starter.reactive
+  api projects.base
+  api libs.bundles.springboot.starter.reactive
 }
 
 configurations {
-    api.exclude module: 'spring-boot-starter-reactor-netty'
+  api.exclude module: 'spring-boot-starter-reactor-netty'
 }

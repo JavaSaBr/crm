@@ -6,11 +6,11 @@ ext {
 }
 
 dependencies {
-    api projects.jcrmDictionaryJasync
+    api projects.dictionaryJasync
     api projects.jcrmSecurityWeb
 
     testFixturesApi projects.jcrmIntegrationTestWeb
-    testFixturesApi testFixtures(projects.jcrmDictionaryJasync)
+    testFixturesApi testFixtures(projects.dictionaryJasync)
 }
 /*
 afterEvaluate {

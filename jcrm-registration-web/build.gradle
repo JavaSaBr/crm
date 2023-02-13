@@ -6,7 +6,7 @@ ext {
 }
 
 dependencies {
-    api projects.jcrmDictionaryJasync
+    api projects.dictionaryJasync
     api projects.userJasync
     api projects.jcrmSecurityWeb
     api projects.jcrmMail

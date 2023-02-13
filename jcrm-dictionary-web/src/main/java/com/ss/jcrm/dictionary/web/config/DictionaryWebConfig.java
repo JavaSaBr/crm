@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.web.config;
 
 import crm.dictionary.api.dao.CountryDao;
-import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig;
+import crm.dictionary.jasync.config.JAsyncDictionaryConfig;
 import com.ss.jcrm.dictionary.web.handler.CountryHandler;
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;

@@ -1,7 +1,7 @@
 package com.ss.jcrm.client.web.test
 
-import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecificationConfig
 import crm.client.jasync.config.JAsyncClientTestConfig
+import crm.dictionary.jasync.config.JAsyncDictionaryTestConfig
 import integration.test.db.config.DbTestConfig
 
 import con.ss.jcrm.client.web.config.ClientWebConfig
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySource
 @Import([
     ClientWebConfig,
     DbTestConfig,
-    JAsyncDictionarySpecificationConfig,
+    JAsyncDictionaryTestConfig,
     JAsyncUserTestConfig,
     JAsyncClientTestConfig
 ])

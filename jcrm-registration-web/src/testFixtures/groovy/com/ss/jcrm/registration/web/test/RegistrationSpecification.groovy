@@ -35,7 +35,6 @@ class RegistrationSpecification extends WebSpecification {
     def setup() {
 
         userTestHelper.clearAllData()
-        dictionaryTestHelper.clearAllData()
 
         contextPath = registrationApiEndpointServer.contextPath()
     }

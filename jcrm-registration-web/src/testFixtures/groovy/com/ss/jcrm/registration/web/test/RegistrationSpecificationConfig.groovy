@@ -1,6 +1,6 @@
 package com.ss.jcrm.registration.web.test
 
-import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecificationConfig
+import crm.dictionary.jasync.config.JAsyncDictionaryTestConfig
 import integration.test.db.config.DbTestConfig
 import com.ss.jcrm.mail.test.MailSpecificationConfig
 import com.ss.jcrm.registration.web.config.RegistrationWebConfig
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource
 @Import([
     RegistrationWebConfig,
     DbTestConfig,
-    JAsyncDictionarySpecificationConfig,
+    JAsyncDictionaryTestConfig,
     JAsyncUserTestConfig,
     MailSpecificationConfig
 ])

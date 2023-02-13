@@ -31,7 +31,7 @@ class AuthenticationHandlerTest extends RegistrationSpecification {
   
   def "should authenticate a user by email"() {
     given:
-        def email = "test@test.com"
+        def email = userTestHelper.nextEmail();
         def password = "pwdpwd"
         userTestHelper.newUser(email, password)
     when:

@@ -22,9 +22,7 @@ class DictionarySpecification extends WebSpecification {
     def contextPath
 
     def setup() {
-
-        dictionaryTestHelper.clearAllData()
-
+      
         reloadableServices.each {
             it.reload()
         }

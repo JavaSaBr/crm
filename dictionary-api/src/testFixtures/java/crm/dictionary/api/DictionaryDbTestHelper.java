@@ -7,4 +7,7 @@ public interface DictionaryDbTestHelper {
   Country newCountry(String name);
 
   Country newCountry(String name, String flagCode, String phoneCode);
+
+  String nextCountryName();
+  String nextIndustryName();
 }

@@ -8,6 +8,6 @@ dependencies {
   api projects.jasync
   
   testFixturesApi testFixtures(projects.jasync)
-  testFixturesApi testFixtures(projects.jcrmDictionaryJasync)
+  testFixturesApi testFixtures(projects.dictionaryJasync)
   testFixturesApi testFixtures(projects.userApi)
 }

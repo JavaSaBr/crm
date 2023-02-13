@@ -1,6 +1,6 @@
 apply plugin: "java-library"
 
 dependencies {
-    api projects.base
-    api libs.springboot.starter.core
+  api projects.base
+  api libs.springboot.starter.core
 }
