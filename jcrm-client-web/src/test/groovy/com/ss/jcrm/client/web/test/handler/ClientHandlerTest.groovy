@@ -73,14 +73,14 @@ class ClientHandlerTest extends ClientSpecification {
             "Third name",
             "Company",
             "1990-05-22",
-            List.of(ClientPhoneNumberResource.of("+7", "234", "123132", PhoneNumberType.WORK)),
-            List.of(ClientEmailResource.of("Test@test.com", EmailType.HOME)),
+            List.of(PhoneNumberResource.of("+7", "234", "123132", PhoneNumberType.WORK)),
+            List.of(EmailResource.of("Test@test.com", EmailType.HOME)),
             List.of(
-                ClientSiteResource.of("work.site.com", SiteType.WORK),
-                ClientSiteResource.of("home.site.com", SiteType.HOME)),
+                SiteResource.of("work.site.com", SiteType.WORK),
+                SiteResource.of("home.site.com", SiteType.HOME)),
             List.of(
-                ClientMessengerResource.of("misterX", MessengerType.TELEGRAM),
-                ClientMessengerResource.of("misterX", MessengerType.SKYPE)))
+                MessengerResource.of("misterX", MessengerType.TELEGRAM),
+                MessengerResource.of("misterX", MessengerType.SKYPE)))
     when:
         def response = webClient.post()
             .headerValue(WebRequestSecurityService.HEADER_TOKEN, token)
@@ -105,18 +105,18 @@ class ClientHandlerTest extends ClientSpecification {
             .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers()[0].countryCode())
             .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers()[0].regionCode())
             .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers()[0].phoneNumber())
-            .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers()[0].type))
+            .jsonPath('$.phoneNumbers[0].type').value(is((int) body.phoneNumbers()[0].type()))
             .jsonPath('$.emails').value(hasSize(1))
-            .jsonPath('$.emails[0].type').isEqualTo(body.emails()[0].type())
+            .jsonPath('$.emails[0].type').isEqualTo((int) body.emails()[0].type())
             .jsonPath('$.emails[0].email').isEqualTo(body.emails()[0].email())
             .jsonPath('$.sites').value(hasSize(2))
             .jsonPath('$.sites[*].type')
-              .value(containsInAnyOrder(body.sites()[0].type(), body.sites()[1].type()))
+              .value(containsInAnyOrder((int) body.sites()[0].type(), (int) body.sites()[1].type()))
             .jsonPath('$.sites[*].url')
               .value(containsInAnyOrder(body.sites()[0].url(), body.sites()[1].url()))
             .jsonPath('$.messengers').value(hasSize(2))
             .jsonPath('$.messengers[*].type')
-              .value(containsInAnyOrder(body.messengers()[0].type(), body.messengers()[1].type()))
+              .value(containsInAnyOrder((int) body.messengers()[0].type(), (int) body.messengers()[1].type()))
             .jsonPath('$.messengers[*].login')
               .value(containsInAnyOrder(body.messengers()[0].login(), body.messengers()[1].login()))
   }
@@ -344,7 +344,7 @@ class ClientHandlerTest extends ClientSpecification {
             null,
             null,
             "1950-04-22",
-            List.of(ClientPhoneNumberResource.of("+1234556", "12345678", "123456789", PhoneNumberType.MOBILE)),
+            List.of(PhoneNumberResource.of("+1234556", "12345678", "123456789", PhoneNumberType.MOBILE)),
             null,
             null,
             null)
@@ -591,20 +591,20 @@ class ClientHandlerTest extends ClientSpecification {
             .jsonPath('$.phoneNumbers[0].countryCode').isEqualTo(body.phoneNumbers()[0].countryCode())
             .jsonPath('$.phoneNumbers[0].regionCode').isEqualTo(body.phoneNumbers()[0].regionCode())
             .jsonPath('$.phoneNumbers[0].phoneNumber').isEqualTo(body.phoneNumbers()[0].phoneNumber())
-            .jsonPath('$.phoneNumbers[0].type').value(is(body.phoneNumbers()[0].type()))
+            .jsonPath('$.phoneNumbers[0].type').value(is((int) body.phoneNumbers()[0].type()))
             .jsonPath('$.emails').value(hasSize(1))
             .jsonPath('$.emails[0].type').isEqualTo(body.emails()[0].type())
             .jsonPath('$.emails[0].email').isEqualTo(body.emails()[0].email())
             .jsonPath('$.sites').value(hasSize(2))
-            .jsonPath('$.sites[*].type').value(containsInAnyOrder(body.sites()[0].type(),
-            body.sites()[1].type()))
-            .jsonPath('$.sites[*].url').value(containsInAnyOrder(body.sites()[0].url(),
-            body.sites()[1].url()))
+            .jsonPath('$.sites[*].type')
+              .value(containsInAnyOrder((int) body.sites()[0].type(), (int) body.sites()[1].type()))
+            .jsonPath('$.sites[*].url')
+              .value(containsInAnyOrder(body.sites()[0].url(), body.sites()[1].url()))
             .jsonPath('$.messengers').value(hasSize(2))
-            .jsonPath('$.messengers[*].type').value(containsInAnyOrder(body.messengers()[0].type(),
-            body.messengers()[1].type()))
-            .jsonPath('$.messengers[*].login').value(containsInAnyOrder(body.messengers()[0].login(),
-            body.messengers()[1].login()))
+            .jsonPath('$.messengers[*].type')
+              .value(containsInAnyOrder((int) body.messengers()[0].type(), (int) body.messengers()[1].type()))
+            .jsonPath('$.messengers[*].login')
+              .value(containsInAnyOrder(body.messengers()[0].login(), body.messengers()[1].login()))
   }
   
   def "should failed updating client"() {

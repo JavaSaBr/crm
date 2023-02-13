@@ -28,7 +28,7 @@ public interface SimpleClientDao extends Dao<SimpleClient> {
       @NotNull String thirdName) {
     return create(
         assigner,
-        null,
+        Set.of(),
         organization,
         firstName,
         secondName,

@@ -16,16 +16,12 @@ import crm.contact.api.Email;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
 import crm.contact.api.Site;
-import crm.contact.api.impl.DefaultEmail;
-import crm.contact.api.impl.DefaultMessenger;
 import crm.contact.api.impl.DefaultPhoneNumber;
-import crm.contact.api.impl.DefaultSite;
 import jasync.dao.AbstractJAsyncDao;
 import jasync.function.JAsyncConverter;
 import jasync.util.JAsyncUtils;
 import crm.user.api.Organization;
 import crm.user.api.User;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -42,9 +38,9 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncSimpleClientDao extends AbstractJAsyncDao<SimpleClient> implements SimpleClientDao {
 
-  private static final CollectionType CLIENT_EMAILS = JAsyncUtils.collectionType(HashSet.class, DefaultEmail.class);
-  private static final CollectionType CONTACT_SITES = JAsyncUtils.collectionType(HashSet.class, DefaultSite.class);
-  private static final CollectionType CLIENT_MESSENGERS = JAsyncUtils.collectionType(HashSet.class, DefaultMessenger.class);
+  private static final CollectionType CLIENT_EMAILS = JAsyncUtils.collectionType(HashSet.class, Email.class);
+  private static final CollectionType CONTACT_SITES = JAsyncUtils.collectionType(HashSet.class, Site.class);
+  private static final CollectionType CLIENT_MESSENGERS = JAsyncUtils.collectionType(HashSet.class, Messenger.class);
   private static final CollectionType PHONE_NUMBERS = JAsyncUtils.collectionType(HashSet.class, DefaultPhoneNumber.class);
 
   private static final String FIELD_LIST = """

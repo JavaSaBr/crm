@@ -1,20 +1,19 @@
 package com.ss.jcrm.client.jasync.test.dao
 
-
 import crm.client.api.dao.SimpleClientDao
 
 import com.ss.jcrm.client.jasync.test.JAsyncClientSpecification
 import com.ss.jcrm.dao.exception.NotActualObjectDaoException
 
 import crm.client.api.SimpleClient
+import crm.contact.api.Email
 import crm.contact.api.EmailType
+import crm.contact.api.Messenger
 import crm.contact.api.MessengerType
+import crm.contact.api.PhoneNumber
 import crm.contact.api.PhoneNumberType
+import crm.contact.api.Site
 import crm.contact.api.SiteType
-import crm.contact.api.impl.DefaultEmail
-import crm.contact.api.impl.DefaultMessenger
-import crm.contact.api.impl.DefaultPhoneNumber
-import crm.contact.api.impl.DefaultSite
 import jasync.util.JAsyncUtils
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -27,31 +26,28 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
   SimpleClientDao simpleClientDao
   
   def "should create and load simple client"() {
-    
     given:
         
         def assigner = userTestHelper.newUser("Test1")
         def currentTime = Instant.now()
         
-        def curators = [
+        def curators = Set.of(
             userTestHelper.newUser("Curator1"),
-            userTestHelper.newUser("Curator2")
-        ]
-        def phoneNumbers = [
-            DefaultPhoneNumber.of("+7", "123", "456789", PhoneNumberType.WORK),
-            DefaultPhoneNumber.of("+7", "123", "098765", PhoneNumberType.MOBILE)
-        ]
-        def emails = [
-            new DefaultEmail("test@test.com", EmailType.WORK),
-            new DefaultEmail("test2@test2.com", EmailType.HOME),
-        ]
-        def sites = [
-            new DefaultSite("google.com", SiteType.HOME),
-        ]
-        def messengers = [
-            new DefaultMessenger("user1", MessengerType.SKYPE),
-            new DefaultMessenger("user2", MessengerType.TELEGRAM),
-        ]
+            userTestHelper.newUser("Curator2"))
+    
+        def phoneNumbers = Set.of(
+            PhoneNumber.of("+7", "123", "456789", PhoneNumberType.WORK),
+            PhoneNumber.of("+7", "123", "098765", PhoneNumberType.MOBILE))
+    
+        def emails = Set.of(
+            Email.of("test@test.com", EmailType.WORK),
+            Email.of("test2@test2.com", EmailType.HOME))
+    
+        def sites = Set.of(Site.of("google.com", SiteType.HOME))
+        def messengers = Set.of(
+            Messenger.of("user1", MessengerType.SKYPE),
+            Messenger.of("user2", MessengerType.TELEGRAM))
+    
         def birthday = LocalDate.of(1900, 3, 12)
     when:
         def client = simpleClientDao.create(
@@ -138,7 +134,6 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
   }
   
   def "should update simple client correctly"() {
-    
     given:
         def assigner = userTestHelper.newUser()
         def client = clientTestHelper.newSimpleClient(assigner)
@@ -166,10 +161,10 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
     when:
         Thread.sleep(1000)
         loaded.company("New Company")
-        loaded.messengers([new DefaultMessenger("test", MessengerType.SKYPE)])
-        loaded.sites([new DefaultSite("google.com", SiteType.HOME)])
-        loaded.emails([new DefaultEmail("test@test.com", EmailType.WORK)])
-        loaded.phoneNumbers([DefaultPhoneNumber.of("+375", "25", "124124", PhoneNumberType.WORK)])
+        loaded.messengers(Set.of(Messenger.of("test", MessengerType.SKYPE)))
+        loaded.sites(Set.of(Site.of("google.com", SiteType.HOME)))
+        loaded.emails(Set.of(Email.of("test@test.com", EmailType.WORK)))
+        loaded.phoneNumbers(Set.of(PhoneNumber.of("+375", "25", "124124", PhoneNumberType.WORK)))
         loaded.thirdName("Third name 2")
         loaded.birthday(LocalDate.of(1900, 04, 11))
         loaded.curatorIds(new long[]{curator.id()})
@@ -237,7 +232,7 @@ class JAsyncSimpleClientDaoTest extends JAsyncClientSpecification {
     
     when:
         def page = simpleClientDao.findPageByOrg(0, 5, firstOrg.id()).block()
-        loadedClients.addAll(page.entities)
+        loadedClients.addAll(page.entities())
     then:
         page != null
         page.totalSize() == firstOrgClientsCount

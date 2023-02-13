@@ -4,6 +4,7 @@ import static crm.base.util.DateUtils.toUtcInstant;
 import static com.ss.rlib.common.util.ObjectUtils.ifNull;
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.RowData;
 import com.github.jasync.sql.db.pool.ConnectionPool;
@@ -12,6 +13,7 @@ import com.ss.jcrm.dao.Dao;
 import com.ss.jcrm.dao.EntityPage;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
+import crm.contact.api.impl.DefaultPhoneNumber;
 import jasync.dao.AbstractJAsyncDao;
 import jasync.function.JAsyncLazyConverter;
 import jasync.util.JAsyncUtils;
@@ -38,6 +40,9 @@ import java.util.*;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
+
+  private static final CollectionType PHONE_NUMBERS = JAsyncUtils.collectionType(HashSet.class, DefaultPhoneNumber.class);
+  private static final CollectionType MESSENGERS = JAsyncUtils.collectionType(HashSet.class, Messenger.class);
 
   private static final String FIELD_LIST = """
       "id", "organization_id", "email", "first_name", "second_name", "third_name", "birthday", "phone_numbers", 
@@ -306,10 +311,11 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     var secondName = data.getString(4);
     var thirdName = data.getString(5);
     var birthday = (LocalDate) data.getAs(6);
-    var phoneNumbers = JAsyncUtils.fromJsonArrayToSet(data.getString(7), PhoneNumber[].class);
-    var messengers = JAsyncUtils.fromJsonArrayToSet(data.getString(8), Messenger[].class);
     var passwordVersion = ifNull(data.getInt(15), 0);
     var emailConfirmed = ifNull(data.getBoolean(14), Boolean.FALSE);
+
+    Set<PhoneNumber> phoneNumbers = JAsyncUtils.setFromJson(data.getString(7), PHONE_NUMBERS);
+    Set<Messenger> messengers = JAsyncUtils.setFromJson(data.getString(8), MESSENGERS);
 
     byte[] password = data.getAs(9);
     byte[] salt = data.getAs(10);

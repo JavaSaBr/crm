@@ -29,7 +29,6 @@ class UserHandlerTest extends RegistrationSpecification {
     UserDao userDao
     
     def "should create new user"() {
-        
         given:
             
             def org = userTestHelper.newOrganization()
@@ -70,29 +69,29 @@ class UserHandlerTest extends RegistrationSpecification {
                 .jsonPath('$.birthday').isEqualTo(newUser.birthday())
                 .jsonPath('$.phoneNumbers').value(hasSize(2))
                 .jsonPath('$.phoneNumbers[*].countryCode').value(containsInAnyOrder(
-                    phoneNumbers[0].countryCode,
-                    phoneNumbers[1].countryCode
+                    phoneNumbers[0].countryCode(),
+                    phoneNumbers[1].countryCode()
                 ))
                 .jsonPath('$.phoneNumbers[*].regionCode').value(containsInAnyOrder(
-                    phoneNumbers[0].regionCode,
-                    phoneNumbers[1].regionCode
+                    phoneNumbers[0].regionCode(),
+                    phoneNumbers[1].regionCode()
                 ))
                 .jsonPath('$.phoneNumbers[*].phoneNumber').value(containsInAnyOrder(
-                    phoneNumbers[0].phoneNumber,
-                    phoneNumbers[1].phoneNumber
+                    phoneNumbers[0].phoneNumber(),
+                    phoneNumbers[1].phoneNumber()
                 ))
                 .jsonPath('$.phoneNumbers[*].type').value(containsInAnyOrder(
-                    phoneNumbers[0].type,
-                    phoneNumbers[1].type
+                  (int) phoneNumbers[0].type(),
+                  (int) phoneNumbers[1].type()
                 ))
                 .jsonPath('$.messengers').value(hasSize(2))
                 .jsonPath('$.messengers[*].login').value(containsInAnyOrder(
-                    messengers[0].login,
-                    messengers[1].login
+                    messengers[0].login(),
+                    messengers[1].login()
                 ))
                 .jsonPath('$.messengers[*].type').value(containsInAnyOrder(
-                    messengers[0].type,
-                    messengers[1].type
+                  (int) messengers[0].type(),
+                  (int) messengers[1].type()
                 ))
     }
     
