@@ -1,4 +1,4 @@
-package com.ss.jcrm.dictionary.api;
+package crm.dictionary.api;
 
 import crm.dao.NamedUniqEntity;
 import org.jetbrains.annotations.NotNull;

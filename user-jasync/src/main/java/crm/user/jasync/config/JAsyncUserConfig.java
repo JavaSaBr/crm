@@ -2,9 +2,9 @@ package crm.user.jasync.config;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.dictionary.api.dao.CityDao;
-import com.ss.jcrm.dictionary.api.dao.CountryDao;
-import com.ss.jcrm.dictionary.api.dao.IndustryDao;
+import crm.dictionary.api.dao.CityDao;
+import crm.dictionary.api.dao.CountryDao;
+import crm.dictionary.api.dao.IndustryDao;
 import crm.base.spring.config.PropertiesConfig;
 import crm.jasync.config.AbstractJAsyncConfig;
 import crm.jasync.config.CommonJAsyncConfig;

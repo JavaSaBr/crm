@@ -1,7 +1,6 @@
 package com.ss.jcrm.registration.web.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.web.WebSpecification
 
 import crm.base.web.config.ApiEndpoint
@@ -9,6 +8,7 @@ import crm.contact.api.MessengerType
 import crm.contact.api.PhoneNumberType
 import crm.contact.api.resource.MessengerResource
 import crm.contact.api.resource.PhoneNumberResource
+import crm.dictionary.api.DictionaryDbTestHelper
 import crm.user.api.UserDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration

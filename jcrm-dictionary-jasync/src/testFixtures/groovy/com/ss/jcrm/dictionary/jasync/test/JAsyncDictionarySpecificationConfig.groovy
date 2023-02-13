@@ -2,8 +2,8 @@ package com.ss.jcrm.dictionary.jasync.test
 
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
-import com.ss.jcrm.dictionary.api.dao.CountryDao
-import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
+import crm.dictionary.api.DictionaryDbTestHelper
+import crm.dictionary.api.dao.CountryDao
 import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig
 import com.ss.jcrm.dictionary.jasync.test.helper.JAsyncDictionaryDbTestHelper
 import integration.test.db.config.DbTestConfig

@@ -2,9 +2,9 @@ package crm.user.api;
 
 import crm.dao.NamedUniqEntity;
 import crm.dao.VersionedUniqEntity;
-import com.ss.jcrm.dictionary.api.City;
-import com.ss.jcrm.dictionary.api.Country;
-import com.ss.jcrm.dictionary.api.Industry;
+import crm.dictionary.api.City;
+import crm.dictionary.api.Country;
+import crm.dictionary.api.Industry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

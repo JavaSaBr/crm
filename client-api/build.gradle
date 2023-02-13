@@ -2,7 +2,7 @@ apply plugin: "java-library"
 
 dependencies {
   api projects.base
-  api projects.jcrmDictionaryApi
+  api projects.dictionaryApi
   api projects.userApi
   api projects.contactApi
   

@@ -1,13 +1,15 @@
-package com.ss.jcrm.dictionary.api.impl;
+package crm.dictionary.api.impl;
 
-import com.ss.jcrm.dictionary.api.City;
-import com.ss.jcrm.dictionary.api.Country;
+import crm.dictionary.api.Country;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record DefaultCity(@NotNull String name, @NotNull Country country, long id)
-    implements City {
+public record DefaultCountry(
+    @NotNull String name,
+    @NotNull String flagCode,
+    @NotNull String phoneCode,
+    long id) implements Country {
 
   @Override
   public boolean equals(@Nullable Object another) {
@@ -16,7 +18,7 @@ public record DefaultCity(@NotNull String name, @NotNull Country country, long i
     } else if (another == null || getClass() != another.getClass()) {
       return false;
     }
-    DefaultCity that = (DefaultCity) another;
+    var that = (DefaultCountry) another;
     return id == that.id;
   }
 

@@ -5,12 +5,12 @@ import static com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils.c
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper;
 import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.service.PasswordService;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
+import crm.dictionary.api.DictionaryDbTestHelper;
 import crm.user.api.EmailConfirmation;
 import crm.user.api.Organization;
 import crm.user.api.User;
@@ -23,7 +23,6 @@ import crm.user.api.dao.UserGroupDao;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 

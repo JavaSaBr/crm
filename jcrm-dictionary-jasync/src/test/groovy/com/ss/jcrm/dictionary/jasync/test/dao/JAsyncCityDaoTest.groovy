@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.jasync.test.dao
 
 import crm.dao.exception.DuplicateObjectDaoException
-import com.ss.jcrm.dictionary.api.dao.CityDao
+import crm.dictionary.api.dao.CityDao
 import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification
 
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,6 +1,6 @@
 package com.ss.jcrm.registration.web.config;
 
-import com.ss.jcrm.dictionary.api.dao.CountryDao;
+import crm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.jasync.config.JAsyncDictionaryConfig;
 import com.ss.jcrm.mail.MailConfig;
 import com.ss.jcrm.mail.service.MailService;

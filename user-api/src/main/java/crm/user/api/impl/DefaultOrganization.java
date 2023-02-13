@@ -1,8 +1,8 @@
 package crm.user.api.impl;
 
-import com.ss.jcrm.dictionary.api.City;
-import com.ss.jcrm.dictionary.api.Country;
-import com.ss.jcrm.dictionary.api.Industry;
+import crm.dictionary.api.City;
+import crm.dictionary.api.Country;
+import crm.dictionary.api.Industry;
 import crm.user.api.Organization;
 import lombok.*;
 import lombok.experimental.Accessors;

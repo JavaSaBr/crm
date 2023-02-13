@@ -1,7 +1,7 @@
 package crm.user.jasync
 
-import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
 import com.ss.jcrm.integration.test.DefaultSpecification
+import crm.dictionary.api.DictionaryDbTestHelper
 import crm.user.api.UserDbTestHelper
 import crm.user.jasync.config.JAsyncUserTestConfig
 import org.springframework.beans.factory.annotation.Autowired

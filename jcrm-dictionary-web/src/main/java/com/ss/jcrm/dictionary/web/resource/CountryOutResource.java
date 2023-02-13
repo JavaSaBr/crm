@@ -1,6 +1,6 @@
 package com.ss.jcrm.dictionary.web.resource;
 
-import com.ss.jcrm.dictionary.api.Country;
+import crm.dictionary.api.Country;
 import crm.base.web.resources.RestResource;
 import org.jetbrains.annotations.NotNull;
 

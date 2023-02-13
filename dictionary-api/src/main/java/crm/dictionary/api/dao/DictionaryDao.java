@@ -1,4 +1,4 @@
-package com.ss.jcrm.dictionary.api.dao;
+package crm.dictionary.api.dao;
 
 import crm.dao.NamedUniqEntity;
 import crm.dao.NamedObjectDao;
@@ -11,5 +11,5 @@ public interface DictionaryDao<T extends NamedUniqEntity> extends NamedObjectDao
 
     @NotNull Flux<T> findAll();
 
-    @NotNull Mono<@NotNull LongDictionary<T>> findAllAsMap();
+    @NotNull Mono<LongDictionary<T>> findAllAsMap();
 }

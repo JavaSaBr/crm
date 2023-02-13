@@ -2,7 +2,7 @@ package crm.user.api.dao;
 
 import crm.dao.NamedObjectDao;
 import crm.dao.exception.DuplicateObjectDaoException;
-import com.ss.jcrm.dictionary.api.Country;
+import crm.dictionary.api.Country;
 import crm.user.api.Organization;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;

@@ -1,6 +1,6 @@
 package com.ss.jcrm.registration.web.handler;
 
-import com.ss.jcrm.dictionary.api.dao.CountryDao;
+import crm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.registration.web.resources.UserRegisterInResource;
 import crm.user.api.dao.OrganizationDao;
 import crm.user.api.dao.UserDao;

@@ -1,6 +1,6 @@
-package com.ss.jcrm.dictionary.api.impl;
+package crm.dictionary.api.impl;
 
-import com.ss.jcrm.dictionary.api.Industry;
+import crm.dictionary.api.Industry;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +14,7 @@ public record DefaultIndustry(@NotNull String name, long id) implements Industry
     } else if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    DefaultIndustry that = (DefaultIndustry) o;
+    var that = (DefaultIndustry) o;
     return id == that.id;
   }
 

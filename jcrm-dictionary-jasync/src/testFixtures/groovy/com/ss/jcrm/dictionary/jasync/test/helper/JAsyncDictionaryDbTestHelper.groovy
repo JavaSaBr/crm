@@ -3,9 +3,9 @@ package com.ss.jcrm.dictionary.jasync.test.helper
 import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
 import crm.dao.exception.DuplicateObjectDaoException
-import com.ss.jcrm.dictionary.api.Country
-import com.ss.jcrm.dictionary.api.dao.CountryDao
-import com.ss.jcrm.dictionary.api.test.DictionaryDbTestHelper
+import crm.dictionary.api.Country
+import crm.dictionary.api.DictionaryDbTestHelper
+import crm.dictionary.api.dao.CountryDao
 import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecification
 import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper
 
@@ -45,7 +45,6 @@ class JAsyncDictionaryDbTestHelper extends JAsyncTestHelper implements Dictionar
         return countryDao.create(name, flagCode, phoneCode).block()
     }
 
-    @Override
     void clearAllData() {
         JAsyncDictionarySpecification.clearAllTables(connectionPool, schema)
     }

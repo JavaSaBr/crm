@@ -3,7 +3,7 @@ package com.ss.jcrm.dictionary.jasync;
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import crm.dao.NamedUniqEntity;
-import com.ss.jcrm.dictionary.api.dao.DictionaryDao;
+import crm.dictionary.api.dao.DictionaryDao;
 import crm.jasync.dao.AbstractNamedObjectJAsyncDao;
 import com.ss.rlib.common.util.dictionary.DictionaryFactory;
 import com.ss.rlib.common.util.dictionary.LongDictionary;

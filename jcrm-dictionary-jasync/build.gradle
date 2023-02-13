@@ -2,10 +2,10 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 dependencies {
-    api projects.jcrmDictionaryApi
+    api projects.dictionaryApi
     api projects.baseSpring
     api projects.jasync
 
-    testFixturesApi testFixtures(projects.jcrmDictionaryApi)
+    testFixturesApi testFixtures(projects.dictionaryApi)
     testFixturesApi projects.jcrmIntegrationTestDbJasync
 }
