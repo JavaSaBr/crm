@@ -1,4 +1,4 @@
-package jasync.util;
+package crm.jasync.util;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;

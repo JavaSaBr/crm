@@ -14,7 +14,7 @@ import crm.user.api.dao.UserGroupDao;
 import integration.test.db.config.DbTestConfig;
 import integration.test.db.model.DbTestPrefix;
 import integration.test.db.model.DbTestSchema;
-import jcrm.jasync.config.JAsyncTestConfig;
+import crm.jasync.config.JAsyncTestConfig;
 import crm.user.jasync.helper.JAsyncUserDbTestHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

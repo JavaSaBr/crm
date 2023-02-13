@@ -4,7 +4,7 @@ apply plugin: "java-test-fixtures"
 dependencies {
     api projects.jcrmDictionaryApi
     api projects.baseSpring
-    api projects.jcrmJasync
+    api projects.jasync
 
     testFixturesApi testFixtures(projects.jcrmDictionaryApi)
     testFixturesApi projects.jcrmIntegrationTestDbJasync

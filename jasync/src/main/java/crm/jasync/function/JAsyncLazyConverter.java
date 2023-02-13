@@ -1,4 +1,4 @@
-package jasync.function;
+package crm.jasync.function;
 
 import com.github.jasync.sql.db.RowData;
 import crm.dao.Dao;

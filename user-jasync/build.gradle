@@ -5,9 +5,9 @@ dependencies {
   api projects.base
   api projects.userApi
   api projects.baseSpring
-  api projects.jcrmJasync
+  api projects.jasync
   
-  testFixturesApi testFixtures(projects.jcrmJasync)
+  testFixturesApi testFixtures(projects.jasync)
   testFixturesApi testFixtures(projects.jcrmDictionaryJasync)
   testFixturesApi testFixtures(projects.userApi)
 }

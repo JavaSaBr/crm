@@ -9,7 +9,7 @@ import com.ss.jcrm.dictionary.api.Industry;
 import com.ss.jcrm.dictionary.api.dao.IndustryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultIndustry;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
-import jasync.function.JAsyncConverter;
+import crm.jasync.function.JAsyncConverter;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;

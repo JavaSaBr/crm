@@ -13,7 +13,7 @@ import crm.contact.api.PhoneNumber
 import crm.contact.api.PhoneNumberType
 import crm.contact.api.Site
 import crm.contact.api.SiteType
-import jasync.util.JAsyncUtils
+import crm.jasync.util.JAsyncUtils
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.time.Instant

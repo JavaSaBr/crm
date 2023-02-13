@@ -1,4 +1,4 @@
-package jasync.config;
+package crm.jasync.config;
 
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.util.DaemonThreadsFactory;

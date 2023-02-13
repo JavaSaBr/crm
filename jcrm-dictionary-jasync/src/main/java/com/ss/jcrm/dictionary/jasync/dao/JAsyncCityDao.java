@@ -11,7 +11,7 @@ import com.ss.jcrm.dictionary.api.dao.CityDao;
 import com.ss.jcrm.dictionary.api.dao.CountryDao;
 import com.ss.jcrm.dictionary.api.impl.DefaultCity;
 import com.ss.jcrm.dictionary.jasync.AbstractDictionaryDao;
-import jasync.function.JAsyncLazyConverter;
+import crm.jasync.function.JAsyncLazyConverter;
 import com.ss.rlib.common.util.dictionary.LongDictionary;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

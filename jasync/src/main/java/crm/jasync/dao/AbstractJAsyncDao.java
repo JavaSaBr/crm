@@ -1,4 +1,4 @@
-package jasync.dao;
+package crm.jasync.dao;
 
 import static com.ss.rlib.common.util.ObjectUtils.notNull;
 
@@ -10,11 +10,11 @@ import crm.dao.UniqEntity;
 import crm.dao.VersionedUniqEntity;
 import crm.dao.exception.NotActualObjectDaoException;
 import crm.dao.exception.ObjectNotFoundDaoException;
-import jasync.function.JAsyncBiConverter;
-import jasync.function.JAsyncConverter;
-import jasync.function.JAsyncCreationCallback;
-import jasync.function.JAsyncLazyConverter;
-import jasync.util.JAsyncUtils;
+import crm.jasync.function.JAsyncBiConverter;
+import crm.jasync.function.JAsyncConverter;
+import crm.jasync.function.JAsyncLazyConverter;
+import crm.jasync.util.JAsyncUtils;
+import crm.jasync.function.JAsyncCreationCallback;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Stream;

@@ -1,11 +1,11 @@
-package jasync.config;
+package crm.jasync.config;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.postgresql.pool.PostgreSQLConnectionFactory;
 import io.netty.channel.EventLoopGroup;
-import jasync.util.JAsyncUtils;
+import crm.jasync.util.JAsyncUtils;
 import java.util.concurrent.ExecutorService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

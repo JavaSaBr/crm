@@ -1,4 +1,4 @@
-package jasync.function;
+package crm.jasync.function;
 
 import crm.dao.Dao;
 import crm.dao.UniqEntity;
