@@ -1,6 +1,6 @@
 package com.ss.jcrm.client.web.test
 
-import com.ss.jcrm.client.jasync.test.JAsyncClientSpecificationConfig
+
 import com.ss.jcrm.dictionary.jasync.test.JAsyncDictionarySpecificationConfig
 import integration.test.db.config.DbTestConfig
 

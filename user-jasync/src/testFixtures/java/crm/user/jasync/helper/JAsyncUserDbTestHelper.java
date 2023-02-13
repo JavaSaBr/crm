@@ -41,7 +41,6 @@ public class JAsyncUserDbTestHelper extends JAsyncTestHelper implements UserDbTe
   PasswordService passwordService;
   DictionaryDbTestHelper dictionaryTestHelper;
   EmailConfirmationDao emailConfirmationDao;
-  AtomicInteger idGenerator = new AtomicInteger(0);
 
   public JAsyncUserDbTestHelper(
       ConnectionPool<? extends ConcreteConnection> connectionPool,
@@ -166,17 +165,17 @@ public class JAsyncUserDbTestHelper extends JAsyncTestHelper implements UserDbTe
 
   @Override
   public String nextOrganizationName() {
-    return "organization_" + idGenerator.incrementAndGet();
+    return nextId("organization_", "");
   }
 
   @Override
   public String nextEmail() {
-    return "email_" + idGenerator.incrementAndGet() + "@it.net";
+    return nextId("email_", "@it.net");
   }
 
   @Override
   public String nextGroupName() {
-    return "group_" + idGenerator.incrementAndGet();
+    return nextId("group_", "");
   }
 
   @Override

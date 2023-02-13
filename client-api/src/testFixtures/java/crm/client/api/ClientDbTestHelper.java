@@ -9,5 +9,5 @@ public interface ClientDbTestHelper extends DbTestHelper {
 
   SimpleClient newSimpleClient(User assigner);
 
-  String nextName();
+  String nextClientName();
 }

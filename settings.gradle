@@ -22,15 +22,17 @@ include 'jcrm-dictionary-api'
 //include 'jcrm-dictionary-jdbc'
 include 'jcrm-dictionary-jasync'
 include 'jcrm-dictionary-web'
-include 'jcrm-client-jasync'
 include 'jcrm-client-web'
 include 'jcrm_ui_flutter'
 
 include 'base'
 include 'base-spring'
 include 'base-web'
+
+include 'contact-api'
+
 include 'user-api'
 include 'user-jasync'
 
 include 'client-api'
-include 'contact-api'
+include 'client-jasync'

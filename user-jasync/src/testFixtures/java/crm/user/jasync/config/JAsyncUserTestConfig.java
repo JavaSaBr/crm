@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Import;
 public class JAsyncUserTestConfig {
 
   @Bean
-  DbTestPrefix dbTestPrefix() {
+  DbTestPrefix userDbTestPrefix() {
     return new DbTestPrefix("user.db", "UserJAsync", DbTestSchema.USER);
   }
 
