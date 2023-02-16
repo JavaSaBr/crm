@@ -1,6 +1,6 @@
 package com.ss.jcrm.security.web.test
 
-import com.ss.jcrm.integration.test.DefaultSpecification
+import crm.integration.test.DefaultSpecification
 import com.ss.jcrm.security.AccessRole
 import com.ss.jcrm.security.test.SecuritySpecificationConfig
 import com.ss.jcrm.security.web.WebSecurityConfig

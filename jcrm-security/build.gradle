@@ -3,5 +3,5 @@ apply plugin: "java-test-fixtures"
 
 dependencies {
     api projects.baseSpring
-    testFixturesApi projects.jcrmIntegrationTest
+    testFixturesApi projects.integrationTest
 }

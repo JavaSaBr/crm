@@ -1,7 +1,7 @@
 package crm.user.jasync.helper;
 
-import static com.ss.jcrm.integration.test.TestUtils.waitForResult;
 import static com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils.clearTable;
+import static crm.integration.test.util.TestUtils.waitForResult;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;

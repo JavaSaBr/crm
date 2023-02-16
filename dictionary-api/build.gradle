@@ -2,7 +2,7 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 dependencies {
-    api projects.dao
-    testImplementation projects.jcrmIntegrationTestDb
-    testFixturesApi projects.jcrmIntegrationTestDb
+  api projects.dao
+  testImplementation projects.jcrmIntegrationTestDb
+  testFixturesApi projects.jcrmIntegrationTestDb
 }

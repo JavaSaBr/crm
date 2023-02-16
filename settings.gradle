@@ -9,7 +9,6 @@ include 'jcrm-security-web'
 include 'jcrm-full-web'
 //include 'jcrm-user-jdbc'
 include 'jcrm-registration-web'
-include 'jcrm-integration-test'
 include 'jcrm-integration-test-db'
 include 'jcrm-integration-test-db-jasync'
 //include 'jcrm-integration-test-db-jdbc'
@@ -38,3 +37,5 @@ include 'user-jasync'
 
 include 'client-api'
 include 'client-jasync'
+
+include 'integration-test'

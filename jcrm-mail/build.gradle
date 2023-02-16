@@ -9,7 +9,7 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
 
-    testFixturesApi projects.jcrmIntegrationTest
+    testFixturesApi projects.integrationTest
     testFixturesApi (libs.rlib.testcontainers) {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }

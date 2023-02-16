@@ -1,6 +1,7 @@
-package com.ss.jcrm.integration.test
+package crm.integration.test
 
-import com.ss.jcrm.integration.test.config.BaseTestConfig
+import crm.integration.test.config.BaseTestConfig
+import crm.integration.test.util.TestUtils
 import org.jetbrains.annotations.NotNull
 import org.springframework.test.context.ContextConfiguration
 import reactor.core.publisher.Flux

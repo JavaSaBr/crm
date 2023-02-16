@@ -1,6 +1,6 @@
 package crm.user.jasync
 
-import com.ss.jcrm.integration.test.DefaultSpecification
+import crm.integration.test.DefaultSpecification
 import crm.dictionary.api.DictionaryDbTestHelper
 import crm.user.api.UserDbTestHelper
 import crm.user.jasync.config.JAsyncUserTestConfig

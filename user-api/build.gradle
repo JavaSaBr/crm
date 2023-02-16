@@ -2,9 +2,9 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 dependencies {
-    api projects.dictionaryApi
-    api projects.jcrmSecurity
-    api projects.contactApi
-
-    testFixturesApi projects.jcrmIntegrationTestDb
+  api projects.dictionaryApi
+  api projects.jcrmSecurity
+  api projects.contactApi
+  
+  testFixturesApi projects.jcrmIntegrationTestDb
 }

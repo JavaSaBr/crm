@@ -1,7 +1,7 @@
 apply plugin: "java-library"
 
 dependencies {
-    api projects.jcrmIntegrationTest
+    api projects.integrationTest
     api projects.baseSpring
     api projects.baseWeb
     api libs.springboot.starter.reactor.netty

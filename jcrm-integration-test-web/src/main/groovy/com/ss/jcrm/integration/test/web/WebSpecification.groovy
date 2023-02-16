@@ -1,6 +1,6 @@
 package com.ss.jcrm.integration.test.web
 
-import com.ss.jcrm.integration.test.DefaultSpecification
+import crm.integration.test.DefaultSpecification
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.test.context.ContextConfiguration
