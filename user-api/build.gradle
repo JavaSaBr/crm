@@ -6,5 +6,5 @@ dependencies {
   api projects.jcrmSecurity
   api projects.contactApi
   
-  testFixturesApi projects.jcrmIntegrationTestDb
+  testFixturesApi projects.integrationTestDb
 }

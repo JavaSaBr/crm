@@ -3,6 +3,6 @@ apply plugin: "java-test-fixtures"
 
 dependencies {
   api projects.dao
-  testImplementation projects.jcrmIntegrationTestDb
-  testFixturesApi projects.jcrmIntegrationTestDb
+  testImplementation projects.integrationTestDb
+  testFixturesApi projects.integrationTestDb
 }

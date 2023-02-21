@@ -2,5 +2,5 @@ apply plugin: "java-library"
 
 dependencies {
     api projects.jasync
-    api projects.jcrmIntegrationTestDb
+    api projects.integrationTestDb
 }
