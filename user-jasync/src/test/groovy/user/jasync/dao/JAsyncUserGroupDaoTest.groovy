@@ -1,7 +1,7 @@
 package user.jasync.dao
 
 import crm.dao.exception.NotActualObjectDaoException
-import com.ss.jcrm.security.AccessRole
+import crm.security.AccessRole
 import crm.user.api.UserGroup
 import crm.user.api.dao.UserGroupDao
 import crm.user.jasync.JAsyncUserSpecification

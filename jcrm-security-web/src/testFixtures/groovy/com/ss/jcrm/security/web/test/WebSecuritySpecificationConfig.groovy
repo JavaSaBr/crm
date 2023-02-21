@@ -1,14 +1,15 @@
 package com.ss.jcrm.security.web.test
 
 import crm.integration.test.DefaultSpecification
-import com.ss.jcrm.security.AccessRole
-import com.ss.jcrm.security.test.SecuritySpecificationConfig
+import crm.security.AccessRole
+
 import com.ss.jcrm.security.web.WebSecurityConfig
 import com.ss.jcrm.security.web.service.TokenService
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 
 import crm.base.web.config.BaseWebConfig
+import crm.security.config.SecurityTestConfig
 import crm.user.jasync.config.JAsyncUserTestConfig
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +24,7 @@ import org.springframework.web.reactive.function.server.ServerResponse
 @Configuration
 @Import([
     JAsyncUserTestConfig,
-    SecuritySpecificationConfig,
+    SecurityTestConfig,
     WebSecurityConfig,
     BaseWebConfig,
     DefaultSpecification

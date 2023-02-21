@@ -2,8 +2,8 @@ package crm.user.api;
 
 import crm.dao.ChangeTrackedEntity;
 import crm.dao.VersionedUniqEntity;
-import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.security.WithAccessRoles;
+import crm.security.AccessRole;
+import crm.security.WithAccessRoles;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
 import org.jetbrains.annotations.NotNull;

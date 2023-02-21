@@ -1,6 +1,6 @@
 package crm.user.api.impl;
 
-import com.ss.jcrm.security.AccessRole;
+import crm.security.AccessRole;
 import crm.user.api.MinimalUser;
 
 import java.util.Objects;

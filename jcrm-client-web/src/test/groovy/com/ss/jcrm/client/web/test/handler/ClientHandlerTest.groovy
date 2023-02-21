@@ -1,7 +1,7 @@
 package com.ss.jcrm.client.web.test.handler
 
 import com.ss.jcrm.client.web.test.ClientSpecification
-import com.ss.jcrm.security.AccessRole
+import crm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import com.ss.rlib.common.util.StringUtils

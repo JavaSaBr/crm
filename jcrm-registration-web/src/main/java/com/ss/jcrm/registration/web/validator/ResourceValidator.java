@@ -6,7 +6,7 @@ import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
 import com.ss.jcrm.registration.web.resources.UserGroupInResource;
 import com.ss.jcrm.registration.web.resources.UserInResource;
-import com.ss.jcrm.security.AccessRole;
+import crm.security.AccessRole;
 import crm.base.web.exception.BadRequestWebException;
 import crm.base.web.validator.BaseResourceValidator;
 import com.ss.rlib.common.util.DateUtils;

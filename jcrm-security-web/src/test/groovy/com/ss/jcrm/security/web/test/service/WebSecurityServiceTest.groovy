@@ -1,6 +1,6 @@
 package com.ss.jcrm.security.web.test.service
 
-import com.ss.jcrm.security.AccessRole
+import crm.security.AccessRole
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import com.ss.jcrm.security.web.test.WebSecuritySpecification
 

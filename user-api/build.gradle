@@ -3,7 +3,7 @@ apply plugin: "java-test-fixtures"
 
 dependencies {
   api projects.dictionaryApi
-  api projects.jcrmSecurity
+  api projects.security
   api projects.contactApi
   
   testFixturesApi projects.integrationTestDb

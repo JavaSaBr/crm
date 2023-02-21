@@ -6,7 +6,7 @@ import static crm.base.web.util.ExceptionUtils.toUnauthorized;
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource;
 import com.ss.jcrm.registration.web.resources.AuthenticationOutResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
-import com.ss.jcrm.security.service.PasswordService;
+import crm.security.service.PasswordService;
 import com.ss.jcrm.security.web.exception.SecurityErrors;
 import com.ss.jcrm.security.web.service.TokenService;
 import crm.user.api.User;

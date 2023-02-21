@@ -4,8 +4,8 @@ import static crm.integration.test.util.TestUtils.waitForResult;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.security.service.PasswordService;
+import crm.security.AccessRole;
+import crm.security.service.PasswordService;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
 import crm.dictionary.api.DictionaryDbTestHelper;

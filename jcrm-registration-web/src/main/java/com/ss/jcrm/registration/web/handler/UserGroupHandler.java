@@ -8,7 +8,7 @@ import static com.ss.rlib.common.function.Functions.Predicates.*;
 import com.ss.jcrm.registration.web.exception.RegistrationErrors;
 import com.ss.jcrm.registration.web.resources.*;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
-import com.ss.jcrm.security.AccessRole;
+import crm.security.AccessRole;
 import com.ss.jcrm.security.web.resource.AuthorizedParam;
 import com.ss.jcrm.security.web.resource.AuthorizedResource;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;

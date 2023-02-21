@@ -2,12 +2,12 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 dependencies {
-    api projects.jcrmSecurity
+    api projects.security
     api projects.baseWeb
     api projects.userApi
     api libs.bundles.jjwt
 
-    testFixturesApi testFixtures(projects.jcrmSecurity)
+    testFixturesApi testFixtures(projects.security)
     testFixturesApi testFixtures(projects.userJasync)
     testFixturesApi projects.jcrmIntegrationTestWeb
 }

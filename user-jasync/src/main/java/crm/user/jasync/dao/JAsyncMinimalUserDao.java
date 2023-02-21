@@ -10,7 +10,7 @@ import crm.dao.EntityPage;
 import crm.jasync.dao.AbstractJAsyncDao;
 import crm.jasync.function.JAsyncConverter;
 import crm.jasync.util.JAsyncUtils;
-import com.ss.jcrm.security.AccessRole;
+import crm.security.AccessRole;
 import crm.user.api.MinimalUser;
 import crm.user.api.dao.MinimalUserDao;
 import crm.user.api.impl.DefaultMinimalUser;

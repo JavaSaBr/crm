@@ -2,8 +2,8 @@ package crm.user.jasync.config;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.security.config.SecurityConfig;
-import com.ss.jcrm.security.service.PasswordService;
+import crm.security.config.SecurityConfig;
+import crm.security.service.PasswordService;
 import crm.dictionary.api.DictionaryDbTestHelper;
 import crm.dictionary.jasync.config.JAsyncDictionaryTestConfig;
 import crm.integration.test.db.config.DbTestConfig;

@@ -1,6 +1,6 @@
 package com.ss.jcrm.security.web.service;
 
-import com.ss.jcrm.security.AccessRole;
+import crm.security.AccessRole;
 import crm.user.api.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.reactive.function.server.ServerRequest;

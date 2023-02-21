@@ -4,7 +4,7 @@ import static com.ss.jcrm.security.web.exception.SecurityErrors.*;
 import static crm.base.web.util.ExceptionUtils.toForbidden;
 import static crm.base.web.util.ExceptionUtils.toUnauthorized;
 
-import com.ss.jcrm.security.AccessRole;
+import crm.security.AccessRole;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;
 import crm.user.api.User;

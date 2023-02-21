@@ -2,7 +2,7 @@ package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.resources.UserGroupInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
-import com.ss.jcrm.security.AccessRole
+import crm.security.AccessRole
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import com.ss.jcrm.security.web.service.WebRequestSecurityService
 import crm.user.api.dao.UserDao

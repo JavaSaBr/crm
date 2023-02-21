@@ -1,6 +1,6 @@
 package com.ss.jcrm.security.web;
 
-import com.ss.jcrm.security.config.SecurityConfig;
+import crm.security.config.SecurityConfig;
 import com.ss.jcrm.security.web.exception.handler.SecurityWebExceptionHandler;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;

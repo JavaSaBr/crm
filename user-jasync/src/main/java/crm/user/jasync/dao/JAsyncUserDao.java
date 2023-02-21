@@ -17,7 +17,7 @@ import crm.contact.api.impl.DefaultPhoneNumber;
 import crm.jasync.dao.AbstractJAsyncDao;
 import crm.jasync.function.JAsyncLazyConverter;
 import crm.jasync.util.JAsyncUtils;
-import com.ss.jcrm.security.AccessRole;
+import crm.security.AccessRole;
 import crm.user.api.Organization;
 import crm.user.api.User;
 import crm.user.api.dao.OrganizationDao;

@@ -7,7 +7,7 @@ import com.ss.jcrm.mail.service.MailService;
 import com.ss.jcrm.registration.web.exception.handler.RegistrationWebExceptionHandler;
 import com.ss.jcrm.registration.web.handler.*;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
-import com.ss.jcrm.security.service.PasswordService;
+import crm.security.service.PasswordService;
 import com.ss.jcrm.security.web.WebSecurityConfig;
 import com.ss.jcrm.security.web.service.TokenService;
 import com.ss.jcrm.security.web.service.WebRequestSecurityService;

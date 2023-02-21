@@ -1,6 +1,6 @@
 package crm.user.api;
 
-import com.ss.jcrm.security.AccessRole;
+import crm.security.AccessRole;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
 import java.util.Set;

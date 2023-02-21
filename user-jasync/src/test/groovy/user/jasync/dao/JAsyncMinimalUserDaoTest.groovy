@@ -1,6 +1,6 @@
 package user.jasync.dao
 
-import com.ss.jcrm.security.service.PasswordService
+import crm.security.service.PasswordService
 import crm.user.api.dao.MinimalUserDao
 import crm.user.api.dao.OrganizationDao
 import crm.user.api.dao.UserDao

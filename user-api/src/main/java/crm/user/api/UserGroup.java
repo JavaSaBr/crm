@@ -3,8 +3,8 @@ package crm.user.api;
 import crm.dao.ChangeTrackedEntity;
 import crm.dao.NamedUniqEntity;
 import crm.dao.VersionedUniqEntity;
-import com.ss.jcrm.security.AccessRole;
-import com.ss.jcrm.security.WithAccessRoles;
+import crm.security.AccessRole;
+import crm.security.WithAccessRoles;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
