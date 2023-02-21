@@ -84,7 +84,7 @@ public class JAsyncMinimalUserDao extends AbstractJAsyncDao<MinimalUser> impleme
     var id = notNull(data.getLong(0));
     var orgId = ifNull(data.getLong(1), 0L);
     var email = data.getString(2);
-    var roles = JAsyncUtils.fromJsonIds(data.getString(3), AccessRole::require);
+    var roles = JAsyncUtils.fromJsonIds(data.getString(3), AccessRole::required);
 
     return new DefaultMinimalUser(id, orgId, email, roles);
   }

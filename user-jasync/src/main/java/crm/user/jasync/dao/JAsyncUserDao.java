@@ -331,7 +331,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     byte[] password = data.getAs(9);
     byte[] salt = data.getAs(10);
 
-    var roles = JAsyncUtils.fromJsonIds(data.getString(11), AccessRole::require);
+    var roles = JAsyncUtils.fromJsonIds(data.getString(11), AccessRole::required);
 
     var orgAsync = organizationDao.requireById(orgId);
     var groupsAsync = JAsyncUtils.fromJsonIdsAsync(data.getString(12), userGroupDao, Dao::requireById);

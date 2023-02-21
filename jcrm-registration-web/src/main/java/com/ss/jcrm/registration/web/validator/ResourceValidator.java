@@ -176,7 +176,7 @@ public class ResourceValidator extends BaseResourceValidator {
 
     for (var roleId : roles) {
 
-      var accessRole = AccessRole.of(roleId);
+      var accessRole = AccessRole.withId(roleId);
 
       if (accessRole == null) {
         log.warn("Invalid access role id: {}", roleId);

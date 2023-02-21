@@ -4,11 +4,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class SecurityException extends RuntimeException {
 
-    public SecurityException(@NotNull String message) {
-        super(message);
-    }
+  public SecurityException(@NotNull String message) {
+    super(message);
+  }
 
-    public SecurityException(@NotNull Throwable cause) {
-        super(cause);
-    }
+  public SecurityException(@NotNull Throwable cause) {
+    super(cause);
+  }
 }
