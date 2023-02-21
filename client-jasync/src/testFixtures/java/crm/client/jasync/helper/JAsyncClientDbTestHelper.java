@@ -4,10 +4,10 @@ import static crm.integration.test.util.TestUtils.waitForResult;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper;
 import crm.client.api.ClientDbTestHelper;
 import crm.client.api.SimpleClient;
 import crm.client.api.dao.SimpleClientDao;
+import crm.integration.test.jasync.JAsyncTestHelper;
 import crm.user.api.User;
 import crm.user.api.UserDbTestHelper;
 import lombok.AccessLevel;

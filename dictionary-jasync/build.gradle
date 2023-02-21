@@ -8,5 +8,5 @@ dependencies {
   
   testFixturesApi testFixtures(projects.dictionaryApi)
   testFixturesApi testFixtures(projects.jasync)
-  testFixturesApi projects.jcrmIntegrationTestDbJasync
+  testFixturesApi projects.integrationTestJasync
 }

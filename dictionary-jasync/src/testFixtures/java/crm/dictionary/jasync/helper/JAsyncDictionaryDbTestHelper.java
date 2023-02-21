@@ -2,10 +2,10 @@ package crm.dictionary.jasync.helper;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper;
 import crm.dictionary.api.Country;
 import crm.dictionary.api.DictionaryDbTestHelper;
 import crm.dictionary.api.dao.CountryDao;
+import crm.integration.test.jasync.JAsyncTestHelper;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 

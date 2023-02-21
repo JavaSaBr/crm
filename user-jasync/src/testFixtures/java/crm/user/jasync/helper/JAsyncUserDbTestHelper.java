@@ -4,12 +4,12 @@ import static crm.integration.test.util.TestUtils.waitForResult;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
-import com.ss.jcrm.integration.test.db.jasync.JAsyncTestHelper;
 import com.ss.jcrm.security.AccessRole;
 import com.ss.jcrm.security.service.PasswordService;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
 import crm.dictionary.api.DictionaryDbTestHelper;
+import crm.integration.test.jasync.JAsyncTestHelper;
 import crm.user.api.EmailConfirmation;
 import crm.user.api.Organization;
 import crm.user.api.User;
