@@ -16,6 +16,5 @@ class WebSecuritySpecification extends WebSpecification {
     UnsafeTokenService unsafeTokenService
     
     def setup() {
-        userTestHelper.clearAllData()
     }
 }

@@ -27,9 +27,6 @@ class ClientSpecification extends WebSpecification {
     def contextPath
 
     def setup() {
-        userTestHelper.clearAllData()
-        clientTestHelper.clearAllData()
-
         contextPath = clientApiEndpointServer.contextPath()
     }
 }

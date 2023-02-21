@@ -33,9 +33,6 @@ class RegistrationSpecification extends WebSpecification {
     def contextPath
 
     def setup() {
-
-        userTestHelper.clearAllData()
-
         contextPath = registrationApiEndpointServer.contextPath()
     }
     

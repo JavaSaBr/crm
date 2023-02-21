@@ -1,10 +1,9 @@
 package com.ss.jcrm.dictionary.web.test
 
-
 import com.ss.jcrm.dictionary.web.config.DictionaryWebConfig
 import crm.dictionary.jasync.config.JAsyncDictionaryTestConfig
-import integration.test.db.config.DbTestConfig
 import com.ss.jcrm.integration.test.web.WebSpecificationConfig
+import crm.integration.test.db.config.DbTestConfig
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration

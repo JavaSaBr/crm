@@ -106,6 +106,10 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
       select count("id") from "${schema}"."user" where "organization_id" != ? and "id" in (${id-list})
       """;
 
+  private static final String Q_DELETE_BY_ID = """
+      delete from "${schema}"."user" where "id" = ?
+      """;
+
   @NotNull String querySelectById;
   @NotNull String querySelectByEmail;
   @NotNull String querySelectByPhoneNumber;
@@ -115,6 +119,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
   @NotNull String querySearchByName;
   @NotNull String queryInsert;
   @NotNull String queryUpdate;
+  @NotNull String queryDelete;
   @NotNull String queryPageByOrgId;
   @NotNull String queryCountByOrgId;
   @NotNull String queryCountByUsersWhichNotInOrg;
@@ -138,6 +143,7 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
     this.queryPageByOrgId = prepareQuery(Q_SELECT_PAGE_BY_ORG_ID);
     this.queryInsert = prepareQuery(Q_INSERT);
     this.queryUpdate = prepareQuery(Q_UPDATE);
+    this.queryDelete = prepareQuery(Q_DELETE_BY_ID);
     this.queryCountByOrgId = prepareQuery(Q_COUNT_BY_ORG_ID);
     this.queryCountByUsersWhichNotInOrg = prepareQuery(Q_COUNT_BY_USERS_WHICH_NOT_IN_ORG);
     this.organizationDao = organizationDao;
@@ -268,6 +274,11 @@ public class JAsyncUserDao extends AbstractJAsyncDao<User> implements UserDao {
   public @NotNull Flux<User> searchByName(@NotNull String name, long orgId) {
     var pattern = "%" + name + "%";
     return selectAllAsync(querySearchByName, List.of(pattern, pattern, orgId), converter());
+  }
+
+  @Override
+  public @NotNull Mono<Boolean> deleteById(long id) {
+    return delete(queryDelete, id);
   }
 
   private @NotNull JAsyncLazyConverter<@NotNull JAsyncUserDao, @NotNull User> converter() {

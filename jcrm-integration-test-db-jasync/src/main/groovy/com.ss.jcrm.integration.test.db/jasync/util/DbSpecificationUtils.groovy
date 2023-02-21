@@ -4,7 +4,7 @@ import com.github.jasync.sql.db.ConcreteConnection
 import com.github.jasync.sql.db.pool.ConnectionPool
 import com.github.jasync.sql.db.pool.PoolConfiguration
 import com.github.jasync.sql.db.postgresql.pool.PostgreSQLConnectionFactory
-import integration.test.db.config.DbTestConfig
+import crm.integration.test.db.config.DbTestConfig
 import crm.jasync.util.JAsyncUtils
 import org.jetbrains.annotations.NotNull
 import org.testcontainers.containers.PostgreSQLContainer

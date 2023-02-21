@@ -1,9 +1,8 @@
 package crm.client.api;
 
 import crm.user.api.User;
-import integration.test.db.DbTestHelper;
 
-public interface ClientDbTestHelper extends DbTestHelper {
+public interface ClientDbTestHelper {
 
   SimpleClient newSimpleClient();
 

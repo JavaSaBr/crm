@@ -1,6 +1,5 @@
 package crm.user.jasync.helper;
 
-import static com.ss.jcrm.integration.test.db.jasync.util.DbSpecificationUtils.clearTable;
 import static crm.integration.test.util.TestUtils.waitForResult;
 
 import com.github.jasync.sql.db.ConcreteConnection;
@@ -28,11 +27,6 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JAsyncUserDbTestHelper extends JAsyncTestHelper implements UserDbTestHelper {
-
-  private static final String TABLE_ORGANIZATION = "organization";
-  private static final String TABLE_USER_GROUP = "user_group";
-  private static final String TABLE_USER = "user";
-  private static final String TABLE_EMAIL_CONFIRMATION = "email_confirmation";
 
   UserDao userDao;
   UserGroupDao userGroupDao;
@@ -155,11 +149,6 @@ public class JAsyncUserDbTestHelper extends JAsyncTestHelper implements UserDbTe
         null,
         Collections.emptySet(),
         Collections.emptySet()));
-  }
-
-  @Override
-  public void clearAllData() {
-    clearTable(connectionPool, schema, TABLE_USER, TABLE_USER_GROUP, TABLE_ORGANIZATION, TABLE_EMAIL_CONFIRMATION);
   }
 
   @Override

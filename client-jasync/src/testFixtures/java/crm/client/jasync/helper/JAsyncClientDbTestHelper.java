@@ -46,7 +46,4 @@ public class JAsyncClientDbTestHelper extends JAsyncTestHelper implements Client
   public String nextClientName() {
     return nextId("client_", "");
   }
-
-  @Override
-  public void clearAllData() {}
 }

@@ -11,4 +11,8 @@ public interface Dao<T extends UniqEntity> {
    * throws ObjectNotFoundDaoException if entity doesn't exist
    */
   @NotNull Mono<T> requireById(long id);
+
+  default @NotNull Mono<Boolean> deleteById(long id) {
+    throw new UnsupportedOperationException();
+  }
 }

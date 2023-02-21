@@ -3,10 +3,9 @@ package crm.user.api;
 import com.ss.jcrm.security.AccessRole;
 import crm.contact.api.Messenger;
 import crm.contact.api.PhoneNumber;
-import integration.test.db.DbTestHelper;
 import java.util.Set;
 
-public interface UserDbTestHelper extends DbTestHelper {
+public interface UserDbTestHelper {
 
   Organization newOrganization();
 

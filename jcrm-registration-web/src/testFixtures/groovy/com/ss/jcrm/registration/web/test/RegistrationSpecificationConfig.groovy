@@ -1,9 +1,9 @@
 package com.ss.jcrm.registration.web.test
 
 import crm.dictionary.jasync.config.JAsyncDictionaryTestConfig
-import integration.test.db.config.DbTestConfig
 import com.ss.jcrm.mail.test.MailSpecificationConfig
 import com.ss.jcrm.registration.web.config.RegistrationWebConfig
+import crm.integration.test.db.config.DbTestConfig
 import crm.user.jasync.config.JAsyncUserTestConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import

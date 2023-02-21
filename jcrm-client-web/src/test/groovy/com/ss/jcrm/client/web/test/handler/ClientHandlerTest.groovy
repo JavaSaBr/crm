@@ -62,7 +62,7 @@ class ClientHandlerTest extends ClientSpecification {
         def curator1 = userTestHelper.newUser("Curator1", organization)
         def curator2 = userTestHelper.newUser("Curator2", organization)
         def token = unsafeTokenService.generateNewToken(user)
-    
+        
         def body = new ClientInResource(
             0,
             ArrayFactory.toLongArray(curator1.id(), curator2.id()),
@@ -111,14 +111,14 @@ class ClientHandlerTest extends ClientSpecification {
             .jsonPath('$.emails[0].email').isEqualTo(body.emails()[0].email())
             .jsonPath('$.sites').value(hasSize(2))
             .jsonPath('$.sites[*].type')
-              .value(containsInAnyOrder((int) body.sites()[0].type(), (int) body.sites()[1].type()))
+            .value(containsInAnyOrder((int) body.sites()[0].type(), (int) body.sites()[1].type()))
             .jsonPath('$.sites[*].url')
-              .value(containsInAnyOrder(body.sites()[0].url(), body.sites()[1].url()))
+            .value(containsInAnyOrder(body.sites()[0].url(), body.sites()[1].url()))
             .jsonPath('$.messengers').value(hasSize(2))
             .jsonPath('$.messengers[*].type')
-              .value(containsInAnyOrder((int) body.messengers()[0].type(), (int) body.messengers()[1].type()))
+            .value(containsInAnyOrder((int) body.messengers()[0].type(), (int) body.messengers()[1].type()))
             .jsonPath('$.messengers[*].login')
-              .value(containsInAnyOrder(body.messengers()[0].login(), body.messengers()[1].login()))
+            .value(containsInAnyOrder(body.messengers()[0].login(), body.messengers()[1].login()))
   }
   
   def "should get all available clients for org successfully"() {
@@ -139,14 +139,14 @@ class ClientHandlerTest extends ClientSpecification {
             .expectBody()
             .jsonPath('$').value(hasSize(3))
             .jsonPath('$[*].id')
-              .value(containsInAnyOrder((int) client1.id(), (int) client2.id(), (int) client3.id()))
+            .value(containsInAnyOrder((int) client1.id(), (int) client2.id(), (int) client3.id()))
             .jsonPath('$[*].firstName')
-              .value(containsInAnyOrder(client1.firstName(), client2.firstName(), client3.firstName()))
+            .value(containsInAnyOrder(client1.firstName(), client2.firstName(), client3.firstName()))
   }
   
   def "should load created client successfully"() {
     given:
-        def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
+        def user = userTestHelper.newUser(userTestHelper.nextEmail(), AccessRole.ORG_ADMIN)
         def token = unsafeTokenService.generateNewToken(user)
         def client = clientTestHelper.newSimpleClient(user)
     when:
@@ -166,7 +166,7 @@ class ClientHandlerTest extends ClientSpecification {
   
   def "should failed when id is not presented"() {
     given:
-        def user = userTestHelper.newUser("User1", AccessRole.ORG_ADMIN)
+        def user = userTestHelper.newUser(userTestHelper.nextEmail(), AccessRole.ORG_ADMIN)
         def token = unsafeTokenService.generateNewToken(user)
     when:
         def response = webClient.get()
@@ -181,8 +181,8 @@ class ClientHandlerTest extends ClientSpecification {
   def "should failed creating invalid client"() {
     given:
         def organization = userTestHelper.newOrganization()
-        def user = userTestHelper.newUser("User1", organization, AccessRole.ORG_ADMIN)
-        def assigner = userTestHelper.newUser("Assigner1", organization)
+        def user = userTestHelper.newUser(userTestHelper.nextEmail(), organization, AccessRole.ORG_ADMIN)
+        def assigner = userTestHelper.newUser(organization)
         def token = unsafeTokenService.generateNewToken(user)
         def body = ClientInResource.empty()
     when:
@@ -493,9 +493,9 @@ class ClientHandlerTest extends ClientSpecification {
         def firstOrgContactsCount = 20
         def secondOrgContactsCount = 5
         def firstOrg = userTestHelper.newOrganization()
-        def firstUser = userTestHelper.newUser("User1", firstOrg)
+        def firstUser = userTestHelper.newUser(userTestHelper.nextEmail(), firstOrg)
         def secondOrg = userTestHelper.newOrganization()
-        def secondUser = userTestHelper.newUser("User2", secondOrg)
+        def secondUser = userTestHelper.newUser(secondOrg)
         
         firstOrgContactsCount.times {
           clientTestHelper.newSimpleClient(firstUser)
@@ -536,10 +536,10 @@ class ClientHandlerTest extends ClientSpecification {
     given:
         
         def org = userTestHelper.newOrganization()
-        def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
-        def assigner = userTestHelper.newUser("Assigner1", org)
-        def curator1 = userTestHelper.newUser("Curator1", org)
-        def curator2 = userTestHelper.newUser("Curator2", org)
+        def user = userTestHelper.newUser(userTestHelper.nextEmail(), org, AccessRole.ORG_ADMIN)
+        def assigner = userTestHelper.newUser(userTestHelper.nextEmail(), org)
+        def curator1 = userTestHelper.newUser(userTestHelper.nextEmail(), org)
+        def curator2 = userTestHelper.newUser(userTestHelper.nextEmail(), org)
         def newClient = clientTestHelper.newSimpleClient(user)
         
         def token = unsafeTokenService.generateNewToken(user)
@@ -597,14 +597,14 @@ class ClientHandlerTest extends ClientSpecification {
             .jsonPath('$.emails[0].email').isEqualTo(body.emails()[0].email())
             .jsonPath('$.sites').value(hasSize(2))
             .jsonPath('$.sites[*].type')
-              .value(containsInAnyOrder((int) body.sites()[0].type(), (int) body.sites()[1].type()))
+            .value(containsInAnyOrder((int) body.sites()[0].type(), (int) body.sites()[1].type()))
             .jsonPath('$.sites[*].url')
-              .value(containsInAnyOrder(body.sites()[0].url(), body.sites()[1].url()))
+            .value(containsInAnyOrder(body.sites()[0].url(), body.sites()[1].url()))
             .jsonPath('$.messengers').value(hasSize(2))
             .jsonPath('$.messengers[*].type')
-              .value(containsInAnyOrder((int) body.messengers()[0].type(), (int) body.messengers()[1].type()))
+            .value(containsInAnyOrder((int) body.messengers()[0].type(), (int) body.messengers()[1].type()))
             .jsonPath('$.messengers[*].login')
-              .value(containsInAnyOrder(body.messengers()[0].login(), body.messengers()[1].login()))
+            .value(containsInAnyOrder(body.messengers()[0].login(), body.messengers()[1].login()))
   }
   
   def "should failed updating client"() {
@@ -612,8 +612,8 @@ class ClientHandlerTest extends ClientSpecification {
     given:
         
         def org = userTestHelper.newOrganization()
-        def user = userTestHelper.newUser("User1", org, AccessRole.ORG_ADMIN)
-        def assigner = userTestHelper.newUser("Assigner1", org)
+        def user = userTestHelper.newUser(userTestHelper.nextEmail(), org, AccessRole.ORG_ADMIN)
+        def assigner = userTestHelper.newUser(userTestHelper.nextEmail(), org)
         def client = clientTestHelper.newSimpleClient(user)
         
         def token = unsafeTokenService.generateNewToken(user)
