@@ -2,8 +2,8 @@ package com.ss.jcrm.registration.web.config;
 
 import crm.dictionary.api.dao.CountryDao;
 import crm.dictionary.jasync.config.JAsyncDictionaryConfig;
-import com.ss.jcrm.mail.MailConfig;
-import com.ss.jcrm.mail.service.MailService;
+import crm.mail.config.MailConfig;
+import crm.mail.service.MailService;
 import com.ss.jcrm.registration.web.exception.handler.RegistrationWebExceptionHandler;
 import com.ss.jcrm.registration.web.handler.*;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;

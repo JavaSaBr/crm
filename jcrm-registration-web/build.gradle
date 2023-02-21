@@ -9,10 +9,10 @@ dependencies {
     api projects.dictionaryJasync
     api projects.userJasync
     api projects.jcrmSecurityWeb
-    api projects.jcrmMail
+    api projects.mail
 
     testFixturesApi projects.jcrmIntegrationTestWeb
-    testFixturesApi testFixtures(projects.jcrmMail)
+    testFixturesApi testFixtures(projects.mail)
     testFixturesApi testFixtures(projects.userJasync)
 }
 

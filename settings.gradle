@@ -3,7 +3,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = 'JCRM'
 
 //include 'jcrm-jdbc'
-include 'jcrm-mail'
 include 'jcrm-security-web'
 include 'jcrm-full-web'
 //include 'jcrm-user-jdbc'
@@ -33,6 +32,8 @@ include 'user-api'
 include 'user-jasync'
 include 'client-api'
 include 'client-jasync'
+
+include 'mail'
 
 include 'integration-test'
 include 'integration-test-db'
