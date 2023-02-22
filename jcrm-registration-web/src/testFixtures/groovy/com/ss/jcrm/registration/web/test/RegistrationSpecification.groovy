@@ -1,7 +1,7 @@
 package com.ss.jcrm.registration.web.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.ss.jcrm.integration.test.web.WebSpecification
+import crm.integration.test.web.WebSpecification
 
 import crm.base.web.config.ApiEndpoint
 import crm.contact.api.MessengerType

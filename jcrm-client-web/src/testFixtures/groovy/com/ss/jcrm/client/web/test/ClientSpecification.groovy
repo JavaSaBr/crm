@@ -1,6 +1,6 @@
 package com.ss.jcrm.client.web.test
 
-import com.ss.jcrm.integration.test.web.WebSpecification
+import crm.integration.test.web.WebSpecification
 
 import crm.base.web.config.ApiEndpoint
 import crm.client.api.ClientDbTestHelper

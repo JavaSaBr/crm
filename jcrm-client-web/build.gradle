@@ -7,5 +7,5 @@ dependencies {
     api projects.jcrmSecurityWeb
 
     testFixturesApi testFixtures(projects.clientJasync)
-    testFixturesApi projects.jcrmIntegrationTestWeb
+    testFixturesApi projects.integrationTestWeb
 }

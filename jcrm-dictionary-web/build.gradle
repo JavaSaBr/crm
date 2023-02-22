@@ -9,7 +9,7 @@ dependencies {
     api projects.dictionaryJasync
     api projects.jcrmSecurityWeb
 
-    testFixturesApi projects.jcrmIntegrationTestWeb
+    testFixturesApi projects.integrationTestWeb
     testFixturesApi testFixtures(projects.dictionaryJasync)
 }
 /*

@@ -1,7 +1,7 @@
 package com.ss.jcrm.dictionary.web.test
 
 import crm.base.util.Reloadable
-import com.ss.jcrm.integration.test.web.WebSpecification
+import crm.integration.test.web.WebSpecification
 import crm.base.web.config.ApiEndpoint
 import crm.dictionary.api.DictionaryDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired

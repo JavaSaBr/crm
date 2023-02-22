@@ -9,5 +9,5 @@ dependencies {
 
     testFixturesApi testFixtures(projects.security)
     testFixturesApi testFixtures(projects.userJasync)
-    testFixturesApi projects.jcrmIntegrationTestWeb
+    testFixturesApi projects.integrationTestWeb
 }

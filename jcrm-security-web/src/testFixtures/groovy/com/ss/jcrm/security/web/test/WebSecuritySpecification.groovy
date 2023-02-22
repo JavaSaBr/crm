@@ -1,6 +1,6 @@
 package com.ss.jcrm.security.web.test
 
-import com.ss.jcrm.integration.test.web.WebSpecification
+import crm.integration.test.web.WebSpecification
 import com.ss.jcrm.security.web.service.UnsafeTokenService
 import crm.user.api.UserDbTestHelper
 import org.springframework.beans.factory.annotation.Autowired

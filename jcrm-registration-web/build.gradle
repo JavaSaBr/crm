@@ -11,7 +11,7 @@ dependencies {
     api projects.jcrmSecurityWeb
     api projects.mail
 
-    testFixturesApi projects.jcrmIntegrationTestWeb
+    testFixturesApi projects.integrationTestWeb
     testFixturesApi testFixtures(projects.mail)
     testFixturesApi testFixtures(projects.userJasync)
 }
