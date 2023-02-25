@@ -12,7 +12,6 @@ include 'jcrm-registration-web'
 include 'jcrm-ui-server'
 //include 'jcrm-dictionary-jdbc'
 include 'jcrm-dictionary-web'
-include 'jcrm-client-web'
 include 'jcrm_ui_flutter'
 
 
@@ -31,6 +30,7 @@ include 'user-api'
 include 'user-jasync'
 include 'client-api'
 include 'client-jasync'
+include 'client-web'
 
 include 'mail'
 

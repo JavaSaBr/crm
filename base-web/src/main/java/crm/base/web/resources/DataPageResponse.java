@@ -4,19 +4,16 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
-import java.util.function.IntFunction;
 
-public record DataPageResponse<T>(T @NotNull [] resources, long totalSize) {
+public record DataPageResponse<T>(@NotNull List<T> resources, long totalSize) {
 
   public static <T, R> @NotNull DataPageResponse<R> from(
       long totalSize,
       @NotNull List<T> list,
-      @NotNull Function<T, R> mapper,
-      @NotNull IntFunction<R[]> generator) {
-
+      @NotNull Function<T, R> mapper) {
     return new DataPageResponse<>(list
         .stream()
         .map(mapper)
-        .toArray(generator), totalSize);
+        .toList(), totalSize);
   }
 }

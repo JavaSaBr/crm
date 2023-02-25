@@ -4,7 +4,7 @@ apply plugin: "org.springframework.boot"
 dependencies {
     implementation projects.jcrmRegistrationWeb
     implementation projects.jcrmDictionaryWeb
-    implementation projects.jcrmClientWeb
+    implementation projects.clientWeb
     implementation projects.jcrmUiServer
 }
 

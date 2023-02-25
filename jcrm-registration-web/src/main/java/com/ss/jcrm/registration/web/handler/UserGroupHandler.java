@@ -85,10 +85,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
           var pageRequest = authorized.getParam();
           return userGroupDao.findPageByOrganization(pageRequest.offset(), pageRequest.pageSize(), authorized.getOrgId());
         })
-        .map(entityPage -> DataPageResponse.from(entityPage.totalSize(),
-            entityPage.entities(),
-            UserGroupOutResource::from,
-            UserGroupOutResource[]::new))
+        .map(page -> DataPageResponse.from(page.totalSize(), page.entities(), UserGroupOutResource::from))
         .flatMap(ResponseUtils::ok)
         .switchIfEmpty(ResponseUtils.lazyNotFound());
   }
@@ -104,10 +101,7 @@ public class UserGroupHandler extends BaseRegistrationHandler {
               authorized.getOrgId(),
               pageRequest.id());
         })
-        .map(entityPage -> DataPageResponse.from(entityPage.totalSize(),
-            entityPage.entities(),
-            MinimalUserOutResource::from,
-            MinimalUserOutResource[]::new))
+        .map(page -> DataPageResponse.from(page.totalSize(), page.entities(), MinimalUserOutResource::from))
         .flatMap(ResponseUtils::ok)
         .switchIfEmpty(ResponseUtils.lazyNotFound());
   }

@@ -4,7 +4,7 @@ import com.ss.jcrm.dictionary.web.config.DictionaryWebConfig;
 import com.ss.jcrm.registration.web.config.RegistrationWebConfig;
 import com.ss.jcrm.ui.server.config.UiServerConfig;
 import crm.base.web.BaseWebApplication;
-import con.ss.jcrm.client.web.config.ClientWebConfig;
+import crm.client.web.config.ClientWebConfig;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;

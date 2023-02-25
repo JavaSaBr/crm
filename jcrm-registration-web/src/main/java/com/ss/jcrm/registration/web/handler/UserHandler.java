@@ -104,10 +104,7 @@ public class UserHandler extends BaseRegistrationHandler {
           var pageRequest = authorized.getParam();
           return userDao.findPageByOrganization(pageRequest.offset(), pageRequest.pageSize(), authorized.getOrgId());
         })
-        .map(entityPage -> DataPageResponse.from(entityPage.totalSize(),
-            entityPage.entities(),
-            UserOutResource::from,
-            UserOutResource[]::new))
+        .map(page -> DataPageResponse.from(page.totalSize(), page.entities(), UserOutResource::from))
         .flatMap(ResponseUtils::ok)
         .switchIfEmpty(ResponseUtils.lazyNotFound());
   }
