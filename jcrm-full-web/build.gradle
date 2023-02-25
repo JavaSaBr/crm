@@ -2,7 +2,7 @@ apply plugin: "java"
 apply plugin: "org.springframework.boot"
 
 dependencies {
-    implementation projects.jcrmRegistrationWeb
+    implementation projects.registrationWeb
     implementation projects.dictionaryWeb
     implementation projects.clientWeb
     implementation projects.jcrmUiServer
