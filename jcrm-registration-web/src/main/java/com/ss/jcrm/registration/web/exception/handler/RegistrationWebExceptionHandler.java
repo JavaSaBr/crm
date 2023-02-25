@@ -1,6 +1,6 @@
 package com.ss.jcrm.registration.web.exception.handler;
 
-import com.ss.jcrm.security.web.exception.handler.SecurityWebExceptionHandler;
+import crm.security.web.exception.handler.SecurityWebExceptionHandler;
 import crm.base.web.exception.handler.DefaultWebExceptionHandler;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.annotation.Order;

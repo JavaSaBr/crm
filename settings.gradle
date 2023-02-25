@@ -3,7 +3,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = 'JCRM'
 
 //include 'jcrm-jdbc'
-include 'jcrm-security-web'
 include 'jcrm-full-web'
 //include 'jcrm-user-jdbc'
 include 'jcrm-registration-web'
@@ -38,3 +37,5 @@ include 'integration-test'
 include 'integration-test-db'
 include 'integration-test-jasync'
 include 'integration-test-web'
+
+include 'security-web'

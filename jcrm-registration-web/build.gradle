@@ -8,7 +8,7 @@ ext {
 dependencies {
     api projects.dictionaryJasync
     api projects.userJasync
-    api projects.jcrmSecurityWeb
+    api projects.securityWeb
     api projects.mail
 
     testFixturesApi projects.integrationTestWeb

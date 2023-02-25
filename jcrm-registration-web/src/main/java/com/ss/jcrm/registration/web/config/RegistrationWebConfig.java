@@ -8,9 +8,9 @@ import com.ss.jcrm.registration.web.exception.handler.RegistrationWebExceptionHa
 import com.ss.jcrm.registration.web.handler.*;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import crm.security.service.PasswordService;
-import com.ss.jcrm.security.web.WebSecurityConfig;
-import com.ss.jcrm.security.web.service.TokenService;
-import com.ss.jcrm.security.web.service.WebRequestSecurityService;
+import crm.security.web.WebSecurityConfig;
+import crm.security.web.service.TokenService;
+import crm.security.web.service.WebRequestSecurityService;
 import crm.base.spring.template.TemplateRegistry;
 import crm.user.jasync.config.JAsyncUserConfig;
 import crm.base.web.config.ApiEndpoint;

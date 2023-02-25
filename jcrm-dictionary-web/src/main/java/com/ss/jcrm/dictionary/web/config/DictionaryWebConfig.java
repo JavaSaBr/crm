@@ -6,7 +6,7 @@ import com.ss.jcrm.dictionary.web.handler.CountryHandler;
 import com.ss.jcrm.dictionary.web.resource.CountryOutResource;
 import com.ss.jcrm.dictionary.web.service.CachedDictionaryService;
 import com.ss.jcrm.dictionary.web.service.impl.DefaultCachedDictionaryService;
-import com.ss.jcrm.security.web.WebSecurityConfig;
+import crm.security.web.WebSecurityConfig;
 import crm.base.web.config.ApiEndpoint;
 import crm.base.web.config.BaseWebConfig;
 import lombok.RequiredArgsConstructor;

@@ -2,8 +2,8 @@ package crm.client.web
 
 import com.ss.jcrm.client.web.test.ClientSpecification
 import crm.security.AccessRole
-import com.ss.jcrm.security.web.service.UnsafeTokenService
-import com.ss.jcrm.security.web.service.WebRequestSecurityService
+import crm.security.web.service.UnsafeTokenService
+import crm.security.web.service.WebRequestSecurityService
 import com.ss.rlib.common.util.StringUtils
 import com.ss.rlib.common.util.array.ArrayFactory
 

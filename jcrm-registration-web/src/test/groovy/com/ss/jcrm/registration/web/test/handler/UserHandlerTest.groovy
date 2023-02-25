@@ -3,8 +3,8 @@ package com.ss.jcrm.registration.web.test.handler
 import com.ss.jcrm.registration.web.resources.UserInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
 import crm.security.AccessRole
-import com.ss.jcrm.security.web.service.UnsafeTokenService
-import com.ss.jcrm.security.web.service.WebRequestSecurityService
+import crm.security.web.service.UnsafeTokenService
+import crm.security.web.service.WebRequestSecurityService
 import crm.user.api.dao.UserDao
 import com.ss.rlib.common.util.ArrayUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,8 +16,8 @@ import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_PASSWORD
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_PASSWORD_MESSAGE
-import static com.ss.jcrm.security.web.exception.SecurityErrors.NOT_PRESENTED_TOKEN
-import static com.ss.jcrm.security.web.exception.SecurityErrors.NOT_PRESENTED_TOKEN_MESSAGE
+import static crm.security.web.exception.SecurityErrors.NOT_PRESENTED_TOKEN
+import static crm.security.web.exception.SecurityErrors.NOT_PRESENTED_TOKEN_MESSAGE
 import static org.hamcrest.Matchers.*
 
 class UserHandlerTest extends RegistrationSpecification {

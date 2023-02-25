@@ -9,7 +9,7 @@ import com.ss.jcrm.registration.web.resources.OrganizationRegisterInResource;
 import com.ss.jcrm.registration.web.validator.ResourceValidator;
 import crm.security.AccessRole;
 import crm.security.service.PasswordService;
-import com.ss.jcrm.security.web.service.TokenService;
+import crm.security.web.service.TokenService;
 import crm.user.api.EmailConfirmation;
 import crm.user.api.Organization;
 import crm.user.api.User;

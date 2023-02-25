@@ -2,8 +2,8 @@ package crm.client.web.config;
 
 import crm.client.api.dao.SimpleClientDao;
 import crm.client.jasync.config.JAsyncClientConfig;
-import com.ss.jcrm.security.web.WebSecurityConfig;
-import com.ss.jcrm.security.web.service.WebRequestSecurityService;
+import crm.security.web.WebSecurityConfig;
+import crm.security.web.service.WebRequestSecurityService;
 import crm.user.api.dao.UserDao;
 import crm.user.jasync.config.JAsyncUserConfig;
 import crm.base.web.config.ApiEndpoint;

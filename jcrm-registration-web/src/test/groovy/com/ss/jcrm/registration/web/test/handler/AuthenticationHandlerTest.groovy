@@ -2,10 +2,8 @@ package com.ss.jcrm.registration.web.test.handler
 
 import com.ss.jcrm.registration.web.resources.AuthenticationInResource
 import com.ss.jcrm.registration.web.test.RegistrationSpecification
-import com.ss.jcrm.security.web.service.UnsafeTokenService
+import crm.security.web.service.UnsafeTokenService
 import crm.contact.api.PhoneNumber
-import crm.contact.api.PhoneNumberType
-import crm.contact.api.impl.DefaultPhoneNumber
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
@@ -15,12 +13,12 @@ import static com.ss.jcrm.registration.web.exception.RegistrationErrors.EMPTY_LO
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.EMPTY_LOGIN_MESSAGE
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_CREDENTIALS
 import static com.ss.jcrm.registration.web.exception.RegistrationErrors.INVALID_CREDENTIALS_MESSAGE
-import static com.ss.jcrm.security.web.exception.SecurityErrors.EXPIRED_TOKEN
-import static com.ss.jcrm.security.web.exception.SecurityErrors.EXPIRED_TOKEN_MESSAGE
-import static com.ss.jcrm.security.web.exception.SecurityErrors.INVALID_TOKEN
-import static com.ss.jcrm.security.web.exception.SecurityErrors.INVALID_TOKEN_MESSAGE
-import static com.ss.jcrm.security.web.exception.SecurityErrors.MAX_REFRESHED_TOKEN
-import static com.ss.jcrm.security.web.exception.SecurityErrors.MAX_REFRESHED_TOKEN_MESSAGE
+import static crm.security.web.exception.SecurityErrors.EXPIRED_TOKEN
+import static crm.security.web.exception.SecurityErrors.EXPIRED_TOKEN_MESSAGE
+import static crm.security.web.exception.SecurityErrors.INVALID_TOKEN
+import static crm.security.web.exception.SecurityErrors.INVALID_TOKEN_MESSAGE
+import static crm.security.web.exception.SecurityErrors.MAX_REFRESHED_TOKEN
+import static crm.security.web.exception.SecurityErrors.MAX_REFRESHED_TOKEN_MESSAGE
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.is
 
