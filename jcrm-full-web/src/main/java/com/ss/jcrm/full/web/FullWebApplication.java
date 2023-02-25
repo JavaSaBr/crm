@@ -1,6 +1,6 @@
 package com.ss.jcrm.full.web;
 
-import com.ss.jcrm.dictionary.web.config.DictionaryWebConfig;
+import crm.dictionary.web.config.DictionaryWebConfig;
 import com.ss.jcrm.registration.web.config.RegistrationWebConfig;
 import com.ss.jcrm.ui.server.config.UiServerConfig;
 import crm.base.web.BaseWebApplication;
