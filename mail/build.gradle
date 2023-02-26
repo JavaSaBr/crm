@@ -2,17 +2,17 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 dependencies {
-
-    api projects.baseSpring
-
-    api (libs.rlib.mail) {
-        exclude group: 'org.slf4j', module: 'slf4j-simple'
-    }
-
-    testFixturesApi projects.integrationTest
-    testFixturesApi (libs.rlib.testcontainers) {
-        exclude group: 'org.slf4j', module: 'slf4j-simple'
-    }
-
-    testFixturesApi libs.testcontainers.core
+  
+  api projects.baseSpring
+  
+  api(libs.rlib.mail) {
+    exclude group: 'org.slf4j', module: 'slf4j-simple'
+  }
+  
+  testFixturesApi projects.integrationTest
+  testFixturesApi(libs.rlib.testcontainers) {
+    exclude group: 'org.slf4j', module: 'slf4j-simple'
+  }
+  
+  testFixturesApi libs.testcontainers.core
 }

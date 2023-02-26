@@ -1,11 +1,11 @@
 apply plugin: "java-library"
 
 dependencies {
-    api projects.integrationTest
-    api projects.baseSpring
-    api projects.baseWeb
-    api libs.springboot.starter.reactor.netty
-    api libs.springboot.starter.test
-    api libs.hamcrest
-    api libs.json.path
+  api projects.integrationTest
+  api projects.baseSpring
+  api projects.baseWeb
+  api libs.springboot.starter.reactor.netty
+  api libs.springboot.starter.test
+  api libs.hamcrest
+  api libs.json.path
 }

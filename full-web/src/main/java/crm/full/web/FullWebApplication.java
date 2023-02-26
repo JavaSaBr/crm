@@ -2,7 +2,7 @@ package crm.full.web;
 
 import crm.dictionary.web.config.DictionaryWebConfig;
 import crm.registration.web.config.RegistrationWebConfig;
-import com.ss.jcrm.ui.server.config.UiServerConfig;
+import crm.ui.server.config.UiServerConfig;
 import crm.base.web.BaseWebApplication;
 import crm.client.web.config.ClientWebConfig;
 import lombok.RequiredArgsConstructor;

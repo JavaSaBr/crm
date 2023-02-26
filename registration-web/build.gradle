@@ -2,18 +2,18 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 ext {
-    //springboot = "true"
+  //springboot = "true"
 }
 
 dependencies {
-    api projects.dictionaryJasync
-    api projects.userJasync
-    api projects.securityWeb
-    api projects.mail
-
-    testFixturesApi projects.integrationTestWeb
-    testFixturesApi testFixtures(projects.mail)
-    testFixturesApi testFixtures(projects.userJasync)
+  api projects.dictionaryJasync
+  api projects.userJasync
+  api projects.securityWeb
+  api projects.mail
+  
+  testFixturesApi projects.integrationTestWeb
+  testFixturesApi testFixtures(projects.mail)
+  testFixturesApi testFixtures(projects.userJasync)
 }
 
 /*

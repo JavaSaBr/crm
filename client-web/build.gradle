@@ -2,10 +2,10 @@ apply plugin: "java-library"
 apply plugin: "java-test-fixtures"
 
 dependencies {
-    api projects.clientJasync
-    api projects.userJasync
-    api projects.securityWeb
-
-    testFixturesApi testFixtures(projects.clientJasync)
-    testFixturesApi projects.integrationTestWeb
+  api projects.clientJasync
+  api projects.userJasync
+  api projects.securityWeb
+  
+  testFixturesApi testFixtures(projects.clientJasync)
+  testFixturesApi projects.integrationTestWeb
 }

@@ -6,7 +6,6 @@ rootProject.name = 'JCRM'
 //include 'jcrm-user-jdbc'
 //include 'jcrm-integration-test-db-jdbc'
 //include 'jcrm-ui'
-include 'jcrm-ui-server'
 //include 'jcrm-dictionary-jdbc'
 include 'jcrm_ui_flutter'
 
@@ -39,3 +38,5 @@ include 'security-web'
 include 'dictionary-web'
 include 'registration-web'
 include 'full-web'
+
+include 'ui-server'

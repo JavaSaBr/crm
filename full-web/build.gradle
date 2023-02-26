@@ -5,7 +5,7 @@ dependencies {
   implementation projects.registrationWeb
   implementation projects.dictionaryWeb
   implementation projects.clientWeb
-  implementation projects.jcrmUiServer
+  implementation projects.uiServer
 }
 
 afterEvaluate {
@@ -16,7 +16,7 @@ afterEvaluate {
     def smtpFrom = System.getProperty("javax.mail.smtp.from")
     def dbUpgradingEnabled = System.getProperty("db.upgrading.enabled", "false")
     
-    main = 'com.ss.jcrm.full.web.FullWebApplication'
+    main = 'crm.full.web.FullWebApplication'
     jvmArgs = [
         "--enable-preview",
         "-Dserver.port=8090",
