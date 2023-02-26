@@ -1,4 +1,4 @@
-package com.ss.jcrm.full.web;
+package crm.full.web;
 
 import crm.dictionary.web.config.DictionaryWebConfig;
 import crm.registration.web.config.RegistrationWebConfig;
@@ -24,14 +24,14 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 public class FullWebApplication extends BaseWebApplication {
 
-    public static void main(@NotNull String[] args) {
+  public static void main(@NotNull String[] args) {
 
-        if (System.getProperty("server.port") == null) {
-            System.setProperty("server.port", "8090");
-        }
-
-        SpringApplication.run(FullWebApplication.class, args);
+    if (System.getProperty("server.port") == null) {
+      System.setProperty("server.port", "8090");
     }
 
-    private final @NotNull List<? extends Flyway> flyways;
+    SpringApplication.run(FullWebApplication.class, args);
+  }
+
+  private final @NotNull List<? extends Flyway> flyways;
 }

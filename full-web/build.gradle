@@ -1,0 +1,30 @@
+apply plugin: "java"
+apply plugin: "org.springframework.boot"
+
+dependencies {
+  implementation projects.registrationWeb
+  implementation projects.dictionaryWeb
+  implementation projects.clientWeb
+  implementation projects.jcrmUiServer
+}
+
+afterEvaluate {
+  tasks.bootRun {
+    
+    def smtpUser = System.getProperty("javax.mail.username")
+    def smtpPassword = System.getProperty("javax.mail.password")
+    def smtpFrom = System.getProperty("javax.mail.smtp.from")
+    def dbUpgradingEnabled = System.getProperty("db.upgrading.enabled", "false")
+    
+    main = 'com.ss.jcrm.full.web.FullWebApplication'
+    jvmArgs = [
+        "--enable-preview",
+        "-Dserver.port=8090",
+        "-Djavax.mail.username=$smtpUser",
+        "-Djavax.mail.password=$smtpPassword",
+        "-Djavax.mail.smtp.from=$smtpFrom",
+        "-Ddb.upgrading.enabled=$dbUpgradingEnabled"
+    ]
+    args = ["--debug"]
+  }
+}
