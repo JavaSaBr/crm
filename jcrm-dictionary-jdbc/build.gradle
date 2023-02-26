@@ -1,8 +1,0 @@
-dependencies {
-    api projects.jcrmDictionaryApi
-    api projects.jcrmBaseSpring
-    api projects.jcrmJdbc
-
-    testImplementation project(path: ":jcrm-dictionary-api", configuration: "testArtifacts")
-    testImplementation projects.jcrmIntegrationTestDbJdbc
-}

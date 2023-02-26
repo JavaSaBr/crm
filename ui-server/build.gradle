@@ -2,7 +2,7 @@ apply plugin: "java-library"
 
 dependencies {
   api projects.baseWeb
-  api projects.jcrmUiFlutter
+  api projects.uiFlutter
 }
 
 task deleteOldFrontEnd(type: Delete) {
