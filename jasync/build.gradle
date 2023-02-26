@@ -1,0 +1,21 @@
+apply plugin: "java-library"
+apply plugin: "java-test-fixtures"
+
+dependencies {
+  api projects.base
+  api projects.dao
+  api projects.baseSpring
+  
+  //compile "com.jsoniter:jsoniter:$jsointerVersion"
+  //compile "org.javassist:javassist:$javassistVersion"
+  
+  api libs.postgresql.driver
+  api libs.bundles.jasync
+  api libs.flyway.core
+  api libs.jackson.databind
+  
+  testFixturesApi testFixtures(projects.dao)
+  testFixturesApi libs.flyway.core
+  testFixturesApi libs.postgresql.driver
+  testFixturesApi libs.bundles.jasync
+}

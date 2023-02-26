@@ -1,0 +1,107 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
+subprojects {
+  
+  beforeEvaluate {
+    
+    plugins.apply("java")
+    plugins.apply("com.adarshr.test-logger")
+    
+    def srcDir = Paths.get(projectDir.path, "src")
+    def hasGroovy = Files.exists(srcDir.resolve("main/groovy")) ||
+        Files.exists(srcDir.resolve("test/groovy")) ||
+        Files.exists(srcDir.resolve("testFixtures/groovy"))
+    
+    if (hasGroovy) {
+      plugins.apply("groovy")
+    }
+  
+    def hasTestFixtures = Files.exists(srcDir.resolve("testFixtures"))
+  
+    if (hasTestFixtures) {
+      plugins.apply("java-test-fixtures")
+    }
+  }
+  
+  afterEvaluate { Project prj ->
+    
+    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility = JavaVersion.VERSION_19
+    
+    dependencies {
+      compileOnly libs.jetbrains.annotations
+      testCompileOnly libs.jetbrains.annotations
+      compileOnly libs.lombok
+      annotationProcessor libs.lombok
+      testCompileOnly libs.lombok
+      testAnnotationProcessor libs.lombok
+    }
+  
+    if (prj.plugins.hasPlugin("java-test-fixtures")) {
+      prj.dependencies {
+        testFixturesCompileOnly libs.jetbrains.annotations
+        testFixturesCompileOnly libs.lombok
+        testFixturesAnnotationProcessor libs.lombok
+      }
+    }
+    
+    testlogger {
+      theme 'plain-parallel'
+      showFullStackTraces true
+      showSimpleNames true
+      showPassed false
+      showSkipped false
+      showFailed true
+      showStandardStreams false
+      showPassedStandardStreams false
+      showSkippedStandardStreams false
+      showFailedStandardStreams true
+    }
+    
+    test {
+      useJUnitPlatform()
+      
+      failFast = false
+      maxParallelForks = 1
+      minHeapSize = "128m"
+      maxHeapSize = "1024m"
+      
+      systemProperty("junit.jupiter.execution.parallel.enabled", true)
+      systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
+      systemProperty("junit.jupiter.execution.parallel.mode.classes.default", "concurrent")
+    }
+    
+    sourceSets {
+      main {
+        java {
+          srcDirs 'src/main/groovy'
+        }
+      }
+      test {
+        java {
+          srcDirs 'src/test/groovy'
+        }
+      }
+      testFixtures {
+        java {
+          srcDirs 'src/testFixtures/groovy'
+        }
+      }
+    }
+    
+    tasks.withType(Test).configureEach {
+      jvmArgs += "--enable-preview"
+    }
+    
+    tasks.withType(JavaCompile).configureEach {
+      options.compilerArgs += ["--enable-preview", "-parameters"]
+      options.encoding = "UTF-8"
+    }
+    
+    tasks.withType(GroovyCompile).configureEach {
+      options.forkOptions.jvmArgs += "--enable-preview"
+      options.encoding = "UTF-8"
+    }
+  }
+}

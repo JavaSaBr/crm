@@ -1,0 +1,8 @@
+apply plugin: "java-library"
+apply plugin: "java-test-fixtures"
+
+dependencies {
+  api projects.dao
+  testImplementation projects.integrationTestDb
+  testFixturesApi projects.integrationTestDb
+}

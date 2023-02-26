@@ -1,0 +1,10 @@
+apply plugin: "java-library"
+
+dependencies {
+  api projects.base
+  api projects.dictionaryApi
+  api projects.userApi
+  api projects.contactApi
+  
+  testFixturesApi projects.integrationTestDb
+}

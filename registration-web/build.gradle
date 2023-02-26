@@ -1,0 +1,36 @@
+apply plugin: "java-library"
+apply plugin: "java-test-fixtures"
+
+ext {
+  //springboot = "true"
+}
+
+dependencies {
+  api projects.dictionaryJasync
+  api projects.userJasync
+  api projects.securityWeb
+  api projects.mail
+  
+  testFixturesApi projects.integrationTestWeb
+  testFixturesApi testFixtures(projects.mail)
+  testFixturesApi testFixtures(projects.userJasync)
+}
+
+/*
+afterEvaluate {
+    tasks.bootRun {
+        
+        def smtpUser = System.getProperty("javax.mail.username")
+        def smtpPassword = System.getProperty("javax.mail.password")
+        def smtpFrom = System.getProperty("javax.mail.smtp.from")
+        
+        main = 'com.ss.jcrm.registration.web.RegistrationApplication'
+        jvmArgs = [
+            "-Dserver.port=8091",
+            "-Djavax.mail.username=$smtpUser",
+            "-Djavax.mail.password=$smtpPassword",
+            "-Djavax.mail.smtp.from=$smtpFrom"
+        ]
+    }
+}
+*/

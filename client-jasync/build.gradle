@@ -1,0 +1,11 @@
+apply plugin: "java-library"
+apply plugin: "java-test-fixtures"
+
+dependencies {
+  api projects.baseSpring
+  api projects.jasync
+  api projects.clientApi
+  
+  testFixturesApi testFixtures(projects.clientApi)
+  testFixturesApi testFixtures(projects.userJasync)
+}

@@ -1,4 +1,0 @@
-dependencies {
-    api projects.jcrmJdbc")
-    api projects.jcrmIntegrationTestDb")
-}

@@ -1,9 +1,0 @@
-apply plugin: "java-library"
-
-dependencies {
-    api projects.jcrmBase
-    api projects.jcrmBaseSpring
-    api libs.spring.test
-    api libs.bundles.spock
-    api libs.groovy.all
-}

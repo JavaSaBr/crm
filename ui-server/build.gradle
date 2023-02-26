@@ -1,0 +1,33 @@
+apply plugin: "java-library"
+
+dependencies {
+  api projects.baseWeb
+  api projects.uiFlutter
+}
+
+task deleteOldFrontEnd(type: Delete) {
+  delete getStaticResourcesFolder().toString()
+}
+
+task copyFrontEnd(type: Copy) {
+  
+  def uiProject = project(':ui_flutter')
+  def sourceFolder = uiProject.projectDir.toPath().resolve('build/web')
+  def targetFolder = getStaticResourcesFolder()
+  
+  from sourceFolder.toString()
+  into targetFolder.toString()
+}
+
+afterEvaluate {
+  tasks.copyFrontEnd.dependsOn deleteOldFrontEnd
+  tasks.classes.dependsOn copyFrontEnd
+}
+
+def getStaticResourcesFolder() {
+  return sourceSets.main.getResources()
+      .getSrcDirs()
+      .first()
+      .toPath()
+      .resolve('static')
+}

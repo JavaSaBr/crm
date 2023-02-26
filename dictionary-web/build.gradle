@@ -1,0 +1,21 @@
+apply plugin: "java-library"
+apply plugin: "java-test-fixtures"
+
+ext {
+  // springboot = "true"
+}
+
+dependencies {
+  api projects.dictionaryJasync
+  api projects.securityWeb
+  
+  testFixturesApi projects.integrationTestWeb
+  testFixturesApi testFixtures(projects.dictionaryJasync)
+}
+/*
+afterEvaluate {
+    tasks.bootRun {
+        main = 'com.ss.jcrm.dictionary.web.DictionaryApplication'
+        jvmArgs = ["-Dserver.port=8090"]
+    }
+}*/
