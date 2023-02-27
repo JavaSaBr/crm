@@ -31,7 +31,10 @@ import crm.user.jasync.dao.JAsyncUserGroupDao;
         value = "classpath:user/jasync/user-jasync-${spring.profiles.active:default}.properties",
         ignoreResourceNotFound = true)
 })
-@Import(CommonJAsyncConfig.class)
+@Import({
+    CommonJAsyncConfig.class,
+    PropertiesConfig.class
+})
 @Configuration(proxyBeanMethods = false)
 public class JAsyncUserConfig extends AbstractJAsyncConfig {
 

@@ -2,6 +2,7 @@ package crm.jasync.config;
 
 import com.github.jasync.sql.db.pool.PoolConfiguration;
 import com.github.jasync.sql.db.util.DaemonThreadsFactory;
+import crm.dao.config.DaoConfig;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import org.springframework.context.annotation.Import;
 
+@Import(DaoConfig.class)
 @Configuration(proxyBeanMethods = false)
 public class CommonJAsyncConfig {
 

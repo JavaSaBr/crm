@@ -23,7 +23,10 @@ import org.springframework.context.annotation.*;
         value = "classpath:dictionary/jasync/dictionary-jasync-${spring.profiles.active:default}.properties",
         ignoreResourceNotFound = true)
 })
-@Import(CommonJAsyncConfig.class)
+@Import({
+    CommonJAsyncConfig.class,
+    PropertiesConfig.class
+})
 @Configuration(proxyBeanMethods = false)
 public class JAsyncDictionaryConfig extends AbstractJAsyncConfig {
 
