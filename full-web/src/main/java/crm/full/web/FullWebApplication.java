@@ -20,7 +20,6 @@ import java.util.List;
     ClientWebConfig.class,
     UiServerConfig.class
 })
-@RequiredArgsConstructor
 @Configuration(proxyBeanMethods = false)
 public class FullWebApplication extends BaseWebApplication {
 
@@ -32,6 +31,4 @@ public class FullWebApplication extends BaseWebApplication {
 
     SpringApplication.run(FullWebApplication.class, args);
   }
-
-  private final @NotNull List<? extends Flyway> flyways;
 }

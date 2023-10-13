@@ -9,24 +9,32 @@ class UserTableDataSource extends UniqEntityTableDataSource<User, UserResource, 
   UserTableDataSource(UserRepository repository) : super(repository);
 
   @override
-  DataRow buildRow(User entity) {
+  DataRow buildRow(User user) {
     return DataRow(
-      key: ValueKey<int>(entity.id),
+      key: ValueKey<int>(user.id),
       cells: [
         DataCell(Text(
-          entity.id.toString(),
+          user.id.toString(),
           textAlign: TextAlign.left,
         )),
         DataCell(Text(
-          entity.firstName,
+          user.firstName,
           textAlign: TextAlign.left,
         )),
         DataCell(Text(
-          entity.secondName,
+          user.secondName,
           textAlign: TextAlign.left,
         )),
         DataCell(Text(
-          entity.thirdName,
+          user.thirdName,
+          textAlign: TextAlign.left,
+        )),
+        DataCell(Text(
+          user.email,
+          textAlign: TextAlign.left,
+        )),
+        DataCell(Text(
+          user.birthday == null ? "" : user.birthday!.toIso8601String(),
           textAlign: TextAlign.left,
         ))
       ],

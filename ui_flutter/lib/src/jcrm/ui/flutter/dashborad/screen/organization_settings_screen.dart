@@ -57,6 +57,8 @@ class OrganizationSettingsScreenState extends State<OrganizationSettingsScreen> 
           for (final factory in tabs.values) factory(context),
         ],
       ),
+      floatingActionButton:
+          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add)),
     );
   }
 

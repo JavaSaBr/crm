@@ -98,9 +98,9 @@ public class JjwtTokenService implements UnsafeTokenService {
       int passwordVersion) {
     return Jwts
         .builder()
-        .setSubject(String.valueOf(userId))
-        .setExpiration(Date.from(expiration.toInstant()))
-        .setNotBefore(Date.from(notBefore.toInstant()))
+        .subject(String.valueOf(userId))
+        .expiration(Date.from(expiration.toInstant()))
+        .notBefore(Date.from(notBefore.toInstant()))
         .claim(TOKEN_REFRESHES_FIELD, refreshes)
         .claim(TOKEN_PWD_VERSION_FIELD, passwordVersion)
         .signWith(secretKey)
@@ -147,27 +147,18 @@ public class JjwtTokenService implements UnsafeTokenService {
 
   private @NotNull Claims getPossibleExpiredClaims(@NotNull String token) {
     try {
-
-      return Jwts
-          .parser()
-          .setSigningKey(secretKey)
-          .parseClaimsJws(token)
-          .getBody();
-
-    } catch (ExpiredJwtException e) {
-
-      var claims = e.getClaims();
-
+      return extractPossibleExpiredClaims(token);
+    } catch (ExpiredJwtException ex) {
+      var claims = ex.getClaims();
       if (new Date().before(claims.getNotBefore())) {
         throw new PrematureTokenException("The token [" + token + "] is from future [" + claims.getNotBefore() + "].");
       }
-
       return claims;
-
-    } catch (PrematureJwtException e) {
-      throw new PrematureTokenException("The token [" + token + "] is from future [" + e
+    } catch (PrematureJwtException ex) {
+      Date notBefore = ex
           .getClaims()
-          .getNotBefore() + "].");
+          .getNotBefore();
+      throw new PrematureTokenException("The token [" + token + "] is from future [" + notBefore + "].");
     } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
       throw new InvalidTokenException(e);
     }
@@ -175,23 +166,37 @@ public class JjwtTokenService implements UnsafeTokenService {
 
   private @NotNull Claims getClaims(@NotNull String token) {
     try {
-
-      return Jwts
-          .parser()
-          .setSigningKey(secretKey)
-          .parseClaimsJws(token)
-          .getBody();
-
-    } catch (ExpiredJwtException e) {
-      throw new ExpiredTokenException("The token [" + token + "] is expired [" + e
+      return extractClaims(token);
+    } catch (ExpiredJwtException ex) {
+      Date expiration = ex
           .getClaims()
-          .getExpiration() + "].");
-    } catch (PrematureJwtException e) {
-      throw new PrematureTokenException("The token [" + token + "] is from future [" + e
+          .getExpiration();
+      throw new ExpiredTokenException("The token [" + token + "] is expired [" + expiration + "].");
+    } catch (PrematureJwtException ex) {
+      Date notBefore = ex
           .getClaims()
-          .getNotBefore() + "].");
+          .getNotBefore();
+      throw new PrematureTokenException("The token [" + token + "] is from future [" + notBefore + "].");
     } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
       throw new InvalidTokenException(e);
     }
+  }
+
+  private @NotNull Claims extractClaims(@NotNull String token) {
+    return Jwts
+        .parser()
+        .verifyWith(secretKey)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
+  }
+
+  private @NotNull Claims extractPossibleExpiredClaims(@NotNull String token) {
+    return Jwts
+        .parser()
+        .verifyWith(secretKey)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
   }
 }

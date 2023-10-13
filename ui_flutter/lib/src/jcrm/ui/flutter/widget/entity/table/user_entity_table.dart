@@ -19,6 +19,9 @@ class UserTable extends EntityTable<User> {
 class UserTableState extends EntityTableState<User, UserTableDataSource> {
 
   @override
+  get restorationPrefix => "user_table_list_view";
+
+  @override
   UserTableDataSource createDataSource() {
     return UserTableDataSource(context.read<UserRepository>());
   }
@@ -29,7 +32,9 @@ class UserTableState extends EntityTableState<User, UserTableDataSource> {
       buildColumn("Id"),
       buildColumn("First name"),
       buildColumn("Second name"),
-      buildColumn("Third name")
+      buildColumn("Third name"),
+      buildColumn("Email"),
+      buildColumn("Birthday")
     ];
   }
 
