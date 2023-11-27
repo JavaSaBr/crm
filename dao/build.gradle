@@ -4,4 +4,5 @@ apply plugin: "java-test-fixtures"
 dependencies {
   api projects.baseSpring
   testFixturesApi libs.flyway.core
+  testFixturesApi libs.flyway.postgresql
 }

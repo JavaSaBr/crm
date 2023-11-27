@@ -1,20 +1,20 @@
 [versions]
 rlib = "9.9.1"
-reactor = "3.5.11"
-jackson = "2.15.2"
-testcontainers = "1.19.1"
-postgresql-driver = "42.5.1"
+reactor = "3.6.0"
+jackson = "2.16.0"
+testcontainers = "1.19.3"
+postgresql-driver = "42.7.0"
 jasync = "2.2.4"
-flyway = "9.22.2"
-springboot = "3.1.4"
+flyway = "10.1.0"
+springboot = "3.2.0"
 spock = "2.3-groovy-4.0"
-spring = '6.0.12'
+spring = '6.1.1'
 groovy = "4.0.15"
 hamcrest = "2.2"
 jsonpath = "2.8.0"
-jsonwebtoken = "0.12.2"
+jsonwebtoken = "0.12.3"
 lombok = "1.18.30"
-jetbrains-annotations = "24.0.1"
+jetbrains-annotations = "24.1.0"
 
 [libraries]
 rlib-common = { module = "com.spaceshift:rlib.common", version.ref = "rlib" }
@@ -42,6 +42,7 @@ jasync-common = { module = "com.github.jasync-sql:jasync-common", version.ref = 
 jasync-postgresql = { module = "com.github.jasync-sql:jasync-postgresql", version.ref = "jasync" }
 
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 
 springboot-starter-core = { module = "org.springframework.boot:spring-boot-starter", version.ref = "springboot" }
 springboot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "springboot" }

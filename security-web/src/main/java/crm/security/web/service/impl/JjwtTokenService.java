@@ -1,7 +1,6 @@
 package crm.security.web.service.impl;
 
 import static java.time.ZonedDateTime.now;
-;
 import crm.security.web.exception.ChangedPasswordTokenException;
 import crm.security.web.exception.ExpiredTokenException;
 import crm.security.web.exception.InvalidTokenException;
