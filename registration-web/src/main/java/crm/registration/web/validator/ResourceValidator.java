@@ -12,31 +12,34 @@ import crm.base.web.validator.BaseResourceValidator;
 import com.ss.rlib.common.util.DateUtils;
 import com.ss.rlib.common.util.StringUtils;
 import crm.contact.api.resource.PhoneNumberResource;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.env.Environment;
 
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ResourceValidator extends BaseResourceValidator {
 
-  private final int emailMinLength;
-  private final int emailMaxLength;
+  int emailMinLength;
+  int emailMaxLength;
 
-  private final int orgNameMinLength;
-  private final int orgNameMaxLength;
+  int orgNameMinLength;
+  int orgNameMaxLength;
 
-  private final int phoneNumberMinLength;
-  private final int phoneNumberMaxLength;
+  int phoneNumberMinLength;
+  int phoneNumberMaxLength;
 
-  private final int passwordMinLength;
-  private final int passwordMaxLength;
+  int passwordMinLength;
+  int passwordMaxLength;
 
-  private final int otherUserNameMinLength;
-  private final int otherUserNameMaxLength;
+  int otherUserNameMinLength;
+  int otherUserNameMaxLength;
 
-  private final int userGroupNameMinLength;
-  private final int userGroupNameMaxLength;
+  int userGroupNameMinLength;
+  int userGroupNameMaxLength;
 
   public ResourceValidator(@NotNull Environment env) {
     this.emailMinLength = env.getProperty("registration.web.email.min.length", int.class, 6);
@@ -52,17 +55,13 @@ public class ResourceValidator extends BaseResourceValidator {
     this.userGroupNameMinLength = env.getProperty("registration.web.user.group.name.min.length", int.class, 6);
     this.userGroupNameMaxLength = env.getProperty("registration.web.user.group.name.max.length", int.class, 45);
 
-    log.info("Resource validator settings:");
-    log.info("Email min length : {}", emailMinLength);
-    log.info("Email max length : {}", emailMaxLength);
-    log.info("Org name min length : {}", orgNameMinLength);
-    log.info("Org name max length : {}", orgNameMaxLength);
-    log.info("Phone number min length : {}", phoneNumberMinLength);
-    log.info("Phone number max length : {}", phoneNumberMaxLength);
-    log.info("Password min length : {}", passwordMinLength);
-    log.info("Password max length : {}", passwordMaxLength);
-    log.info("Other user name min length : {}", otherUserNameMinLength);
-    log.info("Other user name max length : {}", otherUserNameMaxLength);
+    log.info("""
+        Resource validator settings:
+        Email min/max: [{}-{}], Org name min/max: [{}-{}] Phone number min/max: [{}-{}], 
+        Password min/max" [{}-{}] Other user name min/max: [{}-{}]""",
+        emailMinLength, emailMaxLength, orgNameMinLength, orgNameMaxLength,
+        phoneNumberMinLength, phoneNumberMaxLength, passwordMinLength, passwordMaxLength,
+        otherUserNameMinLength, otherUserNameMaxLength);
   }
 
   public void validate(@NotNull AuthenticationInResource resource) {

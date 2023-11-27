@@ -2,6 +2,7 @@ package crm.user.jasync.config;
 
 import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
+import crm.dao.migration.DbMigrationFactory;
 import crm.dictionary.api.dao.CityDao;
 import crm.dictionary.api.dao.CountryDao;
 import crm.dictionary.api.dao.IndustryDao;
@@ -43,8 +44,9 @@ public class JAsyncUserConfig extends AbstractJAsyncConfig {
   }
 
   @Bean
-  @NotNull Flyway userFlyway() {
-    return flyway();
+  @DependsOn(PropertiesConfig.BEAN_FINAL_PROPS)
+  @NotNull DbMigrationFactory<Flyway> userFlyway() {
+    return new DbMigrationFactory<>(Flyway.class, this::flyway);
   }
 
   @Bean

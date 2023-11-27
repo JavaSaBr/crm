@@ -53,15 +53,14 @@ public class JjwtTokenService implements UnsafeTokenService {
       throw new RuntimeException(e);
     }
 
-    log.info("Expiration time: {}", expirationTime);
-    log.info("Max refreshes: {}", maxRefreshes);
+    log.info("Expiration time: {}, max refreshes: {}", expirationTime, maxRefreshes);
   }
 
   @Override
   public @NotNull String generateActivateCode(int length) {
 
     if (length < 1) {
-      throw new IllegalArgumentException("The length cannot be less than 1");
+      throw new IllegalArgumentException("Length cannot be less than 1");
     }
 
     var buffer = ByteBuffer.allocate(length);
@@ -125,17 +124,17 @@ public class JjwtTokenService implements UnsafeTokenService {
     var refreshes = (Integer) claims.get(TOKEN_REFRESHES_FIELD);
 
     if (refreshes == null) {
-      throw new InvalidTokenException("The token [" + token + "] doesn't include field 'refreshes'.");
+      throw new InvalidTokenException("Token [" + token + "] doesn't include field 'refreshes'.");
     } else if (refreshes > maxRefreshes) {
-      throw new MaxRefreshedTokenException("The token [" + token + "] has reached max refreshes.");
+      throw new MaxRefreshedTokenException("Token [" + token + "] has reached max refreshes.");
     }
 
     var passwordVersion = (Integer) claims.get(TOKEN_PWD_VERSION_FIELD);
 
     if (passwordVersion == null) {
-      throw new InvalidTokenException("The token [" + token + "] doesn't include field 'refreshes'.");
+      throw new InvalidTokenException("Token [" + token + "] doesn't include field 'refreshes'.");
     } else if (passwordVersion != user.passwordVersion()) {
-      throw new ChangedPasswordTokenException("The token [" + token + "] cannot be used for the user [" + user.email()
+      throw new ChangedPasswordTokenException("Token [" + token + "] cannot be used for the user [" + user.email()
           + "] because his password was changed.");
     }
 
@@ -150,14 +149,14 @@ public class JjwtTokenService implements UnsafeTokenService {
     } catch (ExpiredJwtException ex) {
       var claims = ex.getClaims();
       if (new Date().before(claims.getNotBefore())) {
-        throw new PrematureTokenException("The token [" + token + "] is from future [" + claims.getNotBefore() + "].");
+        throw new PrematureTokenException("Token [" + token + "] is from future [" + claims.getNotBefore() + "].");
       }
       return claims;
     } catch (PrematureJwtException ex) {
       Date notBefore = ex
           .getClaims()
           .getNotBefore();
-      throw new PrematureTokenException("The token [" + token + "] is from future [" + notBefore + "].");
+      throw new PrematureTokenException("Token [" + token + "] is from future [" + notBefore + "].");
     } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
       throw new InvalidTokenException(e);
     }
@@ -170,12 +169,12 @@ public class JjwtTokenService implements UnsafeTokenService {
       Date expiration = ex
           .getClaims()
           .getExpiration();
-      throw new ExpiredTokenException("The token [" + token + "] is expired [" + expiration + "].");
+      throw new ExpiredTokenException("Token [" + token + "] is expired [" + expiration + "].");
     } catch (PrematureJwtException ex) {
       Date notBefore = ex
           .getClaims()
           .getNotBefore();
-      throw new PrematureTokenException("The token [" + token + "] is from future [" + notBefore + "].");
+      throw new PrematureTokenException("Token [" + token + "] is from future [" + notBefore + "].");
     } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
       throw new InvalidTokenException(e);
     }

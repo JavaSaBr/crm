@@ -49,19 +49,19 @@ public class WebSecurityConfig {
       var path = Paths.get(secretKeyPath);
 
       if (Files.exists(path)) {
-        log.info("Read a token secret key from the file: {}", path);
+        log.info("Read token secret key from the file: {}", path);
         secretKey = Files.readAllBytes(path);
       } else {
-        log.error("Can't read the token secret file: {}", path);
+        log.error("Can't read token secret file: {}", path);
       }
 
     } else {
       secretKey = StringUtils.hexStringToBytes(secretKeyHex);
-      log.info("Read a token secret key from string property.");
+      log.info("Read token secret key from string property");
     }
 
     if (secretKey == null) {
-      throw new IllegalStateException("Token's secret key is not setup.");
+      throw new IllegalStateException("Token's secret key is not setup");
     }
 
     return new JjwtTokenService(userDao, secretKey, expirationTime, maxRefreshes);

@@ -4,6 +4,7 @@ import com.github.jasync.sql.db.ConcreteConnection;
 import com.github.jasync.sql.db.pool.ConnectionPool;
 import crm.base.spring.config.PropertiesConfig;
 import crm.dao.config.DaoConfig;
+import crm.dao.migration.DbMigrationFactory;
 import crm.dictionary.api.dao.CityDao;
 import crm.dictionary.api.dao.CountryDao;
 import crm.dictionary.api.dao.IndustryDao;
@@ -36,8 +37,8 @@ public class JAsyncDictionaryConfig extends AbstractJAsyncConfig {
 
   @Bean
   @DependsOn(PropertiesConfig.BEAN_FINAL_PROPS)
-  @NotNull Flyway dictionaryFlyway() {
-    return flyway();
+  @NotNull DbMigrationFactory<Flyway> dictionaryFlyway() {
+    return new DbMigrationFactory<>(Flyway.class, this::flyway);
   }
 
   @Bean

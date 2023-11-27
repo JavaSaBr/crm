@@ -5,6 +5,7 @@ import com.github.jasync.sql.db.pool.ConnectionPool;
 import crm.base.spring.config.PropertiesConfig;
 import crm.client.api.dao.SimpleClientDao;
 import crm.client.jasync.dao.JAsyncSimpleClientDao;
+import crm.dao.migration.DbMigrationFactory;
 import crm.jasync.config.AbstractJAsyncConfig;
 import crm.jasync.config.CommonJAsyncConfig;
 import crm.dao.config.DaoConfig;
@@ -31,8 +32,9 @@ public class JAsyncClientConfig extends AbstractJAsyncConfig {
   }
 
   @Bean
-  @NotNull Flyway clientFlyway() {
-    return flyway();
+  @DependsOn(PropertiesConfig.BEAN_FINAL_PROPS)
+  @NotNull DbMigrationFactory<Flyway> clientFlyway() {
+    return new DbMigrationFactory<>(Flyway.class, this::flyway);
   }
 
   @Bean

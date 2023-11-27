@@ -9,13 +9,14 @@ subprojects {
     
     if (plugins.hasPlugin("java")) {
       tasks.named("processResources", Copy).configure { Copy task ->
+        def database = System.getProperty("database", "jcrm")
         task.filter(ReplaceTokens, tokens: [
             
             // USER DB
             'userDbScheme'          : System.getProperty("userDbScheme", "jcrm-user-db"),
             'userDbHost'            : System.getProperty("userDbHost", "localhost"),
             'userDbPort'            : System.getProperty("userDbPort", "5432"),
-            'userDbDatabase'        : System.getProperty("userDbDatabase", "jcrm"),
+            'userDbDatabase'        : System.getProperty("userDbDatabase", database),
             'userDbUser'            : System.getProperty("userDbUser", "root"),
             'userDbPassword'        : System.getProperty("userDbPassword", "root"),
             
@@ -23,7 +24,7 @@ subprojects {
             'dictionaryDbScheme'    : System.getProperty("dictionaryDbScheme", "jcrm-dictionary-db"),
             'dictionaryDbHost'      : System.getProperty("dictionaryDbHost", "localhost"),
             'dictionaryDbPort'      : System.getProperty("dictionaryDbPort", "5432"),
-            'dictionaryDbDatabase'  : System.getProperty("dictionaryDbDatabase", "jcrm"),
+            'dictionaryDbDatabase'  : System.getProperty("dictionaryDbDatabase", database),
             'dictionaryDbUser'      : System.getProperty("dictionaryDbUser", "root"),
             'dictionaryDbPassword'  : System.getProperty("dictionaryDbPassword", "root"),
             
@@ -31,7 +32,7 @@ subprojects {
             'clientDbScheme'        : System.getProperty("clientDbScheme", "jcrm-client-db"),
             'clientDbHost'          : System.getProperty("clientDbHost", "localhost"),
             'clientDbPort'          : System.getProperty("clientDbPort", "5432"),
-            'clientDbDatabase'      : System.getProperty("clientDbDatabase", "jcrm"),
+            'clientDbDatabase'      : System.getProperty("clientDbDatabase", database),
             'clientDbUser'          : System.getProperty("clientDbUser", "root"),
             'clientDbPassword'      : System.getProperty("clientDbPassword", "root"),
             
