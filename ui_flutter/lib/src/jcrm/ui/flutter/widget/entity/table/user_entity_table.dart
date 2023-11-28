@@ -29,10 +29,8 @@ class UserTableState extends EntityTableState<User, UserTableDataSource> {
   @override
   List<DataColumn> buildColumns() {
     return [
-      buildColumn("Id"),
-      buildColumn("First name"),
-      buildColumn("Second name"),
-      buildColumn("Third name"),
+      buildShortColumn("Id"),
+      buildColumn("Name"),
       buildColumn("Email"),
       buildColumn("Birthday")
     ];

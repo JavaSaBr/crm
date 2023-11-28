@@ -20,4 +20,21 @@ class MinimalUser extends UniqEntity {
         thirdName = resource.thirdName == null ? "" : resource.thirdName!,
         birthday = resource.birthday == null ? null : DateTime.parse(resource.birthday!),
         super.fromResource(resource);
+
+  List<String> names() {
+
+    List<String> result = [];
+
+    if (firstName.isNotEmpty) {
+      result.add(firstName);
+    }
+    if (secondName.isNotEmpty) {
+      result.add(firstName);
+    }
+    if (thirdName.isNotEmpty) {
+      result.add(firstName);
+    }
+
+    return result;
+  }
 }

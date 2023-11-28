@@ -32,5 +32,21 @@ abstract class EntityTableDataSource<E extends Entity, R extends EntityResource,
             .toList(growable: false));
   }
 
-  DataRow buildRow(E entity);
+  DataRow buildRow(E entity) {
+    return DataRow(
+      onSelectChanged: (value) {
+        if (value != null) {
+          setRowSelection(buildKey(entity), value);
+        }
+      },
+      key: buildKey(entity),
+      cells: buildRowCells(entity),
+    );
+  }
+
+  @protected
+  LocalKey buildKey(E entity);
+
+  @protected
+  List<DataCell> buildRowCells(E entity);
 }

@@ -9,35 +9,33 @@ class UserTableDataSource extends UniqEntityTableDataSource<User, UserResource, 
   UserTableDataSource(UserRepository repository) : super(repository);
 
   @override
-  DataRow buildRow(User user) {
-    return DataRow(
-      key: ValueKey<int>(user.id),
-      cells: [
-        DataCell(Text(
-          user.id.toString(),
-          textAlign: TextAlign.left,
-        )),
-        DataCell(Text(
-          user.firstName,
-          textAlign: TextAlign.left,
-        )),
-        DataCell(Text(
-          user.secondName,
-          textAlign: TextAlign.left,
-        )),
-        DataCell(Text(
-          user.thirdName,
-          textAlign: TextAlign.left,
-        )),
-        DataCell(Text(
-          user.email,
-          textAlign: TextAlign.left,
-        )),
-        DataCell(Text(
-          user.birthday == null ? "" : user.birthday!.toIso8601String(),
-          textAlign: TextAlign.left,
-        ))
-      ],
-    );
+  LocalKey buildKey(User entity) {
+    return ValueKey<int>(entity.id);
+  }
+
+  @override
+  List<DataCell> buildRowCells(User entity) {
+    return [
+      DataCell(Text(
+        entity.id.toString(),
+        textAlign: TextAlign.left,
+      )),
+      DataCell(Text(
+        buildName(entity),
+        textAlign: TextAlign.left,
+      )),
+      DataCell(Text(
+        entity.email,
+        textAlign: TextAlign.left,
+      )),
+      DataCell(Text(
+        entity.birthday == null ? "" : entity.birthday!.toIso8601String(),
+        textAlign: TextAlign.left,
+      ))
+    ];
+  }
+
+  String buildName(User entity) {
+    return entity.names().join(" ");
   }
 }
