@@ -26,8 +26,8 @@ subprojects {
   
   afterEvaluate { Project prj ->
     
-    sourceCompatibility = JavaVersion.VERSION_20
-    targetCompatibility = JavaVersion.VERSION_20
+    sourceCompatibility = JavaVersion.VERSION_23
+    targetCompatibility = JavaVersion.VERSION_23
     
     dependencies {
       compileOnly libs.jetbrains.annotations

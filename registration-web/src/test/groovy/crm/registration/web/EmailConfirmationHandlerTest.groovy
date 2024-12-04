@@ -1,6 +1,6 @@
 package crm.registration.web
 
-import crm.registration.web.RegistrationSpecification
+import java.nio.charset.StandardCharsets
 
 import static crm.registration.web.exception.RegistrationErrors.INVALID_EMAIL
 import static crm.registration.web.exception.RegistrationErrors.INVALID_EMAIL_MESSAGE
@@ -22,7 +22,7 @@ class EmailConfirmationHandlerTest extends RegistrationSpecification {
     def "should not send email confirmation with invalid email"() {
         
         given:
-            def email = "@&%&#2"
+            def email = URLEncoder.encode("@&%&#2", StandardCharsets.UTF_8)
         when:
             def response = webClient.get()
                 .url("$contextPath/email-confirmation/$email")

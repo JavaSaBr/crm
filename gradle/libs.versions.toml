@@ -1,20 +1,20 @@
 [versions]
 rlib = "9.9.1"
-reactor = "3.6.0"
-jackson = "2.16.0"
-testcontainers = "1.19.3"
-postgresql-driver = "42.7.0"
+reactor = "3.7.0"
+jackson = "2.18.2"
+testcontainers = "1.20.4"
+postgresql-driver = "42.7.4"
 jasync = "2.2.4"
-flyway = "10.1.0"
-springboot = "3.2.0"
-spock = "2.3-groovy-4.0"
-spring = '6.1.1'
-groovy = "4.0.15"
-hamcrest = "2.2"
-jsonpath = "2.8.0"
-jsonwebtoken = "0.12.3"
-lombok = "1.18.30"
-jetbrains-annotations = "24.1.0"
+flyway = "11.0.1"
+springboot = "3.4.0"
+spock = "2.4-M4-groovy-4.0"
+spring = '6.2.0'
+groovy = "4.0.24"
+hamcrest = "3.0"
+jsonpath = "2.9.0"
+jsonwebtoken = "0.12.6"
+lombok = "1.18.36"
+jetbrains-annotations = "26.0.1"
 
 [libraries]
 rlib-common = { module = "com.spaceshift:rlib.common", version.ref = "rlib" }

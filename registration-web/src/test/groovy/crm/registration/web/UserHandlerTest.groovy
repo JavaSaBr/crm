@@ -1,7 +1,6 @@
 package crm.registration.web
 
 import crm.registration.web.resources.UserInResource
-import crm.registration.web.RegistrationSpecification
 import crm.security.AccessRole
 import crm.security.web.service.UnsafeTokenService
 import crm.security.web.service.WebRequestSecurityService
@@ -9,6 +8,8 @@ import crm.user.api.dao.UserDao
 import com.ss.rlib.common.util.ArrayUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+
+import java.nio.charset.StandardCharsets
 
 import static crm.registration.web.exception.RegistrationErrors.INVALID_BIRTHDAY
 import static crm.registration.web.exception.RegistrationErrors.INVALID_BIRTHDAY_MESSAGE
@@ -229,7 +230,7 @@ class UserHandlerTest extends RegistrationSpecification {
   def "should bad request if email is invalid"() {
     
     given:
-        def email = "@&%&#2"
+        def email = URLEncoder.encode("@&%&#2", StandardCharsets.UTF_8)
     when:
         def response = webClient.get()
             .url("$contextPath/exist/user/email/$email")
