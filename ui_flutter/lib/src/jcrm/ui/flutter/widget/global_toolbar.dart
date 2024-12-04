@@ -24,12 +24,4 @@ class _GlobalToolbarState extends State<GlobalToolbar> {
 class GlobalToolbarController
     extends BaseWidgetController<GlobalToolbar, _GlobalToolbarState> {
 
-  /// Show rows from the next page
-  void goToNextPage() {
-    _assertIfNotAttached();
-    if (_state != null) {
-      if (_state!._isNextPageUnavailable()) return;
-      _state!._handleNext();
-    }
-  }
 }

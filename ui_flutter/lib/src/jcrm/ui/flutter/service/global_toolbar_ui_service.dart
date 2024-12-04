@@ -10,7 +10,7 @@ class GlobalToolbarUiService extends UiBasedService {
   Widget get toolbar => _toolbar;
 
   void changeTitleTo(String newTitle) {
-    _toolbar.
+    //_toolbar.
   }
 }
 

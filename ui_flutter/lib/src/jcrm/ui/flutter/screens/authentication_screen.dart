@@ -49,7 +49,7 @@ class AuthenticationScreenState extends State<AuthenticationScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Sign in', style: Theme.of(context).textTheme.headline4),
+                    Text('Sign in', style: Theme.of(context).textTheme.headlineMedium),
                     Padding(
                         padding: ThemeConstants.cardFieldOffset,
                         child: TextField(

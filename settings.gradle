@@ -7,8 +7,6 @@ rootProject.name = 'JCRM'
 //include 'jcrm-integration-test-db-jdbc'
 //include 'jcrm-dictionary-jdbc'
 
-
-
 include 'base'
 include 'base-spring'
 include 'base-web'
