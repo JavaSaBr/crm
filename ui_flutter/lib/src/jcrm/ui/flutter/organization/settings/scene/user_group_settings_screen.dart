@@ -7,6 +7,7 @@ class UserGroupSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Build UserGroupSettingsScreen");
     return const Text("User group settings");
   }
 }

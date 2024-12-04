@@ -22,7 +22,8 @@ class OrganizationSettingsScreen extends StatefulWidget {
   }
 }
 
-class OrganizationSettingsScreenState extends State<OrganizationSettingsScreen> with SingleTickerProviderStateMixin {
+class OrganizationSettingsScreenState extends State<OrganizationSettingsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -39,7 +40,6 @@ class OrganizationSettingsScreenState extends State<OrganizationSettingsScreen> 
   @override
   Widget build(BuildContext context) {
     var tabs = OrganizationSettingsScreen.tabMapping;
-
     return Scaffold(
       //backgroundColor: themeData.colorScheme.primary,
       appBar: AppBar(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/config/ui_services_config.dart';
 import 'package:provider/provider.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/config/repositories_config.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/error_service.dart';
@@ -29,7 +30,8 @@ class ApplicationConfig extends MultiProvider {
                         ],
                         child: MultiProvider(
                             providers: [
-                              RepositoriesConfig()
+                              RepositoriesConfig(),
+                              UiServicesConfig()
                             ],
                             builder: appBuilder)))));
 }

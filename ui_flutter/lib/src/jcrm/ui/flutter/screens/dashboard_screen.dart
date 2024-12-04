@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/dashborad/screen/organization_settings_screen.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/page/settings.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/routing/route_state.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/global_toolbar_ui_service.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/util/routes.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/fade_transition_page.dart';
+import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/widget/global_toolbar.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const routeName = "dashboard";
@@ -38,10 +41,28 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Build Dashboard");
+    RouteState routeState = RouteStateScope.of(context);
+    var globalToolbarUiService = context.read<GlobalToolbarUiService>();
+    return Scaffold(
+      appBar: AppBar(
+        title: globalToolbarUiService.toolbar,
+        elevation: 15,
+      ),
+      body: Navigator(
+        key: navigatorKey,
+        onPopPage: (route, dynamic result) => route.didPop(result),
+        pages: [
+          buildTargetPage(routeState, context)
+        ],
+      ),
+      drawer: Drawer(
+        child: buildLeftMenuItems(routeState),
+      ),
+    );
+  }
 
-    var routeState = RouteStateScope.of(context);
-    var currentRoute = routeState.route;
-    var pathTemplate = currentRoute.pathTemplate;
+  ListView buildLeftMenuItems(RouteState routeState) {
 
     final drawerHeader = UserAccountsDrawerHeader(
       accountName: Text(
@@ -55,7 +76,7 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
 
-    final drawerItems = ListView(
+    return ListView(
       children: [
         drawerHeader,
         ListTile(
@@ -87,56 +108,14 @@ class DashboardScreen extends StatelessWidget {
         ),
       ],
     );
+  }
 
-
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "App bar",
-        ),
-      ),
-      body: Navigator(
-        key: navigatorKey,
-        onPopPage: (route, dynamic result) => route.didPop(result),
-        pages: [
-
-          pages.entries
-              .firstWhere((element) => pathTemplate.startsWith(element.key), orElse: () => emptyPage)
-              .value(context)
-
-          // if (currentRoute.pathTemplate.startsWith('/authors'))
-          //   const FadeTransitionPage<void>(
-          //     key: ValueKey('authors'),
-          //     child: AuthorsScreen(),
-          //   )
-          // else if (currentRoute.pathTemplate.startsWith('/settings'))
-          //   const FadeTransitionPage<void>(
-          //     key: ValueKey('settings'),
-          //     child: SettingsScreen(),
-          //   )
-          // else if (currentRoute.pathTemplate.startsWith('/books') || currentRoute.pathTemplate == '/')
-          //   const FadeTransitionPage<void>(
-          //     key: ValueKey('books'),
-          //     child: BooksScreen(),
-          //   )
-          //
-          // // Avoid building a Navigator with an empty `pages` list when the
-          // // RouteState is set to an unexpected path, such as /signin.
-          // //
-          // // Since RouteStateScope is an InheritedNotifier, any change to the
-          // // route will result in a call to this build method, even though this
-          // // widget isn't built when those routes are active.
-          // else
-          //   FadeTransitionPage<void>(
-          //     key: const ValueKey('empty'),
-          //     child: Container(),
-          //   ),
-        ],
-      ),
-      drawer: Drawer(
-        child: drawerItems,
-      ),
-    );
+  FadeTransitionPage<void> buildTargetPage(
+      RouteState routeState, BuildContext context) {
+    String pathTemplate = routeState.route.pathTemplate;
+    return pages.entries
+        .firstWhere((element) => pathTemplate.startsWith(element.key),
+            orElse: () => emptyPage)
+        .value(context);
   }
 }

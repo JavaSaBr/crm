@@ -58,6 +58,7 @@ class ApplicationWidgetState extends State<ApplicationWidget> {
         child: SecurityAuthScope(
           notifier: _securityService,
           child: MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.light,
             routerDelegate: _routerDelegate,
