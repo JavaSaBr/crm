@@ -46,7 +46,7 @@ subprojects {
             'mailFrom'              : System.getProperty("mailFrom", ""),
             
             // SSL
-            'keystorePath'          : System.getProperty("keystorePath", projectDir.toPath().resolve("../jcrm.p12.disabled").toString()),
+            'keystorePath'          : System.getProperty("keystorePath", projectDir.toPath().resolve("../jcrm.p12").toString()),
             'keystorePassword'      : System.getProperty("keystorePassword", "ssljcrm"),
             'keystoreAlias'         : System.getProperty("keystoreAlias", "jcrm"),
         ])

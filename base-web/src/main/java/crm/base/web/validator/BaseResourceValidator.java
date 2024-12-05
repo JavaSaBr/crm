@@ -130,14 +130,6 @@ public class BaseResourceValidator {
     }
   }
 
-  protected void validateEmail(
-      @Nullable String email, int minLength, int maxLength, int code, @NotNull String message) {
-    if (email == null || !StringUtils.isValidEmail(email) || email.length() < minLength || email.length() > maxLength) {
-      log.warn("Invalid email: {}", email);
-      throw new BadRequestWebException(message, code);
-    }
-  }
-
   protected <T> void validateResultString(
       T @Nullable [] objects,
       int minLength,
@@ -198,6 +190,14 @@ public class BaseResourceValidator {
       if (resultLength < minLength || resultLength > maxLength) {
         throw new BadRequestWebException(message, code);
       }
+    }
+  }
+
+  protected void validateEmail(
+      @Nullable String email, int minLength, int maxLength, int code, @NotNull String message) {
+    if (email == null || !StringUtils.isValidEmail(email) || email.length() < minLength || email.length() > maxLength) {
+      log.warn("Invalid email: {}", email);
+      throw new BadRequestWebException(message, code);
     }
   }
 

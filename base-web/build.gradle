@@ -1,7 +1,7 @@
 apply plugin: "java-library"
 
 dependencies {
-  api projects.base
+  api projects.baseSpring
   api libs.bundles.springboot.starter.reactive
 }
 

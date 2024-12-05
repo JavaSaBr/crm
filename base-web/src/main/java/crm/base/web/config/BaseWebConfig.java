@@ -3,6 +3,7 @@ package crm.base.web.config;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import crm.base.spring.config.PropertiesConfig;
 import crm.base.web.customizer.UndertowWebServerFactorySslCustomizer;
 import crm.base.web.exception.handler.DefaultWebExceptionHandler;
 import com.ss.rlib.common.concurrent.GroupThreadFactory;
@@ -22,12 +23,16 @@ import java.util.concurrent.ScheduledExecutorService;
 
 @Lazy
 @Import({
+    PropertiesConfig.class,
     WebFluxAutoConfiguration.class,
     HttpHandlerAutoConfiguration.class,
     ReactiveWebServerFactoryAutoConfiguration.class
 })
 @Configuration(proxyBeanMethods = false)
-@PropertySource("classpath:crm/base/web/base-web.properties")
+@PropertySources({
+    @PropertySource("classpath:base/web/base-web.properties"),
+    @PropertySource(value = "classpath:base/web/base-web-${spring.profiles.active:default}.properties", ignoreResourceNotFound = true)
+})
 public class BaseWebConfig {
 
   @Bean

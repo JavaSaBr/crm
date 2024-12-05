@@ -16,7 +16,7 @@ afterEvaluate {
     def smtpFrom = System.getProperty("javax.mail.smtp.from")
     def dbUpgradingEnabled = System.getProperty("db.upgrading.enabled", "false")
     
-    main = 'crm.full.web.FullWebApplication'
+    mainClass = 'crm.full.web.FullWebApplication'
     jvmArgs = [
         "--enable-preview",
         "-Dserver.port=8090",

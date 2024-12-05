@@ -56,7 +56,8 @@ public abstract class AbstractJAsyncConfig {
         env.getRequiredProperty("%s.port".formatted(propertyPrefix), int.class),
         env.getRequiredProperty("%s.database".formatted(propertyPrefix)));
 
-    var connectionPoolConfiguration = JAsyncUtils.buildPoolConfig(configuration,
+    var connectionPoolConfiguration = JAsyncUtils.buildPoolConfig(
+        configuration,
         poolConfiguration,
         eventLoopGroup,
         dbExecutor);

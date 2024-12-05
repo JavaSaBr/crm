@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.2"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.4.0"
         classpath 'com.adarshr:gradle-test-logger-plugin:3.2.0'
     }
 }

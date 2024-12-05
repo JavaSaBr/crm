@@ -52,4 +52,7 @@ public interface RegistrationErrors {
 
   int USER_GROUP_IS_NOT_EXIST = 1016;
   String USER_GROUP_IS_NOT_EXIST_MESSAGE = "User group is not exist";
+
+  int INVALID_PHONE_NUMBER_OR_EMAIL = 1017;
+  String INVALID_PHONE_NUMBER_OR_EMAIL_MESSAGE = "Invalid phone number or email";
 }

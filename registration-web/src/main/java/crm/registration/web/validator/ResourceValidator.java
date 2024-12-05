@@ -73,7 +73,7 @@ public class ResourceValidator extends BaseResourceValidator {
     } else if (StringUtils.isEmail(login)) {
       validateEmail(login);
     } else {
-      validate(login, phoneNumberMinLength, phoneNumberMaxLength, INVALID_PHONE_NUMBER, INVALID_PHONE_NUMBER_MESSAGE);
+      validate(login, phoneNumberMinLength, phoneNumberMaxLength, INVALID_PHONE_NUMBER_OR_EMAIL, INVALID_PHONE_NUMBER_OR_EMAIL_MESSAGE);
     }
 
     validatePassword(resource.password());

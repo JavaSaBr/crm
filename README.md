@@ -2,7 +2,7 @@
 [JCRM](https://crm.codehunters.ru) is an open source (GPL v3) Java based CRM.
 
 ## Dependencies for building
-### java 11+
+### java 23+
 ##### Ubuntu:
 ```bash
 sudo wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | sudo apt-key add -
@@ -44,4 +44,9 @@ By default, DB user should be 'postgres' with 'root' password.
      -Djavax.mail.password=... \
      -Djavax.mail.smtp.from=... \
      -Ddb.upgrading.enabled=true
+```
+
+### Generating ssl cert for dev testing
+```shell
+keytool -genkey -alias jcrm -keystore jcrm.p12 -storetype PKCS12 -keyalg RSA -validity 730 -keysize 2048
 ```
