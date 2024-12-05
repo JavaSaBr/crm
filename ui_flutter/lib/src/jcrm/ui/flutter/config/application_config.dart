@@ -7,31 +7,19 @@ import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/http_service.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/registration_service.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/service/security_service.dart';
 
-import 'dart:html';
+import 'package:web/web.dart';
 
 class ApplicationConfig extends MultiProvider {
   ApplicationConfig(TransitionBuilder appBuilder, {Key? appKey})
       : super(
             key: appKey,
             providers: [
-              Provider(create: (context) => ErrorService())
+              Provider(create: (context) => ErrorService()),
+              Provider(create: (context) => HttpService(context.read())),
+              Provider(create: (context) => RegistrationService(context.read())),
+              ChangeNotifierProvider(create: (context) => SecurityService(context.read(), window.localStorage)),
+              RepositoriesConfig(),
+              UiServicesConfig()
             ],
-            child: MultiProvider(
-                providers: [
-                  Provider(create: (context) => HttpService(context.read<ErrorService>()))
-                ],
-                child: MultiProvider(
-                    providers: [
-                      Provider(create: (context) => RegistrationService(context.read<HttpService>()))
-                    ],
-                    child: MultiProvider(
-                        providers: [
-                          ChangeNotifierProvider(create: (context) => SecurityService(context.read<HttpService>(), window.localStorage)),
-                        ],
-                        child: MultiProvider(
-                            providers: [
-                              RepositoriesConfig(),
-                              UiServicesConfig()
-                            ],
-                            builder: appBuilder)))));
+            builder: appBuilder);
 }

@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'package:web/web.dart';
 
 import 'package:flutter/material.dart';
 import 'package:jcrm_ui_flutter/src/jcrm/ui/flutter/entity/user.dart';
@@ -42,7 +42,7 @@ class SecurityService extends ChangeNotifier {
       if (ex is HttpException && ex.error.errorCode == Errors.tokenExpired) {
         return refreshToken(restoredToken);
       } else {
-        _localStorage.remove(localStorageKeyToken);
+        _localStorage.removeItem(localStorageKeyToken);
         internalAuthenticate(User.none, emptyToken);
       }
     }
@@ -59,7 +59,7 @@ class SecurityService extends ChangeNotifier {
       _localStorage[localStorageKeyToken] = response.token;
     } catch (ex) {
       if (ex is HttpException && ex.error.errorCode == Errors.tokenMaxRefreshed) {
-        _localStorage.remove(localStorageKeyToken);
+        _localStorage.removeItem(localStorageKeyToken);
       }
       internalAuthenticate(User.none, emptyToken);
     }
